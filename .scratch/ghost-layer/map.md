@@ -29,6 +29,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Addons and Godot 4.7 compatibility](issues/02-godot-addons-research.md): LimboAI (smoke-test it on 4.7, fall back to Beehave), tests with godot_ai's McpTestSuite, hand-written PSX shaders on Forward Plus, built-in SpringArm3D and NavigationAgent3D, Dialogue Manager only if codec calls branch.
 - [Asset sources and licenses](issues/03-asset-sources-research.md): Quaternius characters + animations (license now QAL, not CC0: no standalone redistribution), Kenney as a CC0 fallback, military props built by hand, OFL fonts, Kenney/OGA CC0 sounds. Mixamo stays out of a public repo.
 - [How the MGSV Revenge System works](issues/01-revenge-system-research.md): about 10 point counters (100 per level), changes only between Missions, stealth↔combat tug of war, decay of at most ½ level per Mission. Visible through gear, a 0–3 icon strip, and guard chatter (hint at 50, confirmation at the level). Gap: little evidence on readability (reflex mode, indicator).
+- [Core stealth feel prototype](issues/04-stealth-core-prototype.md): the stealth reads and feels right. Two-spring-arm shoulder camera with a shoulder swap, front + peripheral vision cones, footstep/knock hearing, patrol→suspicion→alert (radio)→evasion→patrol with the tested timings, and the MGSV arc + ?/! marks as the detection indicator. No always-on cones or reason feed needed. Prototype on branch `prototype/stealth-core`.
 
 ## Not yet specified
 
@@ -36,6 +37,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - **Input:** keyboard+mouse, gamepad, or both.
 - **Persistence:** saving the profile and campaign progress between sessions.
 - **AI write-up:** format and content. Probably depends on the Voice architecture and the debug overlay.
+- **Gadgets/items:** what the Operative carries beyond weapons. One idea from the stealth playtest: showing guards' vision cones as a HUD gadget (maybe something Aigis can counter). Probably settled alongside the combat verbs and the HUD.
 - **Extra Missions:** whether there's time for revisits of Areas with countermeasures, beyond the 3 + core.
 
 ## Out of scope

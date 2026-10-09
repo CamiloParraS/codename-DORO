@@ -32,18 +32,18 @@ Researched 2026-10-08 against the asset pages and license texts themselves. Item
 
 ## 1. Animated low-poly human characters
 
-| Source | What it has | Rig / animations | License (as shown on the page) | Notes |
-|---|---|---|---|---|
-| Quaternius Universal Base Characters https://quaternius.com/packs/universalbasecharacters.html | 6 base models (Superhero/Regular/Teen, M/F), 20 hairstyles, avg 13k tris, no outfits listed | Humanoid rig "retargetable in any engine"; **no animations included**, made to pair with the Universal Animation Library | Page says CC0; see Trap 1 (QAL) | Standard tier free (60-70%), Source paid. 13k tris is high for PSone: decimate or accept, then use low-res texture + vertex-snap shader |
-| Quaternius Universal Animation Library https://quaternius.com/packs/universalanimationlibrary.html | 120+ animations: 8-direction locomotion, jog, sprint, crawl, swim, sit, death, combat and gun, emotes | Universal humanoid rig, "ready for retargeting" for Godot/Unity/Unreal | Page says CC0, free for personal/educational/commercial (see Trap 1) | Standard free tier about 45 animations; Source with .blend and Godot project is paid. Best fit for a stealth game (gun/death/crawl) |
-| Quaternius Universal Animation Library 2 https://quaternius.com/packs/universalanimationlibrary2.html | 130+ animations: melee/armed combos, parkour, farming, fishing, zombie locomotion | Universal humanoid rig | Page says CC0 | Page does **not** mention gun, stealth or crouch; skip unless you need parkour/melee |
-| Quaternius Animated Men Pack https://quaternius.com/packs/animatedmen.html | 4 human models "with many animations", FBX/OBJ/Blend, textured | Rig not described on page; animation list not given | CC0, free | Not stated to be soldiers. Download and inspect before committing |
-| Quaternius Ultimate Animated Character Pack https://quaternius.com/packs/ultimatedanimatedcharacter.html (the slug really has "ultimated") | 50+ animated characters, FBX/OBJ/Blend | Rig not described; probably untextured | CC0, free | Check the roster for soldier-like models after download |
-| Quaternius Ultimate Modular Women https://quaternius.com/packs/ultimatemodularwomen.html | 10 characters, 4 swappable parts each, 24 animations, humanoid rig version included | Humanoid rig | CC0 | Gender-skewed; modular parts could be recolored as camo |
-| Kenney Blocky Characters https://kenney.nl/assets/blocky-characters | 20 files; "Animation" feature (a mirror lists 18 skins, 27 animations) [secondary: https://opengameart.org/content/blocky-characters] | Animated | CC0 | Blocky style, not PSX-realistic, but zero risk. Page does not list which animations |
-| Elbolilloduro Characters PSX https://elbolilloduro.itch.io/characters-psx | 113 PSX-style characters (12 police, 41 civilians, 8 "murderers", 6 monsters, 34 extras), FBX + Blend, name-your-price (can be free) | Page does not say if rigged; comments dispute rig quality and mention a Mixamo NLA strip | "The models in this package are under the CC0 license" | **Best PSX look, but not soldiers**. Possibly Mixamo-derived animation data, so see Trap 2 before redistributing. Use as enemies/guards (police/murderers) |
-| yugg0 Modern Rebel Soldier (PSX/PS1) https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1 and #2 https://yugg0.itch.io/modern-rebel-soldier-character-2-psx-ps1 | Rigged low-poly soldier, FBX + PNG textures + Blender source, name-your-price | Rigged with bones; **no animation clips listed**; rig credited to Mixamo | Own terms: free for personal and commercial, modification allowed, **cannot claim as your own, cannot redistribute under your name**; credits a Sketchfab basemesh and the Mixamo rig | Closest to the brief (PSX soldier). Mixamo rig so Mixamo animations apply directly. Not CC0: keep the author's credit in CREDITS.md |
-| DullMesh Rigged Stylized SWAT Soldier https://dullmesh.itch.io/free-rigged-stylized-swat-soldier | "Stylized SWAT Soldier" (rigged) | Rig only | License not seen (itch.io listing page returned only title) | **[unverified]** open the page and read the terms first |
+| Source                                                                                                                                                                  | What it has                                                                                                                           | Rig / animations                                                                                                         | License (as shown on the page)                                                                                                                                                        | Notes                                                                                                                                                      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Quaternius Universal Base Characters https://quaternius.com/packs/universalbasecharacters.html                                                                          | 6 base models (Superhero/Regular/Teen, M/F), 20 hairstyles, avg 13k tris, no outfits listed                                           | Humanoid rig "retargetable in any engine"; **no animations included**, made to pair with the Universal Animation Library | Page says CC0; see Trap 1 (QAL)                                                                                                                                                       | Standard tier free (60-70%), Source paid. 13k tris is high for PSone: decimate or accept, then use low-res texture + vertex-snap shader                    |
+| Quaternius Universal Animation Library https://quaternius.com/packs/universalanimationlibrary.html                                                                      | 120+ animations: 8-direction locomotion, jog, sprint, crawl, swim, sit, death, combat and gun, emotes                                 | Universal humanoid rig, "ready for retargeting" for Godot/Unity/Unreal                                                   | Page says CC0, free for personal/educational/commercial (see Trap 1)                                                                                                                  | Standard free tier about 45 animations; Source with .blend and Godot project is paid. Best fit for a stealth game (gun/death/crawl)                        |
+| Quaternius Universal Animation Library 2 https://quaternius.com/packs/universalanimationlibrary2.html                                                                   | 130+ animations: melee/armed combos, parkour, farming, fishing, zombie locomotion                                                     | Universal humanoid rig                                                                                                   | Page says CC0                                                                                                                                                                         | Page does **not** mention gun, stealth or crouch; skip unless you need parkour/melee                                                                       |
+| Quaternius Animated Men Pack https://quaternius.com/packs/animatedmen.html                                                                                              | 4 human models "with many animations", FBX/OBJ/Blend, textured                                                                        | Rig not described on page; animation list not given                                                                      | CC0, free                                                                                                                                                                             | Not stated to be soldiers. Download and inspect before committing                                                                                          |
+| Quaternius Ultimate Animated Character Pack https://quaternius.com/packs/ultimatedanimatedcharacter.html (the slug really has "ultimated")                              | 50+ animated characters, FBX/OBJ/Blend                                                                                                | Rig not described; probably untextured                                                                                   | CC0, free                                                                                                                                                                             | Check the roster for soldier-like models after download                                                                                                    |
+| Quaternius Ultimate Modular Women https://quaternius.com/packs/ultimatemodularwomen.html                                                                                | 10 characters, 4 swappable parts each, 24 animations, humanoid rig version included                                                   | Humanoid rig                                                                                                             | CC0                                                                                                                                                                                   | Gender-skewed; modular parts could be recolored as camo                                                                                                    |
+| Kenney Blocky Characters https://kenney.nl/assets/blocky-characters                                                                                                     | 20 files; "Animation" feature (a mirror lists 18 skins, 27 animations) [secondary: https://opengameart.org/content/blocky-characters] | Animated                                                                                                                 | CC0                                                                                                                                                                                   | Blocky style, not PSX-realistic, but zero risk. Page does not list which animations                                                                        |
+| Elbolilloduro Characters PSX https://elbolilloduro.itch.io/characters-psx                                                                                               | 113 PSX-style characters (12 police, 41 civilians, 8 "murderers", 6 monsters, 34 extras), FBX + Blend, name-your-price (can be free)  | Page does not say if rigged; comments dispute rig quality and mention a Mixamo NLA strip                                 | "The models in this package are under the CC0 license"                                                                                                                                | **Best PSX look, but not soldiers**. Possibly Mixamo-derived animation data, so see Trap 2 before redistributing. Use as enemies/guards (police/murderers) |
+| yugg0 Modern Rebel Soldier (PSX/PS1) https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1 and #2 https://yugg0.itch.io/modern-rebel-soldier-character-2-psx-ps1 | Rigged low-poly soldier, FBX + PNG textures + Blender source, name-your-price                                                         | Rigged with bones; **no animation clips listed**; rig credited to Mixamo                                                 | Own terms: free for personal and commercial, modification allowed, **cannot claim as your own, cannot redistribute under your name**; credits a Sketchfab basemesh and the Mixamo rig | Closest to the brief (PSX soldier). Mixamo rig so Mixamo animations apply directly. Not CC0: keep the author's credit in CREDITS.md                        |
+| DullMesh Rigged Stylized SWAT Soldier https://dullmesh.itch.io/free-rigged-stylized-swat-soldier                                                                        | "Stylized SWAT Soldier" (rigged)                                                                                                      | Rig only                                                                                                                 | License not seen (itch.io listing page returned only title)                                                                                                                           | **[unverified]** open the page and read the terms first                                                                                                    |
 
 Other itch.io soldier listings (not 3D PSX or license unknown): https://itch.io/game-assets/free/tag-soldier
 
@@ -66,15 +66,18 @@ Practical plan: model the missing pieces yourself (crate = cube, fence = plane w
 ## 3. PSone-style textures (64-128px)
 
 **Ready-made, CC0**
+
 - Screaming Brain Studios Tiny Texture Pack 2, CC0, 160 seamless textures (Brick, Dirt, Elements, Metal, Plaster, Stone, Tile, Wood), each at 512/256/**128** px (the 128px zip is 5.4 MB), no credit required: https://opengameart.org/content/tiny-texture-pack-2
 - Same author, Tiny Texture Pack 3 (grating, metal, stone, terrain, weave; CC0) https://opengameart.org/content/tiny-texture-pack-3, and Base Material Texture Pack (384 textures, 128/256/512, CC0) https://opengameart.org/content/base-material-texture-pack (both license statements from search-result summaries; open pages to confirm).
 - Kenney Prototype Textures (CC0, 75 files; sizes not stated on page) https://kenney.nl/assets/prototype-textures: good for greybox.
 
 **Source libraries (CC0) to downscale**
+
 - ambientCG: all assets CC0, raw files may be included in a game, attribution not required (suggested wording: "Created using <asset name> from ambientCG.com, licensed under the Creative Commons CC0 1.0 Universal License."). https://docs.ambientcg.com/license/
 - Poly Haven: CC0, commercial use allowed, credit appreciated not required. Website terms prohibit scraping/data mining. https://polyhaven.com/license
 
 **Downscale workflow** (ImageMagick 7 syntax; commands are standard, not tested against these specific packs)
+
 1. Download the 1K JPG color map only.
 2. `magick in_Color.jpg -filter Box -resize 64x64! -colors 32 out_64.png` (Box/point filter keeps it crunchy; `-colors 32` approximates the PSone palette feel; add `-ordered-dither o8x8` for dithering). Use 128x128 for large walls.
 3. In Godot import dock for each texture: Filter off (nearest), Mipmaps off, Compress Lossless. Set the project default under Rendering > Textures > Canvas Textures/Default Texture Filter to Nearest for UI, and set materials' Texture Filter to Nearest for 3D.
@@ -92,23 +95,25 @@ Practical plan: model the missing pieces yourself (crate = cube, fence = plane w
 
 ## 5. Radio / codec / stealth sound effects
 
-| Source | License | Notes |
-|---|---|---|
-| Kenney Sci-fi Sounds https://kenney.nl/assets/sci-fi-sounds | CC0, 70 files | Beeps, computer sounds; contents not itemized on the page |
-| Kenney Interface Sounds https://kenney.nl/assets/interface-sounds | CC0, 100 files | Clicks/buttons for menus; codec UI blips |
-| OpenGameArt "Frequency Static Sound Effects" by bretbernhoft https://opengameart.org/content/frequency-static-sound-effects | CC0, 11 WAVs (about 42 MB each) | Radio/TV static; large files, trim and convert to OGG |
-| Freesound https://freesound.org | Per-sound: CC0 / CC BY / CC BY-NC / legacy Sampling+ | Search with the license filter on "Creative Commons 0". Do not use BY-NC for a public release. Credit format is in the FAQ. Check the GenAI tag |
-| Sonniss GameAudioGDC bundles https://sonniss.com/gameaudiogdc/ | Royalty-free, attribution optional, no standalone redistribution, no AI training | GDC 2024 bundle is 9 zips; read /gdc-bundle-license/ first |
-| ZapSplat | Not verified (site blocked automated fetch) | Free tier historically requires credit **[unverified]**; skip or read https://www.zapsplat.com/license-type/standard-license/ in a browser |
-| Pixabay SFX | Pixabay Content License, not CC0 | See Trap 8 |
-| VoiceBosch "RADIO SOLDIER - Announcer Audio Pack" https://voicebosch.itch.io/radio-soldier-announcer-audio-pack | Not checked | Radio-style voice lines; read the page's terms |
+| Source                                                                                                                      | License                                                                          | Notes                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kenney Sci-fi Sounds https://kenney.nl/assets/sci-fi-sounds                                                                 | CC0, 70 files                                                                    | Beeps, computer sounds; contents not itemized on the page                                                                                       |
+| Kenney Interface Sounds https://kenney.nl/assets/interface-sounds                                                           | CC0, 100 files                                                                   | Clicks/buttons for menus; codec UI blips                                                                                                        |
+| OpenGameArt "Frequency Static Sound Effects" by bretbernhoft https://opengameart.org/content/frequency-static-sound-effects | CC0, 11 WAVs (about 42 MB each)                                                  | Radio/TV static; large files, trim and convert to OGG                                                                                           |
+| Freesound https://freesound.org                                                                                             | Per-sound: CC0 / CC BY / CC BY-NC / legacy Sampling+                             | Search with the license filter on "Creative Commons 0". Do not use BY-NC for a public release. Credit format is in the FAQ. Check the GenAI tag |
+| Sonniss GameAudioGDC bundles https://sonniss.com/gameaudiogdc/                                                              | Royalty-free, attribution optional, no standalone redistribution, no AI training | GDC 2024 bundle is 9 zips; read /gdc-bundle-license/ first                                                                                      |
+| ZapSplat                                                                                                                    | Not verified (site blocked automated fetch)                                      | Free tier historically requires credit **[unverified]**; skip or read https://www.zapsplat.com/license-type/standard-license/ in a browser      |
+| Pixabay SFX                                                                                                                 | Pixabay Content License, not CC0                                                 | See Trap 8                                                                                                                                      |
+| VoiceBosch "RADIO SOLDIER - Announcer Audio Pack" https://voicebosch.itch.io/radio-soldier-announcer-audio-pack             | Not checked                                                                      | Radio-style voice lines; read the page's terms                                                                                                  |
 
 Codec/radio recipe: take a clean voice line, apply a bandpass (about 300-3000 Hz) plus bit-crush in Audacity (or Godot AudioEffectFilter/Distortion on a bus), then mix CC0 static underneath. This avoids needing a pre-made "radio voice" pack.
 
 ## 6. Mixamo
 
 ### Licensing (source: Adobe-posted FAQ copy, see Trap 3)
+
 https://community.adobe.com/questions-696/mixamo-faq-licensing-royalties-ownership-eula-and-tos-589400
+
 - Free, "no licensing or royalty fees, for unlimited commercial or non commercial use". Games, DLC and add-on content for games are listed as permitted.
 - Attribution to Adobe/Mixamo/Fuse is welcome but **not required**.
 - "The only thing you can't do is distribute the raw character and animation files." Team members may access them; customers and non-team members may not.
@@ -117,6 +122,7 @@ https://community.adobe.com/questions-696/mixamo-faq-licensing-royalties-ownersh
 - Practical consequence for this project: ship the exported game, keep Mixamo `.fbx` out of public Git (use `.gitignore`) or convert to a non-redistributed local-only folder. The Godot-imported `.res`/`.tres` animation library derived from Mixamo is still "animation files" in spirit, so also keep it out of a public repo.
 
 ### Workflow into Godot 4.7
+
 Godot-documented parts are cited; Mixamo-specific parts are **[unverified]** practitioner steps because neither the Godot docs nor Mixamo's pages describe each other.
 
 1. **On Mixamo:** pick a character (or upload your own to auto-rig). Download the character once as FBX with skin in T-pose. For each animation, download FBX, "Without Skin" (skeleton + animation only), 30 fps. Tick "In Place" for locomotion loops you will drive with code. **[unverified]**
@@ -140,6 +146,7 @@ Not found in primary docs: any statement that Godot's BoneMap auto-maps `mixamor
 Ghost Layer is a student project. Third-party assets and their licenses:
 
 ## 3D models and animation
+
 - Universal Base Characters / Universal Animation Library by Quaternius, https://quaternius.com
   License shown at download (YYYY-MM-DD): CC0 1.0 / Quaternius Asset License (QAL) v1.0 (delete one). No credit required, credited anyway.
 - Blocky Characters, Survival Kit, City Kit (Industrial) by Kenney, https://kenney.nl
@@ -150,19 +157,23 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Character animations from Mixamo (c) Adobe, https://www.mixamo.com, used under Mixamo's free terms; raw files are not redistributed.
 
 ## Textures
+
 - Tiny Texture Pack 2 by Screaming Brain Studios, https://opengameart.org/content/tiny-texture-pack-2, CC0 1.0
 - Textures derived from ambientCG, https://ambientcg.com (CC0 1.0), and Poly Haven, https://polyhaven.com (CC0 1.0), downscaled to 64-128 px.
 
 ## Fonts
+
 - Press Start 2P, Copyright 2012 The Press Start 2P Project Authors (cody@zone38.net), SIL Open Font License 1.1. OFL.txt is included at res://assets/fonts/OFL.txt.
 - VT323, Copyright 2011 The VT323 Project Authors (peter.hull@oikoi.com), SIL Open Font License 1.1.
 
 ## Audio
+
 - Sci-fi Sounds and Interface Sounds by Kenney, https://kenney.nl, CC0 1.0
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
 - Freesound sounds (one line per sound: "<title>" by <author>, https://freesound.org/s/<id>/, <CC0 | CC BY 4.0>)
 
 ## Tools
+
 - Godot Engine, MIT License, https://godotengine.org
 ```
 
@@ -170,12 +181,12 @@ Keep a per-asset row (name, author, URL, license, download date, file path in pr
 
 ## Recommended starter kit
 
-| Need | Pick | License | Why |
-|---|---|---|---|
-| Characters | Quaternius Universal Base Characters (Standard) + Universal Animation Library (Standard) | CC0 on pack page; QAL v1.0 on license page (Trap 1) | Humanoid rig built for Godot retargeting, includes gun, death and crawl |
-| Character fallback / PSX look | Kenney Blocky Characters; yugg0 Modern Rebel Soldier (PSX) | CC0; author terms | Zero-risk fallback; PSX soldier |
-| Extra animations | Mixamo, locomotion "In Place" clips, kept out of public repo | Mixamo free terms | Fills stealth-walk and crouch gaps |
-| Props/buildings | Kenney Survival Kit + City Kit (Industrial) + a few hand-built boxes/CSG | CC0 | Nothing CC0 military + PSX exists; build the rest |
-| Textures | Screaming Brain Tiny Texture Pack 2 (128 px) + ambientCG/Poly Haven downscaled to 64 px | CC0 | Already low-res or easily crunched |
-| Font | Press Start 2P (HUD), VT323 (codec text) | OFL 1.1 | Pixel, free to bundle; ship OFL.txt |
-| SFX | Kenney Sci-fi Sounds + Interface Sounds, OpenGameArt radio static, Freesound CC0-filter only | CC0 | One license to track |
+| Need                          | Pick                                                                                         | License                                             | Why                                                                     |
+| ----------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| Characters                    | Quaternius Universal Base Characters (Standard) + Universal Animation Library (Standard)     | CC0 on pack page; QAL v1.0 on license page (Trap 1) | Humanoid rig built for Godot retargeting, includes gun, death and crawl |
+| Character fallback / PSX look | Kenney Blocky Characters; yugg0 Modern Rebel Soldier (PSX)                                   | CC0; author terms                                   | Zero-risk fallback; PSX soldier                                         |
+| Extra animations              | Mixamo, locomotion "In Place" clips, kept out of public repo                                 | Mixamo free terms                                   | Fills stealth-walk and crouch gaps                                      |
+| Props/buildings               | Kenney Survival Kit + City Kit (Industrial) + a few hand-built boxes/CSG                     | CC0                                                 | Nothing CC0 military + PSX exists; build the rest                       |
+| Textures                      | Screaming Brain Tiny Texture Pack 2 (128 px) + ambientCG/Poly Haven downscaled to 64 px      | CC0                                                 | Already low-res or easily crunched                                      |
+| Font                          | Press Start 2P (HUD), VT323 (codec text)                                                     | OFL 1.1                                             | Pixel, free to bundle; ship OFL.txt                                     |
+| SFX                           | Kenney Sci-fi Sounds + Interface Sounds, OpenGameArt radio static, Freesound CC0-filter only | CC0                                                 | One license to track                                                    |
