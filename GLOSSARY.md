@@ -29,8 +29,12 @@ Palladion's tactical intelligence and the game's antagonist. It profiles the Ope
 _Avoid_: The AI, the system
 
 **Voice**:
-One of Aigis's five weighted personalities (Promachos, Nike, Pallas, Gorgo, Glaukopis), each holding one part of its doctrine.
+One of Aigis's five weighted personalities (Promachos, Nike, Pallas, Gorgo, Glaukopis), each holding one part of its doctrine and sponsoring the Countermeasures that fit it.
 _Avoid_: Personality, persona, module
+
+**Dominant Voice**:
+The Voice the campaign's Lethality currently favours. It has the most say in what Aigis deploys, closes each briefing, and decides the ending.
+_Avoid_: Leading voice, active voice, winner
 
 ### Deception
 
