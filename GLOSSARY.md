@@ -44,8 +44,20 @@ _Avoid_: Deepfake, fake call, spoof order
 
 ### Record
 
+**Profile**:
+Aigis's model of the Operative: a level for each Habit, updated only between Missions.
+_Avoid_: Operator profile, revenge, preparedness
+
+**Habit**:
+One behaviour of the Operative that Aigis tracks, such as headshots or Spoofing.
+_Avoid_: Counter, stat, revenge type
+
+**Countermeasure**:
+A change Aigis makes to a Mission in answer to a Habit, always visible or audible to the Operative.
+_Avoid_: Counter, upgrade, response
+
 **Lethality**:
-The silent campaign-long weighted tally of deaths the Operative has caused, where a Mission's assigned target weighs more than an ordinary guard. It decides which ending plays, and is kept apart from the habits Aigis profiles.
+The silent campaign-long weighted tally of deaths the Operative has caused, where a Mission's assigned target weighs more than an ordinary guard. It decides which ending plays, and is kept apart from the Profile.
 _Avoid_: Karma, morality, kill count
 
 ### Combat

@@ -32,6 +32,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Core stealth feel prototype](issues/04-stealth-core-prototype.md): the stealth reads and feels right. Two-spring-arm shoulder camera with a shoulder swap, front + peripheral vision cones, footstep/knock hearing, patrol→suspicion→alert (radio)→evasion→patrol with the tested timings, and the MGSV arc + ?/! marks as the detection indicator. No always-on cones or reason feed needed. Prototype on branch `prototype/stealth-core`.
 - [Combat verbs and Lethality](issues/07-combat-verbs-lethality.md): a suppressed tranq pistol, plus a rifle whose suppressor breaks after 10 shots. Takedowns are a choke or a kill. Guards are carried MGSV-style. Neutralized guards wake after ~90 s, and a found Down guard gets checked before the alert. Open combat is viable but costly. Lethality is a silent weighted tally of deaths (a target counts 3), separate from the profile, and rolled back with checkpoints. No Mission requires a death.
 - [Spoofing prototype](issues/05-spoofing-prototype.md): fun and challenging. Voiceprints recorded by eavesdropping on check-ins (6 m), three orders, Glaukopis scores deterministic doubt points (exposed at 40+, Voiceprint flagged, recipients search where you transmitted from). The player finds out through guards' chatter. Radio is a radial menu with slowed time; the doubt preview stays debug-only. Prototype on branch `prototype/spoofing`.
+- [Operator profile and countermeasures](issues/08-operator-profile.md): six Habits (Stealth↔Combat tug of war, Headshots, Takedowns, Downs, Spoofing), each with a 3-step ladder of visible Countermeasures; MGSV points (100/level, cap rising by Mission, applied only on completion, rolled back with checkpoints). Levels unlock, the Voices deploy, and the strongest Habit is always answered. HQ polls for missing guards, plus a "Report in" spoof order. No counter item.
 
 ## Not yet specified
 
@@ -40,8 +41,8 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - **Persistence:** saving the profile and campaign progress between sessions.
 - **AI write-up:** format and content. Probably depends on the Voice architecture and the debug overlay.
 - **Gadgets/items:** what the Operative carries beyond weapons. One idea from the stealth playtest: showing guards' vision cones as a HUD gadget (maybe something Aigis can counter). The weapons are settled (tranq pistol + rifle); gadgets still hang on the HUD and the countermeasures.
-- **Light and night:** darkness as a stealth factor (for the Operative and for bodies). There's no light model for now; it would need its own prototype, and it ties into a possible night counter in the profile.
-- **Extra Missions:** whether there's time for revisits of Areas with countermeasures, beyond the 3 + core.
+- **Light and night:** darkness as a stealth factor (for the Operative and for bodies). There's no light model for now; it would need its own prototype, and it ties into a possible night Habit in the Profile.
+- **Extra Missions:** whether there's time for revisits of Areas with countermeasures, beyond the 3 + core. A revisit would make a "favourite flank" Habit meaningful (Aigis guards the approach you used last time).
 
 ## Out of scope
 
