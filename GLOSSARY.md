@@ -14,6 +14,26 @@ _Avoid_: Level, map, stage, zone
 One playable assignment: an Area, a set of objectives, and the state of Aigis's countermeasures at that point in the campaign.
 _Avoid_: Level, stage
 
+**Target**:
+A named Palladion member a Mission requires the Operative to deal with: killed on the spot, or Neutralized and carried to the Extraction point. Weighs more than a guard in Lethality.
+_Avoid_: Mark, VIP, boss
+
+**Extraction point**:
+The place in an Area where a Mission ends once its objectives are done, and where a carried Target must be brought.
+_Avoid_: Exit, evac, LZ
+
+**Core**:
+Aigis's physical home, a room beneath the Harbour Area, and the setting of the final Mission.
+_Avoid_: Server room, mainframe, boss level
+
+**Free mode**:
+Playing any Mission with a chosen Preset, apart from the campaign and without touching its Profile or Lethality.
+_Avoid_: Debug mode, sandbox, replay
+
+**Preset**:
+A ready-made Profile plus a Lethality ratio, loaded in Free mode to show a given set of Countermeasures and a given ending.
+_Avoid_: Loadout, save, scenario
+
 ### Cast
 
 **Metis**:
