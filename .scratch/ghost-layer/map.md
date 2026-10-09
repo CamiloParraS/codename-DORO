@@ -30,6 +30,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Asset sources and licenses](issues/03-asset-sources-research.md): Quaternius characters + animations (license now QAL, not CC0: no standalone redistribution), Kenney as a CC0 fallback, military props built by hand, OFL fonts, Kenney/OGA CC0 sounds. Mixamo stays out of a public repo.
 - [How the MGSV Revenge System works](issues/01-revenge-system-research.md): about 10 point counters (100 per level), changes only between Missions, stealth↔combat tug of war, decay of at most ½ level per Mission. Visible through gear, a 0–3 icon strip, and guard chatter (hint at 50, confirmation at the level). Gap: little evidence on readability (reflex mode, indicator).
 - [Core stealth feel prototype](issues/04-stealth-core-prototype.md): the stealth reads and feels right. Two-spring-arm shoulder camera with a shoulder swap, front + peripheral vision cones, footstep/knock hearing, patrol→suspicion→alert (radio)→evasion→patrol with the tested timings, and the MGSV arc + ?/! marks as the detection indicator. No always-on cones or reason feed needed. Prototype on branch `prototype/stealth-core`.
+- [Combat verbs and Lethality](issues/07-combat-verbs-lethality.md): a suppressed tranq pistol, plus a rifle whose suppressor breaks after 10 shots. Takedowns are a choke or a kill. Guards are carried MGSV-style. Neutralized guards wake after ~90 s, and a found Down guard gets checked before the alert. Open combat is viable but costly. Lethality is a silent weighted tally of deaths (a target counts 3), separate from the profile, and rolled back with checkpoints. No Mission requires a death.
 - [Spoofing prototype](issues/05-spoofing-prototype.md): fun and challenging. Voiceprints recorded by eavesdropping on check-ins (6 m), three orders, Glaukopis scores deterministic doubt points (exposed at 40+, Voiceprint flagged, recipients search where you transmitted from). The player finds out through guards' chatter. Radio is a radial menu with slowed time; the doubt preview stays debug-only. Prototype on branch `prototype/spoofing`.
 
 ## Not yet specified
@@ -38,7 +39,8 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - **Input:** keyboard+mouse, gamepad, or both.
 - **Persistence:** saving the profile and campaign progress between sessions.
 - **AI write-up:** format and content. Probably depends on the Voice architecture and the debug overlay.
-- **Gadgets/items:** what the Operative carries beyond weapons. One idea from the stealth playtest: showing guards' vision cones as a HUD gadget (maybe something Aigis can counter). Probably settled alongside the combat verbs and the HUD.
+- **Gadgets/items:** what the Operative carries beyond weapons. One idea from the stealth playtest: showing guards' vision cones as a HUD gadget (maybe something Aigis can counter). The weapons are settled (tranq pistol + rifle); gadgets still hang on the HUD and the countermeasures.
+- **Light and night:** darkness as a stealth factor (for the Operative and for bodies). There's no light model for now; it would need its own prototype, and it ties into a possible night counter in the profile.
 - **Extra Missions:** whether there's time for revisits of Areas with countermeasures, beyond the 3 + core.
 
 ## Out of scope

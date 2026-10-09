@@ -45,5 +45,19 @@ _Avoid_: Deepfake, fake call, spoof order
 ### Record
 
 **Lethality**:
-The silent campaign-long record of how lethal or restrained the Operative has been. It decides which ending plays.
+The silent campaign-long weighted tally of deaths the Operative has caused, where a Mission's assigned target weighs more than an ordinary guard. It decides which ending plays, and is kept apart from the habits Aigis profiles.
 _Avoid_: Karma, morality, kill count
+
+### Combat
+
+**Takedown**:
+A close attack on a guard from behind, either a choke (non-lethal) or a kill.
+_Avoid_: CQC, melee, stealth kill
+
+**Neutralized**:
+A guard put out of action without being killed, by a tranquilizer or a choke. It wears off.
+_Avoid_: KO'd, subdued, stunned, sleeping
+
+**Down**:
+A guard who is either Neutralized or dead, as seen by someone who hasn't checked which.
+_Avoid_: Body (when it might be alive)
