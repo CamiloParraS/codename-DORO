@@ -19,3 +19,7 @@ Godot 4.7 project. Organize `res://` by game feature, with each scene next to it
 - Raw downloads go in `_raw/` (ignored by both git and Godot). Copy only the files you use into `assets/`.
 - Every third-party asset gets a line in `CREDITS.md`: name, author, link, license.
 - Planning map: `.scratch/ghost-layer/map.md`.
+
+## Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>[optional scope]: <description>`, then an optional body and optional footer(s). Common types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`. Planning changes (map, tickets, research) are `docs(ghost-layer)`. Throwaway prototypes use `feat(prototype)` on their `prototype/<name>` branch.
