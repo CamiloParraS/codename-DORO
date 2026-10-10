@@ -77,7 +77,7 @@ func _field(tally: MissionTally) -> String:
 	var s := "TALLY  %s\n" % (", ".join(counts) if counts else "nothing yet")
 	s += "GUARDS\n"
 	for g in get_tree().get_nodes_in_group("guards") + get_tree().get_nodes_in_group("cameras"):
-		var state: String = "DOWN" if g.has_method("is_down") and g.is_down() else GuardAlert.State.keys()[g.alert.state]
+		var state: String = "DESTROYED" if g.get("destroyed") else "DOWN" if g.has_method("is_down") and g.is_down() else GuardAlert.State.keys()[g.alert.state]
 		s += "  %s %s%s %s\n" % [g.name, state, " (helmet)" if g.get("helmet") else "", g.last_reason]
 	var radio := get_tree().get_first_node_in_group("radio")
 	if radio:

@@ -1,7 +1,7 @@
 ## A security camera (Stealth L1): sweeps from its mount, fills the guards' meter with its front cone
 ## only, and radios an alert when the meter fills, with no suspicion step (GuardAlert.camera_tick).
 ## The tranq does nothing to it: a dart just stops on its body. The rifle destroys it, and a destroyed
-## camera counts as a missing guard (HQ's poll reads `destroyed`). Spawned by the Area on a camera mount,
+## camera counts as a missing guard once HQ polls exist (they read `destroyed`). Spawned by the Area on a camera mount,
 ## facing the way the mount faces.
 class_name SecurityCamera
 extends StaticBody3D
@@ -48,6 +48,7 @@ func _ready() -> void:
 ## A rifle hit: goes dark and dead, silently.
 func destroy() -> void:
 	destroyed = true
+	alert = GuardAlert.new()
 	set_physics_process(false)
 	_lamp.albedo_color = Color.BLACK
 	_lamp.emission = Color.BLACK

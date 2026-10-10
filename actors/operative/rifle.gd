@@ -23,7 +23,9 @@ func _init() -> void:
 	load_size = LOAD
 	pip_count = 6
 	loaded = LOAD
+	total = ROUNDS
 	reserve = ROUNDS - LOAD
+	lethal = true
 
 
 func suppressed() -> bool:
@@ -40,8 +42,5 @@ func fire(carrying: bool) -> bool:
 
 
 func refill() -> void:
-	loaded = LOAD
-	reserve = ROUNDS - LOAD
-	reload_left = 0.0
-	cooldown = 0.0
+	super.refill()
 	suppressor = SUPPRESSOR_SHOTS

@@ -19,6 +19,8 @@ var cooldown := 0.0
 var load_size := LOAD_SIZE
 var pip_count := LOAD_SIZE  # pips on the card's column
 var loaded := LOAD_SIZE
+var total := TOTAL       # rounds in a full resupply, load included
+var lethal := false      # kills guards (and breaks cameras) instead of tranquilizing
 var reserve := TOTAL - LOAD_SIZE
 var reload_left := 0.0
 
@@ -34,7 +36,7 @@ func suppressed() -> bool:
 ## Resupply crate: a full load and a full reserve.
 func refill() -> void:
 	loaded = load_size
-	reserve = TOTAL - LOAD_SIZE
+	reserve = total - load_size
 	reload_left = 0.0
 	cooldown = 0.0
 

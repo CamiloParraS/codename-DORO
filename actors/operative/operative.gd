@@ -183,7 +183,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## The weapon in hand.
+## The weapon in hand (the Rifle is a Tranq with its own sizes and `lethal`).
 func gun() -> Tranq:
 	return rifle if weapon == "rifle" else tranq
 
@@ -192,14 +192,14 @@ func gun() -> Tranq:
 ## starts the stumble. Rifle: kills (see Guard.shoot), destroys cameras, and a broken suppressor makes
 ## the shot heard.
 func _fire() -> void:
-	var g := gun()
-	var quiet := g.suppressed()
-	if not g.fire(carrying != null):
+	var arm := gun()
+	var quiet := arm.suppressed()
+	if not arm.fire(carrying != null):
 		return
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
-	_recoil = minf(_recoil + g.kick, RECOIL_MAX)
-	_yaw += randf_range(-0.3, 0.3) * g.kick
+	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
+	_yaw += randf_range(-0.3, 0.3) * arm.kick
 	var sp := Tranq.spread(carrying != null)
 	var dir := -camera.global_basis.z
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
@@ -209,11 +209,11 @@ func _fire() -> void:
 	if hit.is_empty():
 		return
 	var c: Node3D = hit["collider"]
-	if weapon == "rifle" and c.is_in_group("cameras"):
+	if arm.lethal and c.is_in_group("cameras"):
 		c.destroy()
 	elif c.is_in_group("guards") and not c.is_down():
 		var head: bool = hit["position"].y - c.global_position.y >= Guard.HEAD_HEIGHT
-		if weapon == "rifle":
+		if arm.lethal:
 			c.shoot(head, global_position)
 		else:
 			c.tranquilize(head, global_position)
@@ -240,7 +240,6 @@ func _interact() -> void:
 	elif _crate_near():
 		tranq.refill()
 		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist
-
 
 
 func _update_prompt() -> void:
