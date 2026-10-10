@@ -1,27 +1,27 @@
 @tool
 extends McpTestSuite
 
-## Tranq pistol rules: magazine, reserve, reload.
+## Tranq pistol rules: load, reserve, reload.
 
 
 func suite_name() -> String:
 	return "tranq"
 
 
-func test_starts_4_in_mag_8_total() -> void:
+func test_starts_4_in_load_8_total() -> void:
 	var t := Tranq.new()
-	assert_eq(t.mag + t.reserve, 8)
-	assert_eq(t.mag, 4)
+	assert_eq(t.loaded + t.reserve, 8)
+	assert_eq(t.loaded, 4)
 
 
-func test_empty_mag_reloads_automatically_and_silently_refills() -> void:
+func test_empty_load_reloads_automatically_and_silently_refills() -> void:
 	var t := Tranq.new()
 	for i in 4:
 		assert_true(t.fire(false))
 	assert_true(t.reloading())
 	assert_false(t.can_fire())
 	t.tick(Tranq.RELOAD_TIME + 0.01, false)
-	assert_eq(t.mag, 4)
+	assert_eq(t.loaded, 4)
 	assert_eq(t.reserve, 0)
 
 
@@ -30,7 +30,7 @@ func test_early_reload_moves_only_what_fits() -> void:
 	t.fire(false)
 	assert_true(t.reload(false))
 	t.tick(2.0, false)
-	assert_eq(t.mag, 4)
+	assert_eq(t.loaded, 4)
 	assert_eq(t.reserve, 3)
 
 
@@ -52,25 +52,25 @@ func test_picking_up_mid_reload_cancels_it() -> void:
 	t.fire(false)
 	assert_true(t.reload(false))
 	t.tick(Tranq.RELOAD_TIME + 1.0, true)
-	assert_eq(t.mag, 3, "no reload completes while carrying")
+	assert_eq(t.loaded, 3, "no reload completes while carrying")
 	assert_eq(t.reserve, 4)
 	assert_true(t.can_fire(), "the darts left still fire one-handed")
 
 
-func test_an_empty_mag_reload_cut_by_a_pickup_restarts_on_drop() -> void:
+func test_an_empty_load_reload_cut_by_a_pickup_restarts_on_drop() -> void:
 	var t := Tranq.new()
 	for i in 4:
 		t.fire(false)
 	t.tick(0.5, false)
 	t.tick(Tranq.RELOAD_TIME, true)
-	assert_eq(t.mag, 0)
+	assert_eq(t.loaded, 0)
 	t.tick(0.1, false)
 	assert_true(t.reloading())
 	t.tick(Tranq.RELOAD_TIME, false)
-	assert_eq(t.mag, 4)
+	assert_eq(t.loaded, 4)
 
 
-func test_full_mag_or_no_reserve_does_not_reload() -> void:
+func test_full_load_or_no_reserve_does_not_reload() -> void:
 	var t := Tranq.new()
 	assert_false(t.reload(false))
 	t.reserve = 0

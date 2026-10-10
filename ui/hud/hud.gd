@@ -19,7 +19,7 @@ var _operative: Node3D
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_font = load("res://assets/fonts/PressStart2P-Regular.ttf")
+	_font = load("res://assets/fonts/press_start_2p_regular.ttf")
 	_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	_font.hinting = TextServer.HINTING_NONE
 	_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
@@ -89,10 +89,10 @@ func _right() -> void:
 	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
 	var tq: Tranq = _operative.tranq
 	_t(wc.position + Vector2(3, 12), "TRQ", Color.WHITE)
-	for i in Tranq.MAG_SIZE:  # pip column, top pip is the next dart
-		var full: bool = i >= Tranq.MAG_SIZE - tq.mag
+	for i in Tranq.LOAD_SIZE:  # pip column, top pip is the next dart
+		var full: bool = i >= Tranq.LOAD_SIZE - tq.loaded
 		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * 12, 12, 8), Color.WHITE if full else Color(1, 1, 1, 0.2))
-	_t(wc.position + Vector2(9, 20 + Tranq.MAG_SIZE * 12 + 12), "%02d" % tq.reserve, ORANGE if tq.reloading() else Color.WHITE)
+	_t(wc.position + Vector2(9, 20 + Tranq.LOAD_SIZE * 12 + 12), "%02d" % tq.reserve, ORANGE if tq.reloading() else Color.WHITE)
 
 
 func _stance(r: Rect2) -> void:
