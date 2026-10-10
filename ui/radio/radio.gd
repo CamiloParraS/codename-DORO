@@ -1,4 +1,4 @@
-## The radial radio (Q, time slowed): send a Spoofed transmission in a captured guard's voice.
+## The radial radio (Q, time slowed): send a Spoofed transmission using a held Voiceprint.
 ## Gathers the facts on the ground for Glaukopis, then the recipients obey, or, if it is exposed, the
 ## recipient says so on the radio and they search near where the Operative transmitted from.
 ## Group "radio": the debug overlay reads glaukopis.last (doubt and reasons).
@@ -134,7 +134,7 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array) 
 		up[0].radio_say("%s? You don't sound right. Who is this?" % pick.speaker)
 		var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
 		for r in up:
-			r.on_noise(spot, "a fake order on the radio")
+			r.on_noise(spot, "a Spoofed transmission")
 		return
 	var acked := false
 	for r in up:

@@ -124,6 +124,10 @@ _Avoid_: KO'd, subdued, stunned, sleeping
 A guard who is either Neutralized or dead, as seen by someone who hasn't checked which.
 _Avoid_: Body (when it might be alive)
 
+**Head icon**:
+The ? or ! shown above a guard's head: ? while suspicious, ! once alerted.
+_Avoid_: Mark (that is not a Target), indicator, bubble
+
 ### Equipment
 
 **Scanner**:

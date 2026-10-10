@@ -75,10 +75,10 @@ res://
 │   ├── audio/       sfx/, music/
 │   └── shaders/     PSX shaders
 ├── actors/          operative/, guard/, security_camera/   (scene + script together)
-├── ai/              Aigis: profile, Voices, Glaukopis. Pure logic, no nodes where possible, so it's testable
+├── ai/              Aigis (campaign module), Glaukopis, mission_tally. Pure logic, no nodes where possible, so it's testable
 ├── areas/           one folder per Area: <area>/<area>.tscn + its pieces
-├── missions/        a Mission = resource (.tres) pointing at an Area + objectives
-├── ui/              hud/, codec/, menus/, free_mode/, debug_overlay/ (autoload)
+├── missions/        a Mission = resource (.tres) pointing at an Area + objectives; mission_run.gd and deployment.gd (scripts)
+├── ui/              hud/, radio/, post_mission/, psx_look/, codec/, menus/, free_mode/, debug_overlay/ (autoload)
 └── tests/           test suites (godot_ai expects res://tests/)
 ```
 
