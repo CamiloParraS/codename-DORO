@@ -56,6 +56,24 @@ _Avoid_: Personality, persona, module
 The Voice the campaign's Lethality currently favours. It has the most say in what Aigis deploys, closes each briefing, and decides the ending.
 _Avoid_: Leading voice, active voice, winner
 
+### Story
+
+**Briefing**:
+The screen before each Mission where the player overhears Aigis's Voices plan against the Operative. Metis never hears it.
+_Avoid_: Mission intro, Aigis screen
+
+**Codec call**:
+A radio conversation between the Operative and Metis, either full-screen with the game paused or as subtitles while play continues.
+_Avoid_: Cutscene, dialogue, transmission
+
+**Final debate**:
+The scene at the Core where the five Voices argue over the fabricated memories the Operative feeds Aigis, settled by the Dominant Voice.
+_Avoid_: Boss fight, hallucination loop
+
+**Epilogue**:
+The Metis Codec call after the ending, revealing that Metis profits from the escalated war.
+_Avoid_: Credits scene, outro
+
 ### Deception
 
 **Voiceprint**:

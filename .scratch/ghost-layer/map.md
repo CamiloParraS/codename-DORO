@@ -8,7 +8,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 
 ## Notes
 
-- **Domain:** solo game project in Godot 4.7 (Jolt, Forward Plus), about 6 weeks starting 2026-10-08. Original pitch: "Ghost Layer 0.2" (in the conversation that charted this map). Vocabulary: `GLOSSARY.md`.
+- **Domain:** solo game project in Godot 4.7 (Jolt, Forward Plus), about 6 weeks starting 2026-10-08. Original pitch: [Ghost Layer 0.2](../../docs/pitch.md), a draft; where it disagrees with a decision on this map, the map wins. Vocabulary: `GLOSSARY.md`.
 - **Requirement:** add "AI" = **game AI** (behaviour trees, utility AI, profiling). No ML or LLMs.
 - **Design pillar: the adaptation must be visible.** The evaluator should not read it as "the game got harder." Every AI decision needs a way to show up on screen.
 - **Planning budget:** about 4 days including prototypes. Anything not decided by then gets a sensible default in the spec.
@@ -36,6 +36,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [PSX look and HUD prototype](issues/06-psx-look-and-hud-prototype.md): modern-retro look (854×480 nearest, per-pixel light + shadows, 15-bit banding, far fog, 128 px textures; no vertex snap or affine). HUD E, Peace Walker side strips, with C-style subtitles for radio; radial and codec in E's white/grey. Codec: full screen when the call pauses the game, PW subtitles + CALL bar when play continues. Prototype on branch `prototype/psx-look`.
 - [Architecture of the five Voices](issues/09-voice-architecture.md): Aigis is a deterministic utility AI that runs only between Missions; guards keep their behaviour tree. Each Countermeasure step has a sponsor Voice; the strongest Habit is pinned, then a greedy fill (sponsor weight × Habit points) spends a budget of 0/2/4/6. The Lethality ratio picks a Dominant Voice (Pallas < 0.10 ≤ Nike ≤ 0.40 < Gorgo, weight 2.0), which closes the briefings and decides the ending. Pallas names Habits in briefings; no Voice lines during a Mission.
 - [Campaign plan](issues/10-campaign-plan.md): Palladion's coastal compound. Harbour (Mission 1, also the tutorial) → Radio relay station (Sabotage + relay chief) → Research annex (lead researcher + intel) → Core: back to the Harbour fully fortified, then down to the Core room, where the director choice beside Aigis closes the campaign. Areas ~80×80 m with 8–10 guards and every Countermeasure spot built in. Targets always required. Linear, no replays. Free mode Presets: Clean slate, Ghost, Trickster, Butcher, Custom.
+- [Narrative delivery](issues/11-narrative-delivery.md): English source plus Spanish via Godot CSV translations, a small custom codec player, no branching. Metis is a handler + analyst on the radio; non-diegetic Briefings. Story beats from the pitch (Synthetic Content Inflation, dead commanders' memories). The finale is a scripted last spoof → Final debate → Pallas shutdown / Nike dormant / Gorgo shutdown fails → Epilogue: Metis profits from the war. Stock footage only in the ending and an optional intro. 3,500-word cap with a set cut order.
 
 ## Not yet specified
 

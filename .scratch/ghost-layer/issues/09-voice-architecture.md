@@ -12,6 +12,7 @@ How do the five Voices (Promachos, Nike, Pallas, Gorgo, Glaukopis) work as utili
 
 - 2026-10-09 (from Combat verbs and Lethality): Lethality is a single weighted tally (guard 1, Eliminate target 3). The thresholds for the three endings are decided here. It is silent to the player, so the Voices' commentary is the only place it surfaces outside the debug overlay.
 - 2026-10-09 (from Operator profile and countermeasures): Profile levels **unlock** Countermeasures; the Voices choose which ones to deploy each Mission. Decide here: the per-Mission deployment budget, and how the rule "the Operative's strongest Habit is always answered" fits the scoring. Also which Voice names the top 1–2 Habits in the briefing, and comments on lethal takedowns (Takedowns L3 makes the choke slow and noisy, which pushes toward the kill).
+- 2026-10-09 (from Narrative delivery): the ending content follows the draft pitch, mapped onto these bands: **Pallas** shuts down (the region burns), **Nike** goes dormant, **Gorgo** shields itself and the shutdown fails ("you are not the exception"). The fortress becomes how Gorgo survives. The final debate comes after a scripted last Spoofed transmission at the Core terminal. Bands, weights and deployment are unchanged.
 
 ## Answer
 
