@@ -50,3 +50,7 @@ Settled in a grilling session (2026-10-09). New glossary terms: **Takedown**, **
 - Architecture of the five Voices: the Lethality thresholds for the three endings.
 - Campaign plan: whether Eliminate Missions exist.
 - Spoofing prototype: how a Voiceprint is captured (a hold-up was considered and left out of the verb set).
+
+## Comments
+
+- 2026-10-09 (from [Input](14-input.md)): carrying is a toggle on E (press to pick up, press to drop), not hold-to-carry. No reloading while carrying.

@@ -108,6 +108,10 @@ _Avoid_: Karma, morality, kill count
 A close attack on a guard from behind, either a choke (non-lethal) or a kill.
 _Avoid_: CQC, melee, stealth kill
 
+**Knock**:
+A noise the Operative makes on the spot to draw nearby guards to investigate.
+_Avoid_: Tap, noise, distraction
+
 **Neutralized**:
 A guard put out of action without being killed, by a tranquilizer or a choke. It wears off.
 _Avoid_: KO'd, subdued, stunned, sleeping

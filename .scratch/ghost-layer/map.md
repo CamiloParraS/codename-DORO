@@ -39,10 +39,11 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Narrative delivery](issues/11-narrative-delivery.md): English source plus Spanish via Godot CSV translations, a small custom codec player, no branching. Metis is a handler + analyst on the radio; non-diegetic Briefings. Story beats from the pitch (Synthetic Content Inflation, dead commanders' memories). The finale is a scripted last spoof → Final debate → Pallas shutdown / Nike dormant / Gorgo shutdown fails → Epilogue: Metis profits from the war. Stock footage only in the ending and an optional intro. 3,500-word cap with a set cut order.
 - [Gadgets and items](issues/12-gadgets-and-items.md): two items on HUD E's card, both from Mission 1. Scanner (3 charges × ~10 s, guard and camera cones within 30 m through walls) and Magazine (4, thrown ~15 m, lands as a knock). Neither feeds the Profile directly. No rations, no loud weapon. The Magazine is first to cut.
 - [AI write-up](issues/13-ai-write-up.md): live demo + one short Spanish document (Markdown → PDF, written last), no slides. Core sections: architecture, Aigis, evidence. Deployment tables generated from the Presets by a test suite, Mermaid diagrams + a LimboAI screenshot of the guard tree, ~10 min demo script as an appendix.
+- [Input](issues/14-input.md): keyboard+mouse only, through InputMap actions, no rebinding. WASD/Shift walk/C crouch/Tab shoulder, RMB aim + LMB fire (aimed only), 1/2 weapons, R reload (4- and 30-round magazines), wheel+F items, E context (choke, carry toggle), X kill, V knock, Q radial, Esc pause, F3 debug overlay. Calls are scripted only. Settings: sensitivity, invert Y, language, window mode, volume.
 
 ## Not yet specified
 
-- Nothing left. Input, Persistence, Schedule and cut line (with Extra Missions folded in) are now tickets.
+- Nothing left. Persistence and Schedule and cut line (with Extra Missions folded in) are open tickets.
 
 ## Out of scope
 
@@ -52,4 +53,5 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - Controlling a squad or switching between Metis members.
 - 3D cinematics.
 - Multiplayer / co-op.
+- Gamepad support: keyboard+mouse only, decided in [Input](issues/14-input.md); camera, aim and radial on a stick would each need their own tuning.
 - Light and night (darkness as a stealth factor, a night Habit): no light model exists, it would need its own prototype, and it doesn't fit 6 weeks solo. Cut while graduating the fog, no ticket.
