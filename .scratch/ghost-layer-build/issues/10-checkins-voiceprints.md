@@ -8,7 +8,7 @@
 
 **Status:** done
 
-- [ ] Every guard checks in every 20–30 s; ((·)) over the head while talking
-- [ ] Radio lines show as bottom subtitles with the speaker's name: the last two lines, fading after ~6 s
+- [x] Every guard checks in every 20–30 s; ((·)) over the head while talking
+- [x] Radio lines show as bottom subtitles with the speaker's name: the last two lines, fading after ~6 s
 - [x] Staying within 6 m for 2.5 s of check-in audio records the Voiceprint; partial progress carries over between check-ins
-- [ ] HUD "VP" line under the compass lists the held Voiceprints
+- [x] HUD "VP" line under the compass lists the held Voiceprints

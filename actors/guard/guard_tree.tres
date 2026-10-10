@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://actors/guard/bt/bt_search_spot.gd" id="3_search"]
 [ext_resource type="Script" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
 [ext_resource type="Script" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
 
 [sub_resource type="BTCondition" id="in_alert"]
 script = ExtResource("1_state")
@@ -44,6 +45,16 @@ script = ExtResource("3_search")
 custom_name = "Suspicion"
 children = [SubResource("in_suspicion"), SubResource("turn"), SubResource("search_slow")]
 
+[sub_resource type="BTCondition" id="in_patrol_order"]
+script = ExtResource("1_state")
+
+[sub_resource type="BTAction" id="follow_order"]
+script = ExtResource("6_order")
+
+[sub_resource type="BTSequence" id="order"]
+custom_name = "Radio order"
+children = [SubResource("in_patrol_order"), SubResource("follow_order")]
+
 [sub_resource type="BTCondition" id="in_patrol"]
 script = ExtResource("1_state")
 
@@ -56,7 +67,7 @@ children = [SubResource("in_patrol"), SubResource("walk_route")]
 
 [sub_resource type="BTSelector" id="root"]
 custom_name = "Guard"
-children = [SubResource("alert"), SubResource("evasion"), SubResource("suspicion"), SubResource("patrol")]
+children = [SubResource("alert"), SubResource("evasion"), SubResource("suspicion"), SubResource("order"), SubResource("patrol")]
 
 [resource]
 description = "A guard reads its GuardAlert state and acts on it. The guard restarts the tree whenever the state changes."

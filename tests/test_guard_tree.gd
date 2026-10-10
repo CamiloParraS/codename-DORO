@@ -10,6 +10,14 @@ class StubGuard:
 	extends Node
 	var alert := GuardAlert.new()
 	var calls: Array[String] = []
+	var order_left := 0  # frames of radio order left to carry out
+
+	func follow_order(_delta: float) -> bool:
+		if order_left <= 0:
+			return false
+		order_left -= 1
+		calls.append("order")
+		return true
 
 	func patrol(_delta: float) -> void:
 		calls.append("patrol")
@@ -39,13 +47,21 @@ func _tree_for(state: GuardAlert.State) -> Array:
 func test_tree_loads_with_a_branch_per_state() -> void:
 	var bt: BehaviorTree = load(TREE)
 	assert_true(bt != null)
-	assert_eq(bt.root_task.get_child_count(), 4)
+	assert_eq(bt.root_task.get_child_count(), 5)
 
 
 func test_patrol_walks_the_route() -> void:
 	var t := _tree_for(GuardAlert.State.PATROL)
 	t[1].update(0.1)
 	assert_eq(t[0].calls, ["patrol"])
+
+
+func test_patrol_carries_out_a_radio_order_first() -> void:
+	var t := _tree_for(GuardAlert.State.PATROL)
+	t[0].order_left = 2
+	for i in 3:
+		t[1].update(0.1)
+	assert_eq(t[0].calls, ["order", "order", "patrol"])
 
 
 func test_alert_chases() -> void:

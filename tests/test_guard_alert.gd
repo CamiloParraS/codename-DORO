@@ -301,3 +301,15 @@ func test_noise_reaches_only_guards_in_range_through_walls() -> void:
 	assert_false(GuardAlert.in_earshot(Vector3(6.1, 0, 0), o, GuardAlert.FOOTSTEP_RANGE))
 	assert_true(GuardAlert.in_earshot(Vector3(6.1, 0, 0), o, GuardAlert.KNOCK_RANGE))
 	assert_false(GuardAlert.in_earshot(Vector3(0, 0, 10.1), o, GuardAlert.KNOCK_RANGE))
+
+
+func test_all_clear_stands_any_state_down_to_patrol() -> void:
+	assert_eq(GuardAlert.new().stand_down("Kostas"), "")
+	for a in [_alerted(), _evading()]:
+		assert_eq(a.stand_down("Kostas"), "Kostas called all clear")
+		assert_eq(a.state, S.PATROL)
+		assert_eq(a.meter, 0.0)
+	var s := GuardAlert.new()
+	s.hear(SPOT, "a knock")
+	s.stand_down("Kostas")
+	assert_eq(s.state, S.PATROL)

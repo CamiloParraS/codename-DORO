@@ -119,6 +119,13 @@ func radio(pos: Vector3, who: String) -> String:
 	return _go(State.ALERT, "%s radioed an alert" % who)
 
 
+## A believed "all clear" on the radio from `who`: back to patrol from any state.
+func stand_down(who: String) -> String:
+	if state == State.PATROL:
+		return ""
+	return _go(State.PATROL, "%s called all clear" % who)
+
+
 func _go(to: State, reason: String) -> String:
 	state = to
 	timer = 0.0

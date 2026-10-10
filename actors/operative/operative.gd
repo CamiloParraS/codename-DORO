@@ -17,6 +17,7 @@ var moving := false
 var carrying: Node3D     # the Down guard on the shoulder
 var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
+var radio_open := false  # the radial radio takes the mouse (RMB is "back" there, not aim)
 var weapon := "tranq"    # ponytail: only the tranq exists until the rifle ticket
 var tranq := Tranq.new()
 var voiceprints := Voiceprints.new()
@@ -141,7 +142,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
-	aiming = Input.is_action_pressed("aim") and not _choking
+	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	tranq.tick(delta, carrying != null)
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -153,6 +154,7 @@ func _physics_process(delta: float) -> void:
 			_choking = null
 			_choke_left = 0.0
 		elif _choke_left <= 0.0:
+			get_tree().call_group("mission_tally", "event", "takedown")
 			_choking.neutralize()
 			_choking = null
 	_update_prompt()

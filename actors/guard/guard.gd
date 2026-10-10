@@ -11,6 +11,8 @@ const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
+const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
+const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
@@ -26,6 +28,8 @@ var dead := false                # ponytail: nothing sets this until kills exist
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
 var carrier: Node3D              # the Operative carrying this guard
+var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
+var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
 
 var _wp := 0
 var _pause := 0.0
@@ -63,6 +67,7 @@ func _physics_process(delta: float) -> void:
 			if down_guard:
 				var why := alert.check_down(down_guard.dead)
 				if not down_guard.dead:
+					get_tree().call_group("mission_tally", "event", "woken")
 					down_guard.wake(global_position)
 				_react(why)
 	if stumble_left > 0.0:
@@ -98,6 +103,7 @@ func neutralize() -> void:
 	stumble_left = 0.0
 	held = false
 	alert = GuardAlert.new()
+	order = {}
 	seen_rate = 0.0
 	_mark.text = ""
 	collision_layer = 0
@@ -108,6 +114,7 @@ func neutralize() -> void:
 ## the guard stumbles, is suspicious and can't radio.
 func tranquilize(head: bool, from: Vector3) -> void:
 	if head:
+		get_tree().call_group("mission_tally", "event", "headshot")
 		neutralize()
 		return
 	if stumble_left > 0.0:
@@ -119,6 +126,7 @@ func tranquilize(head: bool, from: Vector3) -> void:
 ## Back on its feet, suspicious and remembering nothing. from: where it looks first.
 func wake(from: Vector3) -> void:
 	neutral_left = 0.0
+	known_down = false
 	if carrier:  # no longer Down: off the Operative's shoulder
 		carrier.carrying = null
 		carrier = null
@@ -174,6 +182,7 @@ func _sense_down() -> Array:
 		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), operative.get_rid()])
 		if get_world_3d().direct_space_state.intersect_ray(q).is_empty():
 			best = [rate, g.global_position]
+			g.known_down = true
 	return best
 
 
@@ -230,16 +239,54 @@ func _changed(why: String) -> void:
 	if why == "":
 		return
 	last_reason = why
+	order = {}  # whatever it was told, it now has its own reason to act
 	_refresh_mark()
 	_bt.restart()  # the tree picks the branch for the new state
 
 
 ## At alert.last_known, or as close as the navmesh gets (a spot on a crate, behind a wall).
 func arrived() -> bool:
-	var t := alert.last_known
+	return _at(alert.last_known)
+
+
+func _at(t: Vector3) -> bool:
 	if _flat_dist(t) < REACHED:
 		return true
 	return _agent.target_position.is_equal_approx(t) and _agent.is_navigation_finished()
+
+
+# --- Radio -------------------------------------------------------------------------------------
+
+## A line on the radio: a subtitle, and ((·)) over the head while talking (a Voiceprint can be recorded).
+func radio_say(line: String) -> void:
+	get_tree().call_group("radio_log", "say", name, line)
+	checkin.talking_left = Checkin.TALK_TIME
+
+
+## A believed Spoofed order from `who`: "go" to pos or "hold" here. A suspicious or searching guard
+## drops its search for it; an alerted one keeps hunting. True when it obeys.
+func obey(kind: String, pos: Vector3, who: String) -> bool:
+	if is_down() or alert.state == GuardAlert.State.ALERT:
+		return false
+	_changed(alert.stand_down(who))
+	order = {kind = kind, pos = pos, time = 0.0}
+	_bt.restart()
+	return true
+
+
+## A believed "all clear" from `who`: back to patrol.
+func stand_down(who: String) -> void:
+	_changed(alert.stand_down(who))
+
+
+## Could this guard see `other` right now: its vision cones and a clear line to the chest.
+func can_see(other: Node3D) -> bool:
+	var eye := global_position + Vector3.UP * EYE
+	var chest := other.global_position + Vector3.UP * 1.3
+	if GuardVision.fill_rate(chest - eye, -global_basis.z, false, false, false) <= 0.0:
+		return false
+	var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), other.get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
 # --- Moves called by the behaviour tree -------------------------------------------------------
@@ -254,6 +301,21 @@ func patrol(delta: float) -> void:
 	if _flat_dist(route[_wp]) < REACHED:
 		_wp = (_wp + 1) % route.size()
 		_pause = PAUSE
+
+
+## Carries out the radio order: walk to the place and look around, or hold here. False once there is
+## none left.
+func follow_order(delta: float) -> bool:
+	if order.is_empty():
+		return false
+	if order.kind == "go" and not _at(order.pos):
+		_walk_to(order.pos, PATROL_SPEED, delta)
+		return true
+	order.time += delta
+	rotation.y += sin(_clock * 0.9) * 1.5 * delta
+	if order.time >= (HOLD_TIME if order.kind == "hold" else ORDER_LOOK):
+		order = {}
+	return true
 
 
 func search(delta: float, speed: float, sweep: float) -> void:
