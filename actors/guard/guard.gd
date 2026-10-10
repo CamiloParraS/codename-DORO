@@ -50,6 +50,11 @@ func on_radio(pos: Vector3, who: String) -> void:
 	_changed(alert.radio(pos, who))
 
 
+## A noise reached this guard.
+func on_noise(pos: Vector3, what: String) -> void:
+	_changed(alert.hear(pos, what))
+
+
 ## Sets seen_rate (0 = not seen) and, when seen, _saw to what was seen.
 func _sense() -> float:
 	seen_rate = 0.0

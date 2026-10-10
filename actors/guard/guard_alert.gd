@@ -67,6 +67,18 @@ func hear(pos: Vector3, what: String) -> String:
 	return ""
 
 
+## Noise ranges in metres. No wall occlusion.
+const FOOTSTEP_RANGE := 6.0
+const KNOCK_RANGE := 10.0
+
+
+## Every guard within radius of pos hears it (flat-free 3D distance, through walls).
+static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String) -> void:
+	for g in tree.get_nodes_in_group("guards"):
+		if g.global_position.distance_to(pos) <= radius:
+			g.on_noise(pos, what)
+
+
 ## Another guard radioed an alert at pos.
 func radio(pos: Vector3, who: String) -> String:
 	if state == State.ALERT:

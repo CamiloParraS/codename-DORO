@@ -211,3 +211,30 @@ func test_full_cycle() -> void:
 	assert_eq(a.state, S.PATROL)
 	for r in reasons:
 		assert_ne(r, "")
+
+
+class StubEar:
+	extends Node3D
+	var heard: Array[String] = []
+
+	func on_noise(_pos: Vector3, what: String) -> void:
+		heard.append(what)
+
+
+func test_broadcast_reaches_only_guards_in_range() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var near: StubEar = track(StubEar.new())
+	var far: StubEar = track(StubEar.new())
+	tree.root.add_child(near)
+	tree.root.add_child(far)
+	near.add_to_group("guards")
+	far.add_to_group("guards")
+	near.global_position = Vector3(5.9, 0, 0)
+	far.global_position = Vector3(6.1, 0, 0)
+	GuardAlert.broadcast(tree, Vector3.ZERO, GuardAlert.FOOTSTEP_RANGE, "footsteps")
+	assert_eq(near.heard, ["footsteps"])
+	assert_eq(far.heard, [])
+	GuardAlert.broadcast(tree, Vector3.ZERO, GuardAlert.KNOCK_RANGE, "a knock")
+	assert_eq(far.heard, ["a knock"])
+	near.remove_from_group("guards")
+	far.remove_from_group("guards")

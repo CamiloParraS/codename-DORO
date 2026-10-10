@@ -6,8 +6,8 @@
 
 **Blocked by:** 05
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Running footsteps are heard within 6 m, walking and crouching are silent; no wall occlusion
-- [ ] V knocks from the Operative's position, 10 m, with a 1 s cooldown
-- [ ] Noise only causes suspicion at the source; covered by an alert state machine test
+- [x] Running footsteps are heard within 6 m, walking and crouching are silent; no wall occlusion
+- [x] V knocks from the Operative's position, 10 m, with a 1 s cooldown
+- [x] Noise only causes suspicion at the source; covered by an alert state machine test

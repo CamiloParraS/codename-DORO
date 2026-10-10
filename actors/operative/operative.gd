@@ -2,6 +2,8 @@
 ## two spring arms (a sideways shoulder arm, then the back arm). Lifted from the stealth-core prototype.
 extends CharacterBody3D
 
+const KNOCK_COOLDOWN := 1.0
+
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
 ## ponytail: hardcoded until the settings menu exists.
@@ -13,6 +15,7 @@ var moving := false
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 
+var _knock_left := 0.0
 var _yaw := 0.0
 var _pitch := -0.25
 var _pivot: Node3D
@@ -97,6 +100,9 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("shoulder_swap"):
 		shoulder = -shoulder
 		_apply_shoulder()
+	elif e.is_action_pressed("knock") and _knock_left <= 0.0:
+		_knock_left = KNOCK_COOLDOWN
+		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
 	elif e.is_action_pressed("pause"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -105,6 +111,9 @@ func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	moving = v != Vector2.ZERO
+	_knock_left -= delta
+	if moving and not walking and not crouching:  # running is loud
+		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		_visual.rotation.y = lerp_angle(_visual.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
