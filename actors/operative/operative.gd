@@ -1,5 +1,5 @@
-## The Operative: camera-relative movement (run / walk / crouch) and a shoulder camera made of
-## two spring arms (a sideways shoulder arm, then the back arm). Lifted from the stealth-core prototype.
+## The Operative: camera-relative movement (run / walk / crouch), a shoulder camera made of two spring arms,
+## knock, choke takedown, carrying a Down guard and the tranq pistol. Grown from the stealth-core prototype.
 extends CharacterBody3D
 
 const KNOCK_COOLDOWN := 1.0

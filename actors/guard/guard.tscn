@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cryrpy33fyji4"]
 
 [ext_resource type="Script" uid="uid://b710dy0ydgapd" path="res://actors/guard/guard.gd" id="1_ys3fj"]
-[ext_resource type="FontFile" uid="uid://4w2iv1frkcrj" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_mxi3m"]
+[ext_resource type="FontFile" uid="uid://4w2iv1frkcrj" path="res://assets/fonts/press_start_2p_regular.ttf" id="2_mxi3m"]
 [ext_resource type="BehaviorTree" uid="uid://cmum4s6d12reh" path="res://actors/guard/guard_tree.tres" id="3_edkue"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mkyd0"]

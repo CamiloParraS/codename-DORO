@@ -15,7 +15,7 @@ const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
 var route: Array[Vector3] = []   # patrol points, walked in a loop
-var target: Node3D               # the Operative
+var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
 var seen_rate := 0.0
 var last_reason := ""            # for the debug overlay
@@ -52,17 +52,17 @@ func _physics_process(delta: float) -> void:
 		if stumble_left <= 0.0:
 			neutralize()
 			return
-	if target:
-		var down := _sense_down()  # before tick: a body in sight holds off the drain
+	if operative:
+		var down := _sense_down()  # before tick: a Down guard in sight holds off the drain
 		_react(alert.see_down(delta, down[0], down[1]))
 		var rate := _sense()
-		_react(alert.tick(delta, rate, target.global_position, _saw, arrived()))
+		_react(alert.tick(delta, rate, operative.global_position, _saw, arrived()))
 		if alert.state in [GuardAlert.State.SUSPICION, GuardAlert.State.EVASION] and arrived():
-			var body := _down_within(CHECK_REACH)
-			if body:
-				var why := alert.check_down(body.dead)
-				if not body.dead:
-					body.wake(global_position)
+			var down_guard := _down_within(CHECK_REACH)
+			if down_guard:
+				var why := alert.check_down(down_guard.dead)
+				if not down_guard.dead:
+					down_guard.wake(global_position)
 				_react(why)
 	if stumble_left > 0.0:
 		return  # stumbling: stands still
@@ -141,7 +141,7 @@ func _down_within(reach: float) -> Node3D:
 
 
 ## Strongest sighting of a Down guard: [fill rate, position]. Same vision as for the Operative,
-## with the body counted as standing still. Kept apart from seen_rate, which is only the Operative.
+## with the Down guard counted as standing still. Kept apart from seen_rate, which is only the Operative.
 func _sense_down() -> Array:
 	var best := [0.0, Vector3.ZERO]
 	var eye := global_position + Vector3.UP * EYE
@@ -153,7 +153,7 @@ func _sense_down() -> Array:
 		var rate := GuardVision.fill_rate(offset, -global_basis.z, false, false, false)
 		if rate <= best[0]:
 			continue
-		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), target.get_rid()])
+		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), operative.get_rid()])
 		if get_world_3d().direct_space_state.intersect_ray(q).is_empty():
 			best = [rate, g.global_position]
 	return best
@@ -193,18 +193,18 @@ func on_noise(pos: Vector3, what: String) -> void:
 func _sense() -> float:
 	seen_rate = 0.0
 	var eye := global_position + Vector3.UP * EYE
-	var chest: Vector3 = target.global_position + Vector3.UP * target.chest_height()
+	var chest: Vector3 = operative.global_position + Vector3.UP * operative.chest_height()
 	var offset := chest - eye
 	var facing := -global_basis.z
-	var rate := GuardVision.fill_rate(offset, facing, target.looks_crouched(), target.moving, target.looks_walking())
+	var rate := GuardVision.fill_rate(offset, facing, operative.looks_crouched(), operative.moving, operative.looks_walking())
 	if rate == 0.0:
 		return 0.0
 	var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
-	if hit.is_empty() or hit["collider"] != target:
+	if hit.is_empty() or hit["collider"] != operative:
 		return 0.0
 	seen_rate = rate
-	_saw = GuardVision.describe(offset, facing, target.looks_crouched(), target.moving, target.looks_walking())
+	_saw = GuardVision.describe(offset, facing, operative.looks_crouched(), operative.moving, operative.looks_walking())
 	return rate
 
 
@@ -249,7 +249,7 @@ func search(delta: float, speed: float, sweep: float) -> void:
 func chase(delta: float) -> void:
 	_walk_to(alert.last_known, CHASE_SPEED, delta)
 	if seen_rate > 0.0:
-		face(target.global_position, delta)
+		face(operative.global_position, delta)
 
 
 func face(pos: Vector3, delta: float) -> void:

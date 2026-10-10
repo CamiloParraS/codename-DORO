@@ -225,7 +225,7 @@ func test_seeing_a_down_guard_fills_the_meter_to_suspicion_only() -> void:
 	assert_eq(a.state, S.PATROL)
 	assert_eq(a.see_down(1.0, 5.0, SPOT), "saw a Down guard")
 	assert_eq(a.state, S.SUSPICION)
-	assert_eq(a.meter, GuardAlert.SUSPECT_AT, "a body never alerts by sight")
+	assert_eq(a.meter, GuardAlert.SUSPECT_AT, "a Down guard never alerts by sight")
 	assert_eq(a.last_known, SPOT)
 
 
@@ -269,28 +269,28 @@ func test_woken_guard_is_suspicious_and_remembers_nothing() -> void:
 
 
 func test_a_down_guard_fills_the_meter_at_the_operatives_rate() -> void:
-	# A body at a far-range rate (below the 0.25/s drain) still fills, as fast as the Operative would.
+	# A Down guard at a far-range rate (below the 0.25/s drain) still fills, as fast as the Operative would.
 	var rate := 0.2
-	var body := GuardAlert.new()
+	var down_guard := GuardAlert.new()
 	var seen := GuardAlert.new()
-	var body_frames := 0
+	var down_frames := 0
 	var seen_frames := 0
-	while body.state == S.PATROL and body_frames < 1000:
-		body.see_down(DT, rate, SPOT)
-		body.tick(DT, 0.0, Vector3.ZERO, "", false)
-		body_frames += 1
+	while down_guard.state == S.PATROL and down_frames < 1000:
+		down_guard.see_down(DT, rate, SPOT)
+		down_guard.tick(DT, 0.0, Vector3.ZERO, "", false)
+		down_frames += 1
 	while seen.state == S.PATROL and seen_frames < 1000:
 		seen.tick(DT, rate, SPOT, "test", false)
 		seen_frames += 1
-	assert_eq(body.state, S.SUSPICION)
-	assert_eq(body_frames, seen_frames, "same meter, same rate")
+	assert_eq(down_guard.state, S.SUSPICION)
+	assert_eq(down_frames, seen_frames, "same meter, same rate")
 
 
-func test_the_meter_drains_again_once_the_body_is_out_of_sight() -> void:
+func test_the_meter_drains_again_once_the_down_guard_is_out_of_sight() -> void:
 	var a := GuardAlert.new()
 	a.see_down(1.0, 0.3, SPOT)
 	a.tick(1.0, 0.0, Vector3.ZERO, "", false)
-	assert_true(is_equal_approx(a.meter, 0.3), "no drain the frame the body is seen")
+	assert_true(is_equal_approx(a.meter, 0.3), "no drain the frame the Down guard is seen")
 	a.tick(1.0, 0.0, Vector3.ZERO, "", false)
 	assert_true(is_equal_approx(a.meter, 0.05), "%f" % a.meter)
 

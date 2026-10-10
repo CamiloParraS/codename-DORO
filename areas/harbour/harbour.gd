@@ -18,7 +18,7 @@ func spawn_guard(post: Marker3D) -> Node3D:
 	g.route.append(post.global_position)
 	for wp: Marker3D in post.get_children():
 		g.route.append(wp.global_position)
-	g.target = $Operative
+	g.operative = $Operative
 	add_child(g)
 	g.global_transform = post.global_transform
 	return g
