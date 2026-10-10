@@ -30,12 +30,14 @@ func points() -> Dictionary:
 	return Aigis.mission_points(counts)
 
 
-## The post-Mission icon strip: [{habit, level, arrow}] in Habit-table order. level is 0-3 as the
-## completed Mission sees it; arrow is +1 / -1 / 0 for points risen / fallen / unchanged.
+## The post-Mission icon strip: [{habit, level, arrow}] in Habit-table order. level is 0-3 under the
+## same cap complete_mission clamps with (the next Mission's), so the strip shows what Aigis will
+## answer; arrow is +1 / -1 / 0 for points risen / fallen / unchanged.
 static func strip(before: Dictionary, after: Dictionary) -> Array:
 	var out := []
+	var cap_index := Aigis.carry_index(before.mission)
 	for h in Aigis.HABITS:
 		var b := int(before.points.get(h, 0))
 		var a := int(after.points.get(h, 0))
-		out.append({"habit": h, "level": Aigis.level(a, before.mission), "arrow": signi(a - b)})
+		out.append({"habit": h, "level": Aigis.level(a, cap_index), "arrow": signi(a - b)})
 	return out

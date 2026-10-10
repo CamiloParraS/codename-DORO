@@ -46,10 +46,13 @@ func test_strip_levels_and_arrows() -> void:
 	assert_eq(s[1].arrow, -1)     # tug of war took 50 from Combat
 	assert_eq(s[2].arrow, 1)
 	assert_eq(s[3].arrow, 0)      # unused at 0 points: nothing to decay
-	assert_true(s.all(func(e): return e.level >= 0 and e.level <= Aigis.CAPS[1]))
+	assert_true(s.all(func(e): return e.level >= 0 and e.level <= Aigis.CAPS[2]))
 
 
-func test_first_mission_shows_level_zero() -> void:
+func test_strip_uses_the_clamps_cap_so_mission_1_shows_at_most_level_1() -> void:
 	var before := Aigis.new_record()
-	var after := Aigis.complete_mission(before, {"alert": 3, "headshot": 5})
-	assert_true(MissionTally.strip(before, after).all(func(e): return e.level == 0))
+	var after := Aigis.complete_mission(before, {"alert": 3, "headshot": 5, "spoof": 20})
+	var s := MissionTally.strip(before, after)
+	assert_eq(s[2].level, 1)  # 100 Headshot points: L1, which Mission 2 answers
+	assert_eq(s[5].level, 1)  # 400 Spoofing points, held to 199
+	assert_true(s.all(func(e): return e.level <= 1))

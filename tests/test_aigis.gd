@@ -57,19 +57,20 @@ func test_complete_mission_advances_the_mission_index() -> void:
 		assert_eq(r.mission, i + 1)
 
 
-func test_mission_1_carries_at_most_99_points() -> void:
+func test_mission_1_carries_at_most_199_points_into_mission_2() -> void:
 	var r := Aigis.complete_mission(Aigis.new_record(), _loud({"headshot": 20, "alert": 10, "spoof": 20}))
-	assert_eq(r.points.headshots, 99)
-	assert_eq(r.points.combat, 99)
-	assert_eq(r.points.spoofing, 99)
-	for h in Aigis.HABITS:
-		assert_eq(Aigis.level(r.points[h], 1), 0, "%s levels up out of Mission 1" % h)
+	assert_eq(r.points.headshots, 199)
+	assert_eq(r.points.combat, 199)
+	assert_eq(r.points.spoofing, 199)
+	for h in ["headshots", "combat", "spoofing"]:
+		assert_eq(Aigis.level(r.points[h], 1), 1, "%s reaches L1 for Mission 2" % h)
 
 
-func test_points_clamp_to_cap_times_100_plus_99_per_mission() -> void:
+func test_points_clamp_to_the_next_missions_cap_times_100_plus_99() -> void:
+	var most := [199, 299, 399, 399]  # the Core has no next Mission and keeps its own cap
 	for mission in 4:
 		var r := Aigis.complete_mission(_record(mission), _loud({"headshot": 50}))
-		assert_eq(r.points.headshots, Aigis.CAPS[mission] * 100 + 99, "Mission index %d" % mission)
+		assert_eq(r.points.headshots, most[mission], "Mission index %d" % mission)
 	assert_eq(Aigis.CAPS, [0, 1, 2, 3])
 
 
@@ -502,10 +503,9 @@ func test_simulated_ghost_campaign_reaches_the_cap_every_mission() -> void:
 	# Six quiet Downs a Mission, a few chokes, never an alert, nobody killed.
 	var ghost := {"quiet_down": 6, "takedown": 3, "spawned": 9, "targets": 1}
 	var rs := _campaign([ghost, ghost, ghost, ghost])
-	assert_eq(rs[1].points.stealth, 99, "Mission 1 tops out just short of a level")
 	assert_gt(rs[1].points.stealth, 49, "enough for the warning chatter in Mission 2")
 	for i in [1, 2, 3]:
-		assert_eq(Aigis.level(rs[i].points.stealth, i), i - 1, "Stealth before Mission index %d" % i)
+		assert_eq(Aigis.level(rs[i].points.stealth, i), i, "Stealth at the cap before Mission index %d" % i)
 	var core := Aigis.plan_mission(rs[3].points, Aigis.lethality_ratio(rs[3]), CORE)
 	assert_eq(core.pinned, "stealth")
 	assert_eq(core.dominant, "pallas")
@@ -517,11 +517,11 @@ func test_simulated_loud_campaign_turns_gorgo_and_answers_combat() -> void:
 	# Two alerts, a dozen loud shots and kills in each; Targets killed on the spot.
 	var loud := {"alert": 2, "loud_shot": 12, "alert_kill": 4, "kill": 4, "target_kill": 1, "spawned": 10, "targets": 1}
 	var rs := _campaign([loud, loud, loud, loud])
-	assert_eq(Aigis.level(rs[3].points.combat, CORE), 2, "Combat at the cap before the Core")
+	assert_eq(Aigis.level(rs[3].points.combat, CORE), 3, "Combat at the cap before the Core")
 	var core := Aigis.plan_mission(rs[3].points, Aigis.lethality_ratio(rs[3]), CORE)
 	assert_eq(core.pinned, "combat")
 	assert_eq(core.dominant, "gorgo")
-	assert_eq(_steps(core).slice(0, 2), ["combat.1", "combat.2"])
+	assert_eq(_steps(core).slice(0, 3), ["combat.1", "combat.2", "combat.3"])
 	assert_eq(rs[3].points.stealth, 0, "the tug of war keeps Stealth down")
 	assert_eq(Aigis.resolve_ending(Aigis.lethality_ratio(rs[4])), "gorgo")
 
@@ -531,7 +531,7 @@ func test_simulated_style_change_moves_aigis_away() -> void:
 	var shooter := {"headshot": 6, "alert": 1, "loud_shot": 2, "spawned": 9}
 	var ghost := {"quiet_down": 6, "spawned": 9}
 	var rs := _campaign([shooter, shooter, shooter])
-	assert_eq(Aigis.level(rs[3].points.headshots, CORE), 2)
+	assert_eq(Aigis.level(rs[3].points.headshots, CORE), 3)
 	var changed := Aigis.complete_mission(rs[2], ghost)
 	assert_eq(changed.points.headshots, rs[2].points.headshots - Aigis.DECAY, "decays half a level, no more")
 	assert_gt(changed.points.stealth, rs[3].points.stealth)

@@ -82,6 +82,12 @@ static func level(points: int, mission_index: int) -> int:
 	return mini(floori(points / float(POINTS_PER_LEVEL)), CAPS[mission_index])
 
 
+## The Mission whose cap holds the points carried out of a completed one: the next Mission, so
+## Mission 1 can carry L1 into Mission 2. The Core has no next Mission and keeps its own cap.
+static func carry_index(completed_index: int) -> int:
+	return mini(completed_index + 1, CAPS.size() - 1)
+
+
 ## The points a tally earns per Habit (before the tug of war and decay), for the overlay too.
 static func mission_points(tally: Dictionary) -> Dictionary:
 	var out := _zeros()
@@ -112,7 +118,7 @@ static func complete_mission(record: Dictionary, tally: Dictionary) -> Dictionar
 			p.combat += gained.combat
 	for h in HABITS.slice(2):
 		p[h] += gained[h] if gained[h] > 0 else -DECAY
-	var most: int = (CAPS[record.mission] + 1) * POINTS_PER_LEVEL - 1  # cap × 100 + 99
+	var most: int = (CAPS[carry_index(record.mission)] + 1) * POINTS_PER_LEVEL - 1  # cap × 100 + 99
 	for h in HABITS:
 		p[h] = clampi(p[h], 0, most)
 	out.lethality += GUARD_DEATH * int(tally.get("kill", 0)) + TARGET_DEATH * int(tally.get("target_kill", 0))
