@@ -40,7 +40,11 @@ func reload(carrying: bool) -> bool:
 	return true
 
 
+## Runs the reload. Carrying cancels one in progress; an empty magazine restarts it once the hands are free.
 func tick(delta: float, carrying: bool) -> void:
+	if carrying:
+		reload_left = 0.0
+		return
 	if reloading():
 		reload_left -= delta
 		if reload_left <= 0.0:
@@ -49,7 +53,7 @@ func tick(delta: float, carrying: bool) -> void:
 			mag += n
 			reserve -= n
 	elif mag == 0:  # emptied while carrying: reload as soon as the hands are free
-		reload(carrying)
+		reload(false)
 
 
 static func spread(carrying: bool) -> float:
