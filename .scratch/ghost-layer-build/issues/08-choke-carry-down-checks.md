@@ -13,3 +13,8 @@
 - [x] E toggles carry: fixed shoulder pose, walk speed (slower crouched), detection treats the Operative as standing and walking
 - [x] Guards see Down guards with the same meter: suspicion → walk over → wake a Neutralized guard (who joins in suspicion and remembers nothing); the dead-guard alert hooks in once kills exist
 - [x] The Down-guard check is covered by an alert state machine test
+
+## Comments
+
+- The wake clock pauses while a guard is carried, on purpose: a body on the shoulder can't wake mid-carry. A carried guard is never checked or woken by another guard.
+- "Choking again" is the pickup: E on a Neutralized guard hoists it and re-chokes it, so its 90 s start over (E twice resets the clock without moving the body). No separate 2 s re-choke.

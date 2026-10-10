@@ -6,9 +6,9 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] WASD runs, holding Shift walks, C/Ctrl toggles crouch
-- [ ] The camera is built from two spring arms (shoulder, then back), lifted from the stealth-core prototype; Tab swaps the shoulder
-- [ ] The camera never clips into walls; the Operative's body hides when the camera is very close
-- [ ] Mouse look respects a sensitivity value and an invert-Y flag (hardcoded defaults for now)
+- [x] WASD runs, holding Shift walks, C/Ctrl toggles crouch
+- [x] The camera is built from two spring arms (shoulder, then back), lifted from the stealth-core prototype; Tab swaps the shoulder
+- [x] The camera never clips into walls; the Operative's body hides when the camera is very close
+- [x] Mouse look respects a sensitivity value and an invert-Y flag (hardcoded defaults for now)
