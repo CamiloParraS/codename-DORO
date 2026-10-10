@@ -17,6 +17,7 @@ const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Colo
 var route: Array[Vector3] = []   # patrol points, walked in a loop
 var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
+var checkin := Checkin.new()
 var seen_rate := 0.0
 var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame
@@ -66,8 +67,25 @@ func _physics_process(delta: float) -> void:
 				_react(why)
 	if stumble_left > 0.0:
 		return  # stumbling: stands still
+	_check_in(delta)
 	# Manual update: the tree must set the velocity before the NavAgent (a later child) submits it.
 	_bt.update(delta)
+
+
+## Routine radio check-in: subtitle + ((·)) while talking, and the Operative may record a Voiceprint.
+func _check_in(delta: float) -> void:
+	if checkin.tick(delta):
+		var line: String = Checkin.LINES.pick_random()
+		get_tree().call_group("radio_log", "say", name, line)
+	if operative:
+		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), checkin.talking())
+	_refresh_mark()
+
+
+func _refresh_mark() -> void:
+	var talk := checkin.talking() and alert.state == GuardAlert.State.PATROL
+	_mark.text = "((·))" if talk else MARKS[alert.state]
+	_mark.modulate = Color.WHITE if talk else MARK_COLORS[alert.state]
 
 
 func is_down() -> bool:
@@ -212,8 +230,7 @@ func _changed(why: String) -> void:
 	if why == "":
 		return
 	last_reason = why
-	_mark.text = MARKS[alert.state]
-	_mark.modulate = MARK_COLORS[alert.state]
+	_refresh_mark()
 	_bt.restart()  # the tree picks the branch for the new state
 
 

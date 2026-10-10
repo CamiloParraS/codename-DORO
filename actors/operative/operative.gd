@@ -19,6 +19,7 @@ var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
 var weapon := "tranq"    # ponytail: only the tranq exists until the rifle ticket
 var tranq := Tranq.new()
+var voiceprints := Voiceprints.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 

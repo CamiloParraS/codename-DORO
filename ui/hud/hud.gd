@@ -14,6 +14,7 @@ var _flash := 0.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
 var _operative: Node3D
+var _subs := Subtitles.new()
 
 
 func _ready() -> void:
@@ -23,10 +24,12 @@ func _ready() -> void:
 	_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	_font.hinting = TextServer.HINTING_NONE
 	_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	add_to_group("radio_log")
 
 
 func _process(delta: float) -> void:
 	_flash = maxf(_flash - delta / FLASH_TIME, 0.0)
+	_subs.tick(delta)
 	for g in get_tree().get_nodes_in_group("guards"):
 		var now: bool = g.alert.state == GuardAlert.State.ALERT
 		if now and not _was_alert.get(g, false):
@@ -54,8 +57,31 @@ func _draw() -> void:
 	_left()
 	_right()
 	_compass(fwd, right)
+	_voiceprints()
+	_subtitles()
 	if _operative.prompt != "":
 		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, Color.WHITE)
+
+
+## Radio line from a guard (call_group "radio_log").
+func say(who: String, text: String) -> void:
+	_subs.add(who, text)
+
+
+func _subtitles() -> void:
+	var y := size.y - 28.0
+	for l in _subs.lines:
+		var a := Subtitles.alpha(l["age"])
+		var s: String = "%s: %s" % [l["who"], l["text"]]
+		_t(Vector2(size.x / 2 - s.length() * 4, y), s, Color(1, 1, 1, a))
+		y += 12.0
+
+
+func _voiceprints() -> void:
+	var p := Vector2(size.x - 112, 78)
+	_t(p, "VP", Color(1, 1, 1, 0.85))
+	for i in _operative.voiceprints.held.size():
+		_t(p + Vector2(0, 10 * (i + 1)), _operative.voiceprints.held[i], Color.WHITE)
 
 
 func _arcs(fwd: Vector3, right: Vector3) -> void:
