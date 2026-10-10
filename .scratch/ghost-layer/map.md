@@ -42,11 +42,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 
 ## Not yet specified
 
-- **Schedule and cut line:** how the 6 weeks split up and what gets cut first if things slip. Depends on how the prototypes go. Known cut candidate: the Magazine.
-- **Input:** keyboard+mouse, gamepad, or both. Includes the item cycle/use bindings from [Gadgets and items](issues/12-gadgets-and-items.md).
-- **Persistence:** saving the profile and campaign progress between sessions.
-- **Light and night:** darkness as a stealth factor (for the Operative and for bodies). There's no light model for now; it would need its own prototype, and it ties into a possible night Habit in the Profile.
-- **Extra Missions:** candidates are set in [Campaign plan](issues/10-campaign-plan.md) (Relay station revisit between Mission 3 and the Core, which would bring in the favourite flank Habit; Annex revisit as a lower priority). What's left is whether there's time, which hangs on the schedule and cut line.
+- Nothing left. Input, Persistence, Schedule and cut line (with Extra Missions folded in) are now tickets.
 
 ## Out of scope
 
@@ -56,3 +52,4 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - Controlling a squad or switching between Metis members.
 - 3D cinematics.
 - Multiplayer / co-op.
+- Light and night (darkness as a stealth factor, a night Habit): no light model exists, it would need its own prototype, and it doesn't fit 6 weeks solo. Cut while graduating the fog, no ticket.
