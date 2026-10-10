@@ -24,7 +24,8 @@ var seen_rate := 0.0
 var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame
 var neutral_left := 0.0          # seconds until a Neutralized guard wakes
-var dead := false                # ponytail: nothing sets this until kills exist
+var dead := false                # killed: Down for good, and a guard who checks it radios an alert
+var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
 var carrier: Node3D              # the Operative carrying this guard
@@ -111,6 +112,32 @@ func neutralize() -> void:
 	_lie(true)
 
 
+## Killed (a rifle shot): Down for good. Counts for Lethality and Combat; a kill while any guard is
+## alerted is an alert_kill.
+func kill() -> void:
+	var alerted := get_tree().get_nodes_in_group("guards").any(func(g): return g.alert.state == GuardAlert.State.ALERT)
+	neutralize()
+	dead = true
+	get_tree().call_group("mission_tally", "event", "kill")
+	if alerted:
+		get_tree().call_group("mission_tally", "event", "alert_kill")
+
+
+## A rifle bullet from `from`: a headshot kills at once (a helmet makes it a body hit), the second body
+## hit kills, and a first one leaves it suspicious where the shot came from.
+func shoot(head: bool, from: Vector3) -> void:
+	if head:
+		get_tree().call_group("mission_tally", "event", "headshot")
+		if not helmet:
+			kill()
+			return
+	hits += 1
+	if hits >= Rifle.BODY_HITS:
+		kill()
+	else:
+		_changed(alert.hear(from, "a bullet"))
+
+
 ## A tranq dart from `from`: a headshot Neutralizes at once (a helmet makes it a body shot), a body
 ## shot after BODY_DELAY, meanwhile the guard stumbles, is suspicious and can't radio.
 func tranquilize(head: bool, from: Vector3) -> void:
@@ -146,6 +173,7 @@ func wear_helmet() -> void:
 func wake(from: Vector3) -> void:
 	neutral_left = 0.0
 	known_down = false
+	hits = 0
 	if carrier:  # no longer Down: off the Operative's shoulder
 		carrier.carrying = null
 		carrier = null

@@ -1,0 +1,66 @@
+@tool
+extends McpTestSuite
+
+## Rifle rules: load, reserve, suppressor, resupply.
+
+
+func suite_name() -> String:
+	return "rifle"
+
+
+func test_starts_30_in_load_60_total_suppressed() -> void:
+	var r := Rifle.new()
+	assert_eq(r.loaded, 30)
+	assert_eq(r.loaded + r.reserve, 60)
+	assert_true(r.suppressed())
+
+
+func test_suppressor_breaks_after_10_shots() -> void:
+	var r := Rifle.new()
+	for i in 10:
+		assert_true(r.suppressed(), "shot %d is quiet" % (i + 1))
+		assert_true(r.fire(false))
+	assert_false(r.suppressed(), "the 11th shot is loud")
+	assert_eq(r.suppressor, 0)
+	r.fire(false)
+	assert_eq(r.suppressor, 0)
+
+
+func test_a_dry_click_does_not_wear_the_suppressor() -> void:
+	var r := Rifle.new()
+	r.loaded = 0
+	r.reload_left = 1.0
+	assert_false(r.fire(false))
+	assert_eq(r.suppressor, 10)
+
+
+func test_empty_load_reloads_30_from_reserve() -> void:
+	var r := Rifle.new()
+	for i in 30:
+		r.fire(false)
+	assert_true(r.reloading())
+	r.tick(Tranq.RELOAD_TIME + 0.01, false)
+	assert_eq(r.loaded, 30)
+	assert_eq(r.reserve, 0)
+
+
+func test_refill_restores_ammo_and_suppressor() -> void:
+	var r := Rifle.new()
+	for i in 40:
+		r.fire(false)
+		r.tick(2.0, false)
+	r.refill()
+	assert_eq(r.loaded, 30)
+	assert_eq(r.reserve, 30)
+	assert_eq(r.suppressor, 10)
+	assert_false(r.reloading())
+
+
+func test_tranq_refill_and_its_suppressor_never_breaks() -> void:
+	var t := Tranq.new()
+	for i in 4:
+		t.fire(false)
+	t.refill()
+	assert_eq(t.loaded, 4)
+	assert_eq(t.reserve, 4)
+	assert_true(t.suppressed())

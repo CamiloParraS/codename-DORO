@@ -1,4 +1,5 @@
-## Tranq pistol rules, node-free: 4-dart load, 8 darts total, ~1.5 s silent reload.
+## Tranq pistol rules, node-free: 4-dart load, 8 darts total, ~1.5 s silent reload. The Rifle extends
+## it with its own sizes. Its suppressor never breaks.
 class_name Tranq
 extends RefCounted
 
@@ -9,6 +10,9 @@ const BODY_DELAY := 3.0      # a body shot Neutralizes this long after the hit
 const SPREAD := 0.0          # radians of aim error with both hands
 const SPREAD_ONE_HAND := 0.05
 
+var label := "TRQ"      # on the HUD weapon card
+var load_size := LOAD_SIZE
+var pip_count := LOAD_SIZE  # pips on the card's column
 var loaded := LOAD_SIZE
 var reserve := TOTAL - LOAD_SIZE
 var reload_left := 0.0
@@ -16,6 +20,17 @@ var reload_left := 0.0
 
 func reloading() -> bool:
 	return reload_left > 0.0
+
+
+func suppressed() -> bool:
+	return true
+
+
+## Resupply crate: a full load and a full reserve.
+func refill() -> void:
+	loaded = load_size
+	reserve = TOTAL - LOAD_SIZE
+	reload_left = 0.0
 
 
 func can_fire() -> bool:
@@ -34,7 +49,7 @@ func fire(carrying: bool) -> bool:
 
 ## Starts a reload; false when full, out of darts, already reloading or carrying.
 func reload(carrying: bool) -> bool:
-	if carrying or reloading() or loaded == LOAD_SIZE or reserve == 0:
+	if carrying or reloading() or loaded == load_size or reserve == 0:
 		return false
 	reload_left = RELOAD_TIME
 	return true
@@ -49,7 +64,7 @@ func tick(delta: float, carrying: bool) -> void:
 		reload_left -= delta
 		if reload_left <= 0.0:
 			reload_left = 0.0
-			var n := mini(LOAD_SIZE - loaded, reserve)
+			var n := mini(load_size - loaded, reserve)
 			loaded += n
 			reserve -= n
 	elif loaded == 0:  # emptied while carrying: reload as soon as the hands are free

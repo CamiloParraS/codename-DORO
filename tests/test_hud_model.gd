@@ -47,3 +47,11 @@ func test_arc_angle_points_at_guard() -> void:
 	var right := Vector3.RIGHT
 	assert_true(is_equal_approx(HudModel.screen_angle(Vector3.FORWARD * 5, fwd, right), -PI / 2))
 	assert_true(is_equal_approx(HudModel.screen_angle(Vector3.RIGHT * 5, fwd, right), 0.0))
+
+
+func test_pips_lit_scale_the_load_and_never_hide_a_round() -> void:
+	assert_eq(HudModel.pips_lit(3, 4, 4), 3)
+	assert_eq(HudModel.pips_lit(30, 30, 6), 6)
+	assert_eq(HudModel.pips_lit(25, 30, 6), 5)
+	assert_eq(HudModel.pips_lit(1, 30, 6), 1)
+	assert_eq(HudModel.pips_lit(0, 30, 6), 0)

@@ -13,6 +13,7 @@ var life := 1.0  # ponytail: no damage model yet; the bar stays full until one e
 var _flash := 0.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
+var _crosshair: Texture2D
 var _operative: Node3D
 var _subs := Subtitles.new()
 
@@ -24,6 +25,8 @@ func _ready() -> void:
 	_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	_font.hinting = TextServer.HINTING_NONE
 	_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	_crosshair = load("res://assets/textures/crosshair_4_small.png")
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_to_group("radio_log")
 
 
@@ -54,6 +57,8 @@ func _draw() -> void:
 	var fwd := Vector3(-cam.global_basis.z.x, 0, -cam.global_basis.z.z).normalized()
 	var right := Vector3(cam.global_basis.x.x, 0, cam.global_basis.x.z).normalized()
 	_arcs(fwd, right)
+	if _operative.aiming:  # shots leave from the screen centre
+		draw_texture(_crosshair, (size / 2 - _crosshair.get_size() / 2).round())
 	_left()
 	_right()
 	_compass(fwd, right)
@@ -113,12 +118,16 @@ func _right() -> void:
 	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card, empty
 	var wc := Rect2(sx, 210, 34, size.y - 220)
 	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
-	var tq: Tranq = _operative.tranq
-	_t(wc.position + Vector2(3, 12), "TRQ", Color.WHITE)
-	for i in Tranq.LOAD_SIZE:  # pip column, top pip is the next dart
-		var full: bool = i >= Tranq.LOAD_SIZE - tq.loaded
-		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * 12, 12, 8), Color.WHITE if full else Color(1, 1, 1, 0.2))
-	_t(wc.position + Vector2(9, 20 + Tranq.LOAD_SIZE * 12 + 12), "%02d" % tq.reserve, ORANGE if tq.reloading() else Color.WHITE)
+	var gun: Tranq = _operative.gun()
+	_t(wc.position + Vector2(3, 12), gun.label, Color.WHITE)
+	var lit := HudModel.pips_lit(gun.loaded, gun.load_size, gun.pip_count)
+	var pip_h := 48.0 / gun.pip_count  # the column is 48 px tall, 4 or 6 pips
+	for i in gun.pip_count:  # pip column, top pip is the next round
+		var full: bool = i >= gun.pip_count - lit
+		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * pip_h, 12, pip_h - 4), Color.WHITE if full else Color(1, 1, 1, 0.2))
+	if gun is Rifle:  # shots left on the suppressor
+		_t(wc.position + Vector2(3, 80), "S%02d" % gun.suppressor, Color.WHITE if gun.suppressed() else RED)
+	_t(wc.position + Vector2(9, 92), "%02d" % gun.reserve, ORANGE if gun.reloading() else Color.WHITE)
 
 
 func _stance(r: Rect2) -> void:

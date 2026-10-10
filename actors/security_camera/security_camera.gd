@@ -1,6 +1,7 @@
 ## A security camera (Stealth L1): sweeps from its mount, fills the guards' meter with its front cone
 ## only, and radios an alert when the meter fills, with no suspicion step (GuardAlert.camera_tick).
-## The tranq does nothing to it: a dart just stops on its body. Spawned by the Area on a camera mount,
+## The tranq does nothing to it: a dart just stops on its body. The rifle destroys it, and a destroyed
+## camera counts as a missing guard (HQ's poll reads `destroyed`). Spawned by the Area on a camera mount,
 ## facing the way the mount faces.
 class_name SecurityCamera
 extends StaticBody3D
@@ -14,6 +15,7 @@ const LAMP := [Color(0.3, 1, 0.3), Color(1, 0.2, 0.2)]  # watching / alert
 var operative: Node3D
 var alert := GuardAlert.new()
 var last_reason := ""            # for the debug overlay
+var destroyed := false
 var _t := 0.0
 var _yaw := 0.0
 var _head := Node3D.new()
@@ -41,6 +43,15 @@ func _ready() -> void:
 	lamp.height = 0.12
 	_lamp.emission_enabled = true
 	_mesh(lamp, Vector3(0, 0.1, -0.3), Color.BLACK, _lamp)
+
+
+## A rifle hit: goes dark and dead, silently.
+func destroy() -> void:
+	destroyed = true
+	set_physics_process(false)
+	_lamp.albedo_color = Color.BLACK
+	_lamp.emission = Color.BLACK
+	last_reason = "destroyed"
 
 
 func _mesh(mesh: Mesh, at: Vector3, col: Color, mat := StandardMaterial3D.new()) -> void:

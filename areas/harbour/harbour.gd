@@ -10,6 +10,7 @@ const BASE_GUARDS := 10  # the remaining posts are left for Countermeasure extra
 
 func _ready() -> void:
 	var deployed: Dictionary = $MissionRun.plan.deployed
+	$Collision/ResupplyCrate.add_to_group("resupply_crate")
 	var guards := []
 	for post: Marker3D in $GuardPosts.get_children().slice(0, BASE_GUARDS):
 		guards.append(spawn_guard(post))

@@ -1,10 +1,11 @@
 ## The Operative: camera-relative movement (run / walk / crouch), a shoulder camera made of two spring arms,
-## knock, choke takedown, carrying a Down guard and the tranq pistol. Grown from the stealth-core prototype.
+## knock, choke takedown, carrying a Down guard, the tranq pistol and the rifle. Grown from the stealth-core prototype.
 extends CharacterBody3D
 
 const KNOCK_COOLDOWN := 1.0
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 2.0
+const CRATE_REACH := 2.0      # metres to a resupply crate's centre
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
@@ -18,8 +19,9 @@ var carrying: Node3D     # the Down guard on the shoulder
 var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
 var radio_open := false  # the radial radio takes the mouse (RMB is "back" there, not aim)
-var weapon := "tranq"    # ponytail: only the tranq exists until the rifle ticket
+var weapon := "tranq"    # "tranq" or "rifle"
 var tranq := Tranq.new()
+var rifle := Rifle.new()
 var voiceprints := Voiceprints.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
@@ -132,8 +134,10 @@ func _unhandled_input(e: InputEvent) -> void:
 		_interact()
 	elif e.is_action_pressed("weapon_tranq"):
 		weapon = "tranq"
+	elif e.is_action_pressed("weapon_rifle"):
+		weapon = "rifle"
 	elif e.is_action_pressed("reload"):
-		tranq.reload(carrying != null)
+		gun().reload(carrying != null)
 	elif e.is_action_pressed("fire") and aiming and not _choking:
 		_fire()
 	elif e.is_action_pressed("pause"):
@@ -145,6 +149,7 @@ func _physics_process(delta: float) -> void:
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	tranq.tick(delta, carrying != null)
+	rifle.tick(delta, carrying != null)
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
 		v = Vector2.ZERO  # a choke needs both hands
@@ -172,20 +177,38 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## Hitscan from the screen centre; a hit on a standing guard's head Neutralizes it, on the body starts the stumble.
+## The weapon in hand.
+func gun() -> Tranq:
+	return rifle if weapon == "rifle" else tranq
+
+
+## Hitscan from the screen centre. Tranq: a hit on a standing guard's head Neutralizes it, on the body
+## starts the stumble. Rifle: kills (see Guard.shoot), destroys cameras, and a broken suppressor makes
+## the shot heard.
 func _fire() -> void:
-	if not tranq.fire(carrying != null):
+	var g := gun()
+	var quiet := g.suppressed()
+	if not g.fire(carrying != null):
 		return
+	if not quiet:
+		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
 	var sp := Tranq.spread(carrying != null)
 	var dir := -camera.global_basis.z
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	var from := camera.global_position
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
-	if hit.is_empty() or not hit["collider"].is_in_group("guards") or hit["collider"].is_down():
+	if hit.is_empty():
 		return
-	var g: Node3D = hit["collider"]
-	g.tranquilize(hit["position"].y - g.global_position.y >= Guard.HEAD_HEIGHT, global_position)
+	var c: Node3D = hit["collider"]
+	if weapon == "rifle" and c.is_in_group("cameras"):
+		c.destroy()
+	elif c.is_in_group("guards") and not c.is_down():
+		var head: bool = hit["position"].y - c.global_position.y >= Guard.HEAD_HEIGHT
+		if weapon == "rifle":
+			c.shoot(head, global_position)
+		else:
+			c.tranquilize(head, global_position)
 
 
 func _interact() -> void:
@@ -206,6 +229,10 @@ func _interact() -> void:
 		_choking = g
 		_choke_left = CHOKE_TIME
 		g.held = true
+	elif _crate_near():
+		tranq.refill()
+		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist
+
 
 
 func _update_prompt() -> void:
@@ -217,8 +244,17 @@ func _update_prompt() -> void:
 		prompt = "E carry"
 	elif _nearest(false):
 		prompt = "E choke"
+	elif _crate_near():
+		prompt = "E resupply"
 	else:
 		prompt = ""
+
+
+func _crate_near() -> bool:
+	for c: Node3D in get_tree().get_nodes_in_group("resupply_crate"):
+		if Vector2(c.global_position.x - global_position.x, c.global_position.z - global_position.z).length() <= CRATE_REACH:
+			return true
+	return false
 
 
 ## Nearest guard within reach: a Down one to carry, or one that can be choked.

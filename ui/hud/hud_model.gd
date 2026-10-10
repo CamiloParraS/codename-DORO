@@ -42,3 +42,8 @@ static func arc_color(fill: float, alerted: bool) -> Color:
 	var c := Color(1, 0.2, 0.2) if alerted else Color.WHITE.lerp(Color(1, 0.85, 0.2), fill)
 	c.a = 0.35 + 0.65 * fill
 	return c
+
+
+## Lit pips of a weapon card's column: a round left always lights at least one.
+static func pips_lit(loaded: int, load_size: int, pips: int) -> int:
+	return ceili(loaded * pips / float(load_size))
