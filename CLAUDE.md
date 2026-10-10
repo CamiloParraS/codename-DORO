@@ -23,3 +23,7 @@ Godot 4.7 project. Organize `res://` by game feature, with each scene next to it
 ## Commits
 
 Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>[optional scope]: <description>`, then an optional body and optional footer(s). Common types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`. Planning changes (map, tickets, research) are `docs(ghost-layer)`. Throwaway prototypes use `feat(prototype)` on their `prototype/<name>` branch.
+
+Branches are `<type>/<kebab-name>` named after the work, never the ticket: `feat/guard-alert-chain`, not `feat/05-guard-alert-chain` or `fix/issue-12`. Ticket numbers stay out of branch names and commit headers.
+
+`.githooks/commit-msg` enforces both rules. Enable it once per clone with `git config core.hooksPath .githooks`.

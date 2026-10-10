@@ -1,0 +1,24 @@
+#!/bin/sh
+# Enforces Conventional Commits headers and <type>/<kebab-name> branches with no ticket numbers.
+# Enable once per clone: git config core.hooksPath .githooks
+
+types='feat|fix|docs|chore|refactor|test|perf|build|ci|style|revert'
+
+header=$(head -n 1 "$1")
+case "$header" in Merge\ *|fixup!\ *|squash!\ *) exit 0 ;; esac
+
+if ! printf '%s' "$header" | grep -Eq "^($types)(\([a-z0-9-]+\))?!?: .+"; then
+  echo "commit-msg: header must be <type>[(scope)][!]: <description>" >&2
+  echo "  types: $types" >&2
+  echo "  got:   $header" >&2
+  exit 1
+fi
+
+branch=$(git symbolic-ref --short -q HEAD) || exit 0  # detached HEAD (rebase): skip
+[ "$branch" = main ] && exit 0
+if ! printf '%s' "$branch" | grep -Eq "^($types|prototype)/[a-z][a-z0-9-]*$" \
+   || printf '%s' "$branch" | grep -Eq '(^|[/-])[0-9]+(-|$)'; then
+  echo "commit-msg: branch must be <type>/<kebab-name>, with no ticket number (e.g. feat/guard-alert-chain)" >&2
+  echo "  got: $branch" >&2
+  exit 1
+fi
