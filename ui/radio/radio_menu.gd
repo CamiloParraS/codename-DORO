@@ -77,7 +77,7 @@ func back() -> bool:
 	return true
 
 
-## What the Operative says in the speaker's voice, e.g. "Guard05, go check the Dock."
+## What the Operative says as the speaker, e.g. "Guard05, go check the Dock."
 func line() -> String:
 	var to: String = "All units" if pick.all_units else pick.recipients[0]
 	var said: String = SAID[pick.order] % pick.place if pick.order == "go" else SAID[pick.order]
