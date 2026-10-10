@@ -4,6 +4,8 @@
 
 Issues and specs are local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
 
+The tickets to implement are in `.scratch/ghost-layer-build/issues/` (`/implement 01` means `ghost-layer-build/issues/01-*`). The ones in `.scratch/ghost-layer/issues/` are finished research and design tickets: read them for context, don't implement them.
+
 ### Triage labels
 
 Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.

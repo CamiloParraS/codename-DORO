@@ -50,3 +50,4 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 ## Tools
 
 - Godot Engine, MIT License, https://godotengine.org
+- LimboAI 1.8.1 by Serhii Snitsaruk and contributors, https://github.com/limbonaut/limboai, MIT License (behaviour trees)
