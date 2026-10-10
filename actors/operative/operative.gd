@@ -16,6 +16,9 @@ var walking := false
 var moving := false
 var carrying: Node3D     # the Down guard on the shoulder
 var prompt := ""         # shown by the HUD
+var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
+var weapon := "tranq"    # ponytail: only the tranq exists until the rifle ticket
+var tranq := Tranq.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 
@@ -125,12 +128,21 @@ func _unhandled_input(e: InputEvent) -> void:
 		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
+	elif e.is_action_pressed("weapon_tranq"):
+		weapon = "tranq"
+	elif e.is_action_pressed("reload"):
+		tranq.reload(carrying != null)
+	elif e.is_action_pressed("fire") and aiming and not _choking:
+		_fire()
 	elif e.is_action_pressed("pause"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
+	aiming = Input.is_action_pressed("aim") and not _choking
+	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
+	tranq.tick(delta, carrying != null)
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
 		v = Vector2.ZERO  # a choke needs both hands
@@ -155,6 +167,22 @@ func _physics_process(delta: float) -> void:
 	velocity.z = dir.z * speed
 	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
 	move_and_slide()
+
+
+## Hitscan from the screen centre; a hit on a standing guard's head Neutralizes it, on the body starts the stumble.
+func _fire() -> void:
+	if not tranq.fire(carrying != null):
+		return
+	var sp := Tranq.spread(carrying != null)
+	var dir := -camera.global_basis.z
+	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
+	var from := camera.global_position
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	if hit.is_empty() or not hit["collider"].is_in_group("guards") or hit["collider"].is_down():
+		return
+	var g: Node3D = hit["collider"]
+	g.tranquilize(hit["position"].y - g.global_position.y >= Guard.HEAD_HEIGHT, global_position)
 
 
 func _interact() -> void:

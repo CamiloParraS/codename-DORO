@@ -1,6 +1,7 @@
 ## A guard: senses the Operative, feeds its GuardAlert, radios alerts, and exposes the moves its
 ## behaviour tree (guard_tree.tres) calls. Spawned by the Area at a guard post.
 extends CharacterBody3D
+class_name Guard
 
 const EYE := 1.6
 const PATROL_SPEED := 1.8
@@ -9,6 +10,7 @@ const PAUSE := 1.5        # seconds at each patrol point
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
+const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
@@ -20,6 +22,7 @@ var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame
 var neutral_left := 0.0          # seconds until a Neutralized guard wakes
 var dead := false                # ponytail: nothing sets this until kills exist
+var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
 var carrier: Node3D              # the Operative carrying this guard
 
@@ -44,6 +47,11 @@ func _physics_process(delta: float) -> void:
 		return
 	if held:
 		return
+	if stumble_left > 0.0:
+		stumble_left -= delta
+		if stumble_left <= 0.0:
+			neutralize()
+			return
 	if target:
 		var rate := _sense()
 		_react(alert.tick(delta, rate, target.global_position, _saw, arrived()))
@@ -56,6 +64,8 @@ func _physics_process(delta: float) -> void:
 				if not body.dead:
 					body.wake(global_position)
 				_react(why)
+	if stumble_left > 0.0:
+		return  # stumbling: stands still
 	# Manual update: the tree must set the velocity before the NavAgent (a later child) submits it.
 	_bt.update(delta)
 
@@ -67,12 +77,25 @@ func is_down() -> bool:
 ## Put out of action (a choke); choking a Neutralized guard again restarts the clock.
 func neutralize() -> void:
 	neutral_left = NEUTRALIZED_TIME
+	stumble_left = 0.0
 	held = false
 	alert = GuardAlert.new()
 	seen_rate = 0.0
 	_mark.text = ""
 	collision_layer = 0
 	_lie(true)
+
+
+## A tranq dart from `from`: a headshot Neutralizes at once, a body shot after BODY_DELAY, meanwhile
+## the guard stumbles, is suspicious and can't radio.
+func tranquilize(head: bool, from: Vector3) -> void:
+	if head:
+		neutralize()
+		return
+	if stumble_left > 0.0:
+		return
+	stumble_left = Tranq.BODY_DELAY
+	_changed(alert.hear(from, "a dart"))
 
 
 ## Back on its feet, suspicious and remembering nothing. from: where it looks first.
@@ -139,7 +162,7 @@ func _sense_down() -> Array:
 ## Applies a state change, and radios everyone when it raised an alert by sight.
 func _react(why: String) -> void:
 	_changed(why)
-	if why != "" and alert.state == GuardAlert.State.ALERT:
+	if why != "" and alert.state == GuardAlert.State.ALERT and stumble_left <= 0.0:
 		for g in get_tree().get_nodes_in_group("guards"):
 			if g != self:
 				g.on_radio(alert.last_known, name)

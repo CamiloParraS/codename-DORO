@@ -85,7 +85,14 @@ func _right() -> void:
 	draw_rect(Rect2(sx, 104, 34, 24), Color(0, 0, 0, 0.4))
 	_stance(Rect2(sx + 9, 105, 16, 22))
 	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card, empty
-	draw_rect(Rect2(sx, 210, 34, size.y - 220), Color(0, 0, 0, 0.55))  # weapon card, empty
+	var wc := Rect2(sx, 210, 34, size.y - 220)
+	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
+	var tq: Tranq = _operative.tranq
+	_t(wc.position + Vector2(3, 12), "TRQ", Color.WHITE)
+	for i in Tranq.MAG_SIZE:  # pip column, top pip is the next dart
+		var full: bool = i >= Tranq.MAG_SIZE - tq.mag
+		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * 12, 12, 8), Color.WHITE if full else Color(1, 1, 1, 0.2))
+	_t(wc.position + Vector2(9, 20 + Tranq.MAG_SIZE * 12 + 12), "%02d" % tq.reserve, ORANGE if tq.reloading() else Color.WHITE)
 
 
 func _stance(r: Rect2) -> void:
