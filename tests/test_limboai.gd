@@ -4,8 +4,6 @@ extends McpTestSuite
 ## LimboAI smoke test: a trivial behaviour tree ticks on this Godot version.
 ## Built through ClassDB so a missing extension fails the test instead of the parse.
 
-const SUCCESS := 3  # BT.SUCCESS (FRESH 0, RUNNING 1, FAILURE 2)
-
 
 func suite_name() -> String:
 	return "limboai"
@@ -22,4 +20,4 @@ func test_trivial_tree_ticks_to_success() -> void:
 	tree.root_task = seq
 	var agent := track(Node.new())
 	var root = tree.instantiate(agent, ClassDB.instantiate("Blackboard"), agent, agent)
-	assert_eq(root.update(0.016), SUCCESS)
+	assert_eq(root.update(0.016), ClassDB.class_get_integer_constant("BT", "SUCCESS"))

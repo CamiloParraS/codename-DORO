@@ -27,3 +27,10 @@ mono_crash.*.json
 
 # Raw asset downloads (licenses forbid redistribution; copy used files into assets/)
 _raw/
+
+# LimboAI: only Windows binaries are vendored (Windows export only)
+addons/limboai/bin/*android*
+addons/limboai/bin/*ios*
+addons/limboai/bin/*linux*
+addons/limboai/bin/*macos*
+addons/limboai/bin/*web*

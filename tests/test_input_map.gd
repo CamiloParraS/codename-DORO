@@ -58,4 +58,5 @@ func test_f8_is_unbound() -> void:
 	for action in InputMap.get_actions():
 		for ev in InputMap.action_get_events(action):
 			if ev is InputEventKey:
-				assert_true((ev as InputEventKey).keycode != KEY_F8 and (ev as InputEventKey).physical_keycode != KEY_F8, "%s binds F8" % action)
+				var key := ev as InputEventKey
+				assert_true(key.keycode != KEY_F8 and key.physical_keycode != KEY_F8, "%s binds F8" % action)
