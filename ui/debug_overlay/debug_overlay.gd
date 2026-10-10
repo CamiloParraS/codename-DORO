@@ -46,7 +46,7 @@ func _process(_delta: float) -> void:
 func _aigis(record: Dictionary, plan: Dictionary, tally: MissionTally) -> String:
 	var m: int = record.mission
 	var gained: Dictionary = tally.points() if tally else {}
-	var s := "PROFILE  Mission index %d (cap %d)\n" % [m, Aigis.CAPS[m]]
+	var s := "PROFILE  Mission index %d (cap %d)\n" % [m, Aigis.cap(m)]
 	for h: String in Aigis.HABITS:
 		var p := int(record.points.get(h, 0))
 		s += "  %-9s %3d pts L%d  unlocked %d deployed %d" % [h, p, Aigis.level(p, m), plan.unlocked[h], plan.deployed[h]]
@@ -61,7 +61,7 @@ func _aigis(record: Dictionary, plan: Dictionary, tally: MissionTally) -> String
 	s += "PLAN  budget %d  pinned %s\n" % [plan.budget, plan.pinned if plan.pinned else "none"]
 	for p: Dictionary in plan.picks:
 		var what: String = Aigis.LADDERS[p.habit][p.level - 1][1]
-		s += "  %s %s [%s] %s\n" % [p.step, what, p.sponsor, "pinned" if p.candidates.is_empty() else "%d" % p.score]
+		s += "  %s %s [%s] %s\n" % [p.step, what, p.sponsor, ("%d pinned" if p.candidates.is_empty() else "%d") % p.score]
 		if p.candidates.size() > 1:
 			s += "     of " + ", ".join(PackedStringArray(p.candidates.map(func(c: Dictionary) -> String: return "%s %d" % [c.step, c.score]))) + "\n"
 	if plan.picks.is_empty():

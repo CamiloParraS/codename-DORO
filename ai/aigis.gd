@@ -90,13 +90,23 @@ static func preset_record(preset: String, mission_index: int) -> Dictionary:
 
 ## A Habit's level as a Mission sees it: points ÷ 100, held to that Mission's cap.
 static func level(points: int, mission_index: int) -> int:
-	return mini(floori(points / float(POINTS_PER_LEVEL)), CAPS[mission_index])
+	return mini(floori(points / float(POINTS_PER_LEVEL)), cap(mission_index))
+
+
+## A Mission's Habit-level cap. Past the Core (4 = campaign done) reads as the Core.
+static func cap(mission_index: int) -> int:
+	return CAPS[_last(mission_index)]
+
+
+## The most points a completed Mission carries out: the next Mission's cap × 100 + 99.
+static func carry_max(completed_index: int) -> int:
+	return (cap(carry_index(completed_index)) + 1) * POINTS_PER_LEVEL - 1
 
 
 ## The Mission whose cap holds the points carried out of a completed one: the next Mission, so
 ## Mission 1 can carry L1 into Mission 2. The Core has no next Mission and keeps its own cap.
 static func carry_index(completed_index: int) -> int:
-	return mini(completed_index + 1, CAPS.size() - 1)
+	return _last(completed_index + 1)
 
 
 ## The points a tally earns per Habit (before the tug of war and decay), for the overlay too.
@@ -129,7 +139,7 @@ static func complete_mission(record: Dictionary, tally: Dictionary) -> Dictionar
 			p.combat += gained.combat
 	for h in HABITS.slice(2):
 		p[h] += gained[h] if gained[h] > 0 else -DECAY
-	var most: int = (CAPS[carry_index(record.mission)] + 1) * POINTS_PER_LEVEL - 1  # cap × 100 + 99
+	var most := carry_max(record.mission)
 	for h in HABITS:
 		p[h] = clampi(p[h], 0, most)
 	out.lethality += GUARD_DEATH * int(tally.get("kill", 0)) + TARGET_DEATH * int(tally.get("target_kill", 0))
@@ -155,6 +165,7 @@ static func resolve_ending(ratio: float) -> String:
 
 
 ## The Voices' plan for a Mission. profile: points per Habit; ratio: the Lethality ratio.
+## mission_index 4 (campaign done) plans as the Core.
 ## Returns {weights, dominant, budget, pinned, picks, unlocked, deployed, briefing_keys}:
 ## - unlocked / deployed: level per Habit (deployed steps always run up the ladder from L1)
 ## - picks, in deploy order: {step, habit, level, sponsor, score, candidates}; candidates are every
@@ -173,7 +184,7 @@ static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) 
 		deployed[h] = 0
 	var ranked := HABITS.duplicate()
 	ranked.sort_custom(func(a: String, b: String) -> bool: return _stronger(a, b, unlocked, profile))
-	var budget: int = BUDGETS[mission_index]
+	var budget: int = BUDGETS[_last(mission_index)]
 	var left := budget
 	var picks := []
 
@@ -216,6 +227,11 @@ static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) 
 		"weights": weights, "dominant": dominant, "budget": budget, "pinned": pinned, "picks": picks,
 		"unlocked": unlocked, "deployed": deployed, "briefing_keys": keys,
 	}
+
+
+## A Mission index held to the Core: campaign done (4) plans and caps like the Core.
+static func _last(mission_index: int) -> int:
+	return clampi(mission_index, 0, CAPS.size() - 1)
 
 
 static func _zeros() -> Dictionary:

@@ -15,6 +15,7 @@ func _ready() -> void:
 		guards.append(spawn_guard(post))
 	for post: Marker3D in $ExtraGuardPosts.get_children().slice(0, Deployment.extra_patrols(deployed)):
 		guards.append(spawn_guard(post))
+	$MissionRun.tally.add("spawned", guards.size())  # the Lethality denominator (reinforcements add theirs)
 	var helmets := Deployment.helmets(deployed, guards.size())
 	for i in guards.size():
 		if helmets[i]:

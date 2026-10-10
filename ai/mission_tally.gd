@@ -1,6 +1,7 @@
 ## One Mission's live event counts, the flat dictionary Aigis.complete_mission reads. Node-free.
 ## Edges are the caller's job: set_alert(active) every frame, guard_down() once per guard put Down.
-## Lethality events (kill, target_kill, spawned, targets) join with the kill ticket.
+## Lethality events: the Area adds spawned (guards actually spawned); kill, target_kill and targets
+## join with the kill and Targets tickets.
 class_name MissionTally
 extends RefCounted
 
@@ -32,12 +33,14 @@ func points() -> Dictionary:
 
 ## The post-Mission icon strip: [{habit, level, arrow}] in Habit-table order. level is 0-3 under the
 ## same cap complete_mission clamps with (the next Mission's), so the strip shows what Aigis will
-## answer; arrow is +1 / -1 / 0 for points risen / fallen / unchanged.
+## answer; arrow is +1 / -1 / 0 for points risen / fallen / unchanged. The before points are held to
+## that same clamp, so points a Free mode Preset holds above it don't show as a phantom fall.
 static func strip(before: Dictionary, after: Dictionary) -> Array:
 	var out := []
 	var cap_index := Aigis.carry_index(before.mission)
+	var most := Aigis.carry_max(before.mission)
 	for h in Aigis.HABITS:
-		var b := int(before.points.get(h, 0))
+		var b := mini(int(before.points.get(h, 0)), most)
 		var a := int(after.points.get(h, 0))
 		out.append({"habit": h, "level": Aigis.level(a, cap_index), "arrow": signi(a - b)})
 	return out

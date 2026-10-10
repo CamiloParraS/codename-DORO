@@ -260,6 +260,15 @@ func test_budget_is_0_2_4_6() -> void:
 		assert_eq(Aigis.plan_mission(_profile({}), NAN, i).budget, [0, 2, 4, 6][i])
 
 
+func test_campaign_done_reads_as_the_core() -> void:
+	var done := Aigis.complete_mission(_record(CORE, {"stealth": 399}), {})
+	assert_eq(done.mission, 4)
+	assert_eq(Aigis.cap(4), Aigis.cap(CORE))
+	assert_eq(Aigis.level(399, 4), 3)
+	assert_eq(Aigis.plan_mission(done.points, NAN, 4), Aigis.plan_mission(done.points, NAN, CORE))
+	assert_eq(Aigis.complete_mission(done, {}).points.stealth, 399)  # still the Core's clamp
+
+
 func test_mission_1_deploys_nothing_even_for_a_maxed_profile() -> void:
 	var maxed := _profile({})
 	for h in Aigis.HABITS:
