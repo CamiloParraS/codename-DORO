@@ -13,7 +13,7 @@ var life := 1.0  # ponytail: no damage model yet; the bar stays full until one e
 var _flash := 0.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
-var _crosshair: Texture2D
+var _crosshairs := {}  # file name -> texture
 var _operative: Node3D
 var _subs := Subtitles.new()
 
@@ -25,7 +25,6 @@ func _ready() -> void:
 	_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	_font.hinting = TextServer.HINTING_NONE
 	_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
-	_crosshair = load("res://assets/textures/crosshair_4_small.png")
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_to_group("radio_log")
 
@@ -58,7 +57,8 @@ func _draw() -> void:
 	var right := Vector3(cam.global_basis.x.x, 0, cam.global_basis.x.z).normalized()
 	_arcs(fwd, right)
 	if _operative.aiming:  # shots leave from the screen centre
-		draw_texture(_crosshair, (size / 2 - _crosshair.get_size() / 2).round())
+		var tex := _crosshair(_operative.gun().crosshair)
+		draw_texture(tex, (size / 2 - tex.get_size() / 2).round())
 	_left()
 	_right()
 	_compass(fwd, right)
@@ -128,6 +128,12 @@ func _right() -> void:
 	if gun is Rifle:  # shots left on the suppressor
 		_t(wc.position + Vector2(3, 80), "S%02d" % gun.suppressor, Color.WHITE if gun.suppressed() else RED)
 	_t(wc.position + Vector2(9, 92), "%02d" % gun.reserve, ORANGE if gun.reloading() else Color.WHITE)
+
+
+func _crosshair(file: String) -> Texture2D:
+	if not _crosshairs.has(file):
+		_crosshairs[file] = load("res://assets/textures/%s.png" % file)
+	return _crosshairs[file]
 
 
 func _stance(r: Rect2) -> void:

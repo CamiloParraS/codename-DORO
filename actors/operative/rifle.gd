@@ -7,13 +7,19 @@ const LOAD := 30
 const ROUNDS := 60
 const SUPPRESSOR_SHOTS := 10
 const BODY_HITS := 2   # body hits that kill; a headshot kills outright
-const NOISE_RANGE := 30.0  # metres a loud shot is heard, through walls
+const INTERVAL := 0.1  # 600 rounds a minute
+const KICK := 0.012    # radians of camera recoil per shot
+const NOISE_RANGE := 40.0  # metres a loud shot is heard, through walls
 
 var suppressor := SUPPRESSOR_SHOTS
 
 
 func _init() -> void:
 	label = "RIF"
+	crosshair = "crosshair_21"
+	automatic = true
+	fire_interval = INTERVAL
+	kick = KICK
 	load_size = LOAD
 	pip_count = 6
 	loaded = LOAD
@@ -37,4 +43,5 @@ func refill() -> void:
 	loaded = LOAD
 	reserve = ROUNDS - LOAD
 	reload_left = 0.0
+	cooldown = 0.0
 	suppressor = SUPPRESSOR_SHOTS

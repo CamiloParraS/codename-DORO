@@ -47,7 +47,7 @@ The AI design has three layers. Guards run a behaviour tree. Aigis is a determin
 20. As a player, I want a tranq headshot to neutralize at once and a body shot to take about 3 s while the guard stumbles and can't radio, so that precision is rewarded.
 21. As a player, I want a suppressed assault rifle whose suppressor breaks after 10 shots, so that lethal force has a stealth budget.
 22. As a player, I want a rifle headshot or two body hits to kill, so that the rifle feels decisive.
-23. As a player, I want loud shots to be heard within 30 m and to send guards straight to suspicion at the shot's position, without a radio alert, so that going loud has a cost I can still manage.
+23. As a player, I want loud shots to be heard within 40 m and to send guards straight to suspicion at the shot's position, without a radio alert, so that going loud has a cost I can still manage.
 24. As a player, I want to aim with RMB and fire with LMB only while aiming, so that every shot is deliberate.
 25. As a player, I want to switch weapons with 1/2 and reload with R (and automatically on an empty magazine), so that ammo management is simple.
 26. As a player, I want resupply crates that restore ammo, the suppressor and my items, so that a long Mission stays playable.
@@ -207,7 +207,7 @@ Interface shape from the prototype: `tick(delta, seen_rate, seen_pos, why, at_ta
 
 - Meter at 0.35 = suspicion (shows "?", a 1 s turn-and-look beat, then investigate, then a 5 s look-around). Full meter = alert ("!", radio call alerts every guard). Drains 0.25/s. Alert is lost after 3 s unseen. Evasion searches the last known position for 12 s; seeing the Operative there means alert again.
 - Fill rate (computed by the scene, passed in as `seen_rate`): front cone 30° half-angle × 16 m, plus a peripheral cone 60° × 6 m at half rate. Line of sight is a ray to the chest. Multipliers: crouched ×0.5; still ×0.6, walking ×1, running ×1.5; closer than 3 m ×4; faster with less distance. A carried body makes the Operative count as standing and walking.
-- Hearing: running footsteps 6 m, knock and Magazine landing 10 m, loud shot 30 m, noisy choke (Takedowns L3) 6 m. No wall occlusion. Noise means suspicion at the source, never alert.
+- Hearing: running footsteps 6 m, knock and Magazine landing 10 m, loud shot 40 m, noisy choke (Takedowns L3) 6 m. No wall occlusion. Noise means suspicion at the source, never alert.
 - Down guard seen (same meter): suspicion → walk over and check → radio an alert if dead, or wake them if Neutralized (the woken guard joins in suspicion and remembers nothing). Downs L2 replaces the check with an instant alert.
 - Security cameras use the same meter (front cone only); a full meter is a radio alert with no suspicion step.
 

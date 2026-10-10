@@ -31,7 +31,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Tiny Texture Pack 2 by Screaming Brain Studios, https://opengameart.org/content/tiny-texture-pack-2, CC0 1.0
 - Textures derived from ambientCG, https://ambientcg.com (CC0 1.0), and Poly Haven, https://polyhaven.com (CC0 1.0), downscaled to 64-128 px.
 - Foxtex, Foxhead, https://foxh3ad.itch.io/foxtexcom, CC0 1.0
-- Crosshair (`crosshair_4_small.png`) from Pizza Doggy's Mystery Package vol. 14 (Crosshairs Pack v1.0), https://itch.io/profile/pizzadoggy. Same license as the models above (Pizza Doggy's Game Assets License Agreement).
+- Crosshairs (`crosshair_4_small.png`, `crosshair_21.png`) from Pizza Doggy's Mystery Package vol. 14 (Crosshairs Pack v1.0), https://itch.io/profile/pizzadoggy. Same license as the models above (Pizza Doggy's Game Assets License Agreement).
 
 ## Fonts
 

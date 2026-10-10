@@ -5,6 +5,8 @@ extends CharacterBody3D
 const KNOCK_COOLDOWN := 1.0
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 2.0
+const RECOIL_MAX := 0.15      # radians the kick can stack up to while holding fire
+const RECOIL_RECOVERY := 0.3 # radians per second it settles back
 const CRATE_REACH := 2.0      # metres to a resupply crate's centre
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
@@ -31,6 +33,7 @@ var _choke_left := 0.0
 var _choking: Node3D
 var _yaw := 0.0
 var _pitch := -0.25
+var _recoil := 0.0
 var _pivot: Node3D
 var _pitch_node: Node3D
 var _shoulder_arm: SpringArm3D
@@ -138,7 +141,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		weapon = "rifle"
 	elif e.is_action_pressed("reload"):
 		gun().reload(carrying != null)
-	elif e.is_action_pressed("fire") and aiming and not _choking:
+	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
 		_fire()
 	elif e.is_action_pressed("pause"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -148,8 +151,11 @@ func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
+	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
+	if aiming and not _choking and gun().automatic and Input.is_action_pressed("fire"):
+		_fire()
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
 		v = Vector2.ZERO  # a choke needs both hands
@@ -192,6 +198,8 @@ func _fire() -> void:
 		return
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
+	_recoil = minf(_recoil + g.kick, RECOIL_MAX)
+	_yaw += randf_range(-0.3, 0.3) * g.kick
 	var sp := Tranq.spread(carrying != null)
 	var dir := -camera.global_basis.z
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
@@ -273,5 +281,5 @@ func _process(delta: float) -> void:
 	var head := 0.95 if crouching else 1.45
 	_pivot.global_position = _pivot.global_position.lerp(global_position + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
-	_pitch_node.rotation.x = _pitch
+	_pitch_node.rotation.x = _pitch + _recoil
 	_visual.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW
