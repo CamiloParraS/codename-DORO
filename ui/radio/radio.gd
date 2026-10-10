@@ -123,10 +123,12 @@ func _send(pick: Dictionary, line: String) -> void:
 	if j.exposed:
 		get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	var from := _operative.global_position
-	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients))
+	var sent: Dictionary = glaukopis.history.back()  # its accepted list is fixed up once they answer
+	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients, sent))
 
 
-func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array) -> void:
+func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, sent: Dictionary) -> void:
+	sent.accepted = []  # only the guards who obey below got the order
 	var up := recipients.filter(func(r): return is_instance_valid(r) and not r.is_down())
 	if up.is_empty():
 		return
@@ -147,6 +149,8 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array) 
 			"all_clear":
 				r.stand_down(pick.speaker)
 				ok = true
+		if ok:
+			sent.accepted.append(String(r.name))
 		if ok and not acked:
 			acked = true
 			r.radio_say(ACKS[pick.order] % pick.place if pick.order == "go" else ACKS[pick.order])

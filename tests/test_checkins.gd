@@ -25,6 +25,16 @@ func test_checkin_starts_then_talks_then_rewaits() -> void:
 	assert_true(c.wait >= 20.0)
 
 
+func test_on_air_only_while_checking_in_on_patrol() -> void:
+	var c := Checkin.new()
+	assert_false(c.on_air(GuardAlert.State.PATROL))
+	c.wait = 0.0
+	c.tick(0.1)
+	assert_true(c.on_air(GuardAlert.State.PATROL))
+	for s in [GuardAlert.State.SUSPICION, GuardAlert.State.ALERT, GuardAlert.State.EVASION]:
+		assert_false(c.on_air(s))
+
+
 func test_capture_after_2_5s_within_6m() -> void:
 	var v := Voiceprints.new()
 	assert_false(v.tick(2.0, "G1", 5.9, true))

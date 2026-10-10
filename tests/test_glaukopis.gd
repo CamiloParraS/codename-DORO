@@ -99,6 +99,38 @@ func test_contradiction_expires_after_30s() -> void:
 	assert_eq(g.judge(_facts({now = 130.0, order = "hold", place = ""})).doubt, 15)
 
 
+func test_contradiction_is_30_once_per_judgement() -> void:
+	var g := Glaukopis.new()
+	g.expose_at = 1000  # keep every order believed
+	g.judge(_facts({now = 100.0}))
+	g.judge(_facts({now = 105.0, order = "hold", place = ""}))
+	assert_eq(g.judge(_facts({now = 110.0, place = "Gatehouse"})).doubt, 30 + 2 * 15)
+	g.judge(_facts({now = 120.0, recipients = ["Eleni"], place = "Gatehouse"}))
+	assert_eq(g.judge(_facts({now = 125.0, recipients = ["Dimos", "Eleni"], all_units = true})).doubt,
+		30 + 10 + 4 * 15)  # both guards contradicted: still +30 once
+
+
+func test_only_the_latest_order_a_guard_got_counts() -> void:
+	var g := Glaukopis.new()
+	g.expose_at = 1000
+	g.judge(_facts({now = 100.0}))
+	g.judge(_facts({now = 105.0, place = "Gatehouse"}))
+	assert_eq(g.judge(_facts({now = 110.0, place = "Gatehouse"})).doubt, 2 * 15)
+
+
+func test_an_exposed_order_was_never_got_so_it_does_not_contradict() -> void:
+	var g := Glaukopis.new()
+	g.judge(_facts({now = 100.0, speaker = "Aris", seen_by = ["Dimos"]}))  # exposed
+	assert_eq(g.judge(_facts({now = 110.0, place = "Gatehouse"})).doubt, 15)
+
+
+func test_a_refused_order_does_not_contradict() -> void:
+	var g := Glaukopis.new()
+	g.judge(_facts({now = 100.0}))
+	g.history.back().accepted.erase("Dimos")  # the scene: Dimos was alerted and ignored it
+	assert_eq(g.judge(_facts({now = 110.0, place = "Gatehouse"})).doubt, 15)
+
+
 func test_each_transmission_in_last_minute_is_15() -> void:
 	var g := Glaukopis.new()
 	g.judge(_facts({now = 0.0, recipients = ["A"]}))   # older than 60 s by the end: not counted

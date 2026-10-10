@@ -15,6 +15,12 @@ func talking() -> bool:
 	return talking_left > 0.0
 
 
+## The ((·)) mark is up and a Voiceprint can be recorded: a check-in by a guard on patrol. A guard
+## that is suspicious, alerted or searching still checks in (a subtitle) but shows its ?/! instead.
+func on_air(state: int) -> bool:
+	return talking() and state == GuardAlert.State.PATROL
+
+
 ## Advances the timer; true on the frame a check-in starts.
 func tick(delta: float) -> bool:
 	if talking_left > 0.0:

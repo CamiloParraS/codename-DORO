@@ -12,7 +12,9 @@ const FRESH_ALERT := 15.0      # "all clear" this soon after an alert is the wro
 
 var expose_at := EXPOSE_AT     # Spoofing L1 lowers it
 var flagged: Array[String] = []  # Voiceprints exposed for good
-var history: Array = []        # [{now, recipients, order, place}]
+## [{now, order, place, accepted}]. accepted: the recipients who took the order, [] when exposed;
+## the scene drops the ones who refused it once they answer (contradictions only count these).
+var history: Array = []
 var last := {}                 # last committed judgement, for the debug overlay
 
 
@@ -44,14 +46,21 @@ func judge(facts: Dictionary, commit := true) -> Dictionary:
 		reasons.append([10, "a guard ordering all units"])
 
 	var recent := 0
+	var current := {}   # recipient -> the latest order it accepted < 30 s ago
 	for h in history:
 		var ago: float = facts.now - h.now
 		if ago >= WINDOW:
 			continue
 		recent += 1
-		var same: Array = h.recipients.filter(func(r): return r in facts.recipients)
-		if ago < CONTRADICT_TIME and not same.is_empty() and (h.order != facts.order or h.place != facts.place):
-			reasons.append([30, "contradicts the order %s got %d s ago" % [_list(same), floori(ago)]])
+		if ago < CONTRADICT_TIME:
+			for r in h.accepted:
+				if r in facts.recipients:
+					current[r] = h
+	var contradicted: Array = current.keys().filter(func(r):
+		return current[r].order != facts.order or current[r].place != facts.place)
+	if not contradicted.is_empty():  # +30 once, however many guards or earlier orders
+		var ago: float = facts.now - contradicted.map(func(r): return current[r].now).max()
+		reasons.append([30, "contradicts the order %s got %d s ago" % [_list(contradicted), floori(ago)]])
 	if recent > 0:
 		reasons.append([PER_RECENT * recent, "%d transmission(s) in the last minute" % recent])
 
@@ -60,7 +69,8 @@ func judge(facts: Dictionary, commit := true) -> Dictionary:
 		doubt += r[0]
 	var out := {doubt = doubt, exposed = doubt >= expose_at, reasons = reasons}
 	if commit:
-		history.append({now = facts.now, recipients = facts.recipients, order = facts.order, place = facts.place})
+		history.append({now = facts.now, order = facts.order, place = facts.place,
+			accepted = [] if out.exposed else facts.recipients.duplicate()})
 		if out.exposed and sp not in flagged:
 			flagged.append(sp)
 		last = out

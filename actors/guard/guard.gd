@@ -84,12 +84,12 @@ func _check_in(delta: float) -> void:
 		var line: String = Checkin.LINES.pick_random()
 		get_tree().call_group("radio_log", "say", name, line)
 	if operative:
-		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), checkin.talking())
+		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), checkin.on_air(alert.state))
 	_refresh_mark()
 
 
 func _refresh_mark() -> void:
-	var talk := checkin.talking() and alert.state == GuardAlert.State.PATROL
+	var talk := checkin.on_air(alert.state)
 	_mark.text = "((·))" if talk else MARKS[alert.state]
 	_mark.modulate = Color.WHITE if talk else MARK_COLORS[alert.state]
 
@@ -187,6 +187,7 @@ func _down_within(reach: float) -> Node3D:
 
 ## Strongest sighting of a Down guard: [fill rate, position]. Same vision as for the Operative,
 ## with the Down guard counted as standing still. Kept apart from seen_rate, which is only the Operative.
+## Every Down guard in sight becomes known_down, not just the strongest.
 func _sense_down() -> Array:
 	var best := [0.0, Vector3.ZERO]
 	var eye := global_position + Vector3.UP * EYE
@@ -196,12 +197,14 @@ func _sense_down() -> Array:
 		var chest: Vector3 = g.global_position + Vector3.UP * 0.4
 		var offset := chest - eye
 		var rate := GuardVision.fill_rate(offset, -global_basis.z, false, false, false)
-		if rate <= best[0]:
+		if rate <= 0.0:
 			continue
 		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), operative.get_rid()])
-		if get_world_3d().direct_space_state.intersect_ray(q).is_empty():
+		if not get_world_3d().direct_space_state.intersect_ray(q).is_empty():
+			continue
+		g.known_down = true
+		if rate > best[0]:
 			best = [rate, g.global_position]
-			g.known_down = true
 	return best
 
 
@@ -276,10 +279,10 @@ func _at(t: Vector3) -> bool:
 
 # --- Radio -------------------------------------------------------------------------------------
 
-## A line on the radio: a subtitle, and ((·)) over the head while talking (a Voiceprint can be recorded).
+## A line on the radio (an ack, an exposure line): a subtitle only. It isn't a check-in, so no ((·))
+## and no Voiceprint capture.
 func radio_say(line: String) -> void:
 	get_tree().call_group("radio_log", "say", name, line)
-	checkin.talking_left = Checkin.TALK_TIME
 
 
 ## A believed Spoofed order from `who`: "go" to pos or "hold" here. A suspicious or searching guard
@@ -287,7 +290,7 @@ func radio_say(line: String) -> void:
 func obey(kind: String, pos: Vector3, who: String) -> bool:
 	if is_down() or alert.state == GuardAlert.State.ALERT:
 		return false
-	_changed(alert.stand_down(who))
+	_changed(alert.stand_down(who, kind))
 	order = {kind = kind, pos = pos, time = 0.0}
 	_bt.restart()
 	return true

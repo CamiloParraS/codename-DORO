@@ -315,6 +315,17 @@ func test_all_clear_stands_any_state_down_to_patrol() -> void:
 	assert_eq(s.state, S.PATROL)
 
 
+func test_go_and_hold_orders_give_their_own_reason_even_on_patrol() -> void:
+	var s := GuardAlert.new()
+	s.hear(SPOT, "a knock")
+	assert_eq(s.stand_down("Kostas", "go"), "Kostas sent it to check a place")
+	assert_eq(s.state, S.PATROL)
+	var p := GuardAlert.new()
+	p.meter = 0.2
+	assert_eq(p.stand_down("Kostas", "hold"), "Kostas told it to hold position")
+	assert_eq(p.meter, 0.2)  # already patrolling: nothing else changes
+
+
 # ----- Security cameras: same meter, no suspicion step -----
 
 func test_camera_full_meter_alerts_with_no_suspicion_step() -> void:

@@ -13,6 +13,7 @@ const LOSE_TIME := 3.0     # seconds out of sight before ALERT drops to EVASION
 const SEARCH_TIME := 12.0  # seconds of searching the last known position before back to patrol
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
+const ORDER_REASONS := {all_clear = "%s called all clear", go = "%s sent it to check a place", hold = "%s told it to hold position"}
 
 var state := State.PATROL
 var meter := 0.0           # 0..1 detection meter; only fills in PATROL / SUSPICION
@@ -137,11 +138,14 @@ func radio(pos: Vector3, who: String) -> String:
 	return _go(State.ALERT, "%s radioed an alert" % who)
 
 
-## A believed "all clear" on the radio from `who`: back to patrol from any state.
-func stand_down(who: String) -> String:
+## A believed radio order from `who` ("all_clear", or "go" / "hold" for a guard that drops its
+## search to carry it out): back to patrol from any state. The reason names the order; an all clear
+## to a patrolling guard changes nothing ("").
+func stand_down(who: String, order := "all_clear") -> String:
+	var why: String = ORDER_REASONS[order] % who
 	if state == State.PATROL:
-		return ""
-	return _go(State.PATROL, "%s called all clear" % who)
+		return "" if order == "all_clear" else why
+	return _go(State.PATROL, why)
 
 
 func _go(to: State, reason: String) -> String:
