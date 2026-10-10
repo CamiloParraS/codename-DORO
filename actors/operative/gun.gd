@@ -4,6 +4,7 @@ class_name Gun
 extends RefCounted
 
 const RELOAD_TIME := 1.5
+const SPREAD_ONE_HAND := 0.05  # radians of aim error while carrying; both hands is dead on
 
 var label := ""          # on the HUD weapon card
 var crosshair := ""      # file in res://assets/textures/
@@ -20,6 +21,11 @@ var reserve := 0
 var reload_left := 0.0
 var suppressor_max := -1 # shots before the suppressor breaks; -1 = it never breaks
 var suppressor := -1
+
+
+## Radians of aim error: none with both hands, SPREAD_ONE_HAND while carrying.
+func spread(carrying: bool) -> float:
+	return SPREAD_ONE_HAND if carrying else 0.0
 
 
 func reloading() -> bool:

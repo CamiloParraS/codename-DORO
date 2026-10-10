@@ -129,14 +129,16 @@ func kill() -> void:
 func shoot(head: bool, from: Vector3) -> void:
 	if head:
 		get_tree().call_group("mission_tally", "event", "headshot")
-		if not helmet:
-			kill()
-			return
 	hits += 1
-	if hits >= BODY_HITS_TO_KILL:
+	if bullet_kills(head, helmet, hits):
 		kill()
 	else:
 		_changed(alert.hear(from, "a bullet"))
+
+
+## Does a rifle bullet kill: an unhelmeted headshot always, otherwise the BODY_HITS_TO_KILL-th hit.
+static func bullet_kills(head: bool, has_helmet: bool, hit_count: int) -> bool:
+	return (head and not has_helmet) or hit_count >= BODY_HITS_TO_KILL
 
 
 ## A tranq dart from `from`: a headshot Neutralizes at once (a helmet makes it a body shot), a body

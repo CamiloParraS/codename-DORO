@@ -200,7 +200,7 @@ func _fire() -> void:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
 	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
 	_yaw += randf_range(-0.3, 0.3) * arm.kick
-	var sp := Tranq.spread(carrying != null)
+	var sp := arm.spread(carrying != null)
 	var dir := -camera.global_basis.z
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	var from := camera.global_position

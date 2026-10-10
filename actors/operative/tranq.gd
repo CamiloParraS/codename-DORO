@@ -5,8 +5,6 @@ extends Gun
 const LOAD_SIZE := 4
 const TOTAL := 8
 const BODY_DELAY := 3.0      # a body shot Neutralizes this long after the hit
-const SPREAD := 0.0          # radians of aim error with both hands
-const SPREAD_ONE_HAND := 0.05
 
 
 func _init() -> void:
@@ -18,6 +16,3 @@ func _init() -> void:
 	loaded = LOAD_SIZE
 	reserve = TOTAL - LOAD_SIZE
 
-
-static func spread(carrying: bool) -> float:
-	return SPREAD_ONE_HAND if carrying else SPREAD

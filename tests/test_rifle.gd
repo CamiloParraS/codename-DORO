@@ -90,3 +90,23 @@ func test_pistol_is_semi_auto_without_recoil_and_the_weapons_differ_on_screen() 
 	assert_false(t.automatic)
 	assert_eq(t.kick, 0.0)
 	assert_true(Rifle.new().crosshair != t.crosshair)
+
+
+func test_the_rifle_is_one_handed_less_accurate_too() -> void:
+	var r := Rifle.new()
+	assert_eq(r.spread(false), 0.0)
+	assert_eq(r.spread(true), Gun.SPREAD_ONE_HAND)
+
+
+func test_two_body_hits_kill_the_first_does_not() -> void:
+	assert_false(Guard.bullet_kills(false, false, 1))
+	assert_true(Guard.bullet_kills(false, false, 2))
+
+
+func test_a_headshot_kills_at_once() -> void:
+	assert_true(Guard.bullet_kills(true, false, 1))
+
+
+func test_a_helmet_turns_a_headshot_into_a_body_hit() -> void:
+	assert_false(Guard.bullet_kills(true, true, 1))
+	assert_true(Guard.bullet_kills(true, true, 2))

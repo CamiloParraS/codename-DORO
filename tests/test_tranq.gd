@@ -79,4 +79,4 @@ func test_full_load_or_no_reserve_does_not_reload() -> void:
 
 
 func test_one_handed_is_less_accurate() -> void:
-	assert_true(Tranq.spread(true) > Tranq.spread(false))
+	assert_true(Tranq.new().spread(true) > Tranq.new().spread(false))
