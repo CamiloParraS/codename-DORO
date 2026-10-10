@@ -11,3 +11,4 @@ How do the 6 weeks (2026-10-08 to around 2026-11-19) split up into slices, with 
 ## Comments
 
 - 2026-10-09 (from the map's fog): known cut candidates so far: the Magazine first ([Gadgets and items](12-gadgets-and-items.md)), the narrative word count's set cut order ([Narrative delivery](11-narrative-delivery.md)), and the write-up's fallback to sections 2, 5 and 8 ([AI write-up](13-ai-write-up.md)). The extra Missions candidates come from [Campaign plan](10-campaign-plan.md). Light and night was ruled out of scope.
+- 2026-10-09 (from [Persistence](15-persistence.md)): build work to schedule: the slot file and picker, in-memory checkpoints with the guard-reset rule, and the pause and main menus. Saving to disk happens only between Missions, so none of it touches the world state.

@@ -40,10 +40,11 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Gadgets and items](issues/12-gadgets-and-items.md): two items on HUD E's card, both from Mission 1. Scanner (3 charges × ~10 s, guard and camera cones within 30 m through walls) and Magazine (4, thrown ~15 m, lands as a knock). Neither feeds the Profile directly. No rations, no loud weapon. The Magazine is first to cut.
 - [AI write-up](issues/13-ai-write-up.md): live demo + one short Spanish document (Markdown → PDF, written last), no slides. Core sections: architecture, Aigis, evidence. Deployment tables generated from the Presets by a test suite, Mermaid diagrams + a LimboAI screenshot of the guard tree, ~10 min demo script as an appendix.
 - [Input](issues/14-input.md): keyboard+mouse only, through InputMap actions, no rebinding. WASD/Shift walk/C crouch/Tab shoulder, RMB aim + LMB fire (aimed only), 1/2 weapons, R reload (4- and 30-round magazines), wheel+F items, E context (choke, carry toggle), X kill, V knock, Q radial, Esc pause, F3 debug overlay. Calls are scripted only. Settings: sensitivity, invert Y, language, window mode, volume.
+- [Persistence](issues/15-persistence.md): three autosave slots, one playthrough each, written only when a Mission is completed (the Core at the terminal, marking the slot complete; loading it replays the finale). Slot = next Mission, Habit points, Lethality + denominator. Checkpoints in memory only: the dead stay dead, living guards reset to patrol, Voiceprints roll back. Quitting mid-Mission restarts it. Free mode saves nothing.
 
 ## Not yet specified
 
-- Nothing left. Persistence and Schedule and cut line (with Extra Missions folded in) are open tickets.
+- Nothing left. Schedule and cut line (with Extra Missions folded in) is the last open ticket.
 
 ## Out of scope
 

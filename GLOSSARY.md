@@ -22,6 +22,10 @@ _Avoid_: Mark, VIP, boss
 The place in an Area where a Mission ends once its objectives are done, and where a carried Target must be brought.
 _Avoid_: Exit, evac, LZ
 
+**Checkpoint**:
+A point inside a Mission, one per objective step, where the Operative resumes after dying. Everything since it, including Profile points and Lethality, is undone.
+_Avoid_: Save, save point, respawn
+
 **Core**:
 Aigis's physical home, a room beneath the Harbour Area, and the setting of the final Mission.
 _Avoid_: Server room, mainframe, boss level
