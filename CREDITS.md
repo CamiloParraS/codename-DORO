@@ -35,7 +35,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 ## Fonts
 
 - Press Start 2P, Copyright 2012 The Press Start 2P Project Authors (cody@zone38.net), SIL Open Font License 1.1. OFL.txt is included at res://assets/fonts/OFL.txt.
-- VT323, Copyright 2011 The VT323 Project Authors (peter.hull@oikoi.com), SIL Open Font License 1.1.
+- VT323, Copyright 2011 The VT323 Project Authors (peter.hull@oikoi.com), SIL Open Font License 1.1. OFL-VT323.txt is included at res://assets/fonts/OFL-VT323.txt.
 
 ## Audio
 

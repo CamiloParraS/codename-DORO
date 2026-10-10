@@ -16,6 +16,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+PsxLook="*res://ui/psx_look/psx_look.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
 
 [display]
