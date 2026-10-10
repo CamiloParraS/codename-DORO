@@ -115,3 +115,13 @@ _Avoid_: KO'd, subdued, stunned, sleeping
 **Down**:
 A guard who is either Neutralized or dead, as seen by someone who hasn't checked which.
 _Avoid_: Body (when it might be alive)
+
+### Equipment
+
+**Scanner**:
+An item that briefly shows the vision cones of nearby guards and cameras, even through walls. Limited charges per Mission.
+_Avoid_: Ghost Layer, cone gadget, goggles
+
+**Magazine**:
+An empty magazine the Operative throws to make a noise where it lands, drawing guards to investigate.
+_Avoid_: Mag, distraction, decoy
