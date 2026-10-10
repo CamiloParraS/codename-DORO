@@ -11,18 +11,23 @@ const DRAIN := 0.25        # meter drain per second while the Operative is out o
 const LOOK_TIME := 5.0     # seconds a suspicious guard looks around the spot before giving up
 const LOSE_TIME := 3.0     # seconds out of sight before ALERT drops to EVASION
 const SEARCH_TIME := 12.0  # seconds of searching the last known position before back to patrol
+const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
+const KNOCK_RANGE := 10.0
 
 var state := State.PATROL
 var meter := 0.0           # 0..1 detection meter; only fills in PATROL / SUSPICION
 var last_known := Vector3.ZERO
 var timer := 0.0           # time spent at the spot in SUSPICION / EVASION
 var unseen := 0.0          # time without sight in ALERT
+var _saw_down := false     # see_down() filled the meter since the last tick: no drain
 
 
 ## seen_rate: how fast the meter fills this frame (0 = not seen). why: what the guard saw.
 ## at_target: the guard has reached last_known (or as close as the navmesh gets).
 func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_target: bool) -> String:
 	var seen := seen_rate > 0.0
+	var body := _saw_down
+	_saw_down = false
 	if seen:
 		last_known = seen_pos
 	match state:
@@ -30,7 +35,7 @@ func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_tar
 			if seen:
 				meter = minf(meter + seen_rate * delta, 1.0)
 				timer = 0.0
-			else:
+			elif not body:
 				meter = maxf(meter - DRAIN * delta, 0.0)
 			if meter >= 1.0:
 				return _go(State.ALERT, "spotted you (%s)" % why)
@@ -68,10 +73,12 @@ func hear(pos: Vector3, what: String) -> String:
 
 
 ## The guard sees a Down guard at pos (rate: the same vision fill as for the Operative). It fills the
-## meter only up to suspicion, then walks over to check; alerted guards ignore bodies.
+## same meter at the same rate, only up to suspicion, then walks over to check; alerted guards
+## ignore bodies. Call it before tick() in the same frame: a body in sight holds off the drain.
 func see_down(delta: float, rate: float, pos: Vector3) -> String:
 	if rate <= 0.0 or state == State.ALERT:
 		return ""
+	_saw_down = true
 	last_known = pos
 	timer = 0.0
 	if state == State.PATROL:
@@ -99,16 +106,9 @@ func wake(pos: Vector3) -> String:
 	return _go(State.SUSPICION, "woke up")
 
 
-## Noise ranges in metres. No wall occlusion.
-const FOOTSTEP_RANGE := 6.0
-const KNOCK_RANGE := 10.0
-
-
-## Every guard within radius of pos hears it (flat-free 3D distance, through walls).
-static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String) -> void:
-	for g in tree.get_nodes_in_group("guards"):
-		if g.global_position.distance_to(pos) <= radius:
-			g.on_noise(pos, what)
+## Does a guard at ear hear a noise of this radius at pos: 3D distance, through walls.
+static func in_earshot(ear: Vector3, pos: Vector3, radius: float) -> bool:
+	return ear.distance_to(pos) <= radius
 
 
 ## Another guard radioed an alert at pos.

@@ -268,28 +268,36 @@ func test_woken_guard_is_suspicious_and_remembers_nothing() -> void:
 	assert_eq(a.last_known, Vector3(2, 0, 2))
 
 
-class StubEar:
-	extends Node3D
-	var heard: Array[String] = []
+func test_a_down_guard_fills_the_meter_at_the_operatives_rate() -> void:
+	# A body at a far-range rate (below the 0.25/s drain) still fills, as fast as the Operative would.
+	var rate := 0.2
+	var body := GuardAlert.new()
+	var seen := GuardAlert.new()
+	var body_frames := 0
+	var seen_frames := 0
+	while body.state == S.PATROL and body_frames < 1000:
+		body.see_down(DT, rate, SPOT)
+		body.tick(DT, 0.0, Vector3.ZERO, "", false)
+		body_frames += 1
+	while seen.state == S.PATROL and seen_frames < 1000:
+		seen.tick(DT, rate, SPOT, "test", false)
+		seen_frames += 1
+	assert_eq(body.state, S.SUSPICION)
+	assert_eq(body_frames, seen_frames, "same meter, same rate")
 
-	func on_noise(_pos: Vector3, what: String) -> void:
-		heard.append(what)
+
+func test_the_meter_drains_again_once_the_body_is_out_of_sight() -> void:
+	var a := GuardAlert.new()
+	a.see_down(1.0, 0.3, SPOT)
+	a.tick(1.0, 0.0, Vector3.ZERO, "", false)
+	assert_true(is_equal_approx(a.meter, 0.3), "no drain the frame the body is seen")
+	a.tick(1.0, 0.0, Vector3.ZERO, "", false)
+	assert_true(is_equal_approx(a.meter, 0.05), "%f" % a.meter)
 
 
-func test_broadcast_reaches_only_guards_in_range() -> void:
-	var tree := Engine.get_main_loop() as SceneTree
-	var near: StubEar = track(StubEar.new())
-	var far: StubEar = track(StubEar.new())
-	tree.root.add_child(near)
-	tree.root.add_child(far)
-	near.add_to_group("guards")
-	far.add_to_group("guards")
-	near.global_position = Vector3(5.9, 0, 0)
-	far.global_position = Vector3(6.1, 0, 0)
-	GuardAlert.broadcast(tree, Vector3.ZERO, GuardAlert.FOOTSTEP_RANGE, "footsteps")
-	assert_eq(near.heard, ["footsteps"])
-	assert_eq(far.heard, [])
-	GuardAlert.broadcast(tree, Vector3.ZERO, GuardAlert.KNOCK_RANGE, "a knock")
-	assert_eq(far.heard, ["a knock"])
-	near.remove_from_group("guards")
-	far.remove_from_group("guards")
+func test_noise_reaches_only_guards_in_range_through_walls() -> void:
+	var o := Vector3.ZERO
+	assert_true(GuardAlert.in_earshot(Vector3(5.9, 0, 0), o, GuardAlert.FOOTSTEP_RANGE))
+	assert_false(GuardAlert.in_earshot(Vector3(6.1, 0, 0), o, GuardAlert.FOOTSTEP_RANGE))
+	assert_true(GuardAlert.in_earshot(Vector3(6.1, 0, 0), o, GuardAlert.KNOCK_RANGE))
+	assert_false(GuardAlert.in_earshot(Vector3(0, 0, 10.1), o, GuardAlert.KNOCK_RANGE))

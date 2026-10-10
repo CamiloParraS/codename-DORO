@@ -6,7 +6,7 @@ const FRONT_RANGE := 16.0
 const FRONT_HALF := deg_to_rad(30.0)
 const SIDE_RANGE := 6.0           # peripheral vision: wide but short, half rate
 const SIDE_HALF := deg_to_rad(60.0)
-const CLOSE := 3.0                # inside this (front cone) the meter fills x4
+const CLOSE := 3.0                # inside this (either cone) the meter fills x4
 const BASE_RATE := 1.2
 
 
@@ -25,7 +25,7 @@ static func fill_rate(offset: Vector3, facing: Vector3, crouching: bool, moving:
 		rate *= 1.5  # running
 	if reach == SIDE_RANGE:
 		rate *= 0.5
-	elif dist < CLOSE:
+	if dist < CLOSE:
 		rate *= 4.0
 	return rate
 

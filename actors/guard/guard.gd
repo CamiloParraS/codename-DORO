@@ -53,10 +53,10 @@ func _physics_process(delta: float) -> void:
 			neutralize()
 			return
 	if target:
+		var down := _sense_down()  # before tick: a body in sight holds off the drain
+		_react(alert.see_down(delta, down[0], down[1]))
 		var rate := _sense()
 		_react(alert.tick(delta, rate, target.global_position, _saw, arrived()))
-		var down := _sense_down()
-		_react(alert.see_down(delta, down[0], down[1]))
 		if alert.state in [GuardAlert.State.SUSPICION, GuardAlert.State.EVASION] and arrived():
 			var body := _down_within(CHECK_REACH)
 			if body:
@@ -101,7 +101,9 @@ func tranquilize(head: bool, from: Vector3) -> void:
 ## Back on its feet, suspicious and remembering nothing. from: where it looks first.
 func wake(from: Vector3) -> void:
 	neutral_left = 0.0
-	carrier = null
+	if carrier:  # no longer Down: off the Operative's shoulder
+		carrier.carrying = null
+		carrier = null
 	collision_layer = 2
 	_lie(false)
 	_changed(alert.wake(from))
@@ -133,13 +135,13 @@ func _down_tick(delta: float) -> void:
 
 func _down_within(reach: float) -> Node3D:
 	for g in get_tree().get_nodes_in_group("guards"):
-		if g != self and g.is_down() and _flat_dist(g.global_position) <= reach:
+		if g != self and g.is_down() and not g.carrier and _flat_dist(g.global_position) <= reach:
 			return g
 	return null
 
 
 ## Strongest sighting of a Down guard: [fill rate, position]. Same vision as for the Operative,
-## with the body counted as standing still.
+## with the body counted as standing still. Kept apart from seen_rate, which is only the Operative.
 func _sense_down() -> Array:
 	var best := [0.0, Vector3.ZERO]
 	var eye := global_position + Vector3.UP * EYE
@@ -154,9 +156,14 @@ func _sense_down() -> Array:
 		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), target.get_rid()])
 		if get_world_3d().direct_space_state.intersect_ray(q).is_empty():
 			best = [rate, g.global_position]
-	if best[0] > seen_rate:
-		seen_rate = best[0]
 	return best
+
+
+## Every guard within radius of pos hears it (GuardAlert.in_earshot: through walls).
+static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String) -> void:
+	for g in tree.get_nodes_in_group("guards"):
+		if GuardAlert.in_earshot(g.global_position, pos, radius):
+			g.on_noise(pos, what)
 
 
 ## Applies a state change, and radios everyone when it raised an alert by sight.

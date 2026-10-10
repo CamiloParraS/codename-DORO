@@ -125,7 +125,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		_apply_shoulder()
 	elif e.is_action_pressed("knock") and _knock_left <= 0.0:
 		_knock_left = KNOCK_COOLDOWN
-		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
+		Guard.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
 	elif e.is_action_pressed("weapon_tranq"):
@@ -158,7 +158,7 @@ func _physics_process(delta: float) -> void:
 	moving = v != Vector2.ZERO
 	_knock_left -= delta
 	if moving and not looks_walking() and not crouching:  # running is loud
-		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
+		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		_visual.rotation.y = lerp_angle(_visual.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
@@ -193,6 +193,8 @@ func _interact() -> void:
 		return
 	var g := _nearest(true)
 	if g:
+		if not g.dead:
+			g.neutralize()  # hoisting a Neutralized guard re-chokes it: the 90 s start over
 		carrying = g
 		g.carrier = self
 		return

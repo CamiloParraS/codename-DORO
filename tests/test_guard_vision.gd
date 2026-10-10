@@ -66,6 +66,12 @@ func test_closer_than_3m_fills_x4() -> void:
 	assert_gt(near, _run_rate(_at(0, 3.1)) * 3.0, "a jump at 3 m")
 
 
+func test_closer_than_3m_fills_x4_in_the_peripheral_cone_too() -> void:
+	var near := _run_rate(_at(50, 2.9))
+	var base := GuardVision.BASE_RATE * clampf(1.2 - 2.9 / GuardVision.SIDE_RANGE, 0.15, 1.0) * 1.5 * 0.5
+	assert_true(is_equal_approx(near, base * 4.0), "%f" % near)
+
+
 func test_faster_with_less_distance() -> void:
 	var prev := 0.0
 	for d in [15.0, 12.0, 9.0, 6.0, 3.5]:
