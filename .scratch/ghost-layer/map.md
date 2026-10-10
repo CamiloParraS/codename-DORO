@@ -46,7 +46,7 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 
 ## Not yet specified
 
-- Nothing left. The way is clear: the map is ready for `/to-spec`.
+- Nothing left. The map has been collapsed into the [spec](spec.md) (`ready-for-agent`); next is `/to-tickets`.
 
 ## Out of scope
 
