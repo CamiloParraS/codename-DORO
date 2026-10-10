@@ -67,6 +67,38 @@ func hear(pos: Vector3, what: String) -> String:
 	return ""
 
 
+## The guard sees a Down guard at pos (rate: the same vision fill as for the Operative). It fills the
+## meter only up to suspicion, then walks over to check; alerted guards ignore bodies.
+func see_down(delta: float, rate: float, pos: Vector3) -> String:
+	if rate <= 0.0 or state == State.ALERT:
+		return ""
+	last_known = pos
+	timer = 0.0
+	if state == State.PATROL:
+		meter = maxf(meter, minf(meter + rate * delta, SUSPECT_AT))
+		if meter >= SUSPECT_AT:
+			return _go(State.SUSPICION, "saw a Down guard")
+	return ""
+
+
+## Standing at a Down guard: a dead one raises the alert (the guard radios it); a Neutralized one
+## is woken by the caller, and the checker stays suspicious.
+func check_down(dead: bool) -> String:
+	if state == State.PATROL or state == State.ALERT:
+		return ""
+	if dead:
+		return _go(State.ALERT, "found a dead guard")
+	timer = 0.0
+	return "woke a Neutralized guard"
+
+
+## A guard just woke from being Neutralized: suspicious where it lies, remembering nothing.
+func wake(pos: Vector3) -> String:
+	last_known = pos
+	meter = SUSPECT_AT
+	return _go(State.SUSPICION, "woke up")
+
+
 ## Noise ranges in metres. No wall occlusion.
 const FOOTSTEP_RANGE := 6.0
 const KNOCK_RANGE := 10.0

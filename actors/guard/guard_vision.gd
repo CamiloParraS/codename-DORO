@@ -30,6 +30,11 @@ static func fill_rate(offset: Vector3, facing: Vector3, crouching: bool, moving:
 	return rate
 
 
+## True when offset (guard to Operative) falls in the guard's front cone.
+static func in_front(offset: Vector3, facing: Vector3) -> bool:
+	return _reach(offset, facing) == FRONT_RANGE
+
+
 ## What the guard saw, for the reason string: "running, 9 m, in front".
 static func describe(offset: Vector3, facing: Vector3, crouching: bool, moving: bool, walking: bool) -> String:
 	var how := ""

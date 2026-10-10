@@ -213,6 +213,61 @@ func test_full_cycle() -> void:
 		assert_ne(r, "")
 
 
+func _suspicious() -> GuardAlert:
+	var a := GuardAlert.new()
+	a.hear(SPOT, "a knock")
+	return a
+
+
+func test_seeing_a_down_guard_fills_the_meter_to_suspicion_only() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.see_down(1.0, 0.2, SPOT), "")
+	assert_eq(a.state, S.PATROL)
+	assert_eq(a.see_down(1.0, 5.0, SPOT), "saw a Down guard")
+	assert_eq(a.state, S.SUSPICION)
+	assert_eq(a.meter, GuardAlert.SUSPECT_AT, "a body never alerts by sight")
+	assert_eq(a.last_known, SPOT)
+
+
+func test_down_guard_sighting_redirects_the_search_and_alerted_guards_ignore_it() -> void:
+	var a := _evading()
+	assert_eq(a.see_down(DT, 1.0, Vector3(1, 0, 1)), "")
+	assert_eq(a.last_known, Vector3(1, 0, 1))
+	a = _alerted()
+	a.see_down(DT, 1.0, Vector3(1, 0, 1))
+	assert_eq(a.last_known, SPOT)
+
+
+func test_checking_a_dead_guard_raises_the_alert() -> void:
+	var a := _suspicious()
+	assert_eq(a.check_down(true), "found a dead guard")
+	assert_eq(a.state, S.ALERT)
+	a = _evading()
+	a.check_down(true)
+	assert_eq(a.state, S.ALERT)
+
+
+func test_checking_a_neutralized_guard_wakes_it_and_stays_suspicious() -> void:
+	var a := _suspicious()
+	assert_eq(a.check_down(false), "woke a Neutralized guard")
+	assert_eq(a.state, S.SUSPICION)
+	assert_eq(a.timer, 0.0)
+
+
+func test_only_a_suspicious_or_searching_guard_checks() -> void:
+	assert_eq(GuardAlert.new().check_down(true), "", "patrol")
+	assert_eq(_alerted().check_down(true), "", "alert")
+	assert_eq(_alerted().state, S.ALERT)
+
+
+func test_woken_guard_is_suspicious_and_remembers_nothing() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.wake(Vector3(2, 0, 2)), "woke up")
+	assert_eq(a.state, S.SUSPICION)
+	assert_eq(a.meter, GuardAlert.SUSPECT_AT)
+	assert_eq(a.last_known, Vector3(2, 0, 2))
+
+
 class StubEar:
 	extends Node3D
 	var heard: Array[String] = []

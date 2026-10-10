@@ -3,6 +3,8 @@
 extends CharacterBody3D
 
 const KNOCK_COOLDOWN := 1.0
+const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
+const CHOKE_TIME := 2.0
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
@@ -12,10 +14,14 @@ var invert_y := false
 var crouching := false
 var walking := false
 var moving := false
+var carrying: Node3D     # the Down guard on the shoulder
+var prompt := ""         # shown by the HUD
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 
 var _knock_left := 0.0
+var _choke_left := 0.0
+var _choking: Node3D
 var _yaw := 0.0
 var _pitch := -0.25
 var _pivot: Node3D
@@ -61,7 +67,20 @@ func _ready() -> void:
 
 ## Where guards aim their line-of-sight ray.
 func chest_height() -> float:
-	return 0.6 if crouching else 1.3
+	return 0.6 if looks_crouched() else 1.3
+
+
+## Carrying, the Operative reads to guards as standing and walking.
+func looks_crouched() -> bool:
+	return crouching and not carrying
+
+
+func looks_walking() -> bool:
+	return walking or carrying != null
+
+
+func carry_yaw() -> float:
+	return _visual.rotation.y
 
 
 func _make_arm(length: float) -> SpringArm3D:
@@ -104,6 +123,8 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("knock") and _knock_left <= 0.0:
 		_knock_left = KNOCK_COOLDOWN
 		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
+	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
+		_interact()
 	elif e.is_action_pressed("pause"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -111,18 +132,72 @@ func _unhandled_input(e: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	if _choking:
+		v = Vector2.ZERO  # a choke needs both hands
+		_choke_left -= delta
+		if not _choking.can_be_choked(global_position):  # it turned round or raised the alert
+			_choking.held = false
+			_choking = null
+			_choke_left = 0.0
+		elif _choke_left <= 0.0:
+			_choking.neutralize()
+			_choking = null
+	_update_prompt()
 	moving = v != Vector2.ZERO
 	_knock_left -= delta
-	if moving and not walking and not crouching:  # running is loud
+	if moving and not looks_walking() and not crouching:  # running is loud
 		GuardAlert.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		_visual.rotation.y = lerp_angle(_visual.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
-	var speed := Locomotion.speed(crouching, walking)
+	var speed := Locomotion.speed(crouching, looks_walking())
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
 	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
 	move_and_slide()
+
+
+func _interact() -> void:
+	if carrying:  # drop it where we stand
+		carrying.carrier = null
+		carrying.global_position = global_position
+		carrying = null
+		return
+	var g := _nearest(true)
+	if g:
+		carrying = g
+		g.carrier = self
+		return
+	g = _nearest(false)
+	if g:
+		_choking = g
+		_choke_left = CHOKE_TIME
+		g.held = true
+
+
+func _update_prompt() -> void:
+	if carrying:
+		prompt = "E drop"
+	elif _choking:
+		prompt = "choking..."
+	elif _nearest(true):
+		prompt = "E carry"
+	elif _nearest(false):
+		prompt = "E choke"
+	else:
+		prompt = ""
+
+
+## Nearest guard within reach: a Down one to carry, or one that can be choked.
+func _nearest(down: bool) -> Node3D:
+	var best: Node3D
+	var best_d := TAKEDOWN_REACH
+	for g in get_tree().get_nodes_in_group("guards"):
+		var d := Vector2(g.global_position.x - global_position.x, g.global_position.z - global_position.z).length()
+		if d <= best_d and (g.is_down() if down else g.can_be_choked(global_position)):
+			best = g
+			best_d = d
+	return best
 
 
 func _process(delta: float) -> void:

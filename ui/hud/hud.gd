@@ -54,6 +54,8 @@ func _draw() -> void:
 	_left()
 	_right()
 	_compass(fwd, right)
+	if _operative.prompt != "":
+		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, Color.WHITE)
 
 
 func _arcs(fwd: Vector3, right: Vector3) -> void:

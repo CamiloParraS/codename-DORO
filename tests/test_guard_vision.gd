@@ -95,3 +95,10 @@ func test_describe_names_motion_distance_and_cone() -> void:
 	assert_eq(GuardVision.describe(_at(50, 4), FWD, true, true, false), "crouch-walking, 4 m, corner of the eye")
 	assert_eq(GuardVision.describe(_at(0, 5), FWD, true, false, false), "still, crouched, 5 m, in front")
 	assert_eq(GuardVision.describe(_at(0, 5), FWD, false, true, true), "walking, 5 m, in front")
+
+
+func test_in_front_matches_the_front_cone() -> void:
+	var fwd := Vector3(0, 0, -1)
+	assert_true(GuardVision.in_front(Vector3(0, 0, -1.0), fwd))
+	assert_false(GuardVision.in_front(Vector3(0, 0, 1.0), fwd), "behind")
+	assert_false(GuardVision.in_front(Vector3(1.0, 0, 0), fwd), "beside")

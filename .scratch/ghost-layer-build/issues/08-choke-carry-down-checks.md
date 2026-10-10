@@ -6,10 +6,10 @@
 
 **Blocked by:** 05
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Prompt "E choke" appears within ~1.5 m of a non-alerted guard when outside their front cone; the choke takes 2 s and Neutralizes
-- [ ] Neutralized guards wake after ~90 s; choking again resets the timer
-- [ ] E toggles carry: fixed shoulder pose, walk speed (slower crouched), detection treats the Operative as standing and walking
-- [ ] Guards see Down guards with the same meter: suspicion → walk over → wake a Neutralized guard (who joins in suspicion and remembers nothing); the dead-guard alert hooks in once kills exist
-- [ ] The Down-guard check is covered by an alert state machine test
+- [x] Prompt "E choke" appears within ~1.5 m of a non-alerted guard when outside their front cone; the choke takes 2 s and Neutralizes
+- [x] Neutralized guards wake after ~90 s; choking again resets the timer
+- [x] E toggles carry: fixed shoulder pose, walk speed (slower crouched), detection treats the Operative as standing and walking
+- [x] Guards see Down guards with the same meter: suspicion → walk over → wake a Neutralized guard (who joins in suspicion and remembers nothing); the dead-guard alert hooks in once kills exist
+- [x] The Down-guard check is covered by an alert state machine test
