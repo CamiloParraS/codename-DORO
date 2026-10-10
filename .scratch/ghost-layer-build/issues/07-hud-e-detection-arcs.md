@@ -6,10 +6,10 @@
 
 **Blocked by:** 05
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Arcs around the screen centre per noticing guard, growing and warming with the meter, red on alert (lifted widget from the prototype)
-- [ ] Red screen-edge flash when an alert is raised
-- [ ] Right strip: ALERT/EVASION with its timer in red vertical text, stance silhouette, empty item and weapon card slots
-- [ ] Left: vertical life bar with "OPERATIVE"; top right: compass ring whose N turns with the camera, no enemy dots
-- [ ] Laid out on a 640×360 logical canvas, crisp at native resolution, white/grey palette
+- [x] Arcs around the screen centre per noticing guard, growing and warming with the meter, red on alert (lifted widget from the prototype)
+- [x] Red screen-edge flash when an alert is raised
+- [x] Right strip: ALERT/EVASION with its timer in red vertical text, stance silhouette, empty item and weapon card slots
+- [x] Left: vertical life bar with "OPERATIVE"; top right: compass ring whose N turns with the camera, no enemy dots
+- [x] Laid out on a 640×360 logical canvas, crisp at native resolution, white/grey palette

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dtf5ff7lsseum" path="res://areas/harbour/harbour.gd" id="gd"]
 [ext_resource type="PackedScene" path="res://actors/operative/operative.tscn" id="op"]
+[ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="hud"]
 [ext_resource type="Shader" uid="uid://c57hsq1ywppca" path="res://assets/shaders/psx_surface.gdshader" id="sh"]
 [ext_resource type="Texture2D" uid="uid://d1d8e2hcrwke0" path="res://assets/textures/Dirt_03-128.png" id="t1"]
 [ext_resource type="Texture2D" uid="uid://5qy1cav7j5yb" path="res://assets/textures/Brick_07-128.png" id="t2"]
@@ -704,3 +705,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 0, 26)
 
 [node name="Operative" parent="." unique_id=1316555596 instance=ExtResource("op")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0.1, 34)
+
+[node name="HudLayer" parent="." instance=ExtResource("hud")]

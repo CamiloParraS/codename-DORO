@@ -27,6 +27,7 @@ var _visual: MeshInstance3D
 
 
 func _ready() -> void:
+	add_to_group("operative")
 	collision_mask = 1 | 2  # world and guards (guards sit on layer 2 so they don't block sight or the camera)
 	_shape = CollisionShape3D.new()
 	_shape.shape = CapsuleShape3D.new()
