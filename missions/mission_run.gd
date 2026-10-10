@@ -2,6 +2,8 @@
 ## objectives are done, then shows the post-Mission screen. Completing folds the tally into the
 ## record (Aigis.complete_mission); aborting discards it.
 ## Hooks elsewhere report events with get_tree().call_group("mission_tally", "event", name).
+## Set record (and return_to) before it enters the tree: the plan is made from the record in _ready,
+## before the Area reads it. Group "mission_plan": the F3 overlay reads record, plan and tally.
 class_name MissionRun
 extends Node
 
@@ -11,6 +13,8 @@ const SCREEN := preload("res://ui/post_mission/post_mission.gd")
 
 var tally := MissionTally.new()
 var record := Aigis.new_record()   # ponytail: the campaign loop (flow ticket) owns and saves this
+var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
+var return_to := ""                # scene to go back to once committed (Free mode); "" stays
 var objectives_done := true        # ponytail: no objectives exist yet; the Mission data sets this
 var ended := false
 var _down := {}
@@ -19,6 +23,8 @@ var _known := {}
 
 func _ready() -> void:
 	add_to_group("mission_tally")
+	add_to_group("mission_plan")
+	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for e in get_tree().get_nodes_in_group("extraction"):
 		e.reached.connect(_on_extraction)
@@ -60,7 +66,9 @@ func _on_extraction() -> void:
 	screen.committed.connect(func() -> void:
 		record = after
 		get_tree().paused = false
-		finished.emit(after))
+		finished.emit(after)
+		if return_to:
+			get_tree().change_scene_to_file(return_to))
 
 
 ## Quit or abort: nothing is applied.

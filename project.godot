@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="codename doro"
+run/main_scene="res://ui/free_mode/free_mode.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-PsxLook="*res://ui/psx_look/psx_look.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+PsxLook="*res://ui/psx_look/psx_look.gd"
+DebugOverlay="*res://ui/debug_overlay/debug_overlay.gd"
 
 [display]
 
@@ -25,7 +27,6 @@ window/size/viewport_width=640
 window/size/viewport_height=360
 window/size/window_width_override=1280
 window/size/window_height_override=720
-
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

@@ -119,6 +119,9 @@ func _send(pick: Dictionary, line: String) -> void:
 		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
 	})
 	get_tree().call_group("radio_log", "say", pick.speaker, line)
+	get_tree().call_group("mission_tally", "event", "spoof")
+	if j.exposed:
+		get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	var from := _operative.global_position
 	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients))
 

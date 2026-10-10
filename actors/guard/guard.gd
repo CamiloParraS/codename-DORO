@@ -30,6 +30,7 @@ var held := false                # being choked: stands still
 var carrier: Node3D              # the Operative carrying this guard
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
+var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
 
 var _wp := 0
 var _pause := 0.0
@@ -110,17 +111,35 @@ func neutralize() -> void:
 	_lie(true)
 
 
-## A tranq dart from `from`: a headshot Neutralizes at once, a body shot after BODY_DELAY, meanwhile
-## the guard stumbles, is suspicious and can't radio.
+## A tranq dart from `from`: a headshot Neutralizes at once (a helmet makes it a body shot), a body
+## shot after BODY_DELAY, meanwhile the guard stumbles, is suspicious and can't radio.
 func tranquilize(head: bool, from: Vector3) -> void:
 	if head:
-		get_tree().call_group("mission_tally", "event", "headshot")
+		get_tree().call_group("mission_tally", "event", "headshot")  # the habit counts, helmet or not
+	if head and not helmet:
 		neutralize()
 		return
 	if stumble_left > 0.0:
 		return
 	stumble_left = Tranq.BODY_DELAY
 	_changed(alert.hear(from, "a dart"))
+
+
+## Headshots Countermeasure: a visible helmet; headshots count as body hits from now on.
+func wear_helmet() -> void:
+	helmet = true
+	var m := MeshInstance3D.new()
+	m.name = "Helmet"
+	var dome := SphereMesh.new()
+	dome.radius = 0.4
+	dome.height = 0.4
+	dome.is_hemisphere = true
+	m.mesh = dome
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.22, 0.26, 0.2)
+	m.material_override = mat
+	m.position.y = 0.62  # on the crown of the Body capsule, lies down with it
+	$Body.add_child(m)
 
 
 ## Back on its feet, suspicious and remembering nothing. from: where it looks first.

@@ -313,3 +313,36 @@ func test_all_clear_stands_any_state_down_to_patrol() -> void:
 	s.hear(SPOT, "a knock")
 	s.stand_down("Kostas")
 	assert_eq(s.state, S.PATROL)
+
+
+# ----- Security cameras: same meter, no suspicion step -----
+
+func test_camera_full_meter_alerts_with_no_suspicion_step() -> void:
+	var a := GuardAlert.new()
+	var reasons: Array[String] = []
+	for i in roundi(1.0 / DT):
+		var why := a.camera_tick(DT, 1.2, SPOT, "running, 9 m, in front")
+		if why != "":
+			reasons.append(why)
+		assert_ne(a.state, S.SUSPICION, "a camera never goes '?'")
+	assert_eq(a.state, S.ALERT)
+	assert_eq(reasons, ["camera spotted you (running, 9 m, in front)"])
+	assert_eq(a.last_known, SPOT)
+
+
+func test_camera_meter_drains_like_a_guard() -> void:
+	var a := GuardAlert.new()
+	a.camera_tick(1.0, 0.5, SPOT, "test")
+	a.camera_tick(1.0, 0.0, SPOT, "")
+	assert_true(is_equal_approx(a.meter, 0.25), "%f" % a.meter)
+	assert_eq(a.state, S.PATROL)
+
+
+func test_camera_drops_back_to_watching_after_3s_unseen() -> void:
+	var a := GuardAlert.new()
+	a.camera_tick(1.0, 1.0, SPOT, "test")
+	assert_eq(a.state, S.ALERT)
+	assert_eq(a.camera_tick(2.9, 0.0, SPOT, ""), "")
+	assert_eq(a.camera_tick(0.2, 0.0, SPOT, ""), "camera lost you")
+	assert_eq(a.state, S.PATROL)
+	assert_eq(a.meter, 0.0)

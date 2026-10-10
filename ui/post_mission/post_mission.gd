@@ -16,9 +16,9 @@ func _ready() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_pressed() and not e.is_echo() and (e is InputEventKey or e is InputEventMouseButton):
+		get_viewport().set_input_as_handled()  # first: committing may change the scene
 		committed.emit()
 		queue_free()
-		get_viewport().set_input_as_handled()
 
 
 func _draw() -> void:

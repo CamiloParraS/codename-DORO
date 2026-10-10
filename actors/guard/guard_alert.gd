@@ -59,6 +59,24 @@ func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_tar
 	return ""
 
 
+## A security camera's tick: the same meter and drain, but no suspicion step: a full meter goes
+## straight to ALERT (the camera radios it). It drops back to PATROL, meter empty, after LOSE_TIME
+## unseen. The camera passes its front-cone rate only.
+func camera_tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String) -> String:
+	var seen := seen_rate > 0.0
+	if seen:
+		last_known = seen_pos
+	if state == State.ALERT:
+		unseen = 0.0 if seen else unseen + delta
+		if unseen >= LOSE_TIME:
+			return _go(State.PATROL, "camera lost you")
+		return ""
+	meter = minf(meter + seen_rate * delta, 1.0) if seen else maxf(meter - DRAIN * delta, 0.0)
+	if meter >= 1.0:
+		return _go(State.ALERT, "camera spotted you (%s)" % why)
+	return ""
+
+
 ## A noise reached this guard: suspicion at the source, never alert.
 ## A guard already suspicious or searching just moves its search there.
 func hear(pos: Vector3, what: String) -> String:

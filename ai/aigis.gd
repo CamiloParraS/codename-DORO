@@ -77,6 +77,17 @@ static func preset_profile(preset: String) -> Dictionary:
 	return out
 
 
+## A Preset as a record about to play mission_index (Free mode). The ratio is stored as Lethality
+## out of 100 (an undefined ratio leaves the denominator at 0).
+static func preset_record(preset: String, mission_index: int) -> Dictionary:
+	var r := {"mission": mission_index, "points": preset_profile(preset), "lethality": 0, "denominator": 0}
+	var ratio: float = PRESETS[preset].ratio
+	if not is_nan(ratio):
+		r.lethality = roundi(ratio * 100)
+		r.denominator = 100
+	return r
+
+
 ## A Habit's level as a Mission sees it: points ÷ 100, held to that Mission's cap.
 static func level(points: int, mission_index: int) -> int:
 	return mini(floori(points / float(POINTS_PER_LEVEL)), CAPS[mission_index])
