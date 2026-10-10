@@ -69,3 +69,5 @@ Each Area is about **80×80 m** playable, with **8–10 base guards** (Combat L2
 
 - Narrative delivery: premise; intel contents (manifests → relay; Core location → Harbour); HQ's relay-offline line; tutorial prompts plus one Metis line each; the three Targets as characters (relay chief, lead researcher, security director); the ending plays at the Core terminal, right after the director choice.
 - AI write-up: the four fixed Presets give repeatable deployment tables; the Harbour at Mission 1 versus the Core is the before/after screenshot pair.
+
+- 2026-10-09 (from [Schedule and cut line](16-schedule-and-cut-line.md)): both extra Missions (the Relay station and Annex revisits, plus the favourite-flank Habit) were ruled out of scope. The campaign is Mission 1–3 + the Core, at caps 0/1/2/3.

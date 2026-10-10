@@ -42,9 +42,11 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - [Input](issues/14-input.md): keyboard+mouse only, through InputMap actions, no rebinding. WASD/Shift walk/C crouch/Tab shoulder, RMB aim + LMB fire (aimed only), 1/2 weapons, R reload (4- and 30-round magazines), wheel+F items, E context (choke, carry toggle), X kill, V knock, Q radial, Esc pause, F3 debug overlay. Calls are scripted only. Settings: sensitivity, invert Y, language, window mode, volume.
 - [Persistence](issues/15-persistence.md): three autosave slots, one playthrough each, written only when a Mission is completed (the Core at the terminal, marking the slot complete; loading it replays the finale). Slot = next Mission, Habit points, Lethality + denominator. Checkpoints in memory only: the dead stay dead, living guards reset to patrol, Voiceprints roll back. Quitting mid-Mission restarts it. Free mode saves nothing.
 
+- [Schedule and cut line](issues/16-schedule-and-cut-line.md): build starts 10-12. Milestone 1 (10-21) is a Harbour vertical slice where the same Area visibly fights back under a Free mode Preset. Weekly slices W1–W6 with a feature freeze on 11-11. W6 is balance, Spanish, write-up and export. A 13-item ordered cut list fires only when a week runs more than a day behind, with a never-cut floor. Prototype leaf pieces are lifted, cross-system code is rewritten.
+
 ## Not yet specified
 
-- Nothing left. Schedule and cut line (with Extra Missions folded in) is the last open ticket.
+- Nothing left. The way is clear: the map is ready for `/to-spec`.
 
 ## Out of scope
 
@@ -55,4 +57,5 @@ A spec for the whole game, ready for `/to-spec`: 3 Areas, 3+ Missions plus the A
 - 3D cinematics.
 - Multiplayer / co-op.
 - Gamepad support: keyboard+mouse only, decided in [Input](issues/14-input.md); camera, aim and radial on a stick would each need their own tuning.
+- Extra Missions (Relay station and Annex revisits, plus the favourite-flank Habit): about 3–4 days each, and they'd keep the Core's cap and budget in doubt. Ruled out in [Schedule and cut line](issues/16-schedule-and-cut-line.md).
 - Light and night (darkness as a stealth factor, a night Habit): no light model exists, it would need its own prototype, and it doesn't fit 6 weeks solo. Cut while graduating the fog, no ticket.
