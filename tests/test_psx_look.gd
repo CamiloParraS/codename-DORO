@@ -21,8 +21,8 @@ func test_post_is_31_levels_without_dither() -> void:
 
 
 func test_textures_are_128() -> void:
-	for n in ["Brick_07", "Dirt_03", "Metal_05", "Stone_07", "Wood_07"]:
-		assert_eq((load("res://assets/textures/%s-128.png" % n) as Texture2D).get_size(), Vector2(128, 128))
+	for n in ["brick_07", "dirt_03", "metal_05", "stone_07", "wood_07"]:
+		assert_eq((load("res://assets/textures/%s_128.png" % n) as Texture2D).get_size(), Vector2(128, 128))
 
 
 func test_internal_height_is_480() -> void:

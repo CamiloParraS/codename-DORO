@@ -2,20 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1d8e2hcrwke0"
-path="res://.godot/imported/Dirt_03-128.png-fd6a7b9972ae5120a23a793a6eac474f.ctex"
+uid="uid://drsyh0yrr3m6c"
+path.s3tc="res://.godot/imported/wood_07_128.png-8ef026342c43bc01e75a8f7fb272766d.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
-source_file="res://assets/textures/Dirt_03-128.png"
-dest_files=["res://.godot/imported/Dirt_03-128.png-fd6a7b9972ae5120a23a793a6eac474f.ctex"]
+source_file="res://assets/textures/wood_07_128.png"
+dest_files=["res://.godot/imported/wood_07_128.png-8ef026342c43bc01e75a8f7fb272766d.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -23,7 +24,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -37,4 +38,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
