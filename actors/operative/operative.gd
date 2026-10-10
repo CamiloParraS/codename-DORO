@@ -21,9 +21,9 @@ var carrying: Node3D     # the Down guard on the shoulder
 var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
 var radio_open := false  # the radial radio takes the mouse (RMB is "back" there, not aim)
-var weapon := "tranq"    # "tranq" or "rifle"
 var tranq := Tranq.new()
 var rifle := Rifle.new()
+var _gun: Gun = tranq  # the weapon in hand
 var voiceprints := Voiceprints.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
@@ -136,9 +136,9 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
 	elif e.is_action_pressed("weapon_tranq"):
-		weapon = "tranq"
+		_gun = tranq
 	elif e.is_action_pressed("weapon_rifle"):
-		weapon = "rifle"
+		_gun = rifle
 	elif e.is_action_pressed("reload"):
 		gun().reload(carrying != null)
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
@@ -183,9 +183,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## The weapon in hand (the Rifle is a Tranq with its own sizes and `lethal`).
-func gun() -> Tranq:
-	return rifle if weapon == "rifle" else tranq
+## The weapon in hand.
+func gun() -> Gun:
+	return _gun
 
 
 ## Hitscan from the screen centre. Tranq: a hit on a standing guard's head Neutralizes it, on the body
@@ -259,9 +259,13 @@ func _update_prompt() -> void:
 
 func _crate_near() -> bool:
 	for c: Node3D in get_tree().get_nodes_in_group("resupply_crate"):
-		if Vector2(c.global_position.x - global_position.x, c.global_position.z - global_position.z).length() <= CRATE_REACH:
+		if _flat_dist(c) <= CRATE_REACH:
 			return true
 	return false
+
+
+func _flat_dist(n: Node3D) -> float:
+	return Vector2(n.global_position.x - global_position.x, n.global_position.z - global_position.z).length()
 
 
 ## Nearest guard within reach: a Down one to carry, or one that can be choked.
@@ -269,7 +273,7 @@ func _nearest(down: bool) -> Node3D:
 	var best: Node3D
 	var best_d := TAKEDOWN_REACH
 	for g in get_tree().get_nodes_in_group("guards"):
-		var d := Vector2(g.global_position.x - global_position.x, g.global_position.z - global_position.z).length()
+		var d := _flat_dist(g)
 		if d <= best_d and (g.is_down() if down else g.can_be_choked(global_position)):
 			best = g
 			best_d = d

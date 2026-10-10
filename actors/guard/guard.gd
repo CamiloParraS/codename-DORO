@@ -3,6 +3,7 @@
 extends CharacterBody3D
 class_name Guard
 
+const BODY_HITS_TO_KILL := 2  # rifle body hits that kill; a headshot kills outright
 const EYE := 1.6
 const PATROL_SPEED := 1.8
 const CHASE_SPEED := 4.5
@@ -132,7 +133,7 @@ func shoot(head: bool, from: Vector3) -> void:
 			kill()
 			return
 	hits += 1
-	if hits >= Rifle.BODY_HITS:
+	if hits >= BODY_HITS_TO_KILL:
 		kill()
 	else:
 		_changed(alert.hear(from, "a bullet"))

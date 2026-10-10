@@ -4,6 +4,9 @@
 ## Lives on CanvasLayer 1 so the banding pass on layer 0 does not touch it.
 extends Control
 
+const PIP_COLUMN := 48.0  # px tall, weapon card
+const SUPPRESSOR_Y := 80  # px down the weapon card
+const RESERVE_Y := 92
 const RED := Color(1, 0.22, 0.2)
 const ORANGE := Color(1, 0.6, 0.15)
 const RING := 96.0
@@ -118,16 +121,16 @@ func _right() -> void:
 	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card, empty
 	var wc := Rect2(sx, 210, 34, size.y - 220)
 	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
-	var gun: Tranq = _operative.gun()
+	var gun: Gun = _operative.gun()
 	_t(wc.position + Vector2(3, 12), gun.label, Color.WHITE)
 	var lit := HudModel.pips_lit(gun.loaded, gun.load_size, gun.pip_count)
-	var pip_h := 48.0 / gun.pip_count  # the column is 48 px tall, 4 or 6 pips
+	var pip_h := PIP_COLUMN / gun.pip_count  # the column is a fixed height, 4 or 6 pips
 	for i in gun.pip_count:  # pip column, top pip is the next round
 		var full: bool = i >= gun.pip_count - lit
 		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * pip_h, 12, pip_h - 4), Color.WHITE if full else Color(1, 1, 1, 0.2))
-	if gun is Rifle:  # shots left on the suppressor
-		_t(wc.position + Vector2(3, 80), "S%02d" % gun.suppressor, Color.WHITE if gun.suppressed() else RED)
-	_t(wc.position + Vector2(9, 92), "%02d" % gun.reserve, ORANGE if gun.reloading() else Color.WHITE)
+	if gun.suppressor_max >= 0:  # shots left on the suppressor
+		_t(wc.position + Vector2(3, SUPPRESSOR_Y), "S%02d" % gun.suppressor, Color.WHITE if gun.suppressed() else RED)
+	_t(wc.position + Vector2(9, RESERVE_Y), "%02d" % gun.reserve, ORANGE if gun.reloading() else Color.WHITE)
 
 
 func _crosshair(file: String) -> Texture2D:
