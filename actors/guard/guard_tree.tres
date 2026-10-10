@@ -1,0 +1,63 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://cmum4s6d12reh"]
+
+[ext_resource type="Script" path="res://actors/guard/bt/bt_in_state.gd" id="1_state"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_chase.gd" id="2_chase"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_search_spot.gd" id="3_search"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
+
+[sub_resource type="BTCondition" id="in_alert"]
+script = ExtResource("1_state")
+state = 2
+
+[sub_resource type="BTAction" id="chase"]
+script = ExtResource("2_chase")
+
+[sub_resource type="BTSequence" id="alert"]
+custom_name = "Alert"
+children = [SubResource("in_alert"), SubResource("chase")]
+
+[sub_resource type="BTCondition" id="in_evasion"]
+script = ExtResource("1_state")
+state = 3
+
+[sub_resource type="BTAction" id="search_fast"]
+script = ExtResource("3_search")
+speed = 3.0
+sweep = 2.5
+
+[sub_resource type="BTSequence" id="evasion"]
+custom_name = "Evasion"
+children = [SubResource("in_evasion"), SubResource("search_fast")]
+
+[sub_resource type="BTCondition" id="in_suspicion"]
+script = ExtResource("1_state")
+state = 1
+
+[sub_resource type="BTAction" id="turn"]
+script = ExtResource("4_turn")
+
+[sub_resource type="BTAction" id="search_slow"]
+script = ExtResource("3_search")
+
+[sub_resource type="BTSequence" id="suspicion"]
+custom_name = "Suspicion"
+children = [SubResource("in_suspicion"), SubResource("turn"), SubResource("search_slow")]
+
+[sub_resource type="BTCondition" id="in_patrol"]
+script = ExtResource("1_state")
+
+[sub_resource type="BTAction" id="walk_route"]
+script = ExtResource("5_patrol")
+
+[sub_resource type="BTSequence" id="patrol"]
+custom_name = "Patrol"
+children = [SubResource("in_patrol"), SubResource("walk_route")]
+
+[sub_resource type="BTSelector" id="root"]
+custom_name = "Guard"
+children = [SubResource("alert"), SubResource("evasion"), SubResource("suspicion"), SubResource("patrol")]
+
+[resource]
+description = "A guard reads its GuardAlert state and acts on it. The guard restarts the tree whenever the state changes."
+root_task = SubResource("root")

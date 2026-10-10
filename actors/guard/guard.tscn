@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://cryrpy33fyji4"]
+
+[ext_resource type="Script" uid="uid://b710dy0ydgapd" path="res://actors/guard/guard.gd" id="1_ys3fj"]
+[ext_resource type="FontFile" uid="uid://4w2iv1frkcrj" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_mxi3m"]
+[ext_resource type="BehaviorTree" uid="uid://cmum4s6d12reh" path="res://actors/guard/guard_tree.tres" id="3_edkue"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mkyd0"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vk0le"]
+albedo_color = Color(0.45, 0.4, 0.3, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_38d3k"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_huuh5"]
+size = Vector3(0.4, 0.15, 0.25)
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_50xko"]
+
+[node name="Guard" type="CharacterBody3D" unique_id=155026772]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_ys3fj")
+
+[node name="Shape" type="CollisionShape3D" parent="." unique_id=1349874276]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_mkyd0")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=347558640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+material_override = SubResource("StandardMaterial3D_vk0le")
+mesh = SubResource("CapsuleMesh_38d3k")
+
+[node name="Visor" type="MeshInstance3D" parent="Body" unique_id=1477631287]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.3)
+mesh = SubResource("BoxMesh_huuh5")
+
+[node name="Mark" type="Label3D" parent="." unique_id=1645737498]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+pixel_size = 0.006
+billboard = 1
+no_depth_test = true
+font = ExtResource("2_mxi3m")
+font_size = 96
+outline_size = 16
+
+[node name="NavAgent" type="NavigationAgent3D" parent="." unique_id=1949564014]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+path_height_offset = 0.5
+avoidance_enabled = true
+
+[node name="BTPlayer" type="BTPlayer" parent="." unique_id=1718500002]
+behavior_tree = ExtResource("3_edkue")
+update_mode = 2
+blackboard_plan = SubResource("BlackboardPlan_50xko")

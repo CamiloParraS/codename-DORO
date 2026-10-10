@@ -24,6 +24,7 @@ var _visual: MeshInstance3D
 
 
 func _ready() -> void:
+	collision_mask = 1 | 2  # world and guards (guards sit on layer 2 so they don't block sight or the camera)
 	_shape = CollisionShape3D.new()
 	_shape.shape = CapsuleShape3D.new()
 	add_child(_shape)
@@ -52,6 +53,11 @@ func _ready() -> void:
 	_back_arm.add_child(camera)
 	_apply_shoulder()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+## Where guards aim their line-of-sight ray.
+func chest_height() -> float:
+	return 0.6 if crouching else 1.3
 
 
 func _make_arm(length: float) -> SpringArm3D:

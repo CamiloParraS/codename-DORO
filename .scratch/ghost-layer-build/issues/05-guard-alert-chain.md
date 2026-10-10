@@ -6,11 +6,11 @@
 
 **Blocked by:** 01, 04
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A pure, node-free guard alert state machine (shape from the prototype: tick / hear / radio, each returning a reason string) with McpTestSuite tests for: 0.35 suspicion, 0.25/s drain, alert lost after 3 s unseen, 12 s evasion, sighting during evasion re-alerts, radio alert
-- [ ] Vision: front cone 30° × 16 m plus peripheral 60° × 6 m at half rate, ray to the chest, multipliers for stance, motion and distance (×4 under 3 m)
-- [ ] Suspicion plays a 1 s turn-and-look beat, investigates, then a 5 s look-around
-- [ ] "?" and "!" over guards' heads
-- [ ] Guards path cleanly around obstacles (`path_height_offset`, no large desired distance; avoidance considered)
-- [ ] 8–10 guards patrol the Harbour
+- [x] A pure, node-free guard alert state machine (shape from the prototype: tick / hear / radio, each returning a reason string) with McpTestSuite tests for: 0.35 suspicion, 0.25/s drain, alert lost after 3 s unseen, 12 s evasion, sighting during evasion re-alerts, radio alert
+- [x] Vision: front cone 30° × 16 m plus peripheral 60° × 6 m at half rate, ray to the chest, multipliers for stance, motion and distance (×4 under 3 m)
+- [x] Suspicion plays a 1 s turn-and-look beat, investigates, then a 5 s look-around
+- [x] "?" and "!" over guards' heads
+- [x] Guards path cleanly around obstacles (`path_height_offset`, no large desired distance; avoidance considered)
+- [x] 8–10 guards patrol the Harbour
