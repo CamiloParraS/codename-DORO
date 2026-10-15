@@ -5,6 +5,7 @@ extends CharacterBody3D
 const KNOCK_COOLDOWN := 1.0
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 2.0
+const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
 const RECOIL_MAX := 0.15      # radians the kick can stack up to while holding fire
 const RECOIL_RECOVERY := 0.3 # radians per second it settles back
 const CRATE_REACH := 2.0      # metres to a resupply crate's centre
@@ -31,6 +32,8 @@ var camera: Camera3D
 var _knock_left := 0.0
 var _choke_left := 0.0
 var _choking: Node3D
+var _killing := false      # the grip in progress is a kill (X), not a choke (E)
+var _victim_down := false  # it was already Down when the kill began
 var _yaw := 0.0
 var _pitch := -0.25
 var _recoil := 0.0
@@ -135,6 +138,8 @@ func _unhandled_input(e: InputEvent) -> void:
 		Guard.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
+	elif e.is_action_pressed("kill_takedown") and _choke_left <= 0.0 and not carrying:
+		_begin_kill()
 	elif e.is_action_pressed("weapon_tranq"):
 		_gun = tranq
 	elif e.is_action_pressed("weapon_rifle"):
@@ -160,13 +165,18 @@ func _physics_process(delta: float) -> void:
 	if _choking:
 		v = Vector2.ZERO  # a choke needs both hands
 		_choke_left -= delta
-		if not _choking.can_be_choked(global_position):  # it turned round or raised the alert
+		if not _grip_holds():  # it turned round or raised the alert
 			_choking.held = false
 			_choking = null
 			_choke_left = 0.0
 		elif _choke_left <= 0.0:
-			get_tree().call_group("mission_tally", "event", "takedown")
-			_choking.neutralize()
+			if _killing:
+				if not _victim_down:  # a kill from behind is a takedown too
+					get_tree().call_group("mission_tally", "event", "takedown")
+				_choking.kill()
+			else:
+				get_tree().call_group("mission_tally", "event", "takedown")
+				_choking.neutralize()
 			_choking = null
 	_update_prompt()
 	moving = v != Vector2.ZERO
@@ -236,21 +246,40 @@ func _interact() -> void:
 	if g:
 		_choking = g
 		_choke_left = CHOKE_TIME
+		_killing = false
 		g.held = true
 	elif _crate_near():
 		tranq.refill()
 		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist
 
 
+## X: kill the guard in reach from behind, or finish a Neutralized one on the floor.
+func _begin_kill() -> void:
+	var g := _nearest(false)
+	_victim_down = g == null
+	if _victim_down:
+		g = _nearest(true, true)
+	if g:
+		_choking = g
+		_choke_left = KILL_TIME
+		_killing = true
+		g.held = true
+
+
+## Is the grip still good: a standing victim can still be choked, a Down one is still on the floor.
+func _grip_holds() -> bool:
+	return _choking.is_down() if _victim_down else _choking.can_be_choked(global_position)
+
+
 func _update_prompt() -> void:
 	if carrying:
 		prompt = "E drop"
 	elif _choking:
-		prompt = "choking..."
+		prompt = "killing..." if _killing else "choking..."
 	elif _nearest(true):
-		prompt = "E carry"
+		prompt = "E carry · X kill" if _nearest(true, true) else "E carry"
 	elif _nearest(false):
-		prompt = "E choke"
+		prompt = "E choke · X kill"
 	elif _crate_near():
 		prompt = "E resupply"
 	else:
@@ -269,12 +298,12 @@ func _flat_dist(n: Node3D) -> float:
 
 
 ## Nearest guard within reach: a Down one to carry, or one that can be choked.
-func _nearest(down: bool) -> Node3D:
+func _nearest(down: bool, alive := false) -> Node3D:
 	var best: Node3D
 	var best_d := TAKEDOWN_REACH
 	for g in get_tree().get_nodes_in_group("guards"):
 		var d := _flat_dist(g)
-		if d <= best_d and (g.is_down() if down else g.can_be_choked(global_position)):
+		if d <= best_d and ((g.is_down() and not (alive and g.dead)) if down else g.can_be_choked(global_position)):
 			best = g
 			best_d = d
 	return best

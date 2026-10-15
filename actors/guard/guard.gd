@@ -116,6 +116,8 @@ func neutralize() -> void:
 ## Killed (a rifle shot): Down for good. Counts for Lethality and Combat; a kill while any guard is
 ## alerted is an alert_kill.
 func kill() -> void:
+	if dead:
+		return
 	var alerted := get_tree().get_nodes_in_group("guards").any(func(g): return g.alert.state == GuardAlert.State.ALERT)
 	neutralize()
 	dead = true
