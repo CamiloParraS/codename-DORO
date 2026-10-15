@@ -12,7 +12,7 @@ const ORANGE := Color(1, 0.6, 0.15)
 const RING := 96.0
 const FLASH_TIME := 1.0
 
-var life := 1.0  # ponytail: no damage model yet; the bar stays full until one exists
+var life := 1.0  # the Operative's Health.life(), refreshed each frame
 var _flash := 0.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
@@ -55,6 +55,7 @@ func _draw() -> void:
 		draw_rect(Rect2(size.x - w, 0, w, size.y), c)
 	if not _operative:
 		return
+	life = _operative.health.life()
 	var cam: Camera3D = _operative.camera
 	var fwd := Vector3(-cam.global_basis.z.x, 0, -cam.global_basis.z.z).normalized()
 	var right := Vector3(cam.global_basis.x.x, 0, cam.global_basis.x.z).normalized()

@@ -26,6 +26,7 @@ var tranq := Tranq.new()
 var rifle := Rifle.new()
 var _gun: Gun = tranq  # the weapon in hand
 var voiceprints := Voiceprints.new()
+var health := Health.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 
@@ -157,6 +158,7 @@ func _physics_process(delta: float) -> void:
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
+	health.tick(delta)
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
 	if aiming and not _choking and gun().automatic and Input.is_action_pressed("fire"):
@@ -191,6 +193,15 @@ func _physics_process(delta: float) -> void:
 	velocity.z = dir.z * speed
 	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
 	move_and_slide()
+
+
+## A guard's bullet landed. Dying restarts the Mission. ponytail: Checkpoints (next ticket) replace this.
+func take_hit() -> void:
+	if health.dead():
+		return
+	health.hit()
+	if health.dead():
+		get_tree().reload_current_scene.call_deferred()
 
 
 ## The weapon in hand.

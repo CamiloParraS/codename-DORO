@@ -14,6 +14,7 @@ const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down g
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
+const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
@@ -35,6 +36,7 @@ var known_down := false          # some guard has seen this one Down (Glaukopis'
 var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
 
 var _wp := 0
+var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
 @onready var _agent: NavigationAgent3D = $NavAgent
@@ -65,6 +67,7 @@ func _physics_process(delta: float) -> void:
 		_react(alert.see_down(delta, down[0], down[1]))
 		var rate := _sense()
 		_react(alert.tick(delta, rate, operative.global_position, _saw, arrived()))
+		_shoot_back(delta)
 		if alert.state in [GuardAlert.State.SUSPICION, GuardAlert.State.EVASION] and arrived():
 			var down_guard := _down_within(CHECK_REACH)
 			if down_guard:
@@ -78,6 +81,18 @@ func _physics_process(delta: float) -> void:
 	_check_in(delta)
 	# Manual update: the tree must set the velocity before the NavAgent (a later child) submits it.
 	_bt.update(delta)
+
+
+## An alerted guard that sees the Operative within range fires every FIRE_INTERVAL; the shot lands by
+## Health.hit_chance. It can't fire while stumbling or held (both return before this).
+func _shoot_back(delta: float) -> void:
+	_fire_left -= delta
+	var d := _flat_dist(operative.global_position)
+	if alert.state != GuardAlert.State.ALERT or seen_rate <= 0.0 or d > Health.RANGE or _fire_left > 0.0:
+		return
+	_fire_left = FIRE_INTERVAL
+	if randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking()):
+		operative.take_hit()
 
 
 ## Routine radio check-in: subtitle + ((·)) while talking, and the Operative may record a Voiceprint.
