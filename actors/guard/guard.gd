@@ -86,9 +86,12 @@ func _physics_process(delta: float) -> void:
 ## An alerted guard that sees the Operative within range fires every FIRE_INTERVAL; the shot lands by
 ## Health.hit_chance. It can't fire while stumbling or held (both return before this).
 func _shoot_back(delta: float) -> void:
-	_fire_left -= delta
 	var d := _flat_dist(operative.global_position)
-	if alert.state != GuardAlert.State.ALERT or seen_rate <= 0.0 or d > Health.RANGE or _fire_left > 0.0:
+	if alert.state != GuardAlert.State.ALERT or seen_rate <= 0.0 or d > Health.RANGE:
+		_fire_left = FIRE_INTERVAL  # a reaction delay before the first shot
+		return
+	_fire_left -= delta
+	if _fire_left > 0.0:
 		return
 	_fire_left = FIRE_INTERVAL
 	if randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking()):
