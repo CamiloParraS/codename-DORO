@@ -8,7 +8,7 @@
 
 **Status:** ready-for-agent
 
-- [ ] Operative and guard models with idle, walk, run, crouch, aim, takedown, Down and carry animations, retargeted in Godot
-- [ ] The carried guard rides in a fixed pose on the shoulder bone
-- [ ] A Target variant (cap or beret plus a different colour)
-- [ ] Only the files used are copied from `_raw/`; `CREDITS.md` notes the QAL licence
+- [x] Operative and guard models with idle, walk, run, crouch, aim, takedown, Down and carry animations, retargeted in Godot (partial: the Quaternius free body is bare, so kinds are told apart by tint and Nikita gear props)
+- [x] The carried guard rides in a fixed pose on the shoulder bone
+- [x] A Target variant (red beret + red tint; no Target actor exists yet to use it) (cap or beret plus a different colour)
+- [x] Only the files used are copied from `_raw/`; `CREDITS.md` notes the QAL licence

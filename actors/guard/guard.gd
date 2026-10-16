@@ -31,7 +31,10 @@ var dead := false                # killed: Down for good, and a guard who checks
 var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
-var carrier: Node3D              # the Operative carrying this guard
+var carrier: Node3D:             # the Operative carrying this guard
+	set(v):
+		carrier = v
+		model.ride(v.model.carry_mount() if v else null)
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
 var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
@@ -50,6 +53,7 @@ var _clock := 0.0
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
+@onready var model: CharacterModel = $Model
 
 
 func _ready() -> void:
@@ -59,6 +63,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	model.play(CharacterModel.guard_clip(is_down(), Vector2(velocity.x, velocity.z).length()))
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	if is_down():
 		_down_tick(delta)
@@ -204,33 +209,13 @@ func tranquilize(head: bool, from: Vector3) -> void:
 ## Headshots Countermeasure: a visible helmet; headshots count as body hits from now on.
 func wear_helmet() -> void:
 	helmet = true
-	var m := MeshInstance3D.new()
-	m.name = "Helmet"
-	var dome := SphereMesh.new()
-	dome.radius = 0.4
-	dome.height = 0.4
-	dome.is_hemisphere = true
-	m.mesh = dome
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.22, 0.26, 0.2)
-	m.material_override = mat
-	m.position.y = 0.62  # on the crown of the Body capsule, lies down with it
-	$Body.add_child(m)
+	model.wear("Helmet")
 
 
 ## Combat L1: a visible vest.
 func wear_vest() -> void:
 	vest = true
-	var m := MeshInstance3D.new()
-	m.name = "Vest"
-	var box := BoxMesh.new()
-	box.size = Vector3(0.75, 0.6, 0.75)
-	m.mesh = box
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.12, 0.14, 0.2)
-	m.material_override = mat
-	m.position.y = 0.1
-	$Body.add_child(m)
+	model.wear("Vest")
 
 
 ## Back on its feet, suspicious and remembering nothing. from: where it looks first.
@@ -276,16 +261,13 @@ func can_be_choked(from: Vector3) -> bool:
 
 
 func _lie(on: bool) -> void:
-	$Body.rotation.x = PI / 2 if on else 0.0
 	$Shape.rotation.x = PI / 2 if on else 0.0
-	$Body.position.y = 0.35 if on else 0.9
 	$Shape.position.y = 0.35 if on else 0.9
 
 
 func _down_tick(delta: float) -> void:
-	if carrier:  # fixed shoulder pose: lying across the Operative's shoulders
-		global_position = carrier.global_position + Vector3.UP * 1.0
-		rotation.y = carrier.carry_yaw() + PI / 2
+	if carrier:  # the model lies in a fixed pose on the shoulder bone; the body just follows
+		global_position = carrier.global_position
 	elif not dead:
 		neutral_left -= delta
 		if neutral_left <= 0.0:

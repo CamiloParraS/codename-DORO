@@ -45,7 +45,7 @@ var _pitch_node: Node3D
 var _shoulder_arm: SpringArm3D
 var _back_arm: SpringArm3D
 var _shape: CollisionShape3D
-var _visual: MeshInstance3D
+var model: CharacterModel
 
 
 func _ready() -> void:
@@ -55,13 +55,9 @@ func _ready() -> void:
 	_shape.shape = CapsuleShape3D.new()
 	add_child(_shape)
 
-	_visual = MeshInstance3D.new()
-	_visual.mesh = CapsuleMesh.new()
-	(_visual.mesh as CapsuleMesh).radius = 0.35
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.2, 0.25, 0.35)
-	_visual.material_override = mat
-	add_child(_visual)
+	model = CharacterModel.new()
+	model.kind = CharacterModel.Kind.OPERATIVE
+	add_child(model)
 	_apply_crouch()
 
 	_pivot = Node3D.new()
@@ -95,10 +91,6 @@ func looks_walking() -> bool:
 	return walking or carrying != null
 
 
-func carry_yaw() -> float:
-	return _visual.rotation.y
-
-
 func _make_arm(length: float) -> SpringArm3D:
 	var arm := SpringArm3D.new()
 	var s := SphereShape3D.new()
@@ -121,8 +113,6 @@ func _apply_crouch() -> void:
 	cap.radius = 0.35
 	cap.height = 1.0 if crouching else 1.7
 	_shape.position.y = cap.height / 2
-	(_visual.mesh as CapsuleMesh).height = cap.height
-	_visual.position.y = cap.height / 2
 
 
 func _unhandled_input(e: InputEvent) -> void:
@@ -189,7 +179,9 @@ func _physics_process(delta: float) -> void:
 		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
-		_visual.rotation.y = lerp_angle(_visual.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
+		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
+	elif aiming:
+		model.rotation.y = lerp_angle(model.rotation.y, _yaw, 12 * delta)
 	var speed := Locomotion.speed(crouching, looks_walking())
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
@@ -362,4 +354,5 @@ func _process(delta: float) -> void:
 	_pivot.global_position = _pivot.global_position.lerp(global_position + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
-	_visual.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW
+	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()))
+	model.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW
