@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cc531l33my423" path="res://areas/extraction_point.gd" id="ep"]
 [ext_resource type="Script" uid="uid://dtf5ff7lsseum" path="res://areas/harbour/harbour.gd" id="gd"]
+[ext_resource type="Script" path="res://areas/intel_pickup.gd" id="ip"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="hud"]
 [ext_resource type="Script" uid="uid://c54vq407xdv2r" path="res://missions/mission_run.gd" id="mr"]
 [ext_resource type="PackedScene" path="res://actors/operative/operative.tscn" id="op"]
@@ -226,6 +227,17 @@ size = Vector3(1, 0.8, 12)
 
 [sub_resource type="BoxShape3D" id="bs_Extraction"]
 size = Vector3(4, 3, 4)
+
+[sub_resource type="BoxShape3D" id="bs_Intel"]
+size = Vector3(1.5, 2, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="mat_Intel"]
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="bm_Intel"]
+material = SubResource("mat_Intel")
+size = Vector3(0.4, 0.1, 0.3)
 
 [node name="Harbour" type="Node3D" unique_id=1540337506]
 script = ExtResource("gd")
@@ -729,3 +741,38 @@ script = ExtResource("ep")
 
 [node name="Shape" type="CollisionShape3D" parent="ExtractionPoint" unique_id=915599426]
 shape = SubResource("bs_Extraction")
+
+[node name="Intel" type="Node3D" parent="."]
+
+[node name="IntelManifests" type="Area3D" parent="Intel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 0.6, -12)
+collision_layer = 0
+script = ExtResource("ip")
+
+[node name="Shape" type="CollisionShape3D" parent="Intel/IntelManifests"]
+shape = SubResource("bs_Intel")
+
+[node name="Mesh" type="MeshInstance3D" parent="Intel/IntelManifests"]
+mesh = SubResource("bm_Intel")
+
+[node name="IntelRadioLog" type="Area3D" parent="Intel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.6, -30)
+collision_layer = 0
+script = ExtResource("ip")
+
+[node name="Shape" type="CollisionShape3D" parent="Intel/IntelRadioLog"]
+shape = SubResource("bs_Intel")
+
+[node name="Mesh" type="MeshInstance3D" parent="Intel/IntelRadioLog"]
+mesh = SubResource("bm_Intel")
+
+[node name="IntelLift" type="Area3D" parent="Intel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0.6, -23)
+collision_layer = 0
+script = ExtResource("ip")
+
+[node name="Shape" type="CollisionShape3D" parent="Intel/IntelLift"]
+shape = SubResource("bs_Intel")
+
+[node name="Mesh" type="MeshInstance3D" parent="Intel/IntelLift"]
+mesh = SubResource("bm_Intel")

@@ -1,12 +1,13 @@
-## A Mission in progress: feeds the tally from the guards, ends at the Extraction point once the
-## objectives are done, then shows the post-Mission screen. Completing folds the tally into the
-## record (Aigis.complete_mission); aborting discards it.
+## A Mission in progress: feeds the tally from the guards, advances its objective steps (Campaign
+## data for record.mission) as the Operative reaches each step's intel pickup, ends at the Extraction
+## point once every step is done, then shows the post-Mission screen. Completing folds the tally into
+## the record (Aigis.complete_mission), and in the campaign moves Campaign.record on; aborting discards it.
 ## Hooks elsewhere report events with get_tree().call_group("mission_tally", "event", name).
 ## Set record (and return_to) before it enters the tree: the plan is made from the record in _ready,
 ## before the Area reads it. Group "mission_plan": the F3 overlay reads record, plan and tally.
-## Checkpoints (in memory only): one is taken once the Area is built; take_checkpoint() takes the next
-## (each objective step). restore_checkpoint() (group "checkpoint": death, the pause screen) undoes
-## everything since, except that the dead stay dead and Countermeasures stay as deployed.
+## Checkpoints (in memory only): one is taken once the Area is built, and one at each objective step.
+## restore_checkpoint() (group "checkpoint": death, the pause screen) undoes everything
+## since, except that the dead stay dead and Countermeasures stay as deployed.
 class_name MissionRun
 extends Node
 
@@ -15,10 +16,11 @@ signal finished(new_record: Dictionary)
 const SCREEN := preload("res://ui/post_mission/post_mission.gd")
 
 var tally := MissionTally.new()
-var record := Aigis.new_record()   # ponytail: the campaign loop (flow ticket) owns and saves this
+var record := Aigis.new_record()
 var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
-var return_to := ""                # scene to go back to once committed (Free mode); "" stays
-var objectives_done := true        # ponytail: no objectives exist yet; the Mission data sets this
+var return_to := ""                # scene to go back to once committed (Briefing, Free mode); "" stays
+var campaign := false              # committing moves Campaign.record on (never in Free mode)
+var step := 0                      # objective steps done
 var ended := false
 var _down := {}
 var _known := {}
@@ -33,13 +35,16 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for e in get_tree().get_nodes_in_group("extraction"):
 		e.reached.connect(_on_extraction)
+	for i in get_tree().get_nodes_in_group("intel"):
+		i.reached.connect(_on_intel.bind(i))
+	_show_intel()
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
-## Snapshot: the Operative (position, ammo, Voiceprints), the tally (Habits and Lethality so far),
-## Glaukopis's flags, which guards exist (reinforcements arrive later), which are dead and where they
-## lie, and which cameras are destroyed.
-## ponytail: objective step, Scanner charges and Magazines join when those exist.
+## Snapshot: the objective step, the Operative (position, ammo, Voiceprints), the tally (Habits and
+## Lethality so far), Glaukopis's flags, which guards exist (reinforcements arrive later), which are
+## dead and where they lie, and which cameras are destroyed.
+## ponytail: Scanner charges and Magazines join when those exist.
 func take_checkpoint() -> void:
 	var dead := {}
 	for g in get_tree().get_nodes_in_group("guards"):
@@ -47,6 +52,7 @@ func take_checkpoint() -> void:
 			dead[g] = [g.carrier.global_transform if g.carrier else g.global_transform, g.known_down]
 	var radio := get_tree().get_first_node_in_group("radio")
 	_checkpoint = {
+		step = step,
 		operative = get_tree().get_first_node_in_group("operative").snapshot(),
 		tally = copy(tally),
 		guards = get_tree().get_nodes_in_group("guards"),
@@ -63,6 +69,8 @@ func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
 		return
 	tally = copy(_checkpoint.tally)
+	step = _checkpoint.step
+	_show_intel()
 	var radio := get_tree().get_first_node_in_group("radio")
 	if radio:
 		radio.close()
@@ -115,8 +123,33 @@ func _physics_process(_delta: float) -> void:
 	tally.set_alert(alert)
 
 
+## What to do now, for the pause screen.
+func objective() -> String:
+	return Campaign.objective(record.mission, step)
+
+
+func _steps() -> Array:
+	return Campaign.MISSIONS[record.mission].steps
+
+
+## Only the current step's intel is shown.
+func _show_intel() -> void:
+	for i: Node3D in get_tree().get_nodes_in_group("intel"):
+		i.visible = step < _steps().size() and i.name == _steps()[step].intel
+
+
+## The current step's intel reached: the step is done, and that's a Checkpoint.
+func _on_intel(intel: Node) -> void:
+	if ended or step >= _steps().size() or intel.name != _steps()[step].intel:
+		return
+	step += 1
+	_show_intel()
+	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
+	take_checkpoint()
+
+
 func _on_extraction() -> void:
-	if ended or not objectives_done:
+	if ended or step < _steps().size():
 		return
 	ended = true
 	var after := Aigis.complete_mission(record, tally.counts)
@@ -129,6 +162,8 @@ func _on_extraction() -> void:
 	get_tree().paused = true
 	screen.committed.connect(func() -> void:
 		record = after
+		if campaign:
+			Campaign.record = after
 		get_tree().paused = false
 		finished.emit(after)
 		if return_to:

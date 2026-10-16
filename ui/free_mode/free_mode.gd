@@ -4,15 +4,8 @@
 ## until its slider moves). The cap and budget still apply by Mission index. Group "mission_plan": F3 previews the plan.
 extends Control
 
-const HARBOUR := "res://areas/harbour/harbour.tscn"
-## [name, Area scene], by Mission index. ponytail: the Relay station and Research annex aren't
-## built yet, so their Mission indices play in the Harbour until their tickets land.
-const MISSIONS := [
-	["MISSION 1", HARBOUR],
-	["MISSION 2", HARBOUR],
-	["MISSION 3", HARBOUR],
-	["CORE", HARBOUR],
-]
+const BRIEFING := "res://ui/briefing/briefing.tscn"
+var _mission_names: Array = Campaign.MISSIONS.map(func(m: Dictionary) -> String: return m.title.get_slice(":", 0))
 
 var preset: String = Aigis.PRESETS.keys()[0]   # or "custom"
 var custom_levels := {}
@@ -55,12 +48,18 @@ func _ready() -> void:
 	_slider(custom, "RATIO", 1, 0.05, "UNDEFINED", func(v: float) -> String:
 		custom_ratio = v
 		return "%.2f" % v)
-	_choices(box, "MISSION", MISSIONS.map(func(m: Array) -> String: return m[0]), func(i: int) -> void: mission = i)
+	_choices(box, "MISSION", _mission_names, func(i: int) -> void: mission = i)
 	box.add_child(_summary)
 	var play := Button.new()
 	play.text = "PLAY"
 	play.pressed.connect(_play)
 	box.add_child(play)
+	var campaign := Button.new()  # ponytail: the main menu takes this over
+	campaign.text = "NEW CAMPAIGN"
+	campaign.pressed.connect(func() -> void:
+		Campaign.start()
+		get_tree().change_scene_to_file(BRIEFING))
+	box.add_child(campaign)
 	_label(box, "EVERY MISSION PLAYS IN THE HARBOUR FOR NOW.\nF3: DEBUG OVERLAY", 8).modulate.a = 0.5
 	_refresh()
 	play.grab_focus()
@@ -122,12 +121,8 @@ func _refresh() -> void:
 	var steps := PackedStringArray(plan.picks.map(func(p: Dictionary) -> String:
 		return Aigis.LADDERS[p.habit][p.level - 1][1]))
 	_summary.text = "%s ON %s: AIGIS DEPLOYS (BUDGET %d)\n%s" % [preset.capitalize().to_upper(),
-		MISSIONS[mission][0], plan.budget, "\n".join(steps).to_upper() if steps else "NOTHING"]
+		_mission_names[mission], plan.budget, "\n".join(steps).to_upper() if steps else "NOTHING"]
 
 
 func _play() -> void:
-	var area: Node = load(MISSIONS[mission][1]).instantiate()
-	var run: MissionRun = area.get_node("MissionRun")
-	run.record = record
-	run.return_to = scene_file_path
-	get_tree().change_scene_to_node(area)
+	Campaign.play(get_tree(), record, scene_file_path)

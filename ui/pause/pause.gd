@@ -1,5 +1,6 @@
-## Minimal pause screen (Esc): resume, or restart from the last Checkpoint (group "checkpoint").
-## ponytail: the menus ticket grows it into the full pause menu (abort, settings, quit, objective).
+## Minimal pause screen (Esc): the current objective; resume, or restart from the last Checkpoint
+## (group "checkpoint", the MissionRun).
+## ponytail: the menus ticket grows it into the full pause menu (abort, settings, quit).
 extends Control
 
 var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
@@ -25,13 +26,17 @@ func _unhandled_input(e: InputEvent) -> void:
 
 func _show(on: bool) -> void:
 	visible = on
+	queue_redraw()  # the objective may have moved on
 	get_tree().paused = on
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if on else Input.MOUSE_MODE_CAPTURED
 
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.7))
-	_centered(size.y / 2 - 30, "PAUSED", Color.WHITE, 12)
+	_centered(size.y / 2 - 50, "PAUSED", Color.WHITE, 12)
+	var run := get_tree().get_first_node_in_group("checkpoint")
+	if run:
+		_centered(size.y / 2 - 22, run.objective(), Color.WHITE, 8)
 	_centered(size.y / 2 + 10, "ESC  RESUME", Color(1, 1, 1, 0.85), 8)
 	_centered(size.y / 2 + 26, "R  RESTART FROM CHECKPOINT", Color(1, 1, 1, 0.85), 8)
 
