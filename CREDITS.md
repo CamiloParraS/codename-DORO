@@ -6,7 +6,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 - Universal Base Characters / Universal Animation Library / Universal Animation Library 2 by Quaternius, https://quaternius.com
   License shown at download (2026-10-08): CC0 1.0. No credit required, credited anyway.
-  Used: Superhero_Male_FullBody (body) and 9 clips baked from UAL1/UAL2 into `assets/models/animations/clips.res` by `tools/bake_clips.gd`. The Universal Animation Library is under the Quaternius license (CC0 1.0).
+  Used: 9 clips baked from UAL1/UAL2 into `assets/models/animations/clips.res` by `tools/bake_clips.gd`; the Superhero_Male_FullBody skin weights seeded the Nikita rig (`tools/rig_nikita.py`). The Universal Animation Library is under the Quaternius license (CC0 1.0).
 - Blocky Characters, Survival Kit, City Kit (Industrial) by Kenney, https://kenney.nl
   License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
 - Modern Rebel Soldier (PSX) by yugg0, https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1
@@ -20,7 +20,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Mine, Elbolilloduro, https://elbolilloduro.itch.io/mine, CC0 1.0
 - PSX style modular walls & fences / PSX style barriers / PSX style urban stacked pack, valsekemarplant, https://valsekamerplant.itch.io/, CC0 1.0
 - 2 Retro 3D Dieselpunk Tanks, chilly_durango, https://chilly-durango.itch.io/2dieselpunktanks, CC0 1.0
-- Nikita low poly character mesh, n0mad, https://n0madcoder.itch.io/nikita-low-poly-character-base-mesh, CC0 1.0 (only its Helmet, Vest, Chest_rig, Backpack and Goggles parts are used, as bone props)
+- Nikita low poly character mesh, n0mad, https://n0madcoder.itch.io/nikita-low-poly-character-base-mesh, CC0 1.0 (rigged to the Quaternius skeleton in Blender: `assets/models/characters/Nikita_Rigged.glb`)
 - Lowpoly Female Mesh, Titanium Rat, https://titaniumrat42.itch.io/lowpoly-female-mesh, CC0 1.0
 - Freddy - Low-Poly Retro PSX FNAF Models / PSX Rifle Free / PSX skeleton , Puck, https://puszke.itch.io/, CC0 1.0
 - PSX Female Secretary Character, Vinrax, https://vinrax.itch.io/psx-secretary-character, Free to use must credit author

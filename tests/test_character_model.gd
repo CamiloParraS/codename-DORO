@@ -46,13 +46,21 @@ func test_tracks_bind_to_the_skeleton() -> void:
 	assert_eq(missing, 0, "tracks without a node")
 
 
-func test_gear_and_carry_mount_hang_on_bones() -> void:
+func test_countermeasure_gear_shows_only_once_worn() -> void:
 	var m := CharacterModel.new()
 	_root().add_child(m)
+	var helmet: Node3D = m.skeleton.find_child("Helmet", true, false)
+	assert_false(helmet.visible)
+	assert_false((m.skeleton.find_child("Vest", true, false) as Node3D).visible)
 	m.wear("Helmet")
-	m.wear("Vest")
-	assert_true(m.skeleton.find_child("Helmet", true, false) != null)
-	assert_true(m.skeleton.find_child("Vest", true, false) != null)
+	assert_true(helmet.visible)
+	assert_true((m.skeleton.find_child("Chest_rig", true, false) as Node3D).visible, "a guard's own rig")
+	m.free()
+
+
+func test_carry_mount_hangs_on_a_bone() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
 	assert_true(m.carry_mount().get_parent() is BoneAttachment3D)
 	m.free()
 

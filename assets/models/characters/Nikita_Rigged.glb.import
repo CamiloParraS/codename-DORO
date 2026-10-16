@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cdbbb4dgswdau"
-path="res://.godot/imported/Superhero_Male_FullBody.gltf-8f2553e5eb890843e467ee9bb5078bfa.scn"
+uid="uid://cxkci8c4ffw4i"
+path="res://.godot/imported/Nikita_Rigged.glb-5f0b1b021077b90ade68a2f066b1f234.scn"
 
 [deps]
 
-source_file="res://assets/models/characters/Superhero_Male_FullBody.gltf"
-dest_files=["res://.godot/imported/Superhero_Male_FullBody.gltf-8f2553e5eb890843e467ee9bb5078bfa.scn"]
+source_file="res://assets/models/characters/Nikita_Rigged.glb"
+dest_files=["res://.godot/imported/Nikita_Rigged.glb-5f0b1b021077b90ade68a2f066b1f234.scn"]
 
 [params]
 

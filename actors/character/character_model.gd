@@ -1,27 +1,24 @@
-## A Quaternius body on the UE skeleton, driven by the baked clips. Nikita's Helmet and Vest ride on bones
-## as props; the Target variant gets a red beret. Faces -Z like the actors that own it.
+## Nikita rigged to the Quaternius UE skeleton (tools/rig_nikita.py), driven by the baked clips. Kinds differ by
+## tint and gear; the Target gets a red beret. Faces -Z like the actors that own it.
 class_name CharacterModel
 extends Node3D
 
 enum Kind { OPERATIVE, GUARD, TARGET }
 
-const BODY := preload("res://assets/models/characters/Superhero_Male_FullBody.gltf")
-const NIKITA := preload("res://assets/models/nikita/NikitaMesh_A_Pose.gltf")
+const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 const CLIPS := preload("res://assets/models/animations/clips.res")
+## The body is white and tinted per kind; the gear parts carry their own colours.
 const TINTS := {
 	Kind.OPERATIVE: Color(0.3, 0.36, 0.5),
-	Kind.GUARD: Color(0.34, 0.38, 0.26),
+	Kind.GUARD: Color(0.45, 0.5, 0.33),
 	Kind.TARGET: Color(0.95, 0.4, 0.35),
 }
-## Nikita's parts: bone they ride on, colour. Helmet and Vest are the guard Countermeasures, the rest dress the kind.
-const GEAR := {
-	Helmet = ["Head", Color(0.22, 0.26, 0.2)],
-	Vest = ["spine_03", Color(0.12, 0.14, 0.2)],
-	Chest_rig = ["spine_03", Color(0.2, 0.2, 0.16)],
-	Backpack = ["spine_03", Color(0.18, 0.2, 0.26)],
-	Goggles = ["Head", Color(0.05, 0.05, 0.06)],
+## Gear parts shown per kind. Helmet and Vest are the guard Countermeasures: hidden until wear().
+const DRESS := {
+	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
+	Kind.GUARD: ["Chest_rig", "Holster", "Knee_pads", "Shemag"],
+	Kind.TARGET: [],
 }
-const DRESS := {Kind.OPERATIVE: ["Backpack", "Goggles"], Kind.GUARD: ["Chest_rig"], Kind.TARGET: []}
 const CARRY_BONE := "spine_03"
 const BERET_AT := Vector3(0, 1.8, 0.01)  # model space, on the crown
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
@@ -66,10 +63,12 @@ func _ready() -> void:
 	skeleton = body.find_children("*", "Skeleton3D", true, false)[0]
 	body.add_child(_anim)
 	_anim.add_animation_library("", CLIPS)
-	var mesh: MeshInstance3D = body.find_children("SuperHero_Male", "MeshInstance3D", true, false)[0]
-	var mat: StandardMaterial3D = mesh.get_active_material(0).duplicate()
-	mat.albedo_color = TINTS[kind]
-	mesh.material_override = mat
+	var tint := StandardMaterial3D.new()
+	tint.albedo_color = TINTS[kind]
+	tint.roughness = 0.9
+	_part("Nikita").material_override = tint
+	for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
+		_part(part).visible = part in DRESS[kind]
 	if kind == Kind.TARGET:
 		var beret := MeshInstance3D.new()
 		var dome := SphereMesh.new()
@@ -81,8 +80,6 @@ func _ready() -> void:
 		beret.material_override = red
 		beret.position = BERET_AT
 		_on_bone("Head", beret)
-	for item in DRESS[kind]:
-		wear(item)
 	play("idle")
 
 
@@ -93,17 +90,13 @@ func play(clip: String) -> void:
 	_anim.play(clip, 0.2)
 
 
-## One of Nikita's GEAR parts, in place on the body.
+## Puts on a Countermeasure piece: "Helmet" or "Vest".
 func wear(item: String) -> void:
-	var src := NIKITA.instantiate()
-	var piece: MeshInstance3D = src.get_node(item)
-	src.remove_child(piece)
-	src.free()
-	piece.name = item
-	var paint := StandardMaterial3D.new()
-	paint.albedo_color = GEAR[item][1]
-	piece.material_override = paint
-	_on_bone(GEAR[item][0], piece)
+	_part(item).visible = true
+
+
+func _part(part: String) -> MeshInstance3D:
+	return skeleton.find_child(part, true, false)
 
 
 ## Hangs `node` (placed in model space) on a bone so it follows the pose.
