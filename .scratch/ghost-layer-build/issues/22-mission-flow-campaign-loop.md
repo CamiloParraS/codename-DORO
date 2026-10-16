@@ -13,6 +13,7 @@
 - [x] The flow goes placeholder Briefing → Mission → post-Mission screen → next Mission, linear with no replays
 - [x] Mission 1 in the Harbour is completable with intel extraction
 - [x] The current objective is shown on a minimal pause screen
+- [ ] (pending) Paint Nikita's texture from `assets/textures/characters/nikita_uv_template.png` in GIMP, export a 1024 PNG, and hook it into `CharacterModel` (keep the per-kind tint, or one texture per kind)
 
 ## Comments
 
