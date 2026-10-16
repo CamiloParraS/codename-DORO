@@ -8,6 +8,6 @@
 
 **Status:** ready-for-agent
 
-- [ ] Alerted guards shoot with hit chance falling with distance and when the Operative runs
-- [ ] The Operative dies after 4 hits; health regenerates after 5 s without damage; the life bar reflects it
-- [ ] Death restarts the Mission until Checkpoints exist
+- [x] Alerted guards shoot with hit chance falling with distance and when the Operative runs
+- [x] The Operative dies after 4 hits; health regenerates after 5 s without damage; the life bar reflects it
+- [x] Death restarts the Mission until Checkpoints exist
