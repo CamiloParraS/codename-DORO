@@ -149,7 +149,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		gun().reload(carrying != null)
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
 		_fire()
-	elif e.is_action_pressed("pause"):
+	elif e.is_action_pressed("pause"):  # Areas without a pause screen (the test room)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
@@ -195,13 +195,46 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## A guard's bullet landed. Dying restarts the Mission. ponytail: Checkpoints (next ticket) replace this.
+## A guard's bullet landed. Dying restores the last Checkpoint (MissionRun).
 func take_hit() -> void:
 	if health.dead():
 		return
 	health.hit()
 	if health.dead():
-		get_tree().reload_current_scene.call_deferred()
+		get_tree().call_group.call_deferred("checkpoint", "restore_checkpoint")
+
+
+## What a Checkpoint keeps of the Operative: where it stands and looks, its guns and Voiceprints.
+func snapshot() -> Dictionary:
+	return {
+		xform = global_transform, yaw = _yaw, pitch = _pitch, crouching = crouching,
+		tranq = MissionRun.copy(tranq), rifle = MissionRun.copy(rifle), rifle_in_hand = _gun == rifle,
+		voiceprints = MissionRun.copy(voiceprints),
+	}
+
+
+## Back to a snapshot, empty-handed and unhurt.
+func restore(s: Dictionary) -> void:
+	if carrying:
+		carrying.carrier = null
+		carrying = null
+	if _choking:
+		_choking.held = false
+		_choking = null
+	_choke_left = 0.0
+	global_transform = s.xform
+	velocity = Vector3.ZERO
+	_yaw = s.yaw
+	_pitch = s.pitch
+	_recoil = 0.0
+	crouching = s.crouching
+	_apply_crouch()
+	tranq = MissionRun.copy(s.tranq)
+	rifle = MissionRun.copy(s.rifle)
+	_gun = rifle if s.rifle_in_hand else tranq
+	voiceprints = MissionRun.copy(s.voiceprints)
+	health = Health.new()
+	_pivot.global_position = global_position + Vector3.UP * (0.95 if crouching else 1.45)
 
 
 ## The weapon in hand.

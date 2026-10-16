@@ -38,4 +38,5 @@ func spawn_guard(post: Marker3D) -> Node3D:
 	g.operative = $Operative
 	add_child(g)
 	g.global_transform = post.global_transform
+	g.post = post.global_transform
 	return g

@@ -19,6 +19,7 @@ const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
 var route: Array[Vector3] = []   # patrol points, walked in a loop
+var post: Transform3D            # where it was spawned: a Checkpoint restore puts it back here
 var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
 var checkin := Checkin.new()
@@ -215,6 +216,27 @@ func wake(from: Vector3) -> void:
 	collision_layer = 2
 	_lie(false)
 	_changed(alert.wake(from))
+
+
+## Checkpoint restore: alive (even if killed since), standing at its post, alert cleared, starting its
+## patrol over. A helmet (a Countermeasure) stays on.
+func return_to_post() -> void:
+	dead = false
+	wake(global_position)  # up, off any shoulder, solid again
+	alert = GuardAlert.new()  # remembering nothing, not even waking
+	stumble_left = 0.0
+	held = false
+	order = {}
+	seen_rate = 0.0
+	last_reason = ""
+	global_transform = post
+	velocity = Vector3.ZERO
+	_wp = 0
+	_pause = 0.0
+	_fire_left = FIRE_INTERVAL
+	_agent.target_position = post.origin
+	_refresh_mark()
+	_bt.restart()
 
 
 ## Can the Operative at `from` choke this guard: not Down, not alerted, outside its front cone.

@@ -4,6 +4,9 @@
 ## Hooks elsewhere report events with get_tree().call_group("mission_tally", "event", name).
 ## Set record (and return_to) before it enters the tree: the plan is made from the record in _ready,
 ## before the Area reads it. Group "mission_plan": the F3 overlay reads record, plan and tally.
+## Checkpoints (in memory only): one is taken once the Area is built; take_checkpoint() takes the next
+## (each objective step). restore_checkpoint() (group "checkpoint": death, the pause screen) undoes
+## everything since, except that the dead stay dead and Countermeasures stay as deployed.
 class_name MissionRun
 extends Node
 
@@ -19,15 +22,68 @@ var objectives_done := true        # ponytail: no objectives exist yet; the Miss
 var ended := false
 var _down := {}
 var _known := {}
+var _checkpoint := {}
 
 
 func _ready() -> void:
 	add_to_group("mission_tally")
 	add_to_group("mission_plan")
+	add_to_group("checkpoint")
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for e in get_tree().get_nodes_in_group("extraction"):
 		e.reached.connect(_on_extraction)
+	take_checkpoint.call_deferred()  # once the Area has spawned its guards
+
+
+## Snapshot: the Operative (position, ammo, Voiceprints), the tally (Habits and Lethality so far),
+## Glaukopis's flags, and which guards are dead and where they lie.
+## ponytail: objective step, Scanner charges and Magazines join when those exist.
+func take_checkpoint() -> void:
+	var dead := {}
+	for g in get_tree().get_nodes_in_group("guards"):
+		if g.dead:  # a body on the shoulder is kept as dropped where the Operative stands
+			dead[g] = [g.carrier.global_transform if g.carrier else g.global_transform, g.known_down]
+	var radio := get_tree().get_first_node_in_group("radio")
+	_checkpoint = {
+		operative = get_tree().get_first_node_in_group("operative").snapshot(),
+		tally = copy(tally),
+		glaukopis = copy(radio.glaukopis) if radio else null,
+		dead = dead,
+	}
+
+
+## Back to the last Checkpoint. Bodies dead then lie where they lay; every other guard (Neutralized,
+## or killed since) is back at its post on patrol. Cameras stay, their alert cleared.
+func restore_checkpoint() -> void:
+	if ended or _checkpoint.is_empty():
+		return
+	tally = copy(_checkpoint.tally)
+	var radio := get_tree().get_first_node_in_group("radio")
+	if radio:
+		radio.close()
+		radio.glaukopis = copy(_checkpoint.glaukopis)
+	get_tree().get_first_node_in_group("operative").restore(_checkpoint.operative)
+	for g in get_tree().get_nodes_in_group("guards"):
+		if g in _checkpoint.dead:
+			g.carrier = null
+			g.global_transform = _checkpoint.dead[g][0]
+			g.known_down = _checkpoint.dead[g][1]
+		else:
+			g.return_to_post()
+	for c in get_tree().get_nodes_in_group("cameras"):
+		if not c.destroyed:
+			c.alert = GuardAlert.new()
+
+
+## A deep copy of a node-free state object (a Gun, Voiceprints, the tally, Glaukopis).
+static func copy(o: Object) -> Object:
+	var c: Object = o.get_script().new()
+	for p in o.get_property_list():
+		if p.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			var v: Variant = o.get(p.name)
+			c.set(p.name, v.duplicate(true) if v is Array or v is Dictionary else v)
+	return c
 
 
 func event(name_: String) -> void:

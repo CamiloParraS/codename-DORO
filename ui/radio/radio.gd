@@ -53,11 +53,11 @@ func _input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion:
 		_pointer = (_pointer + e.relative).limit_length(POINTER_MAX)
 	elif e.is_action_pressed("radio") or e.is_action_pressed("pause"):
-		_close()
+		close()
 	elif e.is_action_pressed("aim"):
 		_pointer = Vector2.ZERO
 		if not menu.back():
-			_close()
+			close()
 	elif e.is_action_pressed("fire"):
 		_choose(_hover())
 	elif e is InputEventKey and e.pressed and not e.echo and e.keycode >= KEY_1 and e.keycode <= KEY_9:
@@ -82,7 +82,7 @@ func _open() -> void:
 	_operative.radio_open = true
 
 
-func _close() -> void:
+func close() -> void:
 	menu = null
 	Engine.time_scale = 1.0
 	if is_instance_valid(_operative):
@@ -101,7 +101,7 @@ func _choose(i: int) -> void:
 		return
 	var pick := menu.pick
 	var line := menu.line()
-	_close()
+	close()
 	_send(pick, line)
 
 
@@ -124,10 +124,12 @@ func _send(pick: Dictionary, line: String) -> void:
 		get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	var from := _operative.global_position
 	var sent: Dictionary = glaukopis.history.back()  # its accepted list is fixed up once they answer
-	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients, sent))
+	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients, sent, glaukopis))
 
 
-func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, sent: Dictionary) -> void:
+func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, sent: Dictionary, judge: Glaukopis) -> void:
+	if judge != glaukopis:  # a Checkpoint restore since: this transmission never happened
+		return
 	sent.accepted = []  # only the guards who obey below got the order
 	var up := recipients.filter(func(r): return is_instance_valid(r) and not r.is_down())
 	if up.is_empty():
