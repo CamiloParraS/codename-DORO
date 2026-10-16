@@ -3,7 +3,7 @@ Weights are copied from the Quaternius body (posed to match Nikita's A-pose), th
 un-posed to the rig's T-pose so the Universal Animation Library clips fit.
 Run: blender -b -P tools/rig_nikita.py   (paths below are relative to the project root)
 """
-import bpy, math, os
+import bpy, math, os, re
 from mathutils import Matrix, Vector, kdtree
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -12,6 +12,14 @@ BODY = ROOT + "/_raw/work/q/Universal Base Characters[Standard]/Base Characters/
 NIKITA = ROOT + "/_raw/work/nikita_base_mesh/NikitaMesh_A_Pose.gltf"
 OUT = ROOT + "/assets/models/characters/Nikita_Rigged.glb"
 K = 4  # nearest body vertices blended per weight transfer
+# Nikita's hands are mitts: the finger bones fold into the hand bone
+FINGER = re.compile(r"^(?:thumb|index|middle|ring|pinky)_.*_([lr])$")
+
+
+def fold(n):
+    m = FINGER.match(n)
+    return "hand_" + m.group(1) if m else n
+
 # part -> (colour; the body is tinted per kind in Godot, so it stays white)
 COLOURS = {
     "Nikita": (1, 1, 1), "Helmet": (0.22, 0.26, 0.2), "Vest": (0.12, 0.14, 0.2), "Chest_rig": (0.2, 0.2, 0.16),
@@ -55,7 +63,7 @@ tree.balance()
 
 # 4. Weights for every part, then un-pose the vertices: v_T = (sum w_i * skin_i)^-1 * v_A.
 for o in parts:
-    for n in set(names.values()):
+    for n in {fold(n) for n in names.values()}:
         if n not in o.vertex_groups:
             o.vertex_groups.new(name=n)
     for v in o.data.vertices:
@@ -64,7 +72,8 @@ for o in parts:
         total = sum(1 / (d + 1e-4) for _, _, d in near)
         for _, i, d in near:
             for g in body.data.vertices[i].groups:
-                w[names[g.group]] = w.get(names[g.group], 0) + g.weight / (d + 1e-4) / total
+                n = fold(names[g.group])
+                w[n] = w.get(n, 0) + g.weight / (d + 1e-4) / total
         blend = Matrix(((0,) * 4,) * 4)
         for n, wt in w.items():
             blend = blend + skin[n] * wt
