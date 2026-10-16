@@ -6,12 +6,12 @@
 
 **Blocked by:** 22, 16
 
-**Status:** done
+**Status:** ready-for-agent
 
-- [x] A Target walks a fixed 2–3-point route with one escort guard, using the guard tree
-- [x] On alert the Target runs to a safe room and stays until evasion ends
-- [x] Killing completes the objective on the spot and adds 3 to Lethality; a Neutralized Target carried to Extraction completes it
-- [x] The denominator adds 3 per Target; a carried Target spotted counts as a Down guard
+- [ ] A Target walks a fixed 2–3-point route with one escort guard, using the guard tree
+- [ ] On alert the Target runs to a safe room and stays until evasion ends
+- [ ] Killing completes the objective on the spot and adds 3 to Lethality; a Neutralized Target carried to Extraction completes it
+- [ ] The denominator adds 3 per Target; a carried Target spotted counts as a Down guard
 
 ## Comments
 
