@@ -29,10 +29,7 @@ func _ready() -> void:
 	for i in guards.size():
 		if helmets[i]:
 			guards[i].wear_helmet()
-		if Deployment.vests(deployed):
-			guards[i].wear_vest()
-		guards[i].body_hits_to_kill = Deployment.body_hits_to_kill(deployed)
-		guards[i].turn_every = Deployment.turn_around_every(deployed)
+		_equip(guards[i])
 	$Operative.choke_time = Deployment.choke_time(deployed)
 	$Operative.choke_noise = Deployment.choke_noise(deployed)
 	if Deployment.cameras(deployed):
@@ -55,12 +52,22 @@ func _process(_delta: float) -> void:
 			var g := spawn_guard(entry)
 			g.global_position += Vector3(i * 2.0, 0, 0)
 			g.post = g.global_transform
+			_equip(g)
 			g.on_radio($Operative.global_position, "reinforcements")
 		$MissionRun.tally.add("spawned", n)
 	_was_alerted = alerted
 
 
-## Takedowns L2: every second patrolling guard walks the first one's route, just behind it.
+## Combat L1 vests and the Takedowns L1 glance, on every guard including reinforcements.
+func _equip(g: Guard) -> void:
+	var deployed: Dictionary = $MissionRun.plan.deployed
+	if Deployment.vests(deployed):
+		g.wear_vest()
+	g.body_hits_to_kill = Deployment.body_hits_to_kill(deployed)
+	g.turn_every = Deployment.turn_around_every(deployed)
+
+
+## Takedowns L2: every second patrolling guard walks the first one's route, starting beside it.
 func _pair_up(patrols: Array) -> void:
 	for i in range(0, patrols.size() - 1, 2):
 		var a: Guard = patrols[i]
