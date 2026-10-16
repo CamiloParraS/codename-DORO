@@ -8,6 +8,7 @@ const GUARD := preload("res://actors/guard/guard.tscn")
 const BASE_GUARDS := 10  # the remaining posts are left for Countermeasure extras
 
 var _was_alerted := false
+var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
 
 
 func _ready() -> void:
@@ -49,7 +50,9 @@ func _process(_delta: float) -> void:
 	if alerted and not _was_alerted and n > 0:
 		var entry: Marker3D = $Spots/RoadEntry
 		for i in n:
+			_reinforcements += 1
 			var g := spawn_guard(entry)
+			g.name = "GuardRoad%d" % _reinforcements
 			g.global_position += Vector3(i * 2.0, 0, 0)
 			g.post = g.global_transform
 			_equip(g)
