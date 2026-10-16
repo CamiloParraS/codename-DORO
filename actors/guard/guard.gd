@@ -35,8 +35,14 @@ var carrier: Node3D              # the Operative carrying this guard
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
 var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
+var vest := false                # Combat L1: tranq body shots do nothing, rifle body hits take longer
+var body_hits_to_kill := BODY_HITS_TO_KILL
+var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
 
 var _wp := 0
+var _turn_clock := 0.0
+var _glance := 0.0       # seconds left of a glance behind
+var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
@@ -163,15 +169,15 @@ func shoot(head: bool, from: Vector3) -> void:
 	if head:
 		get_tree().call_group("mission_tally", "event", "headshot")
 	hits += 1
-	if bullet_kills(head, helmet, hits):
+	if bullet_kills(head, helmet, hits, body_hits_to_kill):
 		kill()
 	else:
 		_changed(alert.hear(from, "a bullet"))
 
 
 ## Does a rifle bullet kill: an unhelmeted headshot always, otherwise the BODY_HITS_TO_KILL-th hit.
-static func bullet_kills(head: bool, has_helmet: bool, hit_count: int) -> bool:
-	return (head and not has_helmet) or hit_count >= BODY_HITS_TO_KILL
+static func bullet_kills(head: bool, has_helmet: bool, hit_count: int, to_kill := BODY_HITS_TO_KILL) -> bool:
+	return (head and not has_helmet) or hit_count >= to_kill
 
 
 ## A tranq dart from `from`: a headshot Neutralizes at once (a helmet makes it a body shot), a body
@@ -184,7 +190,8 @@ func tranquilize(head: bool, from: Vector3) -> void:
 		return
 	if stumble_left > 0.0:
 		return
-	stumble_left = Tranq.BODY_DELAY
+	if not vest:  # a vest stops the dart: the guard only hears it hit
+		stumble_left = Tranq.BODY_DELAY
 	_changed(alert.hear(from, "a dart"))
 
 
@@ -202,6 +209,21 @@ func wear_helmet() -> void:
 	mat.albedo_color = Color(0.22, 0.26, 0.2)
 	m.material_override = mat
 	m.position.y = 0.62  # on the crown of the Body capsule, lies down with it
+	$Body.add_child(m)
+
+
+## Combat L1: a visible vest.
+func wear_vest() -> void:
+	vest = true
+	var m := MeshInstance3D.new()
+	m.name = "Vest"
+	var box := BoxMesh.new()
+	box.size = Vector3(0.75, 0.6, 0.75)
+	m.mesh = box
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.12, 0.14, 0.2)
+	m.material_override = mat
+	m.position.y = 0.1
 	$Body.add_child(m)
 
 
@@ -233,6 +255,7 @@ func return_to_post() -> void:
 	velocity = Vector3.ZERO
 	_wp = 0
 	_pause = 0.0
+	_glance = 0.0
 	_fire_left = FIRE_INTERVAL
 	_agent.target_position = post.origin
 	_refresh_mark()
@@ -294,9 +317,9 @@ func _sense_down() -> Array:
 
 
 ## Every guard within radius of pos hears it (GuardAlert.in_earshot: through walls).
-static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String) -> void:
+static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String, except: Guard = null) -> void:
 	for g in tree.get_nodes_in_group("guards"):
-		if GuardAlert.in_earshot(g.global_position, pos, radius):
+		if g != except and GuardAlert.in_earshot(g.global_position, pos, radius):
 			g.on_noise(pos, what)
 
 
@@ -401,6 +424,16 @@ func can_see(other: Node3D) -> bool:
 func patrol(delta: float) -> void:
 	if route.is_empty():
 		return
+	if _glance > 0.0:  # stands still looking behind it
+		_glance -= delta
+		rotation.y = lerp_angle(rotation.y, _glance_yaw, 8 * delta)
+		return
+	if turn_every > 0.0:
+		_turn_clock += delta
+		if _turn_clock >= turn_every:
+			_turn_clock = 0.0
+			_glance = 1.5
+			_glance_yaw = rotation.y + PI
 	if _pause > 0.0:
 		_pause -= delta
 		return

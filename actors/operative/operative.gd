@@ -32,6 +32,8 @@ var camera: Camera3D
 
 var _knock_left := 0.0
 var _choke_left := 0.0
+var choke_time := CHOKE_TIME   # Takedowns L3 slows it
+var choke_noise := 0.0         # Takedowns L3: metres the struggle is heard
 var _choking: Node3D
 var _killing := false      # the grip in progress is a kill (X), not a choke (E)
 var _victim_down := false  # it was already Down when the kill began
@@ -289,9 +291,11 @@ func _interact() -> void:
 	g = _nearest(false)
 	if g:
 		_choking = g
-		_choke_left = CHOKE_TIME
+		_choke_left = choke_time
 		_killing = false
 		g.held = true
+		if choke_noise > 0.0:
+			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
 		tranq.refill()
 		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist

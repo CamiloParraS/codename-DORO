@@ -110,3 +110,5 @@ func test_a_headshot_kills_at_once() -> void:
 func test_a_helmet_turns_a_headshot_into_a_body_hit() -> void:
 	assert_false(Guard.bullet_kills(true, true, 1))
 	assert_true(Guard.bullet_kills(true, true, 2))
+	assert_false(Guard.bullet_kills(false, false, 3, 4), "a vest takes 4 body hits")
+	assert_true(Guard.bullet_kills(false, false, 4, 4))

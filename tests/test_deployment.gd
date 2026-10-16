@@ -72,3 +72,44 @@ func test_helmet_shares_by_level() -> void:
 
 func test_helmets_are_spread_out() -> void:
 	assert_eq(Deployment.helmets({"headshots": 1}, 10), [false, false, false, true, false, false, true, false, false, true])
+
+
+func test_combat_ladder_on_the_core() -> void:
+	var d := _deployed("butcher", CORE)
+	assert_true(Deployment.vests(d))
+	assert_eq(Deployment.extra_guards(d), 2)
+	assert_eq(Deployment.reinforcements(d), 2)
+	assert_eq(Deployment.body_hits_to_kill(d), 4)
+
+
+func test_combat_ladder_steps() -> void:
+	assert_false(Deployment.vests({"combat": 0}))
+	assert_eq(Deployment.body_hits_to_kill({"combat": 0}), 2)
+	assert_true(Deployment.vests({"combat": 1}))
+	assert_eq(Deployment.extra_guards({"combat": 1}), 0)
+	assert_eq(Deployment.extra_guards({"combat": 2}), 2)
+	assert_eq(Deployment.reinforcements({"combat": 2}), 0)
+	assert_eq(Deployment.reinforcements({"combat": 3}), 2)
+
+
+func test_sentries_from_stealth_3() -> void:
+	assert_false(Deployment.sentries({"stealth": 2}))
+	assert_true(Deployment.sentries({"stealth": 3}))
+
+
+func test_takedown_ladder_steps() -> void:
+	assert_eq(Deployment.turn_around_every({}), 0.0, "never at L0")
+	assert_true(Deployment.turn_around_every({"takedowns": 1}) > 0.0)
+	assert_false(Deployment.pairs({"takedowns": 1}))
+	assert_true(Deployment.pairs({"takedowns": 2}))
+	assert_eq(Deployment.choke_time({"takedowns": 2}), 2.0)
+	assert_eq(Deployment.choke_noise({"takedowns": 2}), 0.0)
+	assert_eq(Deployment.choke_time({"takedowns": 3}), 3.0)
+	assert_eq(Deployment.choke_noise({"takedowns": 3}), 6.0)
+
+
+func test_ghost_on_the_core_gets_sentries_pairs_and_no_vests() -> void:
+	var d := _deployed("ghost", CORE)
+	assert_true(Deployment.sentries(d))
+	assert_true(Deployment.pairs(d))
+	assert_false(Deployment.vests(d))

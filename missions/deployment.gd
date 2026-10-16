@@ -1,6 +1,5 @@
 ## What an Area puts in the world for a Mission plan: reads plan_mission's `deployed` levels and
 ## answers in counts and per-guard picks. Node-free; the Area places the result at its built-in spots.
-## Only the Countermeasures that exist so far are here (the gear and patrol ticket adds the rest).
 class_name Deployment
 extends RefCounted
 
@@ -25,3 +24,46 @@ static func helmets(deployed: Dictionary, guards: int) -> Array[bool]:
 	for i in guards:
 		out.append(floori((i + 1) * n / float(guards)) > floori(i * n / float(guards)))
 	return out
+
+
+## Stealth L3: overwatch sentries, one on every high point.
+static func sentries(deployed: Dictionary) -> bool:
+	return int(deployed.get("stealth", 0)) >= 3
+
+
+## Combat L1: vests on every guard (tranq body shots stop, rifle body hits 2 -> 4).
+static func vests(deployed: Dictionary) -> bool:
+	return int(deployed.get("combat", 0)) >= 1
+
+
+static func body_hits_to_kill(deployed: Dictionary) -> int:
+	return 4 if vests(deployed) else 2
+
+
+## Combat L2: two more guards on extra posts.
+static func extra_guards(deployed: Dictionary) -> int:
+	return 2 if int(deployed.get("combat", 0)) >= 2 else 0
+
+
+## Combat L3: guards arriving from the road entry each time an alert is raised.
+static func reinforcements(deployed: Dictionary) -> int:
+	return 2 if int(deployed.get("combat", 0)) >= 3 else 0
+
+
+## Takedowns L1: seconds between a patrolling guard glancing behind it (0 = never).
+static func turn_around_every(deployed: Dictionary) -> float:
+	return 6.0 if int(deployed.get("takedowns", 0)) >= 1 else 0.0
+
+
+## Takedowns L2: patrolling guards walk in pairs.
+static func pairs(deployed: Dictionary) -> bool:
+	return int(deployed.get("takedowns", 0)) >= 2
+
+
+## Takedowns L3: the choke takes 3 s and is heard within 6 m (the kill stays 0.5 s).
+static func choke_time(deployed: Dictionary) -> float:
+	return 3.0 if int(deployed.get("takedowns", 0)) >= 3 else 2.0
+
+
+static func choke_noise(deployed: Dictionary) -> float:
+	return 6.0 if int(deployed.get("takedowns", 0)) >= 3 else 0.0
