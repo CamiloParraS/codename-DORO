@@ -94,8 +94,20 @@ func _shoot_back(delta: float) -> void:
 	if _fire_left > 0.0:
 		return
 	_fire_left = FIRE_INTERVAL
+	_muzzle_flash()
 	if randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking()):
 		operative.take_hit()
+
+
+## A brief light at chest height in front of the guard, so a shot is visible whether or not it lands.
+func _muzzle_flash() -> void:
+	var l := OmniLight3D.new()
+	l.light_color = Color(1, 0.8, 0.4)
+	l.light_energy = 8.0
+	l.omni_range = 6.0
+	l.position = Vector3(0, 1.3, -0.6)
+	add_child(l)
+	get_tree().create_timer(0.07).timeout.connect(l.queue_free)
 
 
 ## Routine radio check-in: subtitle + ((·)) while talking, and the Operative may record a Voiceprint.
