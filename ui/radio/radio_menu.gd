@@ -5,18 +5,21 @@ extends RefCounted
 
 const ORDERS := [["Go check", "go"], ["Hold position", "hold"], ["All clear", "all_clear"]]
 const SAID := {go = "go check the %s", hold = "hold your position", all_clear = "all clear, stand down"}
+const REPORT_IN := [["Report in", "report_in"]]  # the only order to HQ, offered while HQ polls the speaker
 
 var step := "speaker"   # speaker / to / order / place / confirm
 var pick := {}          # speaker, recipients, all_units, order, place
 var _speakers: Array    # held Voiceprints
 var _guards: Array      # guards who can take an order (up)
 var _places: Array
+var _polled: String      # the guard HQ is waiting on ("" = no poll pending)
 
 
-func _init(speakers: Array, guards: Array, places: Array) -> void:
+func _init(speakers: Array, guards: Array, places: Array, polled := "") -> void:
 	_speakers = speakers
 	_guards = guards
 	_places = places
+	_polled = polled
 
 
 ## [label, value] for the current step.
@@ -27,9 +30,11 @@ func options() -> Array:
 		"to":
 			var out: Array = _guards.map(func(g): return [g, [g]])
 			out.append(["All units", _guards.filter(func(g): return g != pick.speaker)])
+			if pick.speaker == _polled:
+				out.push_front(["HQ", []])
 			return out
 		"order":
-			return ORDERS
+			return REPORT_IN if pick.recipients.is_empty() else ORDERS
 		"place":
 			return _places.map(func(p): return [p, p])
 	return [["Send", true]]
@@ -79,6 +84,8 @@ func back() -> bool:
 
 ## What the Operative says as the speaker, e.g. "Guard05, go check the Dock."
 func line() -> String:
+	if pick.order == "report_in":
+		return "HQ, %s here. Nothing to report." % pick.speaker
 	var to: String = "All units" if pick.all_units else pick.recipients[0]
 	var said: String = SAID[pick.order] % pick.place if pick.order == "go" else SAID[pick.order]
 	return "%s, %s." % [to, said]

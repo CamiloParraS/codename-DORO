@@ -113,3 +113,13 @@ func test_ghost_on_the_core_gets_sentries_pairs_and_no_vests() -> void:
 	assert_true(Deployment.sentries(d))
 	assert_true(Deployment.pairs(d))
 	assert_false(Deployment.vests(d))
+
+
+func test_downs_ladder_steps() -> void:
+	assert_eq(Deployment.hq_poll({}), "")
+	assert_eq(Deployment.hq_poll({"downs": 1}), "random")
+	assert_eq(Deployment.hq_poll({"downs": 2}), "random")
+	assert_eq(Deployment.hq_poll({"downs": 3}), "targeted")
+	assert_false(Deployment.instant_alert_on_down({"downs": 1}))
+	assert_true(Deployment.instant_alert_on_down({"downs": 2}))
+	assert_true(Deployment.instant_alert_on_down({"downs": 3}))

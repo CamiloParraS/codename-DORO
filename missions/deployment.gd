@@ -67,3 +67,14 @@ static func choke_time(deployed: Dictionary) -> float:
 
 static func choke_noise(deployed: Dictionary) -> float:
 	return 6.0 if int(deployed.get("takedowns", 0)) >= 3 else 0.0
+
+
+## Downs L1: "random" HQ polls, L3: "targeted" ones (the guard nobody has seen longest); "" before L1.
+static func hq_poll(deployed: Dictionary) -> String:
+	var lvl := int(deployed.get("downs", 0))
+	return "" if lvl < 1 else ("targeted" if lvl >= 3 else "random")
+
+
+## Downs L2: a guard that finds a Down guard raises the alert at once.
+static func instant_alert_on_down(deployed: Dictionary) -> bool:
+	return int(deployed.get("downs", 0)) >= 2

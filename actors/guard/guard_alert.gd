@@ -94,7 +94,8 @@ func hear(pos: Vector3, what: String) -> String:
 ## The guard sees a Down guard at pos (rate: the same vision fill as for the Operative). It fills the
 ## same meter at the same rate, only up to suspicion, then walks over to check; alerted guards
 ## ignore bodies. Call it before tick() in the same frame: a body in sight holds off the drain.
-func see_down(delta: float, rate: float, pos: Vector3) -> String:
+## instant (Downs L2): suspicion becomes an alert at once, with no walking over to check.
+func see_down(delta: float, rate: float, pos: Vector3, instant := false) -> String:
 	if rate <= 0.0 or state == State.ALERT:
 		return ""
 	_saw_down = true
@@ -103,7 +104,9 @@ func see_down(delta: float, rate: float, pos: Vector3) -> String:
 	if state == State.PATROL:
 		meter = maxf(meter, minf(meter + rate * delta, SUSPECT_AT))
 		if meter >= SUSPECT_AT:
-			return _go(State.SUSPICION, "saw a Down guard")
+			return _go(State.ALERT, "found a Down guard") if instant else _go(State.SUSPICION, "saw a Down guard")
+	elif instant:
+		return _go(State.ALERT, "found a Down guard")
 	return ""
 
 

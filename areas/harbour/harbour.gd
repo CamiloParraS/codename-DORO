@@ -58,13 +58,14 @@ func _process(_delta: float) -> void:
 	_was_alerted = alerted
 
 
-## Combat L1 vests and the Takedowns L1 glance, on every guard including reinforcements.
+## Combat L1 vests, the Takedowns L1 glance and Downs L2's instant alert, on every guard including reinforcements.
 func _equip(g: Guard) -> void:
 	var deployed: Dictionary = $MissionRun.plan.deployed
 	if Deployment.vests(deployed):
 		g.wear_vest()
 	g.body_hits_to_kill = Deployment.body_hits_to_kill(deployed)
 	g.turn_every = Deployment.turn_around_every(deployed)
+	g.instant_down = Deployment.instant_alert_on_down(deployed)
 
 
 ## Takedowns L2: every second patrolling guard walks the first one's route, starting beside it.

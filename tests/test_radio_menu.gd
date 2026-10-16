@@ -77,3 +77,35 @@ func test_slice_clockwise_from_top() -> void:
 	assert_eq(RadioMenu.slice(Vector2(-5, -39), 4), 0)  # just left of top still slice 0
 	assert_eq(RadioMenu.slice(Vector2(2, 3), 4), -1)    # dead zone
 	assert_eq(RadioMenu.slice(Vector2(0, -40), 0), -1)
+
+
+func test_report_in_is_offered_only_as_the_polled_guard() -> void:
+	var m := RadioMenu.new(["Kostas", "Dimos"], ["Kostas", "Dimos"], ["Dock"], "Kostas")
+	m.choose(1)                        # Dimos isn't the polled guard
+	assert_eq(m.options()[0][0], "Kostas", "no HQ to report to")
+	assert_eq(m.options().filter(func(o): return o[0] == "HQ").size(), 0)
+	m = RadioMenu.new(["Kostas", "Dimos"], ["Kostas", "Dimos"], ["Dock"], "Kostas")
+	m.choose(0)                        # Kostas
+	assert_eq(m.options()[0][0], "HQ")
+
+
+func test_report_in_walks_to_confirm_and_says_its_line() -> void:
+	var m := RadioMenu.new(["Kostas"], ["Kostas", "Dimos"], ["Dock"], "Kostas")
+	m.choose(0)
+	m.choose(0)                        # HQ
+	assert_eq(m.step, "order")
+	assert_eq(m.options(), [["Report in", "report_in"]])
+	assert_false(m.choose(0))
+	assert_eq(m.step, "confirm", "no place step")
+	assert_eq(m.pick.order, "report_in")
+	assert_eq(m.pick.recipients, [])
+	assert_eq(m.line(), "HQ, Kostas here. Nothing to report.")
+	assert_true(m.back())
+	assert_eq(m.step, "order")
+
+
+func test_no_pending_poll_means_no_report_in() -> void:
+	var m := _menu()
+	m.choose(0)
+	assert_eq(m.options()[0][0], "Kostas")
+	assert_eq(m.options().size(), 4, "three guards and All units")

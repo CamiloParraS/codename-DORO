@@ -357,3 +357,30 @@ func test_camera_drops_back_to_watching_after_3s_unseen() -> void:
 	assert_eq(a.camera_tick(0.2, 0.0, SPOT, ""), "camera lost you")
 	assert_eq(a.state, S.PATROL)
 	assert_eq(a.meter, 0.0)
+
+
+func test_downs_l2_a_down_guard_in_sight_is_an_instant_alert() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.see_down(1.0, 0.2, SPOT, true), "", "the meter still has to fill to suspicion")
+	assert_eq(a.state, S.PATROL)
+	assert_eq(a.see_down(1.0, 5.0, SPOT, true), "found a Down guard")
+	assert_eq(a.state, S.ALERT)
+	assert_eq(a.last_known, SPOT)
+
+
+func test_downs_l2_a_suspicious_guard_that_sees_a_body_alerts_without_walking_over() -> void:
+	var a := _suspicious()
+	assert_eq(a.see_down(DT, 1.0, SPOT, true), "found a Down guard")
+	assert_eq(a.state, S.ALERT)
+	a = _evading()
+	a.see_down(DT, 1.0, SPOT, true)
+	assert_eq(a.state, S.ALERT)
+
+
+func test_downs_l2_leaves_alerted_guards_and_unseen_bodies_alone() -> void:
+	var a := _alerted()
+	assert_eq(a.see_down(DT, 1.0, SPOT, true), "")
+	assert_eq(a.state, S.ALERT)
+	a = _suspicious()
+	assert_eq(a.see_down(DT, 0.0, SPOT, true), "", "no sight, no alert")
+	assert_eq(a.state, S.SUSPICION)

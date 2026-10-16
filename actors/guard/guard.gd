@@ -38,6 +38,7 @@ var helmet := false              # Headshots Countermeasure: a headshot counts a
 var vest := false                # Combat L1: tranq body shots do nothing, rifle body hits take longer
 var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
+var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
 
 var _wp := 0
 var _turn_clock := 0.0
@@ -71,7 +72,7 @@ func _physics_process(delta: float) -> void:
 			return
 	if operative:
 		var down := _sense_down()  # before tick: a Down guard in sight holds off the drain
-		_react(alert.see_down(delta, down[0], down[1]))
+		_react(alert.see_down(delta, down[0], down[1], instant_down))
 		var rate := _sense()
 		_react(alert.tick(delta, rate, operative.global_position, _saw, arrived()))
 		_shoot_back(delta)
@@ -135,6 +136,11 @@ func _refresh_mark() -> void:
 
 func is_down() -> bool:
 	return dead or neutral_left > 0.0
+
+
+## Could it answer an HQ poll right now: up, not being choked, not stumbling from a dart.
+func can_radio() -> bool:
+	return not is_down() and not held and stumble_left <= 0.0
 
 
 ## Put out of action (a choke); choking a Neutralized guard again restarts the clock.
