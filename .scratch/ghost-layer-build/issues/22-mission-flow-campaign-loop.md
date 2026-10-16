@@ -6,16 +6,17 @@
 
 **Blocked by:** 14, 18
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Mission data defines the Area, ordered objective steps, Targets and Mission index (which sets cap and budget)
-- [ ] Extract-intel pickups complete objective steps; each step is a Checkpoint
-- [ ] The flow goes placeholder Briefing → Mission → post-Mission screen → next Mission, linear with no replays
-- [ ] Mission 1 in the Harbour is completable with intel extraction
-- [ ] The current objective is shown on a minimal pause screen
+- [x] Extract-intel pickups complete objective steps; each step is a Checkpoint
+- [x] The flow goes placeholder Briefing → Mission → post-Mission screen → next Mission, linear with no replays
+- [x] Mission 1 in the Harbour is completable with intel extraction
+- [x] The current objective is shown on a minimal pause screen
 
 ## Comments
 
 - 2026-10-15 (implementation): Missions are plain data in `missions/campaign.gd` (`Campaign.MISSIONS`, by index: title, Area scene, ordered steps `{intel, objective}`, targets), not `.tres` resources; GUIDE updated. `Campaign.record` holds the campaign in memory; `Campaign.play()` starts a Mission for both the Briefing and Free mode. `MissionRun` reads the steps for `record.mission`, shows only the current step's pickup (`areas/intel_pickup.gd`, walk-in Area3D like the Extraction point), takes a Checkpoint per step (the step is in the snapshot), and only allows Extraction once every step is done. The placeholder Briefing (`ui/briefing/`) lists the Mission, its `briefing_keys` raw and the objectives; past the Core it shows the ending band and returns to the main scene. Free mode has a temporary NEW CAMPAIGN button until the main menu (33). The pause screen shows `MissionRun.objective()`.
 - Harbour intel: `IntelManifests` by Warehouse A's east wall, `IntelRadioLog` north of the gatehouse, `IntelLift` before the freight lift gate. Missions 2, 3 and the Core reuse these as placeholder steps until their tickets (25, 26, 31).
 - Tested: `tests/test_campaign.gd` (Mission data and every step's pickup exists in its Area, objective text per step, a new campaign running Mission 1 to done). The loop was also driven headless through the real scenes (Briefing → Harbour → wrong pickup ignored → both steps → Extraction → commit → Mission 2's Briefing). Criteria 2-5 stay unticked until played: the pickups' reachability and the pause screen haven't been seen in game.
+- 2026-10-15 (playtest): played by the user: Briefing, both Harbour pickups (reachable, only the current one shown), early Extraction refused, Checkpoint at a step, Mission 1 → post-Mission → Mission 2's Briefing, the pause objective, and Free mode leaving the campaign alone all work. Criteria 2-5 ticked.
