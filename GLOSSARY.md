@@ -22,6 +22,18 @@ _Avoid_: Mark, VIP, boss
 The place in an Area where a Mission ends once its objectives are done, and where a carried Target must be brought.
 _Avoid_: Exit, evac, LZ
 
+**Approach**:
+One distinct way through an Area to an objective: sneaking, deceiving with Spoofed transmissions, or going loud. Every objective offers at least one of each.
+_Avoid_: Path, route, lane
+
+**Crawlspace**:
+A low gap, under a raised building or between containers, that the Operative can only get through crouched. Guards never enter it, though one may look in from the mouth.
+_Avoid_: Vent, tunnel, duct
+
+**Backdrop**:
+The scenery outside an Area's playable boundary (sea, cliffs, distant buildings, sky) that the Operative sees but can't reach.
+_Avoid_: Skybox, decoration, set dressing
+
 **Checkpoint**:
 A point inside a Mission, one per objective step, where the Operative resumes after dying. Everything since it, including Profile points and Lethality, is undone.
 _Avoid_: Save, save point, respawn
