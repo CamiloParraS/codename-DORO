@@ -190,6 +190,35 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, 
 		if ok and not acked:
 			acked = true
 			r.radio_say(ACKS[pick.order] % pick.place if pick.order == "go" else ACKS[pick.order])
+	if acked and Deployment.radio_callback(_deployed()):
+		get_tree().create_timer(REPLY_DELAY).timeout.connect(_callback.bind(pick.speaker, from, up, sent, judge))
+
+
+## Spoofing L2: the recipients radio the speaker back. An alive, up speaker denies it, which exposes
+## the transmission; a Down one doesn't answer (Glaukopis's +60 already covered a known Down).
+func _callback(speaker: String, from: Vector3, up: Array, sent: Dictionary, judge: Glaukopis) -> void:
+	var s := _guard(speaker)
+	if judge != glaukopis or s == null or s.is_down():
+		return
+	judge.deny(speaker)
+	sent.accepted = []  # exposed after all: nobody counts as having taken the order
+	get_tree().call_group("mission_tally", "event", "spoof_exposed")
+	_search(up.filter(func(r): return is_instance_valid(r) and not r.is_down()), "%s says they never called. Who is this?" % speaker, from)
+
+
+## An exposed transmission: the first of `up` says so on the radio and they all search near `from`.
+func _search(up: Array, line: String, from: Vector3) -> void:
+	if up.is_empty():
+		return
+	up[0].radio_say(line)
+	var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
+	for r in up:
+		r.on_noise(spot, "a Spoofed transmission")
+
+
+func _deployed() -> Dictionary:
+	var run := get_tree().get_first_node_in_group("mission_plan")
+	return run.plan.deployed if run else {}
 
 
 func _guard(guard_name: String) -> Node3D:
