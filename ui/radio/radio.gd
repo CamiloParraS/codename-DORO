@@ -150,12 +150,17 @@ func _report_in(who: String, line: String) -> void:
 	if j.exposed:
 		get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	var judge := glaukopis
+	var from := _operative.global_position
 	get_tree().create_timer(REPLY_DELAY).timeout.connect(func() -> void:
 		if judge != glaukopis or hq.who != who:  # a Checkpoint restore, or the poll is already settled
 			return
-		if j.exposed:
-			hq.left = 0.0
-			get_tree().call_group("radio_log", "say", "HQ", "%s? That doesn't sound right." % who)
+		if j.exposed:  # like any exposed transmission: a guard searches near where it was sent from
+			get_tree().call_group("radio_log", "say", "HQ", "%s? You don't sound right. Who is this?" % who)
+			var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
+			var near := HqPoll.nearest(_hq_info(get_tree().get_nodes_in_group("guards")), from, who)
+			if near != "":
+				_guard(near).on_noise(spot, "a Spoofed transmission")
+			hq.answer()
 		else:
 			hq.answer()
 			get_tree().call_group("radio_log", "say", "HQ", "Copy, %s." % who))
@@ -171,9 +176,7 @@ func _hq_polls(delta: float) -> void:
 	var guards := get_tree().get_nodes_in_group("guards")
 	if mode == "targeted":
 		_sight_checks(delta, guards)
-	var info := guards.map(func(g: Guard) -> Dictionary: return {
-		name = String(g.name), pos = g.global_position, can_answer = g.can_radio(), dead = g.dead,
-		unseen = _now - _seen.get(String(g.name), 0.0)})
+	var info := _hq_info(guards)
 	var e := hq.tick(delta, info, mode == "targeted", randf())
 	match e.get("event", ""):
 		"poll":
@@ -184,6 +187,19 @@ func _hq_polls(delta: float) -> void:
 			var near := HqPoll.nearest(info, e.pos, e.who)
 			if near != "":
 				_guard(near).on_noise(e.pos, "no answer from %s" % e.who)
+
+
+func _hq_info(guards: Array) -> Array:
+	return guards.map(func(g: Guard) -> Dictionary: return {
+		name = String(g.name), pos = g.global_position, can_answer = g.can_radio(), dead = g.dead,
+		unseen = _now - _seen.get(String(g.name), 0.0)})
+
+
+## A Checkpoint restore: HQ forgets its poll and what the guards had seen.
+func reset_hq() -> void:
+	hq = HqPoll.new()
+	_seen.clear()
+	_sight_clock = 0.0
 
 
 ## Every SIGHT_EVERY s, each up guard looks for the others (the cones and a clear line, same as

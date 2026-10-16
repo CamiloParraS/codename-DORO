@@ -7,7 +7,7 @@ extends RefCounted
 
 const INTERVAL := 45.0
 const ANSWER_TIME := 10.0
-const DOWN_WEIGHT := 3.0   # a Neutralized guard is this many times likelier to be picked than an up one
+const DOWN_WEIGHT := 3.0   # a guard who can't answer (Down, held, stumbling) is this many times likelier to be picked
 
 var wait := INTERVAL
 var who := ""              # the guard being waited on ("" = none pending)

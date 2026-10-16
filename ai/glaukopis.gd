@@ -19,7 +19,7 @@ var last := {}                 # last committed judgement, for the debug overlay
 
 
 ## facts: {now (s), speaker, recipients (Array of names), all_units (bool), order ("go" / "hold" /
-## "all_clear"), place, seen_by (recipients who can see the speaker), speaker_known_down (some guard
+## "all_clear" / "report_in"), place, seen_by (recipients who can see the speaker), speaker_known_down (some guard
 ## knows the speaker is Down), sees_operative (recipients who see the Operative), since_alert (s since
 ## a guard was last alerted, INF if never), speaker_busy (the speaker is suspicious, alerted or searching)}.
 ## commit = false only previews: nothing is remembered or flagged.
