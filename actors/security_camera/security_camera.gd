@@ -55,6 +55,14 @@ func destroy() -> void:
 	last_reason = "destroyed"
 
 
+## Checkpoint restore: back on, watching, its meter empty.
+func repair() -> void:
+	destroyed = false
+	alert = GuardAlert.new()
+	set_physics_process(true)
+	last_reason = ""
+
+
 func _mesh(mesh: Mesh, at: Vector3, col: Color, mat := StandardMaterial3D.new()) -> void:
 	var m := MeshInstance3D.new()
 	m.mesh = mesh

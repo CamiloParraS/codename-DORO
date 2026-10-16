@@ -37,7 +37,7 @@ func _ready() -> void:
 
 
 ## Snapshot: the Operative (position, ammo, Voiceprints), the tally (Habits and Lethality so far),
-## Glaukopis's flags, and which guards are dead and where they lie.
+## Glaukopis's flags, which guards are dead and where they lie, and which cameras are destroyed.
 ## ponytail: objective step, Scanner charges and Magazines join when those exist.
 func take_checkpoint() -> void:
 	var dead := {}
@@ -50,11 +50,12 @@ func take_checkpoint() -> void:
 		tally = copy(tally),
 		glaukopis = copy(radio.glaukopis) if radio else null,
 		dead = dead,
+		destroyed = get_tree().get_nodes_in_group("cameras").filter(func(c): return c.destroyed),
 	}
 
 
 ## Back to the last Checkpoint. Bodies dead then lie where they lay; every other guard (Neutralized,
-## or killed since) is back at its post on patrol. Cameras stay, their alert cleared.
+## or killed since) is back at its post on patrol. Cameras stay; one shot since works again, alert cleared.
 func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
 		return
@@ -72,8 +73,8 @@ func restore_checkpoint() -> void:
 		else:
 			g.return_to_post()
 	for c in get_tree().get_nodes_in_group("cameras"):
-		if not c.destroyed:
-			c.alert = GuardAlert.new()
+		if c not in _checkpoint.destroyed:
+			c.repair()
 
 
 ## A deep copy of a node-free state object (a Gun, Voiceprints, the tally, Glaukopis).
