@@ -71,17 +71,25 @@ static func new_record() -> Dictionary:
 
 ## A Preset's Profile as points: level × 100 per Habit.
 static func preset_profile(preset: String) -> Dictionary:
+	return _level_points(PRESETS[preset].levels)
+
+
+static func _level_points(levels: Dictionary) -> Dictionary:
 	var out := _zeros()
-	for h: String in PRESETS[preset].levels:
-		out[h] = PRESETS[preset].levels[h] * POINTS_PER_LEVEL
+	for h: String in levels:
+		out[h] = levels[h] * POINTS_PER_LEVEL
 	return out
 
 
 ## A Preset as a record about to play mission_index (Free mode). The ratio is stored as Lethality
 ## out of 100 (an undefined ratio leaves the denominator at 0).
 static func preset_record(preset: String, mission_index: int) -> Dictionary:
-	var r := {"mission": mission_index, "points": preset_profile(preset), "lethality": 0, "denominator": 0}
-	var ratio: float = PRESETS[preset].ratio
+	return custom_record(PRESETS[preset].levels, PRESETS[preset].ratio, mission_index)
+
+
+## The same for Free mode's Custom sliders: any Habit levels and ratio.
+static func custom_record(levels: Dictionary, ratio: float, mission_index: int) -> Dictionary:
+	var r := {"mission": mission_index, "points": _level_points(levels), "lethality": 0, "denominator": 0}
 	if not is_nan(ratio):
 		r.lethality = roundi(ratio * 100)
 		r.denominator = 100

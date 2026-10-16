@@ -29,6 +29,15 @@ func test_preset_record_keeps_the_ratio_and_the_mission_index() -> void:
 	assert_eq(Aigis.lethality_ratio(Aigis.preset_record("ghost", 0)), 0.0)
 
 
+func test_custom_reaches_the_steps_no_preset_deploys() -> void:
+	var r := Aigis.custom_record({"takedowns": 3, "downs": 3}, NAN, CORE)
+	assert_true(is_nan(Aigis.lethality_ratio(r)))
+	var d: Dictionary = Aigis.plan_mission(r.points, Aigis.lethality_ratio(r), CORE).deployed
+	assert_eq(Deployment.choke_time(d), 3.0, "Takedowns L3")
+	assert_true(Deployment.instant_alert_on_down(d), "Downs L2")
+	assert_eq(Deployment.hq_poll(d), "targeted", "Downs L3")
+
+
 func test_nothing_deploys_on_mission_1_whatever_the_preset() -> void:
 	for p: String in Aigis.PRESETS:
 		var d := _deployed(p, 0)
