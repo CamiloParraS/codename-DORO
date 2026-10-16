@@ -38,6 +38,15 @@ for n in ("Icosphere", "ShadowCatcher", "Flag", "Eyes", "Eyebrows"):
         O.remove(O[n], do_unlink=True)
 parts = [O[n] for n in COLOURS]
 
+# 0. Centre Nikita on the donor body front to back (he stands ~7 cm forward of the skeleton).
+def mid_y(o):
+    ys = [v.co.y for v in o.data.vertices if v.co.z < 1.1]
+    return (min(ys) + max(ys)) / 2
+shift = mid_y(body) - mid_y(O["Nikita"])
+for o in parts:
+    for v in o.data.vertices:
+        v.co.y += shift
+
 # 1. Pose the arms into Nikita's A-pose.
 tip = max((v.co for v in O["Nikita"].data.vertices), key=lambda c: c.x)
 for side, sign in (("l", 1), ("r", -1)):
@@ -79,6 +88,18 @@ for o in parts:
             blend = blend + skin[n] * wt
             o.vertex_groups[n].add([v.index], wt, "REPLACE")
         v.co = (blend.inverted() @ v.co.to_4d()).to_3d()
+# 4b. Nikita's relaxed arms hang well in front of the Quaternius arm line. Slide them back onto the bones, by
+# arm weight, so a swinging limb doesn't orbit the wrong pivot (the aim pose threw his hands over his head).
+def arm_w(o, v, side):
+    return sum(g.weight for g in v.groups if o.vertex_groups[g.group].name in (f"{b}_{side}" for b in ("upperarm", "lowerarm", "hand")))
+nik = O["Nikita"]
+for side in "lr":
+    ys = [v.co.y for v in nik.data.vertices if arm_w(nik, v, side) > 0.9]
+    dy = arm.data.bones["lowerarm_" + side].head_local.y - sum(ys) / len(ys)
+    print("arm slide", side, dy)
+    for o in parts:
+        for v in o.data.vertices:
+            v.co.y += arm_w(o, v, side) * dy
 for pb in arm.pose.bones:
     pb.matrix_basis = Matrix()
 bpy.context.view_layer.update()
