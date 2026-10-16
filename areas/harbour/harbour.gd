@@ -23,9 +23,10 @@ func _ready() -> void:
 	if Deployment.sentries(deployed):
 		for spot: Marker3D in $SentryHighPoints.get_children():
 			guards.append(spawn_guard(spot, true))
+	_spawn_targets(guards)
 	if Deployment.pairs(deployed):
 		_pair_up(guards.filter(func(g: Guard) -> bool: return g.route.size() > 1))
-	$MissionRun.tally.add("spawned", guards.size())  # the Lethality denominator (reinforcements add theirs)
+	$MissionRun.tally.add("spawned", guards.size())  # escorts included, Targets not (they add 3 each)  # the Lethality denominator (reinforcements add theirs)
 	var helmets := Deployment.helmets(deployed, guards.size())
 	for i in guards.size():
 		if helmets[i]:
@@ -40,6 +41,24 @@ func _ready() -> void:
 			cam.operative = $Operative
 			cam.transform = global_transform.affine_inverse() * mount.global_transform  # before _ready reads the yaw
 			add_child(cam)
+
+
+## The Mission's Targets (Campaign data): each on a $TargetPosts route with one escort guard walking it,
+## running to $Spots/SafeRoom on alert. Escorts join `guards`, so they get the Countermeasures; Targets don't.
+## ponytail: one safe room for all Targets and a greybox "room" beside the gatehouse until the Areas get interiors.
+func _spawn_targets(guards: Array) -> void:
+	var names: Array = Campaign.MISSIONS[$MissionRun.record.mission].targets
+	for i in names.size():
+		var post: Marker3D = $TargetPosts.get_child(i)
+		var t := spawn_guard(post, false, true)
+		t.name = names[i]
+		t.safe_room = $Spots/SafeRoom.global_position
+		var escort := spawn_guard(post)
+		escort.name = "Escort%d" % (i + 1)
+		escort.global_position += escort.global_basis.x * 1.5
+		escort.post = escort.global_transform
+		guards.append(escort)
+	$MissionRun.tally.add("targets", names.size())
 
 
 ## Combat L3: each time an alert goes up from none, the road entry sends guards who head for it.
@@ -81,9 +100,12 @@ func _pair_up(patrols: Array) -> void:
 		b.post = b.global_transform
 
 
-## sentry: stands on a high point and never leaves it (no route).
-func spawn_guard(post: Marker3D, sentry := false) -> Node3D:
+## sentry: stands on a high point and never leaves it (no route). target: a Mission Target.
+func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 	var g := GUARD.instantiate()
+	if target:
+		g.target = true
+		g.get_node("Model").kind = CharacterModel.Kind.TARGET
 	g.name = post.name.replace("Post", "Guard")
 	if not sentry:
 		g.route.append(post.global_position)

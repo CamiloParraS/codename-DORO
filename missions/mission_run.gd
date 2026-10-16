@@ -1,6 +1,7 @@
 ## A Mission in progress: feeds the tally from the guards, advances its objective steps (Campaign
 ## data for record.mission) as the Operative reaches each step's intel pickup, ends at the Extraction
-## point once every step is done, then shows the post-Mission screen. Completing folds the tally into
+## point once every step is done and every Target (group "targets") is dead or carried, then shows the
+## post-Mission screen. Completing folds the tally into
 ## the record (Aigis.complete_mission), and in the campaign moves Campaign.record on; aborting discards it.
 ## Hooks elsewhere report events with get_tree().call_group("mission_tally", "event", name).
 ## Set record (and return_to) before it enters the tree: the plan is made from the record in _ready,
@@ -116,6 +117,8 @@ func _physics_process(_delta: float) -> void:
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
+			if g.target and g.dead:
+				_say_objective()
 		_down[g] = d
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
@@ -123,9 +126,20 @@ func _physics_process(_delta: float) -> void:
 	tally.set_alert(alert)
 
 
-## What to do now, for the pause screen.
+## What to do now, for the pause screen: the steps, then the Targets, then Extraction.
 func objective() -> String:
+	if step >= _steps().size() and not _targets_left().is_empty():
+		return "KILL OR CARRY OUT: " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
 	return Campaign.objective(record.mission, step)
+
+
+## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count).
+func _targets_left() -> Array:
+	return get_tree().get_nodes_in_group("targets").filter(func(t: Guard) -> bool: return not (t.dead or t.carrier))
+
+
+func _say_objective() -> void:
+	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
 
 
 func _steps() -> Array:
@@ -144,12 +158,12 @@ func _on_intel(intel: Node) -> void:
 		return
 	step += 1
 	_show_intel()
-	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
+	_say_objective()
 	take_checkpoint()
 
 
 func _on_extraction() -> void:
-	if ended or step < _steps().size():
+	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
 	ended = true
 	var after := Aigis.complete_mission(record, tally.counts)

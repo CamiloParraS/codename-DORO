@@ -10,6 +10,7 @@ const CHASE_SPEED := 4.5
 const PAUSE := 1.5        # seconds at each patrol point
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
+const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
@@ -42,6 +43,8 @@ var vest := false                # Combat L1: tranq body shots do nothing, rifle
 var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
 var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
+var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
+var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 
 var _wp := 0
 var _turn_clock := 0.0
@@ -58,6 +61,8 @@ var _clock := 0.0
 
 func _ready() -> void:
 	add_to_group("guards")
+	if target:
+		add_to_group("targets")
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
@@ -99,6 +104,8 @@ func _physics_process(delta: float) -> void:
 ## An alerted guard that sees the Operative within range fires every FIRE_INTERVAL; the shot lands by
 ## Health.hit_chance. It can't fire while stumbling or held (both return before this).
 func _shoot_back(delta: float) -> void:
+	if target:
+		return  # unarmed
 	var d := _flat_dist(operative.global_position)
 	if alert.state != GuardAlert.State.ALERT or seen_rate <= 0.0 or d > Health.RANGE:
 		_fire_left = FIRE_INTERVAL  # a reaction delay before the first shot
@@ -169,7 +176,7 @@ func kill() -> void:
 	var alerted := get_tree().get_nodes_in_group("guards").any(func(g): return g.alert.state == GuardAlert.State.ALERT)
 	neutralize()
 	dead = true
-	get_tree().call_group("mission_tally", "event", "kill")
+	get_tree().call_group("mission_tally", "event", "target_kill" if target else "kill")
 	if alerted:
 		get_tree().call_group("mission_tally", "event", "alert_kill")
 
@@ -364,7 +371,14 @@ func _changed(why: String) -> void:
 
 ## At alert.last_known, or as close as the navmesh gets (a spot on a crate, behind a wall).
 func arrived() -> bool:
+	if _fleeing():
+		return _flat_dist(safe_room) < SAFE_REACH or _at(safe_room)
 	return _at(alert.last_known)
+
+
+## A Target on alert or in evasion runs to its safe room and stays there until the evasion ends.
+func _fleeing() -> bool:
+	return target and alert.state >= GuardAlert.State.ALERT
 
 
 func _at(t: Vector3) -> bool:
@@ -447,16 +461,26 @@ func follow_order(delta: float) -> bool:
 
 
 func search(delta: float, speed: float, sweep: float) -> void:
-	if arrived():
+	if _fleeing():
+		_flee(delta)
+	elif arrived():
 		rotation.y += sin(_clock * 1.1) * sweep * delta
 	else:
 		_walk_to(alert.last_known, speed, delta)
 
 
 func chase(delta: float) -> void:
+	if _fleeing():
+		_flee(delta)
+		return
 	_walk_to(alert.last_known, CHASE_SPEED, delta)
 	if seen_rate > 0.0:
 		face(operative.global_position, delta)
+
+
+func _flee(delta: float) -> void:
+	if not arrived():
+		_walk_to(safe_room, CHASE_SPEED, delta)
 
 
 func face(pos: Vector3, delta: float) -> void:

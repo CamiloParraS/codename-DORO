@@ -1,0 +1,61 @@
+@tool
+extends McpTestSuite
+
+## Targets: Mission data, weights, the Harbour's Target post, and a Target's flee-to-safe-room rule.
+
+const HARBOUR := "res://areas/harbour/harbour.tscn"
+
+
+func suite_name() -> String:
+	return "targets"
+
+
+func test_missions_2_3_and_core_have_one_target_each() -> void:
+	assert_eq(Campaign.MISSIONS[0].targets.size(), 0)
+	for i in [1, 2, 3]:
+		assert_eq(Campaign.MISSIONS[i].targets.size(), 1, Campaign.MISSIONS[i].title)
+
+
+func test_a_killed_target_weighs_3_and_a_carried_one_adds_only_to_the_denominator() -> void:
+	var killed := Aigis.complete_mission(Aigis.new_record(), {"target_kill": 1, "targets": 1, "spawned": 9})
+	assert_eq(killed.lethality, 3)
+	assert_eq(killed.denominator, 9 + 3)
+	var carried := Aigis.complete_mission(Aigis.new_record(), {"targets": 1, "spawned": 9})
+	assert_eq(carried.lethality, 0)
+	assert_eq(carried.denominator, 9 + 3)
+
+
+## The Target's route has 2-3 points, and the route and safe room are on the baked navmesh.
+func test_harbour_target_post_is_on_the_navmesh() -> void:
+	var h: Node = load(HARBOUR).instantiate()
+	var post: Marker3D = h.get_node("TargetPosts/TargetPost1")
+	var points: Array[Vector3] = [post.global_position]
+	for wp: Marker3D in post.get_children():
+		points.append(wp.global_position)
+	points.append((h.get_node("Spots/SafeRoom") as Marker3D).global_position)
+	assert_true(points.size() >= 3 and points.size() <= 4, "2-3 route points plus the safe room")
+	var nm: NavigationMesh = (h.get_node("NavRegion") as NavigationRegion3D).navigation_mesh
+	var verts := nm.get_vertices()
+	for p in points:
+		var best := INF
+		for v in verts:
+			best = minf(best, Vector2(v.x - p.x, v.z - p.z).length())
+		assert_true(best < 1.5, "%s is near the navmesh (%.2f)" % [p, best])
+	h.free()
+
+
+## A Target flees only once alerted; before that it walks the guard tree like any guard.
+func test_a_target_flees_only_from_alert_on() -> void:
+	var g: Guard = load("res://actors/guard/guard.tscn").instantiate()
+	g.target = true
+	g.safe_room = Vector3(5, 0, 5)
+	assert_false(g._fleeing())
+	g.alert.state = GuardAlert.State.SUSPICION
+	assert_false(g._fleeing())
+	g.alert.state = GuardAlert.State.ALERT
+	assert_true(g._fleeing())
+	g.alert.state = GuardAlert.State.EVASION
+	assert_true(g._fleeing())
+	g.target = false
+	assert_false(g._fleeing(), "an ordinary guard never flees")
+	g.free()
