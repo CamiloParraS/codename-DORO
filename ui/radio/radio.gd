@@ -11,15 +11,12 @@ const R_IN := 26.0
 const R_OUT := 70.0
 const POINTER_MAX := 60.0
 const STEP_TITLES := {speaker = "SPEAK AS", to = "TO", order = "ORDER", place = "PLACE", confirm = "SEND"}
-const SIGHT_EVERY := 1.0     # Downs L3: seconds between the guards' sight checks on each other
 const ACKS := {go = "Copy, checking the %s.", hold = "Copy, holding.", all_clear = "Copy, standing down."}
 
 var glaukopis := Glaukopis.new()   # one per Mission: the Area scene holds this node
 var menu: RadioMenu                # null while closed
 var _pointer := Vector2.ZERO       # virtual pointer from mouse motion (the mouse stays captured)
-var hq := HqPoll.new()             # Downs L1 / L3: HQ's polls; hq.who is the guard HQ is waiting on
-var _seen := {}                    # guard name -> _now when another guard last saw it (Downs L3)
-var _sight_clock := 0.0
+var hq := HqRadio.new()            # Downs L1 / L3: HQ's polls
 var _now := 0.0
 var _last_alert := -INF
 var _places := {}                  # name -> position
@@ -31,6 +28,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_to_group("radio")
+	add_child(hq)
 
 
 func _exit_tree() -> void:
@@ -44,7 +42,6 @@ func _process(delta: float) -> void:
 		if g.alert.state == GuardAlert.State.ALERT:
 			_last_alert = _now
 			break
-	_hq_polls(delta)
 	if menu:
 		queue_redraw()
 
@@ -81,7 +78,7 @@ func _open() -> void:
 	_places.clear()
 	for m: Node3D in get_tree().get_nodes_in_group("spoof_place"):
 		_places[String(m.name).trim_prefix("Spoof").capitalize()] = m.global_position
-	menu = RadioMenu.new(_operative.voiceprints.held.duplicate(), up, _places.keys(), hq.who)
+	menu = RadioMenu.new(_operative.voiceprints.held.duplicate(), up, _places.keys(), hq.who())
 	_pointer = Vector2.ZERO
 	Engine.time_scale = SLOW
 	_operative.radio_open = true
@@ -117,104 +114,51 @@ func _send(pick: Dictionary, line: String) -> void:
 		return
 	var speaker := _guard(pick.speaker)
 	var recipients: Array = pick.recipients.map(_guard).filter(func(g): return g != null)
-	var j := glaukopis.judge({
-		now = _now, speaker = pick.speaker, recipients = pick.recipients, all_units = pick.all_units,
-		order = pick.order, place = pick.place,
+	var j := _judge(pick.speaker, line, {
+		recipients = pick.recipients, all_units = pick.all_units, order = pick.order, place = pick.place,
 		seen_by = recipients.filter(func(r): return r != speaker and r.can_see(speaker)).map(func(r): return String(r.name)),
-		speaker_known_down = speaker.is_down() and speaker.known_down,
 		sees_operative = recipients.filter(func(r): return r.seen_rate > 0.0).map(func(r): return String(r.name)),
-		since_alert = _now - _last_alert,
-		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
 	})
-	get_tree().call_group("radio_log", "say", pick.speaker, line)
-	get_tree().call_group("mission_tally", "event", "spoof")
-	if j.exposed:
-		get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	var from := _operative.global_position
 	var sent: Dictionary = glaukopis.history.back()  # its accepted list is fixed up once they answer
 	get_tree().create_timer(REPLY_DELAY).timeout.connect(_answer.bind(pick, j.exposed, from, recipients, sent, glaukopis))
 
 
 ## Report in: the Operative answers HQ's poll as the polled guard; Glaukopis judges it like any
-## Spoofed transmission. Believed, HQ is satisfied; exposed, HQ treats the poll as unanswered at once.
+## Spoofed transmission. Believed, HQ is satisfied; exposed, a guard searches near the Operative.
 func _report_in(who: String, line: String) -> void:
+	var j := _judge(who, line, {recipients = [], all_units = false, order = "report_in", place = "",
+		seen_by = [], sees_operative = []})
+	var judge := glaukopis
+	var from := _operative.global_position
+	get_tree().create_timer(REPLY_DELAY).timeout.connect(func() -> void:
+		if judge != glaukopis or hq.who() != who:  # a Checkpoint restore, or the poll is already settled
+			return
+		hq.answer()
+		if j.exposed:
+			hq.say("%s? You don't sound right. Who is this?" % who)
+			var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
+			hq.send_nearest(spot, who, "a Spoofed transmission", from)
+		else:
+			hq.say("Copy, %s." % who))
+
+
+## Glaukopis judges a transmission as `who` on the facts on the ground (`extra`: the order, the
+## recipients and what they can see), then it is logged and tallied as a Spoof.
+func _judge(who: String, line: String, extra: Dictionary) -> Dictionary:
 	var speaker := _guard(who)
-	var j := glaukopis.judge({
-		now = _now, speaker = who, recipients = [], all_units = false, order = "report_in", place = "",
-		seen_by = [], sees_operative = [], since_alert = _now - _last_alert,
+	var facts := {
+		now = _now, speaker = who, since_alert = _now - _last_alert,
 		speaker_known_down = speaker.is_down() and speaker.known_down,
 		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
-	})
+	}
+	facts.merge(extra)
+	var j := glaukopis.judge(facts)
 	get_tree().call_group("radio_log", "say", who, line)
 	get_tree().call_group("mission_tally", "event", "spoof")
 	if j.exposed:
 		get_tree().call_group("mission_tally", "event", "spoof_exposed")
-	var judge := glaukopis
-	var from := _operative.global_position
-	get_tree().create_timer(REPLY_DELAY).timeout.connect(func() -> void:
-		if judge != glaukopis or hq.who != who:  # a Checkpoint restore, or the poll is already settled
-			return
-		if j.exposed:  # like any exposed transmission: a guard searches near where it was sent from
-			get_tree().call_group("radio_log", "say", "HQ", "%s? You don't sound right. Who is this?" % who)
-			var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
-			var near := HqPoll.nearest(_hq_info(get_tree().get_nodes_in_group("guards")), from, who)
-			if near != "":
-				_guard(near).on_noise(spot, "a Spoofed transmission")
-			hq.answer()
-		else:
-			hq.answer()
-			get_tree().call_group("radio_log", "say", "HQ", "Copy, %s." % who))
-
-
-## Downs L1 / L3: HQ radios "<X>, report" about every 45 s; an up guard answers, a Down one is
-## given 10 s, then the nearest up guard goes to its last position in suspicion.
-func _hq_polls(delta: float) -> void:
-	var run := get_tree().get_first_node_in_group("mission_plan")
-	var mode := Deployment.hq_poll(run.plan.deployed) if run else ""
-	if mode == "":
-		return
-	var guards := get_tree().get_nodes_in_group("guards")
-	if mode == "targeted":
-		_sight_checks(delta, guards)
-	var info := _hq_info(guards)
-	var e := hq.tick(delta, info, mode == "targeted", randf())
-	match e.get("event", ""):
-		"poll":
-			get_tree().call_group("radio_log", "say", "HQ", "%s, report." % e.who)
-			if hq.who == "":
-				_guard(e.who).radio_say(Checkin.LINES.pick_random())
-		"silence":
-			var near := HqPoll.nearest(info, e.pos, e.who)
-			if near != "":
-				_guard(near).on_noise(e.pos, "no answer from %s" % e.who)
-
-
-func _hq_info(guards: Array) -> Array:
-	return guards.map(func(g: Guard) -> Dictionary: return {
-		name = String(g.name), pos = g.global_position, can_answer = g.can_radio(), dead = g.dead,
-		unseen = _now - _seen.get(String(g.name), 0.0)})
-
-
-## A Checkpoint restore: HQ forgets its poll and what the guards had seen.
-func reset_hq() -> void:
-	hq = HqPoll.new()
-	_seen.clear()
-	_sight_clock = 0.0
-
-
-## Every SIGHT_EVERY s, each up guard looks for the others (the cones and a clear line, same as
-## Guard.can_see). ponytail: O(n²) raycasts once a second; slower if the guard count grows.
-func _sight_checks(delta: float, guards: Array) -> void:
-	_sight_clock += delta
-	if _sight_clock < SIGHT_EVERY:
-		return
-	_sight_clock = 0.0
-	for a: Guard in guards:
-		if a.is_down():
-			continue
-		for b: Guard in guards:
-			if b != a and a.can_see(b):
-				_seen[String(b.name)] = _now
+	return j
 
 
 func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, sent: Dictionary, judge: Glaukopis) -> void:

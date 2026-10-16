@@ -64,7 +64,7 @@ func restore_checkpoint() -> void:
 	if radio:
 		radio.close()
 		radio.glaukopis = copy(_checkpoint.glaukopis)
-		radio.reset_hq()
+		radio.hq.reset()
 	get_tree().get_first_node_in_group("operative").restore(_checkpoint.operative)
 	for g in get_tree().get_nodes_in_group("guards"):
 		if g in _checkpoint.dead:
