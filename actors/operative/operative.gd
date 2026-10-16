@@ -58,6 +58,7 @@ func _ready() -> void:
 	model = CharacterModel.new()
 	model.kind = CharacterModel.Kind.OPERATIVE
 	add_child(model)
+	model.hold("tranq")
 	_apply_crouch()
 
 	_pivot = Node3D.new()
@@ -135,8 +136,10 @@ func _unhandled_input(e: InputEvent) -> void:
 		_begin_kill()
 	elif e.is_action_pressed("weapon_tranq"):
 		_gun = tranq
+		model.hold("tranq")
 	elif e.is_action_pressed("weapon_rifle"):
 		_gun = rifle
+		model.hold("rifle")
 	elif e.is_action_pressed("reload"):
 		gun().reload(carrying != null)
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
@@ -226,6 +229,7 @@ func restore(s: Dictionary) -> void:
 	tranq = MissionRun.copy(s.tranq)
 	rifle = MissionRun.copy(s.rifle)
 	_gun = rifle if s.rifle_in_hand else tranq
+	model.hold("rifle" if s.rifle_in_hand else "tranq")
 	voiceprints = MissionRun.copy(s.voiceprints)
 	health = Health.new()
 	_pivot.global_position = global_position + Vector3.UP * (0.95 if crouching else 1.45)

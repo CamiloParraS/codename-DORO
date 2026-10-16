@@ -21,6 +21,17 @@ const DRESS := {
 }
 const CARRY_BONE := "spine_03"
 const BERET_AT := Vector3(0, 1.8, 0.01)  # model space, on the crown
+const HAND_BONE := "hand_r"
+## The hand bone's local frame in the aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X, up +Y)
+## to point the way the hand does.
+const HAND_TO_GUN := Basis(Vector3(0, 0.97, -0.24), Vector3(0, 0.24, 0.97), Vector3(1, 0, 0))
+## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
+const GUNS := {
+	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0)},
+	"rifle": {"scene": preload("res://assets/models/weapons/rifle.glb"), "grip": Vector3(-0.2, -0.06, 0)},
+}
+const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
+const SUPPRESSOR_AT := Vector3(0.22, 0.03, 0)  # on the pistol's muzzle
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
 
 @export var kind := Kind.GUARD
@@ -29,6 +40,7 @@ var skeleton: Skeleton3D
 var _anim := AnimationPlayer.new()
 var _clip := ""
 var _home: Node3D    # where the model lives while it rides someone's shoulder
+var _gun: Node3D     # the weapon in the right hand
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
 
 
@@ -88,6 +100,25 @@ func play(clip: String) -> void:
 		return
 	_clip = clip
 	_anim.play(clip, 0.2)
+
+
+## Puts the named weapon ("tranq" or "rifle") in the right hand; anything else empties it.
+func hold(weapon: String) -> void:
+	if _gun:
+		_gun.get_parent().queue_free()
+		_gun = null
+	if not GUNS.has(weapon):
+		return
+	var at := BoneAttachment3D.new()
+	at.bone_name = HAND_BONE
+	skeleton.add_child(at)
+	_gun = GUNS[weapon].scene.instantiate()
+	_gun.transform = Transform3D(HAND_TO_GUN, HAND_TO_GUN * -GUNS[weapon].grip)
+	at.add_child(_gun)
+	if weapon == "tranq":
+		var can := SUPPRESSOR.instantiate()
+		can.position = SUPPRESSOR_AT
+		_gun.add_child(can)
 
 
 ## Puts on a Countermeasure piece: "Helmet" or "Vest".

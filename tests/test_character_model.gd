@@ -82,3 +82,15 @@ func test_a_ridden_model_goes_home_when_dropped() -> void:
 
 func _root() -> Node:
 	return (Engine.get_main_loop() as SceneTree).root
+
+
+func test_hold_swaps_the_weapon_in_the_hand() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.hold("rifle")
+	var at: BoneAttachment3D = m.skeleton.find_children("*", "BoneAttachment3D", true, false)[0]
+	assert_eq(at.bone_name, "hand_r")
+	m.hold("tranq")
+	assert_eq(m._gun.get_child_count(), CharacterModel.GUNS.tranq.scene.instantiate().get_child_count() + 1, "the pistol wears its suppressor")
+	m.hold("")
+	assert_true(m._gun == null, "an unknown name empties the hand")
