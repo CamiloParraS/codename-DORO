@@ -198,3 +198,20 @@ func test_lower_threshold_exposes_sooner() -> void:
 	var g := Glaukopis.new()
 	g.expose_at = 25
 	assert_true(g.judge(_facts({order = "all_clear", place = "", since_alert = 5.0})).exposed)
+
+
+func test_single_use_flags_a_believed_voiceprint() -> void:
+	var g := Glaukopis.new()
+	g.single_use = true
+	assert_false(g.judge(_facts()).exposed)
+	assert_eq(g.flagged, ["Kostas"] as Array[String])
+	var j := g.judge(_facts({now = 1000.0}))
+	assert_true(j.exposed, "the second use is exposed")
+	assert_eq(j.doubt, 100)
+
+
+func test_a_denied_callback_flags_the_speaker() -> void:
+	var g := Glaukopis.new()
+	g.judge(_facts())
+	g.deny("Kostas")
+	assert_eq(g.flagged, ["Kostas"] as Array[String])

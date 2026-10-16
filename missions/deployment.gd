@@ -78,3 +78,18 @@ static func hq_poll(deployed: Dictionary) -> String:
 ## Downs L2: a guard that finds a Down guard raises the alert at once.
 static func instant_alert_on_down(deployed: Dictionary) -> bool:
 	return int(deployed.get("downs", 0)) >= 2
+
+
+## Spoofing L1: Glaukopis exposes a transmission at 25 doubt instead of 40.
+static func expose_at(deployed: Dictionary) -> int:
+	return 25 if int(deployed.get("spoofing", 0)) >= 1 else Glaukopis.EXPOSE_AT
+
+
+## Spoofing L2: after a believed transmission, the recipient radios the speaker to check.
+static func radio_callback(deployed: Dictionary) -> bool:
+	return int(deployed.get("spoofing", 0)) >= 2
+
+
+## Spoofing L3: a Voiceprint is flagged after one use, exposed or not.
+static func single_use_voiceprints(deployed: Dictionary) -> bool:
+	return int(deployed.get("spoofing", 0)) >= 3

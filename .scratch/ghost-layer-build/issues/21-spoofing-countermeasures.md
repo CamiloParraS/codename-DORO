@@ -8,6 +8,6 @@
 
 **Status:** ready-for-agent
 
-- [ ] L1 drops the exposure threshold from 40 to 25 (tested)
-- [ ] L2: after a transmission, the recipient radios the speaker; a speaker who is alive and up denies it, which exposes the transmission; a Down speaker doesn't answer (the +60 rule only if some guard knows)
-- [ ] L3: a Voiceprint is flagged after one use, exposed or not (tested)
+- [x] L1 drops the exposure threshold from 40 to 25 (tested)
+- [x] L2: after a transmission, the recipient radios the speaker; a speaker who is alive and up denies it, which exposes the transmission; a Down speaker doesn't answer (the +60 rule only if some guard knows)
+- [x] L3: a Voiceprint is flagged after one use, exposed or not (tested)

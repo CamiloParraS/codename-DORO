@@ -132,3 +132,12 @@ func test_downs_ladder_steps() -> void:
 	assert_false(Deployment.instant_alert_on_down({"downs": 1}))
 	assert_true(Deployment.instant_alert_on_down({"downs": 2}))
 	assert_true(Deployment.instant_alert_on_down({"downs": 3}))
+
+
+func test_spoofing_ladder_steps() -> void:
+	assert_eq(Deployment.expose_at({}), 40)
+	assert_eq(Deployment.expose_at({"spoofing": 1}), 25, "Spoofing L1")
+	assert_false(Deployment.radio_callback({"spoofing": 1}))
+	assert_true(Deployment.radio_callback({"spoofing": 2}), "Spoofing L2")
+	assert_false(Deployment.single_use_voiceprints({"spoofing": 2}))
+	assert_true(Deployment.single_use_voiceprints({"spoofing": 3}), "Spoofing L3")

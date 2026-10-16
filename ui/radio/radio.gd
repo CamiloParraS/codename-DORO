@@ -153,6 +153,9 @@ func _judge(who: String, line: String, extra: Dictionary) -> Dictionary:
 		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
 	}
 	facts.merge(extra)
+	var deployed := _deployed()
+	glaukopis.expose_at = Deployment.expose_at(deployed)
+	glaukopis.single_use = Deployment.single_use_voiceprints(deployed)
 	var j := glaukopis.judge(facts)
 	get_tree().call_group("radio_log", "say", who, line)
 	get_tree().call_group("mission_tally", "event", "spoof")
@@ -169,10 +172,7 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, 
 	if up.is_empty():
 		return
 	if exposed:
-		up[0].radio_say("%s? You don't sound right. Who is this?" % pick.speaker)
-		var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
-		for r in up:
-			r.on_noise(spot, "a Spoofed transmission")
+		_search(up, "%s? You don't sound right. Who is this?" % pick.speaker, from)
 		return
 	var acked := false
 	for r in up:

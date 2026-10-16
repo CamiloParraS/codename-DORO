@@ -11,6 +11,7 @@ const CONTRADICT_TIME := 30.0  # a different order to the same guard this soon c
 const FRESH_ALERT := 15.0      # "all clear" this soon after an alert is the wrong time
 
 var expose_at := EXPOSE_AT     # Spoofing L1 lowers it
+var single_use := false        # Spoofing L3: a Voiceprint is flagged after one use, exposed or not
 var flagged: Array[String] = []  # Voiceprints exposed for good
 ## [{now, order, place, accepted}]. accepted: the recipients who took the order, [] when exposed;
 ## the scene drops the ones who refused it once they answer (contradictions only count these).
@@ -71,10 +72,16 @@ func judge(facts: Dictionary, commit := true) -> Dictionary:
 	if commit:
 		history.append({now = facts.now, order = facts.order, place = facts.place,
 			accepted = [] if out.exposed else facts.recipients.duplicate()})
-		if out.exposed and sp not in flagged:
+		if (out.exposed or single_use) and sp not in flagged:
 			flagged.append(sp)
 		last = out
 	return out
+
+
+## Spoofing L2: the speaker denied the callback, so their Voiceprint is flagged for good.
+func deny(speaker: String) -> void:
+	if speaker not in flagged:
+		flagged.append(speaker)
 
 
 static func _list(names: Array) -> String:
