@@ -37,7 +37,8 @@ func _ready() -> void:
 
 
 ## Snapshot: the Operative (position, ammo, Voiceprints), the tally (Habits and Lethality so far),
-## Glaukopis's flags, which guards are dead and where they lie, and which cameras are destroyed.
+## Glaukopis's flags, which guards exist (reinforcements arrive later), which are dead and where they
+## lie, and which cameras are destroyed.
 ## ponytail: objective step, Scanner charges and Magazines join when those exist.
 func take_checkpoint() -> void:
 	var dead := {}
@@ -48,6 +49,7 @@ func take_checkpoint() -> void:
 	_checkpoint = {
 		operative = get_tree().get_first_node_in_group("operative").snapshot(),
 		tally = copy(tally),
+		guards = get_tree().get_nodes_in_group("guards"),
 		glaukopis = copy(radio.glaukopis) if radio else null,
 		dead = dead,
 		destroyed = get_tree().get_nodes_in_group("cameras").filter(func(c): return c.destroyed),
@@ -55,7 +57,8 @@ func take_checkpoint() -> void:
 
 
 ## Back to the last Checkpoint. Bodies dead then lie where they lay; every other guard (Neutralized,
-## or killed since) is back at its post on patrol. Cameras stay; one shot since works again, alert cleared.
+## or killed since) is back at its post on patrol; reinforcements that arrived since are gone (the
+## tally's spawned count rolls back with them). Cameras stay; one shot since works again, alert cleared.
 func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
 		return
@@ -67,7 +70,10 @@ func restore_checkpoint() -> void:
 		radio.hq.reset()
 	get_tree().get_first_node_in_group("operative").restore(_checkpoint.operative)
 	for g in get_tree().get_nodes_in_group("guards"):
-		if g in _checkpoint.dead:
+		if g not in _checkpoint.guards:
+			g.remove_from_group("guards")  # queue_free waits for the frame's end
+			g.queue_free()
+		elif g in _checkpoint.dead:
 			g.carrier = null
 			g.global_transform = _checkpoint.dead[g][0]
 			g.known_down = _checkpoint.dead[g][1]
