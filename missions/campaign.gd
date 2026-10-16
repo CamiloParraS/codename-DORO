@@ -5,11 +5,11 @@ extends RefCounted
 
 const HARBOUR := "res://areas/harbour/harbour.tscn"
 const RELAY_STATION := "res://areas/relay_station/relay_station.tscn"
+const RESEARCH_ANNEX := "res://areas/research_annex/research_annex.tscn"
 
 ## title; area: the Area scene; targets: Target names (each is killed or carried to Extraction); steps, in order:
 ## {intel: the pickup in the Area that completes it, objective: what the pause screen shows}.
-## ponytail: Missions 3 and the Core play intel steps in the Harbour until the Research annex
-## and the Core Mission land with their own objectives.
+## ponytail: the Core plays an intel step in the Harbour until the Core Mission lands with its own objective.
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, targets = [], steps = [
 		{intel = "IntelManifests", objective = "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A"},
@@ -18,8 +18,8 @@ const MISSIONS := [
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, targets = ["RELAY CHIEF"], steps = [
 		{intel = "RelayConsole", objective = "SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS"},
 	]},
-	{title = "MISSION 3: RESEARCH ANNEX", area = HARBOUR, targets = ["LEAD RESEARCHER"], steps = [
-		{intel = "IntelManifests", objective = "FIND THE RESEARCH FILES AT WAREHOUSE A"},
+	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, targets = ["LEAD RESEARCHER"], steps = [
+		{intel = "ResearchFiles", objective = "EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE"},
 	]},
 	{title = "CORE", area = HARBOUR, targets = ["SECURITY DIRECTOR"], steps = [
 		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT"},
