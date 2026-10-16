@@ -94,3 +94,20 @@ func test_hold_swaps_the_weapon_in_the_hand() -> void:
 	assert_eq(m._gun.get_child_count(), CharacterModel.GUNS.tranq.scene.instantiate().get_child_count() + 1, "the pistol wears its suppressor")
 	m.hold("")
 	assert_true(m._gun == null, "an unknown name empties the hand")
+
+
+func test_the_pistol_plays_its_own_clips() -> void:
+	if not ResourceLoader.exists(CharacterModel.MIXAMO):
+		return  # the Mixamo bake is gitignored; the Quaternius clips cover for it
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	m.hold("rifle")
+	m.play("idle")
+	assert_eq(anim.current_animation, "idle")
+	m.hold("tranq")
+	m.play("idle")
+	assert_eq(anim.current_animation, "pistol_idle", "the pistol idle, not the rifle's")
+	m.play("run")
+	assert_eq(anim.current_animation, "run", "no pistol run take: the shared one covers")
+	m.free()

@@ -63,6 +63,8 @@ func _ready() -> void:
 	add_to_group("guards")
 	if target:
 		add_to_group("targets")
+	else:
+		model.hold("rifle")
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
@@ -115,6 +117,7 @@ func _shoot_back(delta: float) -> void:
 		return
 	_fire_left = FIRE_INTERVAL
 	_muzzle_flash()
+	model.react("fire", FIRE_INTERVAL)
 	if randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking()):
 		operative.take_hit()
 

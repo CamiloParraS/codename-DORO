@@ -7,6 +7,23 @@ enum Kind { OPERATIVE, GUARD, TARGET }
 
 const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 const CLIPS := preload("res://assets/models/animations/clips.res")
+## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
+const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
+## Game clip -> Mixamo clip that replaces it (idle, walk, run, down and carry have no Mixamo match and stay as they are).
+## hit, fire and reload are new one-shots for react().
+const MIXAMO_CLIPS := {
+	"aim": "rifle_aiming_idle", "crouch_idle": "pistol_kneeling_idle",
+	"crouch_walk": "rifle_crouch_walk", "takedown": "elbow_punching",
+	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reload",
+}
+## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol aim,
+## fire, run or crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
+const PISTOL_CLIPS := {
+	"idle": "pistol_idle",
+	"walk": "pistol_strafe",
+}
+## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
+const STEP := 0.0
 ## The body is white and tinted per kind; the gear parts carry their own colours.
 const TINTS := {
 	Kind.OPERATIVE: Color(0.3, 0.36, 0.5),
@@ -22,16 +39,16 @@ const DRESS := {
 const CARRY_BONE := "spine_03"
 const BERET_AT := Vector3(0, 1.8, 0.01)  # model space, on the crown
 const HAND_BONE := "hand_r"
-## The hand bone's local frame in the aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X, up +Y)
-## to point the way the hand does.
-const HAND_TO_GUN := Basis(Vector3(0, 0.97, -0.24), Vector3(0, 0.24, 0.97), Vector3(1, 0, 0))
+## The hand bone's local frame in the Mixamo aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X,
+## up +Y) to point level along the way the hand does.
+const HAND_TO_GUN := Basis(Vector3(0.04, 0.995, -0.095), Vector3(-0.1, 0.095, 0.99), Vector3(0.994, -0.04, 0.105))
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
 const GUNS := {
 	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0)},
 	"rifle": {"scene": preload("res://assets/models/weapons/rifle.glb"), "grip": Vector3(-0.2, -0.06, 0)},
 }
 const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
-const SUPPRESSOR_AT := Vector3(0.22, 0.03, 0)  # on the pistol's muzzle
+const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
 
 @export var kind := Kind.GUARD
@@ -39,8 +56,11 @@ const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  
 var skeleton: Skeleton3D
 var _anim := AnimationPlayer.new()
 var _clip := ""
+var _since_step := 0.0
+var _busy := 0.0     # seconds left of a react() one-shot, which play() must not interrupt
 var _home: Node3D    # where the model lives while it rides someone's shoulder
 var _gun: Node3D     # the weapon in the right hand
+var _weapon := ""    # the name it was hold()n with, which picks the clip set
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
 
 
@@ -74,7 +94,11 @@ func _ready() -> void:
 	add_child(body)
 	skeleton = body.find_children("*", "Skeleton3D", true, false)[0]
 	body.add_child(_anim)
-	_anim.add_animation_library("", CLIPS)
+	var lib := _clips()
+	lib.add_animation("RESET", _rest_pose())
+	_anim.add_animation_library("", lib)
+	_anim.deterministic = true  # bones a clip doesn't key (the Quaternius clips skip spine_01) go back to rest
+	_anim.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	var tint := StandardMaterial3D.new()
 	tint.albedo_color = TINTS[kind]
 	tint.roughness = 0.9
@@ -95,15 +119,68 @@ func _ready() -> void:
 	play("idle")
 
 
+func _process(delta: float) -> void:
+	_busy -= delta
+	_since_step += delta
+	if _since_step >= STEP:
+		_anim.advance(_since_step)
+		_since_step = 0.0
+
+
+func _rest_pose() -> Animation:
+	var rest := Animation.new()
+	for i in skeleton.get_bone_count():
+		var t := rest.add_track(Animation.TYPE_ROTATION_3D)
+		rest.track_set_path(t, NodePath("Armature/Skeleton3D:" + skeleton.get_bone_name(i)))
+		rest.rotation_track_insert_key(t, 0.0, skeleton.get_bone_rest(i).basis.get_rotation_quaternion())
+	return rest
+
+
+func _clips() -> AnimationLibrary:
+	if not ResourceLoader.exists(MIXAMO):
+		return CLIPS
+	var mixamo: AnimationLibrary = load(MIXAMO)
+	var lib := AnimationLibrary.new()
+	for c in CLIPS.get_animation_list():
+		lib.add_animation(c, CLIPS.get_animation(c))
+	for c in MIXAMO_CLIPS:
+		lib.add_animation(c, mixamo.get_animation(MIXAMO_CLIPS[c]))
+	for c in PISTOL_CLIPS.values():  # kept under their own names; play() swaps them in
+		lib.add_animation(c, mixamo.get_animation(c))
+	return lib
+
+
+## Plays a one-shot over whatever the model was doing, squeezed into `seconds` (0 = its own length).
+## Does nothing without the Mixamo bake.
+func react(clip: String, seconds := 0.0) -> void:
+	clip = _swapped(clip)
+	if not _anim.has_animation(clip):
+		return
+	var length := _anim.get_animation(clip).length
+	_busy = seconds if seconds > 0.0 else length
+	_clip = clip
+	_anim.play(clip, 0.1, length / _busy)
+
+
 func play(clip: String) -> void:
-	if clip == _clip:
+	clip = _swapped(clip)
+	if clip == _clip or _busy > 0.0:
 		return
 	_clip = clip
 	_anim.play(clip, 0.2)
 
 
+## The clip to actually play: with the pistol out, its takes replace the shared ones where they exist.
+func _swapped(clip: String) -> String:
+	if _weapon != "tranq":
+		return clip
+	var swapped: String = PISTOL_CLIPS.get(clip, clip)
+	return swapped if _anim.has_animation(swapped) else clip
+
+
 ## Puts the named weapon ("tranq" or "rifle") in the right hand; anything else empties it.
 func hold(weapon: String) -> void:
+	_weapon = weapon if GUNS.has(weapon) else ""
 	if _gun:
 		_gun.get_parent().queue_free()
 		_gun = null

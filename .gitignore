@@ -34,3 +34,6 @@ addons/limboai/bin/*ios*
 addons/limboai/bin/*linux*
 addons/limboai/bin/*macos*
 addons/limboai/bin/*web*
+
+# Mixamo-derived animation bake (their terms forbid redistribution); rebuild with tools/bake_mixamo.gd
+assets/models/animations/mixamo_clips.res

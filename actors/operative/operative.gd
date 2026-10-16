@@ -141,7 +141,8 @@ func _unhandled_input(e: InputEvent) -> void:
 		_gun = rifle
 		model.hold("rifle")
 	elif e.is_action_pressed("reload"):
-		gun().reload(carrying != null)
+		if gun().reload(carrying != null):
+			model.react("reload", Gun.RELOAD_TIME)
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
 		_fire()
 	elif e.is_action_pressed("pause"):  # Areas without a pause screen (the test room)
@@ -186,8 +187,9 @@ func _physics_process(delta: float) -> void:
 	elif aiming:
 		model.rotation.y = lerp_angle(model.rotation.y, _yaw, 12 * delta)
 	var speed := Locomotion.speed(crouching, looks_walking())
-	velocity.x = dir.x * speed
-	velocity.z = dir.z * speed
+	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * speed, delta)
+	velocity.x = eased.x
+	velocity.z = eased.y
 	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
 	move_and_slide()
 
@@ -197,6 +199,7 @@ func take_hit() -> void:
 	if health.dead():
 		return
 	health.hit()
+	model.react("hit")
 	if health.dead():
 		get_tree().call_group.call_deferred("checkpoint", "restore_checkpoint")
 
@@ -250,6 +253,7 @@ func _fire() -> void:
 		return
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
+	model.react("fire", 0.3)
 	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
 	_yaw += randf_range(-0.3, 0.3) * arm.kick
 	var sp := arm.spread(carrying != null)
