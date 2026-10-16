@@ -8,7 +8,7 @@
 
 **Status:** ready-for-agent
 
-- [ ] L1: about every 45 s HQ radios "<X>, report" to a random living guard, weighted toward Down guards; no answer in ~10 s sends the nearest guard to X's last position in suspicion
-- [ ] L2: a found Down guard means an instant alert with no check (tested in the alert module)
-- [ ] L3: HQ polls the guard nobody has seen for the longest, using a low-rate guard-on-guard sight check (fallback: random poll every 20 s)
-- [ ] A fourth radio order, "Report in", answers a pending poll as X with X's Voiceprint, judged by Glaukopis
+- [x] L1: about every 45 s HQ radios "<X>, report" to a random living guard, weighted toward Down guards; no answer in ~10 s sends the nearest guard to X's last position in suspicion
+- [x] L2: a found Down guard means an instant alert with no check (tested in the alert module)
+- [x] L3: HQ polls the guard nobody has seen for the longest, using a low-rate guard-on-guard sight check (fallback: random poll every 20 s)
+- [x] A fourth radio order, "Report in", answers a pending poll as X with X's Voiceprint, judged by Glaukopis
