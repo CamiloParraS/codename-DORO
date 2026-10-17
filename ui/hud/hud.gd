@@ -119,7 +119,11 @@ func _right() -> void:
 		_vt(Vector2(sx + 22, 98), "%s %05.2f" % ph, RED if ph[0] == "ALERT" else ORANGE)
 	draw_rect(Rect2(sx, 104, 34, 24), Color(0, 0, 0, 0.4))
 	_stance(Rect2(sx + 9, 105, 16, 22))
-	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card, empty
+	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card
+	var it: Items = _operative.items
+	var live: bool = it.scanning() or _operative.throwing
+	_t(Vector2(sx + 3, 144), it.label(), ORANGE if live else Color.WHITE)
+	_t(Vector2(sx + 9, 164), "%02d" % it.count(), Color.WHITE if it.count() > 0 else RED)
 	var wc := Rect2(sx, 210, 34, size.y - 220)
 	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
 	var gun: Gun = _operative.gun()

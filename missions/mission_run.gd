@@ -45,7 +45,7 @@ func _ready() -> void:
 ## Snapshot: the objective step, the Operative (position, ammo, Voiceprints), the tally (Habits and
 ## Lethality so far), Glaukopis's flags, which guards exist (reinforcements arrive later), which are
 ## dead and where they lie, and which cameras are destroyed.
-## ponytail: Scanner charges and Magazines join when those exist.
+## The Operative's snapshot keeps its Scanner charges and Magazines.
 func take_checkpoint() -> void:
 	var dead := {}
 	for g in get_tree().get_nodes_in_group("guards"):

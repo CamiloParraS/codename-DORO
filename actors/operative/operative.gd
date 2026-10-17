@@ -30,6 +30,8 @@ var tranq := Tranq.new()
 var rifle := Rifle.new()
 var _gun: Gun = tranq  # the weapon in hand
 var voiceprints := Voiceprints.new()
+var items := Items.new()
+var throwing := false    # F held on the Magazine: the arc shows, release throws, RMB cancels
 var health := Health.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
@@ -50,6 +52,7 @@ var _shoulder_arm: SpringArm3D
 var _back_arm: SpringArm3D
 var _shape: CollisionShape3D
 var model: CharacterModel
+var _view := ItemView.new()
 
 
 func _ready() -> void:
@@ -82,6 +85,7 @@ func _ready() -> void:
 	camera.current = true
 	_back_arm.add_child(camera)
 	_apply_shoulder()
+	add_child(_view)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
@@ -134,6 +138,18 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("crouch") and (not crouching or _headroom()):
 		crouching = not crouching
 		_apply_crouch()
+	elif throwing and e.is_action_released("item_use"):
+		_throw_magazine()
+	elif throwing and e.is_action_pressed("aim"):
+		throwing = false
+	elif e.is_action_pressed("item_next") or e.is_action_pressed("item_prev"):
+		if not throwing:
+			items.cycle(1 if e.is_action_pressed("item_next") else -1)
+	elif e.is_action_pressed("item_use") and not _choking and not radio_open:
+		if items.selected == Items.Kind.SCANNER:
+			items.use_scanner()
+		else:
+			throwing = items.can_throw(carrying != null)
 	elif e.is_action_pressed("shoulder_swap"):
 		shoulder = -shoulder
 		_apply_shoulder()
@@ -165,6 +181,8 @@ func _physics_process(delta: float) -> void:
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	health.tick(delta)
+	items.tick(delta)
+	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
 	set_collision_mask_value(CARRY_BLOCK_LAYER, carrying != null)
@@ -223,7 +241,7 @@ func snapshot() -> Dictionary:
 	return {
 		xform = global_transform, yaw = _yaw, pitch = _pitch, crouching = crouching,
 		tranq = MissionRun.copy(tranq), rifle = MissionRun.copy(rifle), rifle_in_hand = _gun == rifle,
-		voiceprints = MissionRun.copy(voiceprints),
+		voiceprints = MissionRun.copy(voiceprints), items = MissionRun.copy(items),
 	}
 
 
@@ -249,6 +267,9 @@ func restore(s: Dictionary) -> void:
 	_gun = rifle if s.rifle_in_hand else tranq
 	model.hold("rifle" if s.rifle_in_hand else "tranq")
 	voiceprints = MissionRun.copy(s.voiceprints)
+	items = MissionRun.copy(s.items)
+	items.scan_left = 0.0
+	throwing = false
 	health = Health.new()
 	_pivot.global_position = global_position + Vector3.UP * (0.95 if crouching else 1.45)
 
@@ -256,6 +277,25 @@ func restore(s: Dictionary) -> void:
 ## The weapon in hand.
 func gun() -> Gun:
 	return _gun
+
+
+## Where the thrown Magazine would land: the arc along the camera's heading, cut short by the first wall
+## or floor it meets (guards are on another layer, so hitting one does nothing). Points from the hand to the landing.
+func _flight() -> PackedVector3Array:
+	var pts := Items.arc(global_position + Vector3.UP * 1.4, -camera.global_basis.z, 40)
+	var space := get_world_3d().direct_space_state
+	for i in range(1, pts.size()):
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(pts[i - 1], pts[i], 1, [get_rid()]))
+		if not hit.is_empty():
+			return pts.slice(0, i) + PackedVector3Array([hit["position"]])
+	return pts
+
+
+func _throw_magazine() -> void:
+	throwing = false
+	if items.throw(carrying != null):
+		var land := _flight()[-1]
+		Guard.broadcast(get_tree(), land, GuardAlert.KNOCK_RANGE, "a thrown magazine")
 
 
 ## Hitscan from the screen centre. Tranq: a hit on a standing guard's head Neutralizes it, on the body
@@ -313,7 +353,8 @@ func _interact() -> void:
 			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
 		tranq.refill()
-		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist
+		rifle.refill()
+		items.refill()
 	elif _ladder_near():
 		_mount(_ladder_near())
 
@@ -427,4 +468,5 @@ func _process(delta: float) -> void:
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
 	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()))
+	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW
