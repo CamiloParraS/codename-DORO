@@ -57,6 +57,8 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - [Research annex diagram](issues/09-research-annex-diagram.md): A, Main block (MGS3 Graniny Gorki lab as one building). It's ground level: a 48 m corridor with rooms off it, the files in the Archive with a Crawlspace to its back door, and the researcher looping between the lab and the office before running to the vault on alert. 4 of 10 base guards are indoors, there are no Ladders, and interior walls are `Wall*` SOLID boxes. Accepted weak points (the corridor sight line, little cover outside, a beacon hidden from both objectives) go to the greybox playtest.
 
+- [Research annex greybox](issues/14-research-annex-greybox.md): built by `tools/build_research_annex.gd`. The navmesh passes all 13 doorways and reaches both tower tops. The carry routes measure 45 m by the north strip and 63 m by the corridor and dock, and the escort spoof works headless. Guards now follow their path within 0.25 m, after the researcher stuck on a doorway jamb. Measured weak points: the corridor is 46 m but a guard sees 16 m, and Extraction's light column can't be seen from the Archive's back door or the south yard. Not yet playtested by hand.
+
 ## Not yet specified
 
 Nothing left: every remaining question is a ticket.

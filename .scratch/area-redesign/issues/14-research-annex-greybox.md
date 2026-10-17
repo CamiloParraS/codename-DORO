@@ -1,7 +1,7 @@
 # Research annex greybox
 
 Type: task
-Status: open
+Status: resolved
 Blocked by: 09
 
 ## Question
@@ -38,3 +38,30 @@ Check:
   - whether Extraction can be found after leaving the Archive or the lab.
 
 This is a real build: the map's Notes carry execution into this ticket.
+
+## Answer
+
+**Built.** `tools/build_research_annex.gd` writes `areas/research_annex/research_annex.tscn` from variant A's data and bakes its navmesh. Rebuild with `godot --headless --path . --script tools/build_research_annex.gd`. On `tools/area_builder.gd`, `_building` now takes any number of doors per side (the lab has two on S, N and E), and `_ramp`, `_report_reach` and `_intel` moved there from the other two generators. Rebuilding the Harbour and the Relay station gives the same scenes (only node ids change).
+
+- **Geometry:** the interior walls are a `WALLS` list (centre line, ends, 2 m gaps) built as `Wall*` boxes under the Lab. Changes from the diagram:
+  - The tower stairs are 8 m long, since the diagram's 3 m and 6 m wedges (59° and 40°) are too steep to walk. The gate stair turns west so it clears the truck.
+  - Each tower deck stands on one central leg and has a 1 m rail, open at the stair top. Without the rail, walking off an outer edge carries the Operative over the fence.
+  - A road strip runs out of the north gate to a barrier, so RoadEntry (outside the fence) stands on ground.
+- **Encounters:** 9 posts, 10 guards as spawned (A4 is the chatting pair), plus the researcher's escort and 3 extra posts. Three posts moved 1.5–2 m off cover edges they sat on: A1 off the container and the crawl's south face, the A4 pair off the low cover, and PostExtra3 off the container. A **SpoofDock** joins the diagram's three spoof places, because both deception Approaches send a guard to "the Dock".
+- **Backdrop:** a plain outside the fence and a 14 m quarry pit beyond the rim, both without collision. No kill volume is needed: the fences, the rim rails, the tower rails and the road barrier close every edge (there's no jump).
+- **Guard fix:** guards followed their path with `path_desired_distance` 0.5. Turning round a wall end into a 2 m doorway, a guard dropped the corner point early and steered straight into the jamb, where he stopped for good: the researcher did this at the lab door on his first trip back from the office. At 0.25 he loops indefinitely. This applies to every guard in every Area.
+
+**Checks (2026-10-17):**
+- The generator's reach report: the navmesh reaches every room, all 13 doorways (7 interior, 6 exterior), both tower tops, Extraction and RoadEntry. A spot in a doorway must be within 0.5 m across, so a closed doorway shows as a miss.
+- Carry routes measured on the navmesh: **44.6 m by the north strip** and **63.0 m by the corridor and dock** (the diagram says 44 and 58). A carried researcher is refused at the Crawlspace by its carry blocks (tested).
+- Mission 3, run headless with the real guards:
+  - the corridor guard walks the corridor end to end;
+  - the researcher walks lab → corridor → office and back through the doorways;
+  - after `Escort1.obey("go", SpoofDock)`, the escort walks out through the loading hall to the dock unalerted and waits there about 10 s. He gets up to 40 m from the researcher, who carries on with his loop.
+- `test_research_annex`: 7/7 pass. Full suite: 285/285 in the editor.
+- **Weak points, measured rather than played** (raycasts at eye height):
+  - **The corridor:** 46 m clear end to end, but a guard's front cone reaches only 16 m. There's a doorway at least every 12 m on each side, so it's long rather than deadly.
+  - **Cover outside:** 7 low covers, 2 containers, the truck and 2 dock crates. The north strip has the truck and two low covers.
+  - **Finding Extraction:** the light column (seen 12 m up) is visible from the lab's north door, the corridor's east door and the loading hall's east door. It's hidden from the Archive's back door, the front door, the crawl's south mouth and most of the south yard (behind the lab, the pump house and Container2). So after the files, the sneak and deception Approaches leave the Operative unable to see Extraction until the dock or the start corner. This is the lesson-7 warning, confirmed.
+
+**Not done here:** a hands-on playtest of the three Approaches to each objective and of the weak points. Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
