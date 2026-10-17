@@ -61,7 +61,7 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
   - the lab can be cleared one room at a time;
   - the researcher's own Voiceprint works as a spoof;
   - the files' deception Approach has no pull until the crawl beside it is closed;
-  - a radioed alert pulls every guard off his post to a found body, so a far-off body lures guards away from the objective (this one is true in every Area). Every camera now hangs on a wall face or a pole, in all three Areas (they had hung in the air).
+  - a radioed alert pulls every guard off his post to a found body, so a far-off body lures guards away from the objective (this one is true in every Area: [Who answers an alert](issues/15-who-answers-an-alert.md)). Every camera now hangs on a wall face or a pole, in all three Areas (they had hung in the air).
 
 ## Not yet specified
 

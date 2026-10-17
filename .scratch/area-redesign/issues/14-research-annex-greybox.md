@@ -89,6 +89,6 @@ This plays the files' sneak Approach end to end, so every Approach has now been 
 - A Countermeasure caught the spoofs and the spoofed guards went to alert, but the lab still had an opening. Went in, knocked out a guard and the researcher.
 - The first guard knocked out at the start was found, and every guard went to check the body, which let the Operative carry the researcher out freely.
 
-The files' deception Approach has now been played: it works, and the spoofing ladder answers it. New question, not specific to this Area: a found body raises an alert that's radioed to everyone, and every guard converges on the spot, leaving his post. So a body far from the objective works as a lure that empties it. Here, the south yard is the far end from the lab and the north strip.
+The files' deception Approach has now been played: it works, and the spoofing ladder answers it. New question, not specific to this Area: a found body raises an alert that's radioed to everyone, and every guard converges on the spot, leaving his post. So a body far from the objective works as a lure that empties it. Here, the south yard is the far end from the lab and the north strip. Opened as [Who answers an alert](15-who-answers-an-alert.md).
 
 **Not done here:** a check of whether Extraction is easy to find after leaving by the Archive's back door (this run extracted from there and reported no trouble). Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
