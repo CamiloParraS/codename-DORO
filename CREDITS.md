@@ -57,3 +57,4 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Godot Engine, MIT License, https://godotengine.org
 - LimboAI 1.8.1 by Serhii Snitsaruk and contributors, https://github.com/limbonaut/limboai, MIT License (behaviour trees)
 - Pizza Doggy's Rusty PSX Style Kidnapper's Van (Mystery Package vol. 8) and PSX Mega Pack dinner table (`assets/models/props/van.glb`, `desk.glb`, skinned onto the Truck and the relay console desk). Pizza Doggy's Game Assets License Agreement, see above.
+- Characters PSX `Character_21_Police` and `Character_22_Police` textures by Elbolilloduro, CC0 1.0, baked onto Nikita's UVs as the guards' skins (`assets/models/characters/guard/`).

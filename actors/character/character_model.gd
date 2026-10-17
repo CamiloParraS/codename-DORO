@@ -9,6 +9,11 @@ const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 ## The Target is a PSX character on the Mixamo rig, with its own clips from tools/bake_target.gd (gitignored).
 const TARGET_BODY := preload("res://assets/models/characters/target/target.fbx")
 const TARGET_CLIPS := "res://assets/models/animations/target_clips.res"
+## Guard looks: the Police 21/22 textures of the PSX pack, baked onto Nikita's UVs (_raw/work/bake/bake.py).
+const GUARD_SKINS := [
+	preload("res://assets/models/characters/guard/guard_21.png"),
+	preload("res://assets/models/characters/guard/guard_22.png"),
+]
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
@@ -104,6 +109,10 @@ func _ready() -> void:
 	if kind != Kind.TARGET:
 		var tint := StandardMaterial3D.new()
 		tint.albedo_color = TINTS[kind]
+		if kind == Kind.GUARD:  # a PSX look, one of the skins by the guard's name
+			tint.albedo_color = Color.WHITE
+			tint.albedo_texture = GUARD_SKINS[String(get_parent().name).hash() % GUARD_SKINS.size()]
+			tint.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 		tint.roughness = 0.9
 		_part("Nikita").material_override = tint
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
