@@ -178,15 +178,7 @@ func _build() -> void:
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y = 1.5
-	var intel := _group(_root, "Intel")
-	var intel_mat := StandardMaterial3D.new()
-	intel_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	for n in INTEL:
-		var a := _area(intel, n, INTEL[n] + [0.6], Vector3(1.5, 2, 1.5), "res://areas/intel_pickup.gd")
-		var m := MeshInstance3D.new()
-		m.name = "Mesh"
-		m.mesh = _box_mesh(Vector3(0.4, 0.1, 0.3), intel_mat)
-		_add(a, m)
+	_intel(INTEL)
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(OUT)

@@ -1,4 +1,5 @@
-## Shared builders for the Area greybox generators (tools/build_harbour.gd, tools/build_relay_station.gd).
+## Shared builders for the Area greybox generators (tools/build_harbour.gd, tools/build_relay_station.gd,
+## tools/build_research_annex.gd).
 ## Data is in diagram metres: x east, y south, 0-80 across the Area; h is height. Facings are compass
 ## bearings (0 north, 90 east). Rects are [x, y, w, d].
 extends SceneTree
@@ -172,8 +173,8 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	return b
 
 
-## Four walls with 2 m door gaps and a roof: [name, rect, height, doors [[side, centre]], tint, base].
-## The walls stand on base (0 if missing).
+## Four walls with 2 m door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre]],
+## tint, base]. The walls stand on base (0 if missing).
 func _building(parent: Node3D, b: Array) -> void:
 	var r: Array = b[1]
 	var h: float = b[2]
@@ -186,18 +187,58 @@ func _building(parent: Node3D, b: Array) -> void:
 	var walls := {N = [x0, y0, x1, y0 + t], S = [x0, y1 - t, x1, y1], W = [x0, y0, x0 + t, y1], E = [x1 - t, y0, x1, y1]}
 	for side in walls:
 		var w: Array = walls[side]
-		var door := -1.0
+		var ns: bool = side in ["N", "S"]
+		var doors := []
 		for d in b[3]:
 			if d[0] == side:
-				door = d[1]
-		var spans := [[w[0], w[1], w[2], w[3]]]
-		if door >= 0.0:
-			spans = [[w[0], w[1], door - 1.0, w[3]], [door + 1.0, w[1], w[2], w[3]]] if side in ["N", "S"] \
-				else [[w[0], w[1], w[2], door - 1.0], [w[0], door + 1.0, w[2], w[3]]]
+				doors.append([d[1] - 1.0, d[1] + 1.0])
+		doors.sort()
+		var spans := _spans(w[0] if ns else w[1], w[2] if ns else w[3], doors)
 		for i in spans.size():
 			var s: Array = spans[i]
-			_box(parent, "Wall%s%d" % [side, i], [s[0], s[1], s[2] - s[0], s[3] - s[1]], base, base + h, "brick", b[4])
+			var rect := [s[0], w[1], s[1] - s[0], w[3] - w[1]] if ns else [w[0], s[0], w[2] - w[0], s[1] - s[0]]
+			_box(parent, "Wall%s%d" % [side, i], rect, base, base + h, "brick", b[4])
 	_box(parent, "Roof", r, base + h, base + h + 0.3, "metal", Color(0.6, 0.6, 0.6))
+
+
+## The [from, to] stretches of a wall from `from` to `to` left between its sorted gaps [[from, to]].
+func _spans(from: float, to: float, gaps: Array) -> Array:
+	var spans := []
+	for gap in gaps:
+		spans.append([from, gap[0]])
+		from = gap[1]
+	spans.append([from, to])
+	return spans
+
+
+## A wedge over rect rising from h0 to h1 toward its `up` side: a PrismMesh with its right angle there.
+func _ramp(parent: Node3D, r: Dictionary) -> void:
+	var rect: Array = r.rect
+	var along_x: bool = r.up in ["E", "W"]
+	var size := Vector3(rect[2] if along_x else rect[3], r.h1 - r.h0, rect[3] if along_x else rect[2])
+	var b := StaticBody3D.new()
+	b.name = r.name
+	var yaw: float = {E = 0.0, N = 90.0, W = 180.0, S = -90.0}[r.up]  # turns local +x (the high side) to face up
+	b.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(yaw)),
+		Vector3(rect[0] + rect[2] / 2.0 - 40.0, (r.h0 + r.h1) / 2.0, rect[1] + rect[3] / 2.0 - 40.0))
+	var h := size / 2
+	var wedge := ConvexPolygonShape3D.new()
+	wedge.points = PackedVector3Array([
+		Vector3(-h.x, -h.y, -h.z), Vector3(h.x, -h.y, -h.z), Vector3(h.x, h.y, -h.z),
+		Vector3(-h.x, -h.y, h.z), Vector3(h.x, -h.y, h.z), Vector3(h.x, h.y, h.z)])
+	var shape := CollisionShape3D.new()
+	shape.name = "Shape"
+	shape.shape = wedge
+	b.add_child(shape)
+	var m := MeshInstance3D.new()
+	m.name = "Mesh"
+	var prism := PrismMesh.new()
+	prism.size = size
+	prism.left_to_right = 1.0
+	prism.material = _mat(r.mat, r.tint)
+	m.mesh = prism
+	b.add_child(m)
+	parent.add_child(b)
 
 
 ## A structure with a 1.2 m tunnel through it: the two halves, the roof over the tunnel, a carry block
@@ -278,6 +319,59 @@ func _area(parent: Node, name: String, at: Array, size: Vector3, script: String)
 	s.shape = _box_shape(size)
 	_add(a, s)
 	return a
+
+
+## Intel pickups: {name: [x, y]}, each a small unshaded slab 0.6 m up under $Intel.
+func _intel(pickups: Dictionary) -> void:
+	var intel := _group(_root, "Intel")
+	var intel_mat := StandardMaterial3D.new()
+	intel_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	for n in pickups:
+		var a := _area(intel, n, [pickups[n][0], pickups[n][1], 0.6], Vector3(1.5, 2, 1.5), "res://areas/intel_pickup.gd")
+		var m := MeshInstance3D.new()
+		m.name = "Mesh"
+		m.mesh = _box_mesh(Vector3(0.4, 0.1, 0.3), intel_mat)
+		_add(a, m)
+
+
+## Prints whether the navmesh reaches each `reach` spot from `start_at` (within 0.5 m across and 1 m up,
+## so a spot in a doorway misses if the doorway is closed), and the length of each `carry` route, the
+## shortest path forced through its waypoints. Warns on any spot it can't reach.
+func _report_reach(nm: NavigationMesh, start_at: Array, reach: Dictionary, carry: Dictionary) -> void:
+	var map := NavigationServer3D.map_create()
+	NavigationServer3D.map_set_cell_size(map, nm.cell_size)
+	NavigationServer3D.map_set_cell_height(map, nm.cell_height)
+	var region := NavigationServer3D.region_create()
+	NavigationServer3D.region_set_map(region, map)
+	NavigationServer3D.region_set_navigation_mesh(region, nm)
+	NavigationServer3D.map_set_active(map, true)
+	var start := _p(start_at)
+	for i in 300:  # the server takes the region in on a later frame of its own
+		if NavigationServer3D.map_get_iteration_id(map) > 0 and NavigationServer3D.map_get_closest_point(map, start) != Vector3.ZERO:
+			break
+		await physics_frame
+	for n in reach:
+		var path := NavigationServer3D.map_get_path(map, start, _p(reach[n]), true)
+		var off := path[-1] - _p(reach[n]) if path.size() else Vector3.INF
+		var miss := Vector2(off.x, off.z).length() if absf(off.y) < 1.0 else INF
+		print("reach %-16s %5.1f m %s" % [n, _length(path), "ok" if miss < 0.5 else "MISSES BY %.1f m" % miss])
+		if miss >= 0.5:
+			push_warning("the navmesh doesn't reach %s" % n)
+	for n in carry:
+		var legs: Array = carry[n]
+		var total := 0.0
+		for i in legs.size() - 1:
+			total += _length(NavigationServer3D.map_get_path(map, _p(legs[i]), _p(legs[i + 1]), true))
+		print("carry %-26s %5.1f m" % [n, total])
+	NavigationServer3D.free_rid(region)
+	NavigationServer3D.free_rid(map)
+
+
+func _length(path: PackedVector3Array) -> float:
+	var d := 0.0
+	for i in path.size() - 1:
+		d += path[i].distance_to(path[i + 1])
+	return d
 
 
 ## Every guard and Spot marker should stand clear of solid boxes, or the navmesh won't reach it.

@@ -191,38 +191,8 @@ func _build() -> void:
 	var console := _area(intel, "RelayConsole", SPOTS.RelayConsole, Vector3(5, 3, 5), "res://areas/relay_station/relay_console.gd")
 	console.position.y += 1.5
 	_save(OUT)
-	await _report_reach(nm)
+	await _report_reach(nm, SPOTS.OperativeStart, REACH, CARRY)
 	quit()
-
-
-## A wedge over rect rising from h0 to h1 toward its `up` side: a PrismMesh with its right angle there.
-func _ramp(parent: Node3D, r: Dictionary) -> void:
-	var rect: Array = r.rect
-	var along_x: bool = r.up in ["E", "W"]
-	var size := Vector3(rect[2] if along_x else rect[3], r.h1 - r.h0, rect[3] if along_x else rect[2])
-	var b := StaticBody3D.new()
-	b.name = r.name
-	var yaw: float = {E = 0.0, N = 90.0, W = 180.0, S = -90.0}[r.up]  # turns local +x (the high side) to face up
-	b.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(yaw)),
-		Vector3(rect[0] + rect[2] / 2.0 - 40.0, (r.h0 + r.h1) / 2.0, rect[1] + rect[3] / 2.0 - 40.0))
-	var h := size / 2
-	var wedge := ConvexPolygonShape3D.new()
-	wedge.points = PackedVector3Array([
-		Vector3(-h.x, -h.y, -h.z), Vector3(h.x, -h.y, -h.z), Vector3(h.x, h.y, -h.z),
-		Vector3(-h.x, -h.y, h.z), Vector3(h.x, -h.y, h.z), Vector3(h.x, h.y, h.z)])
-	var shape := CollisionShape3D.new()
-	shape.name = "Shape"
-	shape.shape = wedge
-	b.add_child(shape)
-	var m := MeshInstance3D.new()
-	m.name = "Mesh"
-	var prism := PrismMesh.new()
-	prism.size = size
-	prism.left_to_right = 1.0
-	prism.material = _mat(r.mat, r.tint)
-	m.mesh = prism
-	b.add_child(m)
-	parent.add_child(b)
 
 
 ## The valley the hillside drops into, seen past the south rail. ponytail: the rest of the Backdrop kit
@@ -241,41 +211,3 @@ func _backdrop() -> void:
 	valley.mesh = plane
 	valley.position = Vector3(0, -14.0, 0)
 	_add(bd, valley)
-
-
-## Prints whether the navmesh reaches each REACH spot from the start, and the length of both carry
-## routes. Warns on any spot the path can't reach.
-func _report_reach(nm: NavigationMesh) -> void:
-	var map := NavigationServer3D.map_create()
-	NavigationServer3D.map_set_cell_size(map, nm.cell_size)
-	NavigationServer3D.map_set_cell_height(map, nm.cell_height)
-	var region := NavigationServer3D.region_create()
-	NavigationServer3D.region_set_map(region, map)
-	NavigationServer3D.region_set_navigation_mesh(region, nm)
-	NavigationServer3D.map_set_active(map, true)
-	var start := _p(SPOTS.OperativeStart)
-	for i in 300:  # the server takes the region in on a later frame of its own
-		if NavigationServer3D.map_get_iteration_id(map) > 0 and NavigationServer3D.map_get_closest_point(map, start) != Vector3.ZERO:
-			break
-		await physics_frame
-	for n in REACH:
-		var path := NavigationServer3D.map_get_path(map, start, _p(REACH[n]), true)
-		var miss := path[-1].distance_to(_p(REACH[n])) if path.size() else INF
-		print("reach %-16s %5.1f m %s" % [n, _length(path), "ok" if miss < 1.0 else "MISSES BY %.1f m" % miss])
-		if miss >= 1.0:
-			push_warning("the navmesh doesn't reach %s" % n)
-	for n in CARRY:
-		var legs: Array = CARRY[n]
-		var total := 0.0
-		for i in legs.size() - 1:
-			total += _length(NavigationServer3D.map_get_path(map, _p(legs[i]), _p(legs[i + 1]), true))
-		print("carry %-26s %5.1f m" % [n, total])
-	NavigationServer3D.free_rid(region)
-	NavigationServer3D.free_rid(map)
-
-
-func _length(path: PackedVector3Array) -> float:
-	var d := 0.0
-	for i in path.size() - 1:
-		d += path[i].distance_to(path[i + 1])
-	return d
