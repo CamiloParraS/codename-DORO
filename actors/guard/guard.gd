@@ -405,7 +405,11 @@ func arrived() -> bool:
 
 ## A Target on alert or in evasion runs to its safe room and stays there until the evasion ends.
 func _fleeing() -> bool:
-	return target and alert.state >= GuardAlert.State.ALERT
+	return flees(target, alert.state)
+
+
+static func flees(is_target: bool, state: int) -> bool:
+	return is_target and state >= GuardAlert.State.ALERT
 
 
 ## Where alert.last_known is reached from: the foot of the Ladder when it's up on that Ladder's roof

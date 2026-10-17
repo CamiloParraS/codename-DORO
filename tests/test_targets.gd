@@ -46,16 +46,8 @@ func test_harbour_target_post_is_on_the_navmesh() -> void:
 
 ## A Target flees only once alerted; before that it walks the guard tree like any guard.
 func test_a_target_flees_only_from_alert_on() -> void:
-	var g: Guard = load("res://actors/guard/guard.tscn").instantiate()
-	g.target = true
-	g.safe_room = Vector3(5, 0, 5)
-	assert_false(g._fleeing())
-	g.alert.state = GuardAlert.State.SUSPICION
-	assert_false(g._fleeing())
-	g.alert.state = GuardAlert.State.ALERT
-	assert_true(g._fleeing())
-	g.alert.state = GuardAlert.State.EVASION
-	assert_true(g._fleeing())
-	g.target = false
-	assert_false(g._fleeing(), "an ordinary guard never flees")
-	g.free()
+	assert_false(Guard.flees(true, GuardAlert.State.PATROL))
+	assert_false(Guard.flees(true, GuardAlert.State.SUSPICION))
+	assert_true(Guard.flees(true, GuardAlert.State.ALERT))
+	assert_true(Guard.flees(true, GuardAlert.State.EVASION))
+	assert_false(Guard.flees(false, GuardAlert.State.ALERT), "an ordinary guard never flees")

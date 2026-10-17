@@ -43,6 +43,7 @@ func _codes(action: String) -> Array:
 
 
 func test_every_spec_action_is_bound() -> void:
+	InputMap.load_from_project_settings()  # the editor's runtime InputMap starts without project actions
 	for action in EXPECTED:
 		assert_true(InputMap.has_action(action), "missing action %s" % action)
 		if not InputMap.has_action(action):
