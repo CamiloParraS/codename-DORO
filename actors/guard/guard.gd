@@ -8,6 +8,7 @@ const EYE := 1.6
 const PATROL_SPEED := 1.8
 const CHASE_SPEED := 4.5
 const PAUSE := 1.5        # seconds at each patrol point
+const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
 const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
@@ -15,11 +16,16 @@ const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down g
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
+const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
 var route: Array[Vector3] = []   # patrol points, walked in a loop
+var stops: Array[Dictionary] = []  # per route point (a sentry: its one spot): {yaw, scan[, hold]} from the Area; {} = a plain pause
+var chat: Chat                   # a chatting pair's shared turns (seat 0 ticks them)
+var chat_seat := 0
+var chat_partner: Guard
 var post: Transform3D            # where it was spawned: a Checkpoint restore puts it back here
 var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
@@ -47,6 +53,7 @@ var target := false              # a Mission Target: unarmed, weighs 3, flees to
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 
 var _wp := 0
+var _stop := {}          # the stop being held
 var _turn_clock := 0.0
 var _glance := 0.0       # seconds left of a glance behind
 var _glance_yaw := 0.0
@@ -138,13 +145,29 @@ func _check_in(delta: float) -> void:
 	if checkin.tick(delta):
 		var line: String = Checkin.LINES.pick_random()
 		get_tree().call_group("radio_log", "say", name, line)
+	if chat and chat_seat == 0:
+		var line := chat.tick(delta)
+		var who: Guard = self if chat.speaker() == 0 else chat_partner
+		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
+		if line != "" and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
+			get_tree().call_group("radio_log", "say", who.name, line)
 	if operative:
-		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), checkin.on_air(alert.state))
+		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), on_air())
 	_refresh_mark()
 
 
+## Talking where a Voiceprint can be recorded: a check-in on patrol, or its turn in a chat.
+func on_air() -> bool:
+	return checkin.on_air(alert.state) or chatting()
+
+
+## Its turn in the chat, with both of the pair up and on patrol.
+func chatting() -> bool:
+	return chat != null and chat.speaker() == chat_seat and alert.state == GuardAlert.State.PATROL 		and not chat_partner.is_down() and chat_partner.alert.state == GuardAlert.State.PATROL
+
+
 func _refresh_mark() -> void:
-	var talk := checkin.on_air(alert.state)
+	var talk := on_air()
 	_mark.text = "((·))" if talk else MARKS[alert.state]
 	_mark.modulate = Color.WHITE if talk else MARK_COLORS[alert.state]
 
@@ -255,6 +278,7 @@ func return_to_post() -> void:
 	global_transform = post
 	velocity = Vector3.ZERO
 	_wp = 0
+	_stop = {}
 	_pause = 0.0
 	_glance = 0.0
 	_fire_left = FIRE_INTERVAL
@@ -372,16 +396,30 @@ func _changed(why: String) -> void:
 	_bt.restart()  # the tree picks the branch for the new state
 
 
-## At alert.last_known, or as close as the navmesh gets (a spot on a crate, behind a wall).
+## At the goal, or as close as the navmesh gets (a spot on a crate, behind a wall).
 func arrived() -> bool:
 	if _fleeing():
 		return _flat_dist(safe_room) < SAFE_REACH or _at(safe_room)
-	return _at(alert.last_known)
+	return _at(goal())
 
 
 ## A Target on alert or in evasion runs to its safe room and stays there until the evasion ends.
 func _fleeing() -> bool:
 	return target and alert.state >= GuardAlert.State.ALERT
+
+
+## Where alert.last_known is reached from: the foot of the Ladder when it's up on that Ladder's roof
+## (guards never climb, they watch the base), otherwise the spot itself.
+func goal() -> Vector3:
+	return ladder_foot(alert.last_known, get_tree().get_nodes_in_group("ladders"))
+
+
+static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:
+	for l: Node3D in ladders:
+		var top: Vector3 = l.get_node("Top").global_position
+		if p.y > top.y - 0.5 and Vector2(p.x - top.x, p.z - top.z).length() < ROOF_REACH:
+			return l.get_node("Bottom").global_position
+	return p
 
 
 func _at(t: Vector3) -> bool:
@@ -428,6 +466,8 @@ func can_see(other: Node3D) -> bool:
 
 func patrol(delta: float) -> void:
 	if route.is_empty():
+		if not stops.is_empty():
+			_face_stop(stops[0], delta)  # a sentry scanning from its high point
 		return
 	if _glance > 0.0:  # stands still looking behind it
 		_glance -= delta
@@ -441,11 +481,24 @@ func patrol(delta: float) -> void:
 			_glance_yaw = rotation.y + PI
 	if _pause > 0.0:
 		_pause -= delta
+		_face_stop(_stop, delta)
 		return
 	_walk_to(route[_wp], PATROL_SPEED, delta)
 	if _flat_dist(route[_wp]) < REACHED:
+		_stop = stops[_wp] if _wp < stops.size() else {}
 		_wp = (_wp + 1) % route.size()
-		_pause = PAUSE
+		_pause = _stop.get("hold", PAUSE)
+
+
+## At a stop with a facing, turns to it (sweeping when it scans); a plain stop leaves the guard as it is.
+func _face_stop(s: Dictionary, delta: float) -> void:
+	if s.has("yaw"):
+		rotation.y = lerp_angle(rotation.y, stop_yaw(s, _clock), 4 * delta)
+
+
+## Where a stop faces at `clock`: its yaw, swept ±scan/2 degrees on a sine of SCAN_PERIOD.
+static func stop_yaw(s: Dictionary, clock: float) -> float:
+	return s.yaw + deg_to_rad(s.get("scan", 0.0)) / 2 * sin(TAU * clock / SCAN_PERIOD)
 
 
 ## Carries out the radio order: walk to the place and look around, or hold here. False once there is
@@ -466,17 +519,19 @@ func follow_order(delta: float) -> bool:
 func search(delta: float, speed: float, sweep: float) -> void:
 	if _fleeing():
 		_flee(delta)
-	elif arrived():
-		rotation.y += sin(_clock * 1.1) * sweep * delta
+	elif not arrived():
+		_walk_to(goal(), speed, delta)
+	elif goal() != alert.last_known:
+		face(alert.last_known, delta)  # at a Ladder's foot, watching the roof
 	else:
-		_walk_to(alert.last_known, speed, delta)
+		rotation.y += sin(_clock * 1.1) * sweep * delta
 
 
 func chase(delta: float) -> void:
 	if _fleeing():
 		_flee(delta)
 		return
-	_walk_to(alert.last_known, CHASE_SPEED, delta)
+	_walk_to(goal(), CHASE_SPEED, delta)
 	if seen_rate > 0.0:
 		face(operative.global_position, delta)
 

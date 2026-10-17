@@ -108,3 +108,11 @@ func test_in_front_matches_the_front_cone() -> void:
 	assert_true(GuardVision.in_front(Vector3(0, 0, -1.0), fwd))
 	assert_false(GuardVision.in_front(Vector3(0, 0, 1.0), fwd), "behind")
 	assert_false(GuardVision.in_front(Vector3(1.0, 0, 0), fwd), "beside")
+
+
+func test_a_scanning_stop_sweeps_half_its_arc_each_side() -> void:
+	var s := {yaw = 1.0, scan = 90.0}
+	assert_true(is_equal_approx(Guard.stop_yaw(s, 0.0), 1.0))
+	assert_true(is_equal_approx(Guard.stop_yaw(s, Guard.SCAN_PERIOD / 4), 1.0 + deg_to_rad(45.0)))
+	assert_true(is_equal_approx(Guard.stop_yaw(s, Guard.SCAN_PERIOD * 3 / 4), 1.0 - deg_to_rad(45.0)))
+	assert_true(is_equal_approx(Guard.stop_yaw({yaw = 1.0}, 2.0), 1.0), "a facing stop holds still")

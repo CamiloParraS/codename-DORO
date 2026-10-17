@@ -1,11 +1,14 @@
 ## The Harbour Area (greybox). Marker groups: spot, sentry_high_point, camera_mount, guard_post,
-## guard_post_extra, spoof_place. A guard post's child markers are its patrol route.
+## guard_post_extra, spoof_place. A guard post's child markers are its patrol route. Every $GuardPosts post
+## is staffed, so the Area sets its own guard count. Marker meta (all optional): `hold` (seconds) and
+## `scan` (degrees) make a stop that faces the marker's -Z, held that long and swept across that arc (a
+## routeless post with `scan` is a scanning post; a sentry high point reads `scan` too); `chat` on a post
+## staffs it with a chatting pair. Crawlspaces and Ladders are plain geometry this script never reads.
 ## Places the Countermeasures MissionRun's plan deploys (Deployment) at those built-in spots.
 ## Open harbour.tscn and press F6 (Mission 1, nothing deployed), or start it from Free mode.
 extends Node3D
 
 const GUARD := preload("res://actors/guard/guard.tscn")
-const BASE_GUARDS := 10  # the remaining posts are left for Countermeasure extras
 
 var _was_alerted := false
 var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
@@ -14,8 +17,11 @@ var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore re
 func _ready() -> void:
 	var deployed: Dictionary = $MissionRun.plan.deployed
 	var guards := []
-	for post: Marker3D in $GuardPosts.get_children().slice(0, BASE_GUARDS):
-		guards.append(spawn_guard(post))
+	for post: Marker3D in $GuardPosts.get_children():
+		if post.has_meta("chat"):
+			guards.append_array(_spawn_chat(post))
+		else:
+			guards.append(spawn_guard(post))
 	# Extra posts: 1 is Stealth L2's patrol, the next ones are Combat L2's guards.
 	var extras := Deployment.extra_patrols(deployed) + Deployment.extra_guards(deployed)
 	for post: Marker3D in $ExtraGuardPosts.get_children().slice(0, extras):
@@ -45,7 +51,7 @@ func _ready() -> void:
 
 ## The Mission's Targets (Campaign data): each on a $TargetPosts route with one escort guard walking it,
 ## running to $Spots/SafeRoom on alert. Escorts join `guards`, so they get the Countermeasures; Targets don't.
-## ponytail: one safe room for all Targets and a greybox "room" beside the gatehouse until the Areas get interiors.
+## ponytail: one safe room for all Targets (in the Harbour, the back of the gatehouse).
 func _spawn_targets(guards: Array) -> void:
 	var names: Array = Campaign.MISSIONS[$MissionRun.record.mission].targets
 	for i in names.size():
@@ -96,8 +102,39 @@ func _pair_up(patrols: Array) -> void:
 		var a: Guard = patrols[i]
 		var b: Guard = patrols[i + 1]
 		b.route = a.route.duplicate()
+		b.stops = a.stops.duplicate()
 		b.global_position = a.global_position + a.global_basis.x * 1.5
 		b.post = b.global_transform
+
+
+## A chatting pair on a `chat` post: 2 m apart along its X axis, facing each other, each staying on its spot.
+func _spawn_chat(post: Marker3D) -> Array:
+	var chat := Chat.new()
+	var pair := []
+	for seat in 2:
+		var g := spawn_guard(post)
+		g.name = post.name.replace("Post", "Guard") + "AB"[seat]
+		g.global_position = post.global_position + post.global_basis.x * (1.0 if seat == 0 else -1.0)
+		g.look_at(post.global_position)
+		g.post = g.global_transform
+		g.route.assign([g.global_position])
+		g.stops.assign([{yaw = g.rotation.y, hold = Guard.PAUSE}])
+		g.chat = chat
+		g.chat_seat = seat
+		pair.append(g)
+	pair[0].chat_partner = pair[1]
+	pair[1].chat_partner = pair[0]
+	return pair
+
+
+## A route point's stop from its Marker meta: {} unless it has `hold` or `scan`.
+static func stop_of(m: Marker3D) -> Dictionary:
+	if not (m.has_meta("hold") or m.has_meta("scan")):
+		return {}
+	var s := {yaw = m.global_rotation.y, scan = float(m.get_meta("scan", 0.0))}
+	if m.has_meta("hold"):
+		s.hold = float(m.get_meta("hold"))
+	return s
 
 
 ## sentry: stands on a high point and never leaves it (no route). target: a Mission Target.
@@ -107,10 +144,15 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 		g.target = true
 		g.get_node("Model").kind = CharacterModel.Kind.TARGET
 	g.name = post.name.replace("Post", "Guard")
-	if not sentry:
+	if sentry:
+		if post.has_meta("scan"):
+			g.stops.append(stop_of(post))
+	else:
 		g.route.append(post.global_position)
+		g.stops.append(stop_of(post))
 		for wp: Marker3D in post.get_children():
 			g.route.append(wp.global_position)
+			g.stops.append(stop_of(wp))
 	g.operative = $Operative
 	add_child(g)
 	g.global_transform = post.global_transform

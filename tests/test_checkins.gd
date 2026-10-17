@@ -68,3 +68,17 @@ func test_subtitles_keep_last_two_and_fade() -> void:
 	assert_true(Subtitles.alpha(5.5) < 1.0)
 	s.tick(1.1)
 	assert_true(s.lines.is_empty())
+
+
+func test_chat_takes_turns_then_goes_quiet() -> void:
+	var c := Chat.new()
+	assert_eq(c.speaker(), -1, "starts quiet")
+	var line := c.tick(Chat.QUIET + 0.01)
+	assert_eq(c.speaker(), 0)
+	assert_eq(line, Chat.LINES[0][0])
+	assert_eq(c.tick(0.1), "", "a line only as a turn starts")
+	assert_eq(c.tick(Chat.TURN), Chat.LINES[1][0])
+	assert_eq(c.speaker(), 1)
+	c.tick(Chat.TURN)
+	assert_eq(c.speaker(), -1)
+	assert_eq(c.tick(Chat.QUIET), Chat.LINES[0][1], "the next exchange")

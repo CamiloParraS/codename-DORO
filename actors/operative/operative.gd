@@ -9,6 +9,9 @@ const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
 const RECOIL_MAX := 0.15      # radians the kick can stack up to while holding fire
 const RECOIL_RECOVERY := 0.3 # radians per second it settles back
 const CRATE_REACH := 2.0      # metres to a resupply crate's centre
+const LADDER_REACH := 1.2     # metres to a Ladder's Bottom or Top marker to climb on
+const CLIMB_SPEED := 1.8
+const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative carrying a body
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
@@ -19,6 +22,7 @@ var crouching := false
 var walking := false
 var moving := false
 var carrying: Node3D     # the Down guard on the shoulder
+var ladder: Node3D       # the Ladder being climbed (group "ladders", Bottom and Top markers)
 var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
 var radio_open := false  # the radial radio takes the mouse (RMB is "back" there, not aim)
@@ -50,6 +54,8 @@ var model: CharacterModel
 
 func _ready() -> void:
 	add_to_group("operative")
+	_yaw = rotation.y  # the Area's start facing goes to the camera; the body itself never turns
+	rotation = Vector3.ZERO
 	collision_mask = 1 | 2  # world and guards (guards sit on layer 2 so they don't block sight or the camera)
 	_shape = CollisionShape3D.new()
 	_shape.shape = CapsuleShape3D.new()
@@ -58,6 +64,7 @@ func _ready() -> void:
 	model = CharacterModel.new()
 	model.kind = CharacterModel.Kind.OPERATIVE
 	add_child(model)
+	model.rotation.y = _yaw
 	model.hold("tranq")
 	_apply_crouch()
 
@@ -89,7 +96,7 @@ func looks_crouched() -> bool:
 
 
 func looks_walking() -> bool:
-	return walking or carrying != null
+	return walking or carrying != null or ladder != null
 
 
 func _make_arm(length: float) -> SpringArm3D:
@@ -121,7 +128,10 @@ func _unhandled_input(e: InputEvent) -> void:
 		var l := Locomotion.look(_yaw, _pitch, e.relative, sensitivity, invert_y)
 		_yaw = l.x
 		_pitch = l.y
-	elif e.is_action_pressed("crouch"):
+	elif ladder:  # both hands on the rungs: the only move is to drop off
+		if e.is_action_pressed("crouch") or e.is_action_pressed("interact"):
+			ladder = null
+	elif e.is_action_pressed("crouch") and (not crouching or _headroom()):
 		crouching = not crouching
 		_apply_crouch()
 	elif e.is_action_pressed("shoulder_swap"):
@@ -151,12 +161,16 @@ func _unhandled_input(e: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
-	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open
+	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	health.tick(delta)
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
+	set_collision_mask_value(CARRY_BLOCK_LAYER, carrying != null)
+	if ladder:
+		_climb(Input.get_axis("move_back", "move_forward"), delta)
+		return
 	if aiming and not _choking and gun().automatic and Input.is_action_pressed("fire"):
 		_fire()
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -222,6 +236,7 @@ func restore(s: Dictionary) -> void:
 		_choking.held = false
 		_choking = null
 	_choke_left = 0.0
+	ladder = null
 	global_transform = s.xform
 	velocity = Vector3.ZERO
 	_yaw = s.yaw
@@ -299,6 +314,53 @@ func _interact() -> void:
 	elif _crate_near():
 		tranq.refill()
 		rifle.refill()  # ponytail: item counts join when the Scanner and Magazine exist
+	elif _ladder_near():
+		_mount(_ladder_near())
+
+
+## Onto a Ladder from its foot, or from its top (starting just below it), standing, facing the rungs.
+func _mount(l: Node3D) -> void:
+	ladder = l
+	crouching = false
+	_apply_crouch()
+	var bottom: Vector3 = l.get_node("Bottom").global_position
+	var top: Vector3 = l.get_node("Top").global_position
+	global_position = Vector3(bottom.x, top.y - 0.05, bottom.z) if global_position.y > bottom.y + 1.0 else bottom
+	velocity = Vector3.ZERO
+	model.rotation.y = atan2(-(top.x - bottom.x), -(top.z - bottom.z))
+
+
+## On a Ladder: dir +1 climbs, -1 descends, at CLIMB_SPEED. Off onto the Top marker past the top, or at the foot.
+func _climb(dir: float, delta: float) -> void:
+	moving = dir != 0.0
+	velocity = Vector3.ZERO
+	prompt = "C drop off"
+	var bottom: Vector3 = ladder.get_node("Bottom").global_position
+	var top: Vector3 = ladder.get_node("Top").global_position
+	var y := global_position.y + dir * CLIMB_SPEED * delta
+	if y >= top.y:
+		global_position = top
+		ladder = null
+	elif y <= bottom.y:
+		global_position = bottom
+		ladder = null
+	else:
+		global_position = Vector3(bottom.x, y, bottom.z)
+
+
+func _ladder_near() -> Node3D:
+	for l: Node3D in get_tree().get_nodes_in_group("ladders"):
+		for end in ["Bottom", "Top"]:
+			if global_position.distance_to(l.get_node(end).global_position) <= LADDER_REACH:
+				return l
+	return null
+
+
+## Room to stand up: nothing solid overhead within standing height (a Crawlspace's ceiling).
+func _headroom() -> bool:
+	var from := global_position + Vector3.UP * 0.5
+	var q := PhysicsRayQueryParameters3D.create(from, from + Vector3.UP * 1.3, 1, [get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
 ## X: kill the guard in reach from behind, or finish a Neutralized one on the floor.
@@ -330,6 +392,8 @@ func _update_prompt() -> void:
 		prompt = "E choke · X kill"
 	elif _crate_near():
 		prompt = "E resupply"
+	elif _ladder_near():
+		prompt = "E climb"
 	else:
 		prompt = ""
 
