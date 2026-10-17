@@ -9,12 +9,14 @@ Ghost Layer is a student project. Third-party assets and their licenses:
   Used: 9 clips baked from UAL1/UAL2 into `assets/models/animations/clips.res` by `tools/bake_clips.gd`; the Superhero_Male_FullBody skin weights seeded the Nikita rig (`tools/rig_nikita.py`). The Universal Animation Library is under the Quaternius license (CC0 1.0).
 - Blocky Characters, Survival Kit, City Kit (Industrial) by Kenney, https://kenney.nl
   License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
+- Kenney Survival Kit `box-large` and City Kit (Industrial) `shipping-container-a/b` (`assets/models/props/`, skinned onto the greybox crates by `areas/prop_skin.gd`), https://kenney.nl, CC0 1.0
+- Characters PSX `Character_Male_36` by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (`assets/models/characters/target/`, the Target's body; its clips are Mixamo, baked by `tools/bake_target.gd`)
 - Modern Rebel Soldier (PSX) by yugg0, https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1
   Free for personal and commercial use per the author's page; rig from Mixamo; basemesh from Sketchfab (see the author's page).
-- Characters PSX by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (delete if unused)
+- Characters PSX by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0
 - Pizza Doggy's PSX Mega Pack pistol and suppressor (`assets/models/weapons/pistol.glb`, `suppressor.glb`), by Pizza Doggy, link: https://itch.io/profile/pizzadoggy. Same license as the line below.
 - Pizza Doggy's Mystery Package vol. 1-14 (pizza doggy models) by Pizza Doggy, link: https://itch.io/profile/pizzadoggy
-  License: Pizza Doggy's Game Assets License Agreement (dated 2026-09-01), in `_raw/Models_Animations/models/pizza_doggy/License Agreement.pdf`. Proprietary, not Creative Commons. Commercial and non-commercial game use allowed, modification allowed, no royalties. Attribution optional ("Game Assets by Pizza Doggy"). Not allowed: redistributing or selling the assets as standalone or reusable files, asset packs, or uploading/using them for AI training or AI generation. Check the version in effect when downloaded (section 12).
+  License: Pizza Doggy's Game Assets License Agreement (dated 2026-09-01). Proprietary, not Creative Commons. Commercial and non-commercial game use allowed, modification allowed, no royalties. Attribution optional ("Game Assets by Pizza Doggy"). Not allowed: redistributing or selling the assets as standalone or reusable files, asset packs, or uploading/using them for AI training or AI generation.
 - Character animations from Mixamo (c) Adobe, https://www.mixamo.com, used under Mixamo's free terms; raw files are not redistributed.
 - 3D model of a M4A1 in PS1 style by Plewr, https://plewr.itch.io/psx-style-m4a1-model, CC0 1.0
 - PSX Industrial Environment Asset Pack by godgoldfear, https://godgoldfear.itch.io/psx-industrial-environment-asset-pack, CC 4.0
@@ -54,3 +56,4 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 - Godot Engine, MIT License, https://godotengine.org
 - LimboAI 1.8.1 by Serhii Snitsaruk and contributors, https://github.com/limbonaut/limboai, MIT License (behaviour trees)
+- Pizza Doggy's Rusty PSX Style Kidnapper's Van (Mystery Package vol. 8) and PSX Mega Pack dinner table (`assets/models/props/van.glb`, `desk.glb`, skinned onto the Truck and the relay console desk). Pizza Doggy's Game Assets License Agreement, see above.

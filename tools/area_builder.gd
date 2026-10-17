@@ -15,6 +15,12 @@ const TEX := {
 	wood = "res://assets/textures/wood_07_128.png",
 }
 
+## Boxes that wear a model (areas/prop_skin.gd) instead of their box mesh.
+const PROPS := {
+	ResupplyCrate = "crate", DockCrate1 = "container_a", DockCrate2 = "container_b", Container1 = "container_a", Container2 = "container_b",
+	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
+}
+
 var _root: Node3D
 var _mats := {}
 
@@ -167,6 +173,9 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 		m.name = "Mesh"
 		m.mesh = _box_mesh(size, _mat(mat, tint))
 		b.add_child(m)
+	if PROPS.has(name):
+		b.set_script(PropSkin)
+		b.model = load("res://assets/models/props/%s.glb" % PROPS[name])
 	parent.add_child(b)
 	if name == "ResupplyCrate":
 		b.add_to_group("resupply_crate", true)
