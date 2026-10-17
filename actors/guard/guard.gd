@@ -409,13 +409,16 @@ func _fleeing() -> bool:
 
 
 ## Where alert.last_known is reached from: the foot of the Ladder when it's up on that Ladder's roof
-## (guards never climb, they watch the base), otherwise the spot itself.
+## (guards never climb, they watch the base), otherwise the spot itself. A `walkable` Ladder lands on
+## ground guards walk to (the Relay station's), so they go to the spot.
 func goal() -> Vector3:
 	return ladder_foot(alert.last_known, get_tree().get_nodes_in_group("ladders"))
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:
 	for l: Node3D in ladders:
+		if l.has_meta("walkable"):
+			continue
 		var top: Vector3 = l.get_node("Top").global_position
 		if p.y > top.y - 0.5 and Vector2(p.x - top.x, p.z - top.z).length() < ROOF_REACH:
 			return l.get_node("Bottom").global_position
