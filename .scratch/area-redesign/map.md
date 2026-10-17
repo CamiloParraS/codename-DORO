@@ -10,7 +10,7 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - **Domain:** Ghost Layer, Godot 4.7, solo. Vocabulary: `GLOSSARY.md` (say Area/Mission, never "level"). Parent effort and spec: [Ghost Layer map](../ghost-layer/map.md), [spec](../ghost-layer/spec.md). Build tickets this map will rewrite: `ghost-layer-build/issues/25`, `26`, `30`, `31`.
 - **Budget:** about 4–5 days in total (≈1 day planning, the rest rebuilding the Areas). It can take time from the Magazine and the early items on the cut list. Feature freeze is still 11-11.
-- **Execution override:** the [Harbour greybox](issues/07-harbour-greybox.md) ticket is a real build inside this map. Everything else stays planning.
+- **Execution override:** the [Harbour greybox](issues/07-harbour-greybox.md) and [Relay station greybox](issues/13-relay-station-greybox.md) tickets are real builds inside this map. Everything else stays planning.
 - **Skills:** grilling tickets → `grilling` + `domain-modeling`. Diagram tickets → `prototype`: a top-down HTML/SVG diagram showing routes, guard loops, sight lines, Approaches and the MGS reference. Research → `research` (subagent).
 - **Research output:** `.scratch/area-redesign/research/<name>.md`, written in place. There's no `research/*` branch, so nothing switches the shared checkout.
 - **Current state (survey, 2026-10-16):**
@@ -51,9 +51,13 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - [Harbour greybox](issues/07-harbour-greybox.md): built from the diagram data by `tools/build_harbour.gd` and playtested as working. 11 base guards (the chatting pair counts as 2), O1 turned to face starboard, and eight lessons for the next diagrams: count guards as spawned, check facings against the start, mark heights, size buildings to their Crawlspaces, keep route points clear of cover, draw diagrams as generator-ready data, make the Extraction point findable, and give isolated guard groups a way to call for help. The playtest also brought two fixes: Extraction points now show a light column, and guards watch a Ladder's foot when they lose the Operative on its roof. On a loud run, though, every guard waits at the foot. [Guards and Ladders on alert](issues/12-guards-and-ladders.md) reopens that.
 
+- [Radio relay station diagram](issues/08-relay-station-diagram.md): B's hillside terraces (0, 3 and 6 m, road halfway up, loud east, quiet west) plus a 10 m catwalk at 10 m from the mast to the office roof, reached by guards by a stair. A west scree path replaces the summit Ladder. No Ladder leads anywhere guards can't walk to. The relay chief has two carry routes: about 60 m in the open by the scree, about 95 m with cover by the summit ramp. The escort spoof stays as the chief's deception Approach. Build now; guard positions and difficulty wait on [Guards and Ladders on alert](issues/12-guards-and-ladders.md).
+
+- [Relay station greybox](issues/13-relay-station-greybox.md): built by `tools/build_relay_station.gd` on a shared `tools/area_builder.gd` (the Harbour generator extends it too). The navmesh reaches every terrace, the office roof and the catwalk. The carry routes measure 63 m by the scree and 91 m by the summit ramp. Both Ladders are `walkable`, so guards go to the spot. The escort spoof works live. Guard positions are still provisional, and the three Approaches haven't been playtested by hand yet.
+
 ## Not yet specified
 
-- **Objective placement in Missions 2 and 3:** whether the console, the Targets' routes and the intel move once the new layouts exist. This waits for those diagrams.
+- **Objective placement in Mission 3:** whether the Targets' routes and the intel move once the Research annex layout exists. Mission 2's is settled: the console at the mast foot, the chief on the barracks terrace, the safe room in the office.
 
 ## Out of scope
 

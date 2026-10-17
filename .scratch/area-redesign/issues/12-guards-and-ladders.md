@@ -18,4 +18,4 @@ Options:
 
 Also decide:
 - What does the Operative get against the guard at the foot (tranq from above, a thrown distraction, a second way down)?
-- Does this change the Ladder vantage principle for the Relay station's Comm Tower (the [Radio relay station diagram](08-relay-station-diagram.md))?
+- ~~Does this change the Ladder vantage principle for the Relay station's Comm Tower?~~ Settled by the [Radio relay station diagram](08-relay-station-diagram.md): every Relay station Ladder lands on ground guards can walk to (the catwalk by the office stair, the terraces by ramp and scree). There, guards can already follow by walking. This ticket decides what they do when they get there. Its outcome gates the Relay station's final guard positions and difficulty, so it should come out as a build.
