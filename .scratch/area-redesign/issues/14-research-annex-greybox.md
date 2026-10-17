@@ -78,4 +78,10 @@ This plays the researcher's sneak Approach and a deception step, so all three Ap
 - **The lab can be cleared one room at a time.** Its guards are alone behind walls, as the diagram warned ("a fight with either is muffled, and nobody else is in earshot").
 - **A Target's Voiceprint works for spoofing.** The diagram's deception Approaches record the chatting pair. Using the researcher's own voice is a shortcut the design never chose.
 
-**Not done here:** a hands-on playtest of the files' sneak Approach (the pump house Crawlspace) and of the weak points. Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
+**Third playtest (2026-10-17, meant as deception for the files):**
+- The deception Approach "didn't come naturally".
+- Walked past the chatting pair instead, went through the pump house Crawlspace into the Archive, knocked the guards out and extracted.
+
+This plays the files' sneak Approach end to end, so every Approach has now been played except the files' deception one. Question for [Countermeasure tuning](10-countermeasure-tuning.md): with nothing deployed, the crawl sits right beside the eavesdrop spot and is easier, so recording the pair and spoofing the lobby guard has no pull. The design leans on Aigis closing the crawl (CamArchiveBack at Stealth L1, PostExtra1 at L2) to push a player there. Tuning should check that it does, or give deception a reason of its own on a first visit.
+
+**Not done here:** a playtest of the files' deception Approach, and a check of whether Extraction is easy to find after leaving by the Archive's back door (this run extracted from there and reported no trouble). Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
