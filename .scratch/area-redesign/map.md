@@ -43,14 +43,20 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - [Guard idle behaviours for placement](issues/03-guard-idle-behaviours.md): three behaviours in `Guard.patrol()`, declared as Marker meta: a facing stop (`hold`, covers Crawlspace look-in and look-out), a `scan` sweep on any stop (a waypoint-less post with `scan` is a scanning post), and a `chat` post spawning a pair facing each other who take turns speaking, recordable like check-ins: the deception Approach's eavesdrop spot.
 
+- [Harbour and onboarding diagram](issues/04-harbour-diagram.md): Tanker berth. The onboarding is the deck of a moored freighter (crouch, choke, hide, eavesdrop, spoof the gangway post), then a yard layered east to west: quay, then warehouses, then the lift in the west cliff. 10 base guards, 3 Crawlspaces, 2 Ladders.
+
+- [Core space diagram](issues/05-core-space-diagram.md): the Core starts at the bow again and crosses the whole fortified Harbour. The lift drops about 30 m into a gallery room: a walkway ring, Aigis as a column, a cable-trench Crawlspace, and 3 guards plus the director. Arriving under alert puts the Core in suspicion. Only gear, orders and Combat L3 (reinforcements by lift) reach underground.
+
+- [Backdrop kit](issues/06-backdrop-kit.md): six no-collision pieces (sea, cliff, distant block, skyline strip, fence, horizon sky) hand-placed per Area outline, per-Area fog override (Harbour ~140 m), real matching collision at the boundary with kill volumes only at the pier tip and stern, never visible to guards.
+
+- [Harbour greybox](issues/07-harbour-greybox.md): built from the diagram data by `tools/build_harbour.gd` and playtested as working. 11 base guards (the chatting pair counts as 2), O1 turned to face starboard, and six lessons for the next diagrams: count guards as spawned, check facings against the start, mark heights, size buildings to their Crawlspaces, keep route points clear of cover, draw diagrams as generator-ready data, make the Extraction point findable, and give isolated guard groups a way to call for help. The playtest also brought two fixes: Extraction points now show a light column, and guards watch a Ladder's foot when they lose the Operative on its roof.
+
 ## Not yet specified
 
-- **Writing the spec:** collapsing the resolved tickets into the per-Area spec and rewriting build tickets 25, 26, 30 and 31 to match. Its shape depends on what the Harbour greybox teaches.
 - **Objective placement in Missions 2 and 3:** whether the console, the Targets' routes and the intel move once the new layouts exist. This waits for those diagrams.
-- **Countermeasure tuning for the new layouts:** whether the fixed ladder of placements (cameras on 4 mounts, sentries on the high points) still reads well with Ladders and Crawlspaces in play, e.g. a camera covering a Crawlspace exit. Also which sentries scan (a `scan` meta on `sentry_high_point`). Revisit after the Harbour greybox.
 
 ## Out of scope
 
 - **Dressing the play space** (props that do nothing for play): a later effort, once these layouts are stable. Only the Backdrop is in.
-- **Bugs found while surveying:** the Harbour's ExtractionPoint node sits in the start corner instead of at the extraction marker, and Checkpoints don't save Scanner charges or Magazines. They're unrelated to layout, so they belong in fix tickets.
+- **Bugs found while surveying:** the Harbour's ExtractionPoint node sat in the start corner (the Harbour greybox rebuild fixes it there), and Checkpoints don't save Scanner charges or Magazines. They're unrelated to layout, so they belong in fix tickets.
 - **Doors, lockers, vents, light and dark:** each adds state that guards would have to understand, and the budget can't absorb it. Light was already cut on the Ghost Layer map.
