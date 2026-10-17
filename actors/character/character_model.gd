@@ -1,11 +1,14 @@
 ## Nikita rigged to the Quaternius UE skeleton (tools/rig_nikita.py), driven by the baked clips. Kinds differ by
-## tint and gear; the Target gets a red beret. Faces -Z like the actors that own it.
+## tint and gear; the Target is the PSX suit on its own skeleton. Faces -Z like the actors that own it.
 class_name CharacterModel
 extends Node3D
 
 enum Kind { OPERATIVE, GUARD, TARGET }
 
 const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
+## The Target is a PSX character on the Mixamo rig, with its own clips from tools/bake_target.gd (gitignored).
+const TARGET_BODY := preload("res://assets/models/characters/target/target.fbx")
+const TARGET_CLIPS := "res://assets/models/animations/target_clips.res"
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
@@ -30,16 +33,13 @@ const STEP := 0.0
 const TINTS := {
 	Kind.OPERATIVE: Color(0.3, 0.36, 0.5),
 	Kind.GUARD: Color(0.45, 0.5, 0.33),
-	Kind.TARGET: Color(0.95, 0.4, 0.35),
 }
 ## Gear parts shown per kind. Helmet and Vest are the guard Countermeasures: hidden until wear().
 const DRESS := {
 	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
 	Kind.GUARD: ["Chest_rig", "Holster", "Knee_pads", "Shemag"],
-	Kind.TARGET: [],
 }
 const CARRY_BONE := "spine_03"
-const BERET_AT := Vector3(0, 1.8, 0.01)  # model space, on the crown
 const HAND_BONE := "hand_r"
 ## The hand bone's local frame in the Mixamo aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X,
 ## up +Y) to point level along the way the hand does.
@@ -91,7 +91,7 @@ static func guard_clip(down: bool, speed: float) -> String:
 
 
 func _ready() -> void:
-	var body := BODY.instantiate()
+	var body: Node3D = (TARGET_BODY if kind == Kind.TARGET else BODY).instantiate()
 	body.rotation.y = PI  # the rig faces +Z
 	add_child(body)
 	skeleton = body.find_children("*", "Skeleton3D", true, false)[0]
@@ -101,23 +101,13 @@ func _ready() -> void:
 	_anim.add_animation_library("", lib)
 	_anim.deterministic = true  # bones a clip doesn't key (the Quaternius clips skip spine_01) go back to rest
 	_anim.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
-	var tint := StandardMaterial3D.new()
-	tint.albedo_color = TINTS[kind]
-	tint.roughness = 0.9
-	_part("Nikita").material_override = tint
-	for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
-		_part(part).visible = part in DRESS[kind]
-	if kind == Kind.TARGET:
-		var beret := MeshInstance3D.new()
-		var dome := SphereMesh.new()
-		dome.radius = 0.14
-		dome.height = 0.14
-		beret.mesh = dome
-		var red := StandardMaterial3D.new()
-		red.albedo_color = Color(0.6, 0.05, 0.05)
-		beret.material_override = red
-		beret.position = BERET_AT
-		_on_bone("Head", beret)
+	if kind != Kind.TARGET:
+		var tint := StandardMaterial3D.new()
+		tint.albedo_color = TINTS[kind]
+		tint.roughness = 0.9
+		_part("Nikita").material_override = tint
+		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
+			_part(part).visible = part in DRESS[kind]
 	play("idle")
 
 
@@ -133,12 +123,14 @@ func _rest_pose() -> Animation:
 	var rest := Animation.new()
 	for i in skeleton.get_bone_count():
 		var t := rest.add_track(Animation.TYPE_ROTATION_3D)
-		rest.track_set_path(t, NodePath("Armature/Skeleton3D:" + skeleton.get_bone_name(i)))
+		rest.track_set_path(t, NodePath("%s:%s" % [_anim.get_parent().get_path_to(skeleton), skeleton.get_bone_name(i)]))
 		rest.rotation_track_insert_key(t, 0.0, skeleton.get_bone_rest(i).basis.get_rotation_quaternion())
 	return rest
 
 
 func _clips() -> AnimationLibrary:
+	if kind == Kind.TARGET:
+		return load(TARGET_CLIPS) if ResourceLoader.exists(TARGET_CLIPS) else AnimationLibrary.new()
 	if not ResourceLoader.exists(MIXAMO):
 		return CLIPS
 	var mixamo: AnimationLibrary = load(MIXAMO)
@@ -202,7 +194,9 @@ func hold(weapon: String) -> void:
 
 ## Puts on a Countermeasure piece: "Helmet" or "Vest".
 func wear(item: String) -> void:
-	_part(item).visible = true
+	var piece := _part(item)  # the Target's body has no Countermeasure gear
+	if piece:
+		piece.visible = true
 
 
 func _part(part: String) -> MeshInstance3D:

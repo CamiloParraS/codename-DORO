@@ -80,6 +80,15 @@ func test_a_ridden_model_goes_home_when_dropped() -> void:
 	carrier.free()
 
 
+func test_target_uses_the_psx_body_and_ignores_countermeasures() -> void:
+	var m := CharacterModel.new()
+	m.kind = CharacterModel.Kind.TARGET
+	_root().add_child(m)
+	m.wear("Helmet")  # no such part on this body: must not crash
+	assert_true(m.skeleton.find_bone("mixamorig_Hips") >= 0)
+	m.free()
+
+
 func _root() -> Node:
 	return (Engine.get_main_loop() as SceneTree).root
 
