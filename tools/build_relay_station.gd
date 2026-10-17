@@ -112,9 +112,10 @@ const SENTRIES := [
 	["SentryMast", [37, 11, 18], 180, {scan = 120.0}],
 	["SentryOffice", [57, 12, 10], 250, {scan = 90.0}],
 ]
+## Camera mounts: [name, [x, y, h], facing, pole base h]. All four stand in the open, on poles.
 const CAMERAS := [
-	["CamLadderWest", [23, 54, 4.5], 270], ["CamBarracks", [33, 38, 4.5], 250],
-	["CamScree", [10, 30, 7.5], 200], ["CamRoad", [72, 61, 4], 270],
+	["CamLadderWest", [23, 54, 4.5], 270, 3.0], ["CamBarracks", [33, 38, 4.5], 250, 3.0],
+	["CamScree", [10, 30, 7.5], 200, 6.0], ["CamRoad", [72, 61, 4], 270, 0.0],
 ]
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [82, 44, 3], Extraction = [9, 14, 6],
@@ -129,9 +130,10 @@ const REACH := {
 	Catwalk = [45, 10.8, 10], Helipad = [9, 14, 6], Console = [40, 20, 6], SafeRoom = [60, 12, 6],
 	ChiefMess = [50, 41, 3], ChiefLookout = [34, 40, 3], ScreeTop = [6.5, 31, 6],
 }
-## The two carry routes, chief to helipad, as waypoints the shortest path is forced through.
+## The two carry routes, chief to helipad, as waypoints the shortest path is forced through. The scree
+## route is pinned to the barracks' north side: left free, the path query can take the long way round.
 const CARRY := {
-	"West, up the scree" = [[34, 40, 3], [6.5, 47, 3], [9, 14, 6]],
+	"West, up the scree" = [[34, 40, 3], [27, 39, 3], [6.5, 47, 3], [9, 14, 6]],
 	"East, up the summit ramp" = [[50, 41, 3], [50, 34, 3], [69, 30, 6], [9, 14, 6]],
 }
 
@@ -148,6 +150,7 @@ func _build() -> void:
 	var solid := _group(nav, "Solid")
 	for s in SOLID:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
+	_camera_poles(solid, CAMERAS)
 	for d in DECKS:
 		_box(solid, d[0], d[1], d[2] - 0.3, d[2], d[3], Color(0.55, 0.6, 0.7))
 	for l in LOW:

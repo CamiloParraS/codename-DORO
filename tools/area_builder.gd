@@ -321,6 +321,14 @@ func _area(parent: Node, name: String, at: Array, size: Vector3, script: String)
 	return a
 
 
+## A pole under each camera mount that stands in the open: CAMERAS entries [name, [x, y, h], facing,
+## pole base h]. Mounts without a pole base are on a wall face.
+func _camera_poles(parent: Node3D, cameras: Array) -> void:
+	for c in cameras:
+		if c.size() > 3:
+			_box(parent, c[0] + "Pole", [c[1][0] - 0.1, c[1][1] - 0.1, 0.2, 0.2], c[3], c[1][2], "metal", Color(0.5, 0.5, 0.5))
+
+
 ## Intel pickups: {name: [x, y]}, each a small unshaded slab 0.6 m up under $Intel.
 func _intel(pickups: Dictionary) -> void:
 	var intel := _group(_root, "Intel")
@@ -383,6 +391,9 @@ func _check_markers() -> void:
 			boxes.append([b.name, AABB(_world(b).origin - s.size / 2, s.size).grow(0.3)])
 	for m: Marker3D in _root.find_children("*", "Marker3D", true, false):
 		var parent := m.get_parent()
+		# a camera hangs from its mount, so the mount must be on a wall face or a pole (within 0.3 m)
+		if parent.name == "CameraMounts" and not boxes.any(func(b: Array) -> bool: return b[1].has_point(_world(m).origin)):
+			push_warning("%s hangs in the air" % _root.get_path_to(m))
 		if parent.name in ["SentryHighPoints", "CameraMounts"] or parent.is_in_group("ladders"):
 			continue
 		for b in boxes:

@@ -38,6 +38,13 @@ func _ready() -> void:
 	var body := BoxMesh.new()
 	body.size = Vector3(0.25, 0.25, 0.6)
 	_mesh(body, Vector3.ZERO, Color(0.75, 0.75, 0.72))
+	var arm := MeshInstance3D.new()  # mount to head: swings with the yaw, so the camera reads as bolted on
+	arm.mesh = BoxMesh.new()
+	arm.mesh.size = Vector3(0.08, 0.08, ARM)
+	arm.position.z = -ARM / 2
+	arm.material_override = StandardMaterial3D.new()
+	arm.material_override.albedo_color = Color(0.45, 0.45, 0.45)
+	add_child(arm)
 	var lamp := SphereMesh.new()
 	lamp.radius = 0.06
 	lamp.height = 0.12

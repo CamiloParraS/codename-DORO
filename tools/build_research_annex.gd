@@ -110,9 +110,11 @@ const SENTRIES := [
 	["SentryGate", [33, 8, 5], 180, {scan = 90.0}],
 	["SentryYard", [43, 73, 5], 320, {scan = 90.0}],
 ]
+## Camera mounts: [name, [x, y, h], facing, pole base h]. Without a pole base the mount is on the lab's
+## wall, facing away from it; the dock's stands on a pole, facing both east doors.
 const CAMERAS := [
-	["CamFront", [7, 55, 4], 100], ["CamArchiveBack", [36, 55, 3.5], 265],
-	["CamNorthDoor", [42, 30, 4], 250], ["CamDock", [58, 43, 4], 270],
+	["CamFront", [9, 54.05, 3.5], 125], ["CamArchiveBack", [37, 54.05, 3.5], 235],
+	["CamNorthDoor", [44, 31.95, 3.5], 315], ["CamDock", [58, 43, 4], 270, 0.0],
 ]
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [40, 2, 0], Extraction = [70, 10, 0],
@@ -152,6 +154,7 @@ func _build() -> void:
 	var solid := _group(nav, "Solid")
 	for s in SOLID:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
+	_camera_poles(solid, CAMERAS)
 	for d in DECKS:
 		_box(solid, d[0], d[1], d[2] - 0.3, d[2], d[3], Color(0.55, 0.6, 0.7))
 		var r: Array = d[1]

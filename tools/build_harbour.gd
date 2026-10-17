@@ -119,9 +119,10 @@ const SENTRIES := [
 	["SentryCrane", [56, 19.5, 8], 200, {scan = 90.0}],
 	["SentryWarehouseB", [34, 31, 6], 160, {scan = 90.0}],
 ]
+## Camera mounts: [name, [x, y, h], facing, pole base h]. Without a pole base the mount is on a wall face.
 const CAMERAS := [
-	["CamWarehouseA", [24.5, 49, 4], 300], ["CamPier", [56.5, 61.5, 3], 80],
-	["CamGatehouse", [36, 14, 3.8], 200], ["CamLift", [14, 27, 5], 110],
+	["CamWarehouseA", [24.05, 47.95, 4], 310], ["CamPier", [56.5, 61.5, 3], 80, 0.0],
+	["CamGatehouse", [36, 14, 3.8], 200], ["CamLift", [14.05, 26.25, 5], 110],
 ]
 const SPOTS := {
 	OperativeStart = [71, 7, DECK], RoadEntry = [30, -2, 0], Extraction = [52, 77, 0],
@@ -143,6 +144,7 @@ func _build() -> void:
 	var solid := _group(nav, "Solid")
 	for s in SOLID:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
+	_camera_poles(solid, CAMERAS)
 	for l in LOW:
 		_box(solid, "Low%d" % solid.get_child_count(), l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
 	for b in BUILDINGS:
