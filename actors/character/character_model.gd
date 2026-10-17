@@ -9,18 +9,20 @@ const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
-## Game clip -> Mixamo clip that replaces it (idle, walk, run, down and carry have no Mixamo match and stay as they are).
+## Game clip -> Mixamo clip that replaces it (idle, walk and run have no Mixamo match and stay as they are).
 ## hit, fire and reload are new one-shots for react().
 const MIXAMO_CLIPS := {
 	"aim": "rifle_aiming_idle", "crouch_idle": "pistol_kneeling_idle",
 	"crouch_walk": "rifle_crouch_walk", "takedown": "elbow_punching",
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reload",
+	"carry": "carrying", "down": "sleeping_idle",
 }
-## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol aim,
-## fire, run or crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
+## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
+## crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
 const PISTOL_CLIPS := {
 	"idle": "pistol_idle",
 	"walk": "pistol_strafe",
+	"aim": "pistol_aim",
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
@@ -233,7 +235,7 @@ func ride(mount: Node3D) -> void:
 		transform = CARRIED
 		_clip = "down"
 		_anim.play("down")
-		_anim.seek(CLIPS.get_animation("down").length, true)
+		_anim.seek(_anim.get_animation("down").length, true)
 	elif _home:
 		reparent(_home, false)
 		transform = Transform3D.IDENTITY

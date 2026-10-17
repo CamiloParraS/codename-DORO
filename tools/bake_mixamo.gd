@@ -6,11 +6,11 @@
 ## made since rest. Fingers are skipped (Nikita has mitts); the hips translation is scaled to Nikita's leg length.
 extends SceneTree
 
-const SRC := "_raw/Models_Animations/animations/mixamo/"
+const SRC := ["_raw/Models_Animations/animations/mixamo/", "_raw/Models_Animations/animations/mixamo/carry anims/"]
 const OUT := "res://assets/models/animations/mixamo_clips.res"
 const BODY := "res://assets/models/characters/Nikita_Rigged.glb"
 const KEY_FPS := 30.0
-const LOOPS := ["idle", "walk", "strafe"]  # clips whose name contains one of these loop
+const LOOPS := ["idle", "walk", "strafe", "aim", "carrying"]  # clips whose name contains one of these loop
 const BONES := {
 	"Hips": "pelvis", "Spine": "spine_01", "Spine1": "spine_02", "Spine2": "spine_03", "Neck": "neck_01",
 	"Head": "Head", "LeftShoulder": "clavicle_l", "LeftArm": "upperarm_l", "LeftForeArm": "lowerarm_l",
@@ -27,7 +27,14 @@ func _initialize() -> void:
 func _run() -> void:
 	var tgt: Skeleton3D = (load(BODY) as PackedScene).instantiate().find_children("*", "Skeleton3D", true, false)[0]
 	var lib := AnimationLibrary.new()
-	var dir := ProjectSettings.globalize_path("res://") + SRC
+	for rel in SRC:
+		_bake_dir(ProjectSettings.globalize_path("res://") + rel, lib, tgt)
+	print("baked ", lib.get_animation_list())
+	ResourceSaver.save(lib, OUT)
+	quit()
+
+
+func _bake_dir(dir: String, lib: AnimationLibrary, tgt: Skeleton3D) -> void:
 	for file in DirAccess.get_files_at(dir):
 		if file.get_extension() != "fbx":
 			continue
@@ -44,9 +51,6 @@ func _run() -> void:
 		a.loop_mode = Animation.LOOP_LINEAR if LOOPS.any(func(l): return name.contains(l)) else Animation.LOOP_NONE
 		lib.add_animation(name, a)
 		scene.free()
-	print("baked ", lib.get_animation_list())
-	ResourceSaver.save(lib, OUT)
-	quit()
 
 
 func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -> Animation:
