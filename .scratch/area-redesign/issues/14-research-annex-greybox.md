@@ -84,4 +84,11 @@ This plays the researcher's sneak Approach and a deception step, so all three Ap
 
 This plays the files' sneak Approach end to end, so every Approach has now been played except the files' deception one. Question for [Countermeasure tuning](10-countermeasure-tuning.md): with nothing deployed, the crawl sits right beside the eavesdrop spot and is easier, so recording the pair and spoofing the lobby guard has no pull. The design leans on Aigis closing the crawl (CamArchiveBack at Stealth L1, PostExtra1 at L2) to push a player there. Tuning should check that it does, or give deception a reason of its own on a first visit.
 
-**Not done here:** a playtest of the files' deception Approach, and a check of whether Extraction is easy to find after leaving by the Archive's back door (this run extracted from there and reported no trouble). Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
+**Fourth playtest (2026-10-17, with Countermeasures deployed):**
+- Recorded the chatting pair and spoofed some of the lab's guards out of the building.
+- A Countermeasure caught the spoofs and the spoofed guards went to alert, but the lab still had an opening. Went in, knocked out a guard and the researcher.
+- The first guard knocked out at the start was found, and every guard went to check the body, which let the Operative carry the researcher out freely.
+
+The files' deception Approach has now been played: it works, and the spoofing ladder answers it. New question, not specific to this Area: a found body raises an alert that's radioed to everyone, and every guard converges on the spot, leaving his post. So a body far from the objective works as a lure that empties it. Here, the south yard is the far end from the lab and the north strip.
+
+**Not done here:** a check of whether Extraction is easy to find after leaving by the Archive's back door (this run extracted from there and reported no trouble). Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
