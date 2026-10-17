@@ -10,7 +10,7 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - **Domain:** Ghost Layer, Godot 4.7, solo. Vocabulary: `GLOSSARY.md` (say Area/Mission, never "level"). Parent effort and spec: [Ghost Layer map](../ghost-layer/map.md), [spec](../ghost-layer/spec.md). Build tickets this map will rewrite: `ghost-layer-build/issues/25`, `26`, `30`, `31`.
 - **Budget:** about 4–5 days in total (≈1 day planning, the rest rebuilding the Areas). It can take time from the Magazine and the early items on the cut list. Feature freeze is still 11-11.
-- **Execution override:** the [Harbour greybox](issues/07-harbour-greybox.md) and [Relay station greybox](issues/13-relay-station-greybox.md) tickets are real builds inside this map. Everything else stays planning.
+- **Execution override:** the [Harbour greybox](issues/07-harbour-greybox.md) and [Relay station greybox](issues/13-relay-station-greybox.md) and [Research annex greybox](issues/14-research-annex-greybox.md) tickets are real builds inside this map. Everything else stays planning.
 - **Skills:** grilling tickets → `grilling` + `domain-modeling`. Diagram tickets → `prototype`: a top-down HTML/SVG diagram showing routes, guard loops, sight lines, Approaches and the MGS reference. Research → `research` (subagent).
 - **Research output:** `.scratch/area-redesign/research/<name>.md`, written in place. There's no `research/*` branch, so nothing switches the shared checkout.
 - **Current state (survey, 2026-10-16):**
@@ -55,9 +55,11 @@ A level-design spec for every Area and its Missions (Harbour + Core space, Radio
 
 - [Relay station greybox](issues/13-relay-station-greybox.md): built by `tools/build_relay_station.gd` on a shared `tools/area_builder.gd` (the Harbour generator extends it too). The navmesh reaches every terrace, the office roof and the catwalk. The carry routes measure 63 m by the scree and 91 m by the summit ramp. Both Ladders are `walkable`, so guards go to the spot. The escort spoof works live. Guard positions are still provisional, and the three Approaches haven't been playtested by hand yet.
 
+- [Research annex diagram](issues/09-research-annex-diagram.md): A, Main block (MGS3 Graniny Gorki lab as one building). It's ground level: a 48 m corridor with rooms off it, the files in the Archive with a Crawlspace to its back door, and the researcher looping between the lab and the office before running to the vault on alert. 4 of 10 base guards are indoors, there are no Ladders, and interior walls are `Wall*` SOLID boxes. Accepted weak points (the corridor sight line, little cover outside, a beacon hidden from both objectives) go to the greybox playtest.
+
 ## Not yet specified
 
-- **Objective placement in Mission 3:** whether the Targets' routes and the intel move once the Research annex layout exists. Mission 2's is settled: the console at the mast foot, the chief on the barracks terrace, the safe room in the office.
+Nothing left: every remaining question is a ticket.
 
 ## Out of scope
 
