@@ -67,7 +67,7 @@ The greybox is built and runs.
   - **O1 woke while the player was still on the deck** and had to be put down again. Then the alert came, and the run ended with a sprint to the Extraction point. Waking after 90 s is by design (`NEUTRALIZED_TIME`), so this is the intended pressure, not a bug.
 - **Loud run:** every guard on the tanker could be killed, so the run was easy. The deck's 5 guards fight alone. → [Countermeasure tuning](10-countermeasure-tuning.md).
 - **Not tried:** a full stealth, no-trace run.
-- **Ladders:** guard behaviour needed work. **Fixed:** an alerted or searching guard whose last-known spot is on a Ladder's roof now goes to that Ladder's foot and watches the roof. It doesn't stand at the nearest navmesh point and sweep. This is the Crawlspace and Ladder rules as written (`Guard.goal()` / `ladder_foot()`). Verified in game: GuardY6 went to Warehouse B's Ladder foot facing the roof. One test was added; 280 pass.
+- **Ladders:** guard behaviour needed work. **Partly fixed:** an alerted or searching guard whose last-known spot is on a Ladder's roof now goes to that Ladder's foot and watches the roof. It doesn't stand at the nearest navmesh point and sweep. This is the Crawlspace and Ladder rules as written (`Guard.goal()` / `ladder_foot()`). Verified in game: GuardY6 went to Warehouse B's Ladder foot facing the roof. One test was added; 280 pass. But on a loud run every guard gathers at the foot, and the player is stuck on the roof. → [Guards and Ladders on alert](12-guards-and-ladders.md).
 
 Decisions:
 - **Guard count: 11, kept.** The diagram's "10" missed that the chatting pair counts as 2. The Area sets its count by the posts it places: 5 on deck, 6 in the yard.
