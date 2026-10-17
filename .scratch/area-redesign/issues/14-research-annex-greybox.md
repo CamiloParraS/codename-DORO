@@ -68,4 +68,14 @@ This is a real build: the map's Notes carry execution into this ticket.
 
 **First playtest (2026-10-17, one run, loud):** knocked out the first guard and was spotted. Fought through with the assault rifle and found the path clear, took the files, knocked out the researcher and carried him to Extraction. The loud Approach plays end to end. That it felt clear once the shooting started is a difficulty question for [Countermeasure tuning](10-countermeasure-tuning.md).
 
-**Not done here:** a hands-on playtest of the sneak and deception Approaches to each objective and of the weak points. Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
+**Second playtest (2026-10-17, stealth):**
+- Went round behind the lab and in "from the left".
+- Knocked out every guard inside, and the researcher, without an alert, and took the files.
+- On the way, recorded the researcher's voice, then spoofed the patrol near Extraction to go and look somewhere else.
+- Extracted.
+
+This plays the researcher's sneak Approach and a deception step, so all three Approaches to the researcher have now been played. It raises two questions for [Countermeasure tuning](10-countermeasure-tuning.md):
+- **The lab can be cleared one room at a time.** Its guards are alone behind walls, as the diagram warned ("a fight with either is muffled, and nobody else is in earshot").
+- **A Target's Voiceprint works for spoofing.** The diagram's deception Approaches record the chatting pair. Using the researcher's own voice is a shortcut the design never chose.
+
+**Not done here:** a hands-on playtest of the files' sneak Approach (the pump house Crawlspace) and of the weak points. Guard positions and difficulty stay provisional until [Countermeasure tuning](10-countermeasure-tuning.md).
