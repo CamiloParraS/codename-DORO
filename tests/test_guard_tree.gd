@@ -2,6 +2,7 @@
 extends McpTestSuite
 
 ## The guard behaviour tree picks the branch for each alert state. A stub agent records the moves.
+## Also how closely a guard's NavAgent follows the path the tree walks.
 
 const TREE := "res://actors/guard/guard_tree.tres"
 
@@ -90,3 +91,12 @@ func test_suspicion_turns_for_1s_then_investigates_slowly() -> void:
 
 func test_bt_player_can_restart_on_state_change() -> void:
 	assert_true(ClassDB.class_has_method("BTPlayer", "restart"))
+
+
+## Turning round a wall end into a 2 m doorway, a guard who drops the corner point 0.5 m early steers
+## straight into the jamb and stops there (the Research annex's researcher did, at the lab door).
+func test_guards_follow_the_path_closely_enough_to_turn_through_a_doorway() -> void:
+	# from disk: the editor keeps the copy the Areas' scripts preloaded
+	var g: Node = ResourceLoader.load("res://actors/guard/guard.tscn", "", ResourceLoader.CACHE_MODE_IGNORE).instantiate()
+	assert_true((g.get_node("NavAgent") as NavigationAgent3D).path_desired_distance <= 0.25)
+	g.free()
