@@ -30,6 +30,9 @@ func _done() -> bool:
 func use() -> void:
 	if not _done():
 		return
+	var run := get_tree().get_first_node_in_group("mission_plan")
+	if run.has_method("save_slot"):
+		run.save_slot()  # marks the slot complete
 	var finale := get_tree().get_first_node_in_group("finale")
 	if finale:
 		finale.begin()  # ponytail: ticket 32 puts the finale in this group

@@ -19,6 +19,11 @@ func test_the_core_mission_runs_in_its_own_area_with_the_director() -> void:
 	assert_eq(Aigis.CAPS[3], 3)
 
 
+func test_only_the_core_waits_for_the_terminal_to_save_the_slot() -> void:
+	assert_true(MissionRun.saves_on_commit({mission = 2}))
+	assert_false(MissionRun.saves_on_commit({mission = Campaign.MISSIONS.size()}))
+
+
 func test_it_starts_where_mission_1_does() -> void:
 	var core: Node = load(SCENE).instantiate()
 	var harbour: Node = load("res://areas/harbour/harbour.tscn").instantiate()
