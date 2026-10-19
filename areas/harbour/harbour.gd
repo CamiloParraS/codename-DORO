@@ -101,6 +101,7 @@ func _equip(g: Guard) -> void:
 	g.head_check_level = Deployment.head_check_level(deployed)
 	g.radio_check_level = Deployment.radio_check_level(deployed)
 	g.instant_down = Deployment.instant_alert_on_down(deployed)
+	g.chatter_sets = VoiceLines.chatter_sets($MissionRun.record.points, deployed)
 
 
 ## Takedowns L2: every second patrolling guard walks the first one's route, starting beside it.

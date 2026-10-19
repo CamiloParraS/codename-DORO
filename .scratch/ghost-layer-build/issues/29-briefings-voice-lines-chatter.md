@@ -12,4 +12,8 @@
 - [ ] With F3 on, the Briefing shows the plan table
 - [ ] The post-Mission screen shows one Dominant Voice line by band × whether this Mission's Lethality was 0
 - [ ] Guards say the warning chatter for a Habit at 50 points before a level and the confirmation once its Countermeasure is deployed; 2 variants per set; heard only within hearing range
-- [ ] All lines keyed (placeholder text acceptable until 35 and 36)
+- [x] All lines keyed (placeholder text acceptable until 35 and 36)
+
+## Comments
+
+2026-10-19: Built test-first (`tests/test_voice_lines.gd`, node-free `ai/voice_lines.gd`). Verified in tests: every key `plan_mission` can emit and every ladder hint, post-Mission and chatter key exists in en and es; Mission 1 yields only the close; chatter warns from 50 points and confirms once deployed, 2 variants per set, heard only within `Chat.HEARD`. Wired but left to a playtest (not seen on screen): Briefing now types `tr(key)` lines; F3 plan table on the Briefing (it joins group `mission_plan`, which the overlay reads); post-Mission screen shows `VoiceLines.post_key` line; Harbour guards mutter `chatter_sets` every ~20 s on patrol when the Operative is within 10 m. Line text is placeholder until 35 and 36. Headless runner: `godot --headless --path . tools/run_tests.tscn [-- file_substring]`; 12 scene-heavy tests (character_model, relay_station, targets, debug_overlay, harbour ladder) fail in it for tree reasons unrelated to this ticket.

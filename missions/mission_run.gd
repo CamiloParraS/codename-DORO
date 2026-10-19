@@ -181,6 +181,7 @@ func _on_extraction() -> void:
 	var after := Aigis.complete_mission(record, tally.counts)
 	var screen := SCREEN.new()
 	screen.strip = MissionTally.strip(record, after)
+	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
 	var layer := CanvasLayer.new()
 	layer.layer = 2
 	layer.add_child(screen)

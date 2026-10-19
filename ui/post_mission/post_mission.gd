@@ -9,6 +9,7 @@ const FIRST := 0.3  # s before the first column
 const STEP := 0.14  # s between columns
 
 var strip: Array = []   # MissionTally.strip()
+var voice_key := ""     # VoiceLines.post_key: the Dominant Voice's line, "" for none
 var _font: FontFile
 var _age := 0.0
 
@@ -60,6 +61,8 @@ func _draw() -> void:
 			else:
 				draw_polyline(pts + PackedVector2Array([pts[0]]), HudPalette.CHROME_DIM, 1.0)
 		_centered(cx, 212, String(e.habit).to_upper(), HudPalette.WHITE if on else HudPalette.CHROME_DIM, 8)
+	if voice_key != "" and _age > FIRST + strip.size() * STEP:
+		_centered(size.x / 2, 248, tr(voice_key), HudPalette.WHITE, 8)
 	if _age > FIRST + strip.size() * STEP + 0.4:
 		_centered(size.x / 2, size.y - 44, "PRESS ANY KEY", HudPalette.CHROME_DIM, 8)
 
