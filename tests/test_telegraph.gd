@@ -9,11 +9,11 @@ func suite_name() -> String:
 
 
 func test_share_rises_with_level_and_is_clamped_25_to_75() -> void:
-	assert_eq(Telegraph.head_check_share(1), 0.25)
-	assert_eq(Telegraph.head_check_share(2), 0.5)
-	assert_eq(Telegraph.head_check_share(3), 0.75)
-	assert_eq(Telegraph.head_check_share(0), 0.25, "never below the floor")
-	assert_eq(Telegraph.head_check_share(9), 0.75, "never above the ceiling")
+	assert_eq(Telegraph.share(1), 0.25)
+	assert_eq(Telegraph.share(2), 0.5)
+	assert_eq(Telegraph.share(3), 0.75)
+	assert_eq(Telegraph.share(0), 0.25, "never below the floor")
+	assert_eq(Telegraph.share(9), 0.75, "never above the ceiling")
 
 
 func test_fires_on_roughly_its_share_of_turns() -> void:
@@ -101,9 +101,9 @@ func test_metis_and_briefing_name_the_flank() -> void:
 
 
 func test_radio_check_share_matches_the_clamp_and_seeded_rng() -> void:
-	assert_eq(Telegraph.radio_check_share(0), 0.25)
-	assert_eq(Telegraph.radio_check_share(2), 0.5)
-	assert_eq(Telegraph.radio_check_share(9), 0.75)
+	assert_eq(Telegraph.share(0), 0.25)
+	assert_eq(Telegraph.share(2), 0.5)
+	assert_eq(Telegraph.share(9), 0.75)
 	var a := RandomNumberGenerator.new()
 	var b := RandomNumberGenerator.new()
 	a.seed = 5

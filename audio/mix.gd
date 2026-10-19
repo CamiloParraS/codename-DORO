@@ -4,6 +4,7 @@ extends Node
 ## Master -> Music, SFX (PSX bitcrush), UI (UI and Codec), Ambience. The settings screen calls
 ## set_volume(bus, 0..1) / volume(bus). A Codec call player calls codec_call(true) and (false).
 
+const MASTER := &"Master"
 const MUSIC := &"Music"
 const SFX := &"SFX"
 const UI := &"UI"
@@ -29,6 +30,7 @@ var _duck_to := 0.0
 var _state := MusicState.new()
 var _beat := AlertBeat.new()
 var _music := {}           # track -> AudioStreamPlayer
+var _scaled := false       # a hit-stop owns Engine.time_scale until it is restored
 var _blip: AudioStreamPlayer   # one player for every text blip: a new blip cuts the last, so none stack
 
 
@@ -55,12 +57,19 @@ func _process(delta: float) -> void:
 		add_child(p)
 		p.play()
 	var op := get_tree().get_first_node_in_group("operative")
-	Engine.time_scale = _beat.scale(now, get_tree().paused or (op != null and op.health.dead()))
+	apply_scale(_beat.scale(now, get_tree().paused or (op != null and op.health.dead())))
 	var want := _state.update(delta, states)
 	for t in _music:
 		var p: AudioStreamPlayer = _music[t]
 		p.volume_db = move_toward(p.volume_db, 0.0 if t == want else SILENT, FADE_DB * delta)
 	advance_duck(delta)
+
+
+## Touches Engine.time_scale only while a hit-stop is on or being restored.
+func apply_scale(s: float) -> void:
+	if s != 1.0 or _scaled:
+		Engine.time_scale = s
+		_scaled = s != 1.0
 
 
 ## Creates the buses once; safe to call again.

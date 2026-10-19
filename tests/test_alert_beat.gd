@@ -60,3 +60,9 @@ func test_pause_or_death_cancels_hit_stop_for_good() -> void:
 	b.update([A], 10.0)
 	assert_eq(b.scale(10.05, true), 1.0)
 	assert_eq(b.scale(10.1, false), 1.0)
+
+
+func test_no_relief_when_the_last_evading_guard_is_downed_or_the_list_empties() -> void:
+	assert_eq(_beat([[E, P], [P]]), [&"", &""], "downed guard leaves the list")
+	assert_eq(_beat([[E], []]), [&"", &""], "scene change empties it")
+	assert_eq(_beat([[E, P], [P, P]]), [&"", &"relief"], "a genuine end still cues")

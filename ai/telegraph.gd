@@ -21,19 +21,19 @@ const FLANK_OFFSET := 8.0
 const FLANK_ICON := "!>"
 
 
-## Share of patrol turns that get a head-check: 25% per Stealth level, held to 25-75%.
-static func head_check_share(level: int) -> float:
+## Share of rolls that fire (head-check, radio-check, flank): 25% per level, held to 25-75%.
+static func share(level: int) -> float:
 	return clampf(MIN_SHARE * level, MIN_SHARE, MAX_SHARE)
 
 
 ## Does this turn get a head-check. level 0 (no Stealth Countermeasure) never does.
 static func head_check(level: int, rng: RandomNumberGenerator) -> bool:
-	return level > 0 and rng.randf() < head_check_share(level)
+	return level > 0 and rng.randf() < share(level)
 
 
 ## Does this reinforcement take a flank path instead of the direct one. Same 25-75% share by Combat level.
 static func flank(level: int, rng: RandomNumberGenerator) -> bool:
-	return level > 0 and rng.randf() < head_check_share(level)
+	return level > 0 and rng.randf() < share(level)
 
 
 ## A spot FLANK_OFFSET to a random side of `target`, perpendicular to the approach from `entry`.
@@ -46,14 +46,9 @@ static func flank_point(entry: Vector3, target: Vector3, rng: RandomNumberGenera
 	return target + side * FLANK_OFFSET * (1.0 if rng.randf() < 0.5 else -1.0)
 
 
-## Spoofing: share of radio-check rolls that fire; the same 25-75% curve as the head-check.
-static func radio_check_share(level: int) -> float:
-	return head_check_share(level)
-
-
 ## Does this roll make a guard stop and call HQ back. level 0 (no Spoofing Countermeasure) never does.
 static func radio_check(level: int, rng: RandomNumberGenerator) -> bool:
-	return level > 0 and rng.randf() < radio_check_share(level)
+	return level > 0 and rng.randf() < share(level)
 
 
 ## True once per kind per `seen` (a Mission's dictionary).

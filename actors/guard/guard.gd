@@ -52,7 +52,7 @@ var turn_every := 0.0            # Takedowns L1: seconds between glances behind 
 var head_check_level := 0        # Stealth Countermeasure: how often it glances back before turning (Telegraph)
 var rng := RandomNumberGenerator.new()  # seed it for a repeatable run
 var radio_check_level := 0       # Spoofing Countermeasure: how often it stops to call HQ back (Telegraph)
-var instant_down := false       # Downs L2: seeing a Down guard raises the alert, no check
+var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 
@@ -67,7 +67,7 @@ var _clock := 0.0
 var _radio_clock := 0.0
 var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
 var _tele_icon := ""
-var _look_left := 0.0   # seconds left of the look-around clip
+var _looked := false    # did the look-around at this search spot already
 var _prev_state := GuardAlert.State.PATROL
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
@@ -77,6 +77,7 @@ var _prev_state := GuardAlert.State.PATROL
 
 func _ready() -> void:
 	add_to_group("guards")
+	(func() -> void: rng.seed = hash(name)).call_deferred()  # repeatable per guard, after the Area names it; tests reseed
 	if target:
 		add_to_group("targets")
 	else:
@@ -86,7 +87,6 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_clock += delta
-	_look_left -= delta
 	_tele_left -= delta
 	if GuardAlert.flinches(_prev_state, alert.state):
 		model.react("startle", GuardAlert.FLINCH, 2.2)  # a pose only: the tree and shooting never wait on it
@@ -299,6 +299,7 @@ func return_to_post() -> void:
 	_stop = {}
 	_pause = 0.0
 	_glance = 0.0
+	_looked = false
 	_fire_left = FIRE_INTERVAL
 	_agent.target_position = post.origin
 	_refresh_mark()
@@ -504,18 +505,19 @@ func patrol(delta: float) -> void:
 			_turn_clock = 0.0
 			_glance = 1.5
 			_glance_yaw = rotation.y + PI
+	if _pause > 0.0:
+		_pause -= delta
+		_face_stop(_stop, delta)
+		return
 	if radio_check_level > 0:
-		_radio_clock += delta
-		if _radio_clock >= Telegraph.RADIO_CHECK_EVERY:
+		_radio_clock += delta  # ticks only while walking: not at a stop, not mid-glance
+		if _radio_clock >= Telegraph.RADIO_CHECK_EVERY and _glance <= 0.0:
 			_radio_clock = 0.0
 			if Telegraph.radio_check(radio_check_level, rng):  # Spoofing: stops mid-patrol to call HQ back
 				_glance = Telegraph.DURATION
 				_glance_yaw = rotation.y
 				telegraph("radio_check", "((?))", "look", "HQ, confirm that last transmission.")
-	if _pause > 0.0:
-		_pause -= delta
-		_face_stop(_stop, delta)
-		return
+				return
 	_walk_to(route[_wp], PATROL_SPEED, delta)
 	if _flat_dist(route[_wp]) < REACHED:
 		_stop = stops[_wp] if _wp < stops.size() else {}
@@ -574,13 +576,14 @@ func search(delta: float, speed: float, sweep: float) -> void:
 	if _fleeing():
 		_flee(delta)
 	elif not arrived():
+		_looked = false
 		_walk_to(goal(), speed, delta)
 	elif goal() != alert.last_known:
 		face(alert.last_known, delta)  # at a Ladder's foot, watching the roof
 	else:
-		if _look_left <= 0.0 and alert.state == GuardAlert.State.EVASION:
+		if not _looked and alert.state == GuardAlert.State.EVASION:
 			model.react("look", LOOK_CLIP, 1.0)
-			_look_left = LOOK_CLIP
+			_looked = true  # one sweep per arrival
 		rotation.y += sin(_clock * 1.1) * sweep * delta
 
 

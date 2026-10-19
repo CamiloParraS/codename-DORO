@@ -69,3 +69,22 @@ func test_blips_share_one_ui_player() -> void:
 	assert_true(absf(p.pitch_scale - 1.4) < 0.001)
 	m.stop_blips()
 	m.free()
+
+
+func test_master_has_a_volume_setter_like_the_others() -> void:
+	var m := _mix()
+	m.set_volume(Mix.MASTER, 0.5)
+	assert_eq(m.volume(Mix.MASTER), 0.5)
+	assert_true(absf(AudioServer.get_bus_volume_db(0) - linear_to_db(0.5)) < 0.01)
+	m.set_volume(Mix.MASTER, 1.0)
+
+
+func test_time_scale_is_left_alone_unless_a_hit_stop_is_on_or_ending() -> void:
+	var m := _mix()
+	Engine.time_scale = 0.5  # someone elses
+	m.apply_scale(1.0)
+	assert_eq(Engine.time_scale, 0.5)
+	m.apply_scale(AlertBeat.STOP_SCALE)
+	assert_eq(Engine.time_scale, AlertBeat.STOP_SCALE)
+	m.apply_scale(1.0)
+	assert_eq(Engine.time_scale, 1.0, "restored when the stop ends")

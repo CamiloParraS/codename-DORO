@@ -44,10 +44,14 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 ## Audio
 
-- Sci-fi Sounds and Interface Sounds by Kenney, https://kenney.nl, CC0 1.0
-  - Used in `assets/audio/`: Sci-fi Sounds `spaceEngineLow_000` (ambience_hum), `engineCircular_000` (music_alert, placeholder), `computerNoise_000` (music_evasion, placeholder), `impactMetal_000` (sfx_knock); Interface Sounds `drop_002` (sfx_footstep)
-- "Digital Audio" by Kenney, https://kenney.nl/assets/digital-audio, CC0 1.0
-  - Used in `assets/audio/`: `twoTone1` (sting_alert); Interface Sounds `question_002` (sting_question), `confirmation_002` (sting_relief). Provisional picks, not yet auditioned.
+- `spaceEngineLow_000` (`assets/audio/ambience_hum.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
+- `engineCircular_000` (`assets/audio/music_alert.ogg`, placeholder), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
+- `computerNoise_000` (`assets/audio/music_evasion.ogg`, placeholder), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
+- `impactMetal_000` (`assets/audio/sfx_knock.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
+- `drop_002` (`assets/audio/sfx_footstep.ogg`), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
+- `question_002` (`assets/audio/sting_question.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
+- `confirmation_002` (`assets/audio/sting_relief.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
+- `twoTone1` (`assets/audio/sting_alert.ogg`, provisional), Digital Audio by Kenney, https://kenney.nl/assets/digital-audio, CC0 1.0
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
 - Freesound sounds (one line per sound: "<title>" by <author>, https://freesound.org/s/<id>/, <CC0 | CC BY 4.0>)
 
