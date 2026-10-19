@@ -7,3 +7,7 @@ func _ready() -> void:
 	super()
 	$CoreTerminal.leave_to = $MissionRun.return_to
 	$MissionRun.return_to = ""
+	var finale := Control.new()
+	finale.set_script(load("res://ui/finale/finale.gd"))
+	finale.leave_to = $CoreTerminal.leave_to
+	add_child(finale)
