@@ -37,9 +37,30 @@ static func screen_angle(offset: Vector3, forward: Vector3, right: Vector3) -> f
 	return atan2(offset.dot(right), offset.dot(forward)) - PI / 2
 
 
-## Faint to full Aigis cyan as the meter fills (width grows too, so hue is not the only cue); red when alerted.
-static func arc_color(fill: float, alerted: bool) -> Color:
-	var c: Color = HudPalette.DANGER if alerted else HudPalette.AIGIS
+## How much of the Aigis layer shows, 0..1: none in Mission 1, then growing with Lethality (NAN = none
+## killed yet). Escalation is the point: the HUD changes colour once Aigis has profiled you.
+static func aigis_weight(mission: int, ratio: float) -> float:
+	if mission <= 0:
+		return 0.0
+	if is_nan(ratio):
+		return 0.4
+	return clampf(0.4 + 0.6 * ratio / Aigis.GORGO_FROM, 0.4, 1.0)
+
+
+## Habits whose tally events rose between two tally snapshots, for the "habit flagged" tick.
+static func habits_risen(before: Dictionary, now: Dictionary) -> Array:
+	var out := []
+	for e: String in Aigis.TRIGGERS:
+		var h: String = Aigis.TRIGGERS[e][0]
+		if int(now.get(e, 0)) > int(before.get(e, 0)) and not h in out:
+			out.append(h)
+	return out
+
+
+## Chrome to Aigis cyan as `aigis` (0..1) rises, faint to full as the meter fills (width grows too, so
+## hue is not the only cue); red when alerted.
+static func arc_color(fill: float, alerted: bool, aigis := 1.0) -> Color:
+	var c: Color = HudPalette.DANGER if alerted else HudPalette.CHROME.lerp(HudPalette.AIGIS, aigis)
 	c.a = 0.35 + 0.65 * fill
 	return c
 

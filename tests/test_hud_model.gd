@@ -55,3 +55,19 @@ func test_pips_lit_scale_the_load_and_never_hide_a_round() -> void:
 	assert_eq(HudModel.pips_lit(25, 30, 6), 5)
 	assert_eq(HudModel.pips_lit(1, 30, 6), 1)
 	assert_eq(HudModel.pips_lit(0, 30, 6), 0)
+
+
+func test_aigis_weight_grows_with_mission_and_lethality() -> void:
+	assert_eq(HudModel.aigis_weight(0, 0.5), 0.0)
+	assert_eq(HudModel.aigis_weight(1, NAN), 0.4)
+	assert_eq(HudModel.aigis_weight(2, Aigis.GORGO_FROM), 1.0)
+	assert_true(HudModel.aigis_weight(2, 0.2) > HudModel.aigis_weight(2, 0.0))
+
+
+func test_habits_risen_names_each_habit_once() -> void:
+	var now := {"headshot": 2, "takedown": 1, "alert": 1, "loud_shot": 3}
+	var before := {"headshot": 1, "takedown": 1}
+	var risen := HudModel.habits_risen(before, now)
+	assert_eq(risen.size(), 2)
+	assert_true("headshots" in risen)
+	assert_true("combat" in risen)

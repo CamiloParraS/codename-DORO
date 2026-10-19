@@ -14,6 +14,12 @@ var life := 1.0  # the Operative's Health.life(), refreshed each frame
 var _flash := 0.0
 var _phase_name := ""  # last phase drawn, to time the chip's entrance
 var _phase_age := 0.0
+var _aigis := 0.0  # HudModel.aigis_weight: how awake Aigis is, 0 in Mission 1
+var _voice := ""  # the Dominant Voice, shown once _aigis > 0
+var _tick := ""  # habit just flagged to Aigis's profile
+var _tick_age := 99.0
+var _prev_counts := {}
+const TICK_TIME := 2.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
 var _digits: FontFile  # VT323, the big numbers
@@ -40,6 +46,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_flash = maxf(_flash - delta / FLASH_TIME, 0.0)
 	_phase_age += delta
+	_tick_age += delta
+	_read_run()
 	_subs.tick(delta)
 	for g in get_tree().get_nodes_in_group("guards"):
 		var now: bool = g.alert.state == GuardAlert.State.ALERT
@@ -72,6 +80,7 @@ func _draw() -> void:
 	_left()
 	_right()
 	_phase()
+	_aigis_layer()
 	_voiceprints()
 	_subtitles()
 	if _operative.prompt != "":
@@ -92,10 +101,38 @@ func _subtitles() -> void:
 		y += 12.0
 
 
+func _read_run() -> void:
+	var run: Node = get_tree().get_first_node_in_group("mission_plan")
+	if not run:
+		_aigis = 0.0
+		return
+	_aigis = HudModel.aigis_weight(run.record.mission, Aigis.lethality_ratio(run.record))
+	_voice = str(run.plan.get("dominant", "")).to_upper()
+	var risen := HudModel.habits_risen(_prev_counts, run.tally.counts)
+	_prev_counts = run.tally.counts.duplicate()
+	if _aigis > 0.0 and not risen.is_empty():
+		_tick = str(risen[0]).to_upper()
+		_tick_age = 0.0
+
+
+## Aigis's corner, top right: the Dominant Voice, and the Habit it just logged against you.
+func _aigis_layer() -> void:
+	if _aigis <= 0.0 or _voice == "":
+		return
+	var x := size.x - 8 - _voice.length() * 8.0
+	var a := lerpf(0.5, 1.0, _aigis)
+	_t(Vector2(x, 18), _voice, Color(HudPalette.AIGIS, a))
+	if _tick_age < TICK_TIME:
+		var s := "+" + _tick
+		var fade := 1.0 if _tick_age < 1.5 else (TICK_TIME - _tick_age) / 0.5
+		var col := HudPalette.WHITE if _tick_age < 0.12 else HudPalette.AIGIS  # hard pulse on arrival
+		_t(Vector2(size.x - 8 - s.length() * 8.0, 30), s, Color(col, fade))
+
+
 func _voiceprints() -> void:
 	if _operative.voiceprints.held.is_empty():  # a bare "VP" with nothing under it is noise
 		return
-	var p := Vector2(size.x - 42, 16)  # top right, where the compass was; Aigis cues will share this corner
+	var p := Vector2(size.x - 42, 50)  # under Aigis's corner
 	_t(p, "VP", HudPalette.CHROME_DIM)
 	for i in _operative.voiceprints.held.size():
 		_t(p + Vector2(0, 10 * (i + 1)), _operative.voiceprints.held[i], HudPalette.CHROME)
@@ -108,7 +145,7 @@ func _arcs(fwd: Vector3, right: Vector3) -> void:
 			continue
 		var ang := HudModel.screen_angle(g.global_position - _operative.global_position, fwd, right)
 		var span := 0.15 + 0.3 * fill
-		var col := HudModel.arc_color(fill, g.alert.state == GuardAlert.State.ALERT)
+		var col := HudModel.arc_color(fill, g.alert.state == GuardAlert.State.ALERT, _aigis)
 		draw_arc(size / 2, RING, ang - span, ang + span, 16, col, 2.0 + 5.0 * fill, false)
 
 
