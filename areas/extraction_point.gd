@@ -16,6 +16,18 @@ func _ready() -> void:
 			reached.emit())
 
 
+## Is the world point p over this point's floor (height ignored)?
+func contains(p: Vector3) -> bool:
+	var l := to_local(p).abs()
+	var half := (get_node("Shape").shape as BoxShape3D).size / 2
+	return l.x <= half.x and l.z <= half.z
+
+
+## Is the Operative inside it right now (it only emits on entering).
+func standing() -> bool:
+	return get_overlapping_bodies().any(func(b: Node3D) -> bool: return b.is_in_group("operative"))
+
+
 ## A tall faint column standing on the point, so the Operative can find it from across the Area.
 func _beacon() -> MeshInstance3D:
 	var mat := StandardMaterial3D.new()

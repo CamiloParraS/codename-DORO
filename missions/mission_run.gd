@@ -118,8 +118,12 @@ func _physics_process(_delta: float) -> void:
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
-			if g.target and g.dead:
-				_say_objective()
+			if g.target:
+				if g.dead:
+					_say_objective()
+				for e in get_tree().get_nodes_in_group("extraction"):  # the Operative may already stand in it
+					if e.standing():
+						_on_extraction()
 		_down[g] = d
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
@@ -134,9 +138,15 @@ func objective() -> String:
 	return Campaign.objective(record.mission, step)
 
 
-## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count).
+## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count,
+## unless it lies in the Extraction point: the Core room is one, so a choke there needs no carry).
 func _targets_left() -> Array:
-	return get_tree().get_nodes_in_group("targets").filter(func(t: Guard) -> bool: return not (t.dead or t.carrier))
+	return get_tree().get_nodes_in_group("targets").filter(func(t: Guard) -> bool:
+		return not (t.dead or t.carrier or (t.is_down() and _at_extraction(t))))
+
+
+func _at_extraction(t: Guard) -> bool:
+	return get_tree().get_nodes_in_group("extraction").any(func(e: Node) -> bool: return e.contains(t.global_position))
 
 
 func _say_objective() -> void:
