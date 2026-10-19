@@ -22,6 +22,12 @@ const STREAMS := {
 	&"sting_question": "res://assets/audio/sting_question.ogg",  # Kenney picks, provisional until auditioned
 	&"sting_alert": "res://assets/audio/sting_alert.ogg",
 	&"sting_relief": "res://assets/audio/sting_relief.ogg",
+	# Provisional stand-ins until the _raw/ pack is imported (see ticket 34 comments): swap the paths, no code changes.
+	&"shot_quiet": "res://assets/audio/sfx_footstep.ogg",
+	&"shot_loud": "res://assets/audio/sfx_knock.ogg",
+	&"takedown": "res://assets/audio/sfx_knock.ogg",
+	&"mag_land": "res://assets/audio/sfx_footstep.ogg",
+	&"ui_click": "res://assets/audio/sfx_footstep.ogg",
 }
 
 var _vol := {}             # bus -> linear 0..1
@@ -143,14 +149,31 @@ static func _blip_tone() -> AudioStreamWAV:
 	return w
 
 
-## A one-shot on the SFX bus, 3D at `at`'s position.
-static func sfx_at(at: Node3D, sound: StringName) -> void:
+## A UI click on the UI bus (menus, pause).
+func click() -> void:
+	var p := AudioStreamPlayer.new()
+	p.stream = load(STREAMS[&"ui_click"])
+	p.bus = UI
+	p.finished.connect(p.queue_free)
+	add_child(p)
+	p.play()
+
+
+## Which stream a shot uses: a suppressed one is quiet.
+static func shot_sound(quiet: bool) -> StringName:
+	return &"shot_quiet" if quiet else &"shot_loud"
+
+
+## A one-shot on the SFX bus, 3D at `at`'s position (or at `pos` when given, e.g. where a Magazine lands).
+static func sfx_at(at: Node3D, sound: StringName, pos := Vector3.INF) -> void:
 	var p := AudioStreamPlayer3D.new()
 	p.stream = load(STREAMS[sound])
 	p.bus = SFX
 	p.pitch_scale = randf_range(0.9, 1.1)
 	p.finished.connect(p.queue_free)
 	at.add_child(p)
+	if pos != Vector3.INF:
+		p.global_position = pos
 	p.play()
 
 

@@ -26,6 +26,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 func _show(on: bool) -> void:
 	visible = on
+	Mixer.click()
 	queue_redraw()  # the objective may have moved on
 	get_tree().paused = on
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if on else Input.MOUSE_MODE_CAPTURED
