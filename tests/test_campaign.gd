@@ -4,6 +4,16 @@ extends McpTestSuite
 ## The campaign: Missions as data, their objective steps, and the record moving Mission to Mission.
 
 
+func test_every_mission_area_runs_the_harbour_script_so_guards_get_their_chatter() -> void:
+	for m: Dictionary in Campaign.MISSIONS:
+		var a: Node = load(m.area).instantiate()
+		var s: Script = a.get_script()
+		while s and not s.resource_path.ends_with("harbour/harbour.gd"):
+			s = s.get_base_script()
+		assert_true(s != null, m.title)
+		a.free()
+
+
 func suite_name() -> String:
 	return "campaign"
 
