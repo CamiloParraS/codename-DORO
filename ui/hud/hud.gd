@@ -20,6 +20,8 @@ var _tick := ""  # habit just flagged to Aigis's profile
 var _tick_age := 99.0
 var _prev_counts := {}
 const TICK_TIME := 2.0
+const ICON := 10  # px, habit glyph
+const ICON_STEP := 14
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
 var _digits: FontFile  # VT323, the big numbers
@@ -115,24 +117,56 @@ func _read_run() -> void:
 		_tick_age = 0.0
 
 
-## Aigis's corner, top right: the Dominant Voice, and the Habit it just logged against you.
+## Aigis's corner, top right: the Dominant Voice, and a strip of the six Habit glyphs with the one it just
+## logged against you lit.
 func _aigis_layer() -> void:
 	if _aigis <= 0.0 or _voice == "":
 		return
 	var x := size.x - 8 - _voice.length() * 8.0
 	var a := lerpf(0.5, 1.0, _aigis)
 	_t(Vector2(x, 18), _voice, Color(HudPalette.AIGIS, a))
-	if _tick_age < TICK_TIME:
-		var s := "+" + _tick
-		var fade := 1.0 if _tick_age < 1.5 else (TICK_TIME - _tick_age) / 0.5
-		var col := HudPalette.WHITE if _tick_age < 0.12 else HudPalette.AIGIS  # hard pulse on arrival
-		_t(Vector2(size.x - 8 - s.length() * 8.0, 30), s, Color(col, fade))
+	if _tick_age >= TICK_TIME:
+		return
+	var fade := 1.0 if _tick_age < 1.5 else (TICK_TIME - _tick_age) / 0.5
+	var pulse := _tick_age < 0.12  # hard white pulse on arrival
+	var x0 := size.x - 8 - Aigis.HABITS.size() * ICON_STEP + (ICON_STEP - ICON)
+	for i in Aigis.HABITS.size():
+		var h: String = Aigis.HABITS[i]
+		var hit := h == _tick.to_lower()
+		var col := HudPalette.WHITE if hit and pulse else (HudPalette.AIGIS if hit else HudPalette.CHROME_DIM)
+		col.a *= fade if hit else fade * 0.75
+		_habit_icon(h, Vector2(x0 + i * ICON_STEP, 32), col)
+	var s := "+" + _tick
+	_t(Vector2(size.x - 8 - s.length() * 8.0, 56), s, Color(HudPalette.AIGIS, fade))
+
+
+## The six Habits as 10 px glyphs, drawn rather than imported: eye, crossed blades, reticle, drop arrow,
+## Z for asleep, signal wave.
+func _habit_icon(habit: String, p: Vector2, col: Color) -> void:
+	var m := ICON / 2.0
+	match habit:
+		"stealth":
+			draw_polyline(PackedVector2Array([p + Vector2(0, m), p + Vector2(m, m - 3), p + Vector2(ICON, m), p + Vector2(m, m + 3), p + Vector2(0, m)]), col, 1.0)
+			draw_rect(Rect2(p + Vector2(m - 1, m - 1), Vector2(2, 2)), col)
+		"combat":
+			draw_line(p, p + Vector2(ICON, ICON), col, 1.0)
+			draw_line(p + Vector2(ICON, 0), p + Vector2(0, ICON), col, 1.0)
+		"headshots":
+			draw_arc(p + Vector2(m, m), m - 1, 0, TAU, 16, col, 1.0)
+			draw_rect(Rect2(p + Vector2(m - 1, m - 1), Vector2(2, 2)), col)
+		"takedowns":
+			draw_polyline(PackedVector2Array([p + Vector2(1, 2), p + Vector2(m, ICON - 3), p + Vector2(ICON - 1, 2)]), col, 1.0)
+			draw_rect(Rect2(p + Vector2(0, ICON - 1), Vector2(ICON, 1)), col)
+		"downs":
+			draw_polyline(PackedVector2Array([p + Vector2(1, 1), p + Vector2(ICON - 1, 1), p + Vector2(1, ICON - 1), p + Vector2(ICON - 1, ICON - 1)]), col, 1.0)
+		"spoofing":
+			draw_polyline(PackedVector2Array([p + Vector2(0, m), p + Vector2(2, 1), p + Vector2(5, ICON - 1), p + Vector2(8, 1), p + Vector2(ICON, m)]), col, 1.0)
 
 
 func _voiceprints() -> void:
 	if _operative.voiceprints.held.is_empty():  # a bare "VP" with nothing under it is noise
 		return
-	var p := Vector2(size.x - 42, 50)  # under Aigis's corner
+	var p := Vector2(size.x - 42, 72)  # under Aigis's corner
 	_t(p, "VP", HudPalette.CHROME_DIM)
 	for i in _operative.voiceprints.held.size():
 		_t(p + Vector2(0, 10 * (i + 1)), _operative.voiceprints.held[i], HudPalette.CHROME)
