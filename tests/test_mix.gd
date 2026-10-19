@@ -57,3 +57,15 @@ func test_codec_call_ducks_music_bus_six_db_and_recovers() -> void:
 	m.codec_call(false)
 	m.advance_duck(10.0)
 	assert_true(absf(AudioServer.get_bus_volume_db(i)) < 0.01)
+
+
+func test_blips_share_one_ui_player() -> void:
+	var m := _mix()
+	m.blip(1.0)
+	m.blip(1.4)
+	assert_eq(m.get_child_count(), 1)
+	var p := m.get_child(0) as AudioStreamPlayer
+	assert_eq(p.bus, Mix.UI)
+	assert_true(absf(p.pitch_scale - 1.4) < 0.001)
+	m.stop_blips()
+	m.free()
