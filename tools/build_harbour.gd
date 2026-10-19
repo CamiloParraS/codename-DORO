@@ -129,6 +129,8 @@ const SPOTS := {
 	ResupplyCrate = [59, 49.5, 1], FreightLift = [8, 32, 0], SafeRoom = [46, 7.5, 0],
 }
 const SPOOFS := {SpoofDock = [52, 72], SpoofWarehouse = [42, 40], SpoofGatehouse = [40, 16.5], SpoofLiftControl = [18.5, 26]}
+## Mission 1's tutorial teaches eavesdropping here: 2 m beside PostY1's quay route, in Voiceprint range of its check-ins.
+const EAVESDROP := {EavesdropSpot = [56, 36]}
 const INTEL := {IntelManifests = [9, 60], IntelRadioLog = [44, 9], IntelLift = [8, 32]}
 
 
@@ -176,6 +178,10 @@ func _build() -> void:
 	var spoofs := _group(_root, "SpoofPlaces")
 	for n in SPOOFS:
 		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
+
+	var eavesdrops := _group(_root, "EavesdropSpots")
+	for n in EAVESDROP:
+		_marker(eavesdrops, n, EAVESDROP[n] + [0], 0, {}, "eavesdrop_spot")
 
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")

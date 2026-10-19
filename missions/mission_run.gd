@@ -22,6 +22,7 @@ var plan := {}                     # Aigis.plan_mission for this record: what th
 var return_to := ""                # scene to go back to once committed (Briefing, Free mode); "" stays
 var campaign := false              # committing moves Campaign.record on (never in Free mode)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
+var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var step := 0                      # objective steps done
 var ended := false
 var _down := {}
@@ -109,7 +110,7 @@ func event(name_: String) -> void:
 		tally.add(name_)
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if ended:
 		return
 	var alert := false
@@ -129,6 +130,30 @@ func _physics_process(_delta: float) -> void:
 			tally.add("down_found")
 		_known[g] = g.known_down
 	tally.set_alert(alert)
+	_teach(delta)
+
+
+## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time each verb matters.
+func _teach(delta: float) -> void:
+	var op: Node3D = get_tree().get_first_node_in_group("operative")
+	if not op:
+		return
+	var world := {guard = INF, down = INF, spot = INF, prints = op.voiceprints.held.size(),
+		scanner = op.items.charges, magazines = op.items.magazines, tranq = op.gun() == op.tranq}
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
+		if key != "":
+			world[key] = minf(world[key], _flat(op, g))
+	for s: Node3D in get_tree().get_nodes_in_group("eavesdrop_spot"):
+		world.spot = minf(world.spot, _flat(op, s))
+	var verb := tutorial.update(delta, record.mission, campaign, Tutorial.relevant(world))
+	if verb != "":
+		get_tree().call_group("tutorial_tip", "tip", tr(Tutorial.prompt_key(verb)))
+		get_tree().call_group("radio_log", "say", "METIS", tr(Tutorial.line_key(verb)))
+
+
+static func _flat(a: Node3D, b: Node3D) -> float:
+	return Vector2(a.global_position.x - b.global_position.x, a.global_position.z - b.global_position.z).length()
 
 
 ## What to do now, for the pause screen: the steps, then the Targets, then Extraction.

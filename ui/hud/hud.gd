@@ -21,6 +21,7 @@ var _tick_age := 99.0
 var _prev_counts := {}
 var _run_seen := false  # the first read only takes a baseline, so old events never tick
 const TICK_TIME := 2.0
+const TIP_TIME := 6.0
 const ICON := int(HabitGlyphs.SIZE)  # px
 const ICON_STEP := 14
 var _was_alert := {}  # guard -> was in ALERT last frame
@@ -29,6 +30,8 @@ var _digits: FontFile  # VT323, the big numbers
 var _crosshairs := {}  # file name -> texture
 var _operative: Node3D
 var _subs := Subtitles.new()
+var _tip := ""         # Mission 1's tutorial prompt (call_group "tutorial_tip"), TIP_TIME seconds
+var _tip_left := 0.0
 var _live: CodecCall  # the live Codec call in progress, if any
 
 
@@ -46,6 +49,7 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_to_group("radio_log")
 	add_to_group("codec_live")
+	add_to_group("tutorial_tip")
 
 
 func _process(delta: float) -> void:
@@ -54,6 +58,7 @@ func _process(delta: float) -> void:
 	_tick_age += delta
 	_read_run()
 	_subs.tick(delta)
+	_tip_left = maxf(_tip_left - delta, 0.0)
 	if _live:
 		var p := _live.advance(delta, true)
 		if not p.is_empty():
@@ -95,6 +100,8 @@ func _draw() -> void:
 	_voiceprints()
 	_subtitles()
 	_live_call()
+	if _tip_left > 0.0:
+		_t(Vector2(size.x / 2 - _tip.length() * 4, 60), _tip, Color(HudPalette.WHITE, clampf(_tip_left, 0.0, 1.0)))
 	if _operative.prompt != "":
 		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, HudPalette.WHITE)
 
@@ -102,6 +109,12 @@ func _draw() -> void:
 ## Radio line from a guard (call_group "radio_log").
 func say(who: String, text: String) -> void:
 	_subs.add(who, text)
+
+
+## Mission 1's tutorial prompt (call_group "tutorial_tip").
+func tip(text: String) -> void:
+	_tip = text
+	_tip_left = TIP_TIME
 
 
 ## A live Codec call (call_group "codec_live"): play goes on while it runs.
