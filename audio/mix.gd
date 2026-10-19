@@ -25,6 +25,7 @@ var _duck := 0.0           # current music duck, dB (0 or MusicState.DUCK_DB)
 var _duck_to := 0.0
 var _state := MusicState.new()
 var _music := {}           # track -> AudioStreamPlayer
+var _blip: AudioStreamPlayer   # one player for every text blip: a new blip cuts the last, so none stack
 
 
 func _ready() -> void:
@@ -78,6 +79,39 @@ func codec_call(playing: bool) -> void:
 func advance_duck(delta: float) -> void:
 	_duck = move_toward(_duck, _duck_to, DUCK_SPEED * delta)
 	_apply(MUSIC)
+
+
+## One text blip on the UI/Codec bus at `pitch` (see VoiceBlip). Cuts the previous blip.
+func blip(pitch: float) -> void:
+	if not _blip:
+		_blip = AudioStreamPlayer.new()
+		_blip.stream = _blip_tone()
+		_blip.bus = UI
+		_blip.volume_db = -10.0
+		add_child(_blip)
+	_blip.pitch_scale = pitch
+	_blip.play()
+
+
+func stop_blips() -> void:
+	if _blip:
+		_blip.stop()
+
+
+## A generated 40 ms square-ish tone at 440 Hz with a linear decay; blip() pitch-shifts it.
+static func _blip_tone() -> AudioStreamWAV:
+	var rate := 22050
+	var n := rate / 25
+	var data := PackedByteArray()
+	data.resize(n * 2)
+	for i in n:
+		var sq := 1.0 if fmod(i * 440.0 / rate, 1.0) < 0.5 else -1.0
+		data.encode_s16(i * 2, int(sq * 9000.0 * (1.0 - float(i) / n)))
+	var w := AudioStreamWAV.new()
+	w.format = AudioStreamWAV.FORMAT_16_BITS
+	w.mix_rate = rate
+	w.data = data
+	return w
 
 
 ## A one-shot on the SFX bus, 3D at `at`'s position.
