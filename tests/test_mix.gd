@@ -88,3 +88,26 @@ func test_time_scale_is_left_alone_unless_a_hit_stop_is_on_or_ending() -> void:
 	assert_eq(Engine.time_scale, AlertBeat.STOP_SCALE)
 	m.apply_scale(1.0)
 	assert_eq(Engine.time_scale, 1.0, "restored when the stop ends")
+
+
+func test_every_stream_loads() -> void:
+	for k in Mix.STREAMS:
+		assert_true(load(Mix.STREAMS[k]) is AudioStream, "%s loads" % k)
+
+
+func test_each_wanted_sound_has_a_stream() -> void:
+	for k in [&"shot_quiet", &"shot_loud", &"takedown", &"mag_land", &"ui_click"]:
+		assert_true(Mix.STREAMS.has(k), "%s mapped" % k)
+
+
+func test_shot_sound_follows_the_suppressor() -> void:
+	assert_eq(Mix.shot_sound(true), &"shot_quiet")
+	assert_eq(Mix.shot_sound(false), &"shot_loud")
+
+
+func test_ui_click_plays_on_the_ui_bus() -> void:
+	var m := _mix()
+	m.click()
+	var p := m.get_child(0) as AudioStreamPlayer
+	assert_eq(p.bus, Mix.UI)
+	m.free()
