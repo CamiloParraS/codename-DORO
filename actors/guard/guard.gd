@@ -3,6 +3,7 @@
 extends CharacterBody3D
 class_name Guard
 
+const CHATTER_EVERY := 20.0  # seconds between a guard muttering about the Operative's Habits
 const BODY_HITS_TO_KILL := 2  # rifle body hits that kill; a headshot kills outright
 const EYE := 1.6
 const PATROL_SPEED := 1.8
@@ -64,6 +65,8 @@ var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
+var chatter_sets: Array = []     # VoiceLines.chatter_sets: what this guard mutters about, if the Operative is near
+var _chatter_clock := CHATTER_EVERY
 var _radio_clock := 0.0
 var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
 var _tele_icon := ""
@@ -156,6 +159,7 @@ func _muzzle_flash() -> void:
 
 ## Routine radio check-in: subtitle + ((·)) while talking, and the Operative may record a Voiceprint.
 func _check_in(delta: float) -> void:
+	_chatter(delta)
 	if checkin.tick(delta):
 		var line: String = Checkin.LINES.pick_random()
 		get_tree().call_group("radio_log", "say", name, line)
@@ -168,6 +172,19 @@ func _check_in(delta: float) -> void:
 	if operative:
 		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), on_air())
 	_refresh_mark()
+
+
+## Every CHATTER_EVERY s on patrol, a warning or confirmation about a Habit, as a subtitle, only when
+## the Operative is within hearing range.
+func _chatter(delta: float) -> void:
+	if chatter_sets.is_empty() or alert.state != GuardAlert.State.PATROL or is_down():
+		return
+	_chatter_clock -= delta
+	if _chatter_clock > 0.0:
+		return
+	_chatter_clock = CHATTER_EVERY * rng.randf_range(0.75, 1.25)
+	if operative and VoiceLines.heard(_flat_dist(operative.global_position)):
+		radio_say(tr(VoiceLines.pick(chatter_sets, rng)))
 
 
 ## Talking where a Voiceprint can be recorded: a check-in on patrol, or its turn in a chat.
