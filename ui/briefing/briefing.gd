@@ -1,5 +1,5 @@
 ## Placeholder Briefing: the next campaign Mission, its objectives and the Voices' briefing keys as
-## plain text; any key plays it. Past the Core it shows the ending's band, and any key goes back to
+## plain text; any key opens the Mission's Codec call, which starts it. Past the Core it shows the ending's band, and any key goes back to
 ## the main scene. Group "mission_plan": F3 shows the plan table.
 ## ponytail: the Codec player and the written Briefings replace the text, the finale the ending.
 extends Control
@@ -48,7 +48,15 @@ func _unhandled_input(e: InputEvent) -> void:
 			Campaign.start()
 			get_tree().change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
 		else:
-			Campaign.play(get_tree(), record, scene_file_path, true)
+			_open_codec()
+
+
+## The Mission's full-screen Codec call, then the Mission itself.
+func _open_codec() -> void:
+	set_process_unhandled_input(false)
+	var codec := CodecScreen.new(Campaign.MISSIONS[record.mission].codec)
+	codec.finished.connect(func() -> void: Campaign.play(get_tree(), record, scene_file_path, true))
+	add_child(codec)
 
 
 func _build_lines() -> Array:

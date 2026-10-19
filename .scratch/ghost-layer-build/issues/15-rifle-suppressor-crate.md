@@ -14,6 +14,6 @@
 - [x] The rifle destroys security cameras
 - [ ] A destroyed camera counts as a missing guard (blocked: no HQ poll exists yet; `SecurityCamera.destroyed` is ready to read)
 - [x] E at the resupply crate restores ammo and the suppressor
-- [ ] ...and item counts (blocked: items join with the Scanner and Magazine)
+- [x] ...and item counts (`Items.refill`, tested in `test_items.gd`; `Operative` calls it at the crate)
 - [x] Aiming shows a crosshair at the screen centre (Pizza Doggy vol. 14, `assets/textures/crosshair_4_small.png`)
 - [x] A different crosshair per weapon; the rifle is automatic (600 rpm) with camera recoil

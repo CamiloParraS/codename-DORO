@@ -10,13 +10,15 @@
 
 - [x] Free mode lists the four fixed Presets and the Missions; the cap still applies by Mission index; nothing is written anywhere
 - [x] The Area places Countermeasures from plan_mission at its built-in spots
-- [ ] Security cameras sweep with a guard-style front-cone meter; a full meter is a radio alert with no suspicion step (tested in the alert module); the tranq does nothing to them
-- [ ] Helmets on the planned share of guards turn headshots into body hits
+- [x] Security cameras sweep with a guard-style front-cone meter; a full meter is a radio alert with no suspicion step (tested in the alert module); the tranq does nothing to them
+- [x] Helmets on the planned share of guards turn headshots into body hits
 - [x] The extra patrol spawns as one more guard route
-- [ ] F3 toggles an overlay on any screen showing Profile points/levels, Voice weights, Dominant Voice, Lethality (raw, ratio, band, projected ending), the plan (budget, pinned Habit, each pick with candidates and scores), guard alert reasons and Glaukopis's doubt
+- [x] F3 toggles an overlay on any screen showing Profile points/levels, Voice weights, Dominant Voice, Lethality (raw, ratio, band, projected ending), the plan (budget, pinned Habit, each pick with candidates and scores), guard alert reasons and Glaukopis's doubt
 - [x] Playing the Harbour under Clean slate and then Butcher shows a visible difference
 
 ## Comments
+
+- 2026-10-19 (verification): cameras: meter, no suspicion step and drain are tested in `tests/test_guard_alert.gd`; `Operative._fire` only destroys a camera for a lethal gun, so a dart does nothing. Helmets: `test_rifle.gd` covers headshot to body hit. F3: `tests/test_debug_overlay.gd` checks every section, including Glaukopis's doubt and reasons. Ticked from code and tests, not from play.
 
 - 2026-10-10 (implementation): Free mode is `ui/free_mode/free_mode.tscn`, now the project's main scene: toggle rows for the four Presets and the four Mission indices, a plan summary, PLAY. `Aigis.preset_record(preset, mission)` turns a Preset into a record (the ratio is stored as Lethality out of 100); the screen hands it to the Area's `MissionRun.record` and sets `return_to`, so committing the post-Mission screen comes back to Free mode. Nothing is written. `MissionRun` makes the plan in `_ready`; `areas/harbour/harbour.gd` reads `plan.deployed` through the node-free `Deployment` module (`missions/deployment.gd`, tested in `tests/test_deployment.gd`): cameras on all 4 mounts at Stealth L1, one extra patrol at L2 (`PostExtra1`, now with a route), helmets at 33/66/100% rounded, spread evenly over the spawned guards.
 - Security camera: `actors/security_camera/security_camera.gd` (a StaticBody3D built in code, so a dart stops on it and does nothing). It uses `GuardAlert.camera_tick` (same meter and drain, no suspicion step, back to watching after 3 s unseen; tested) and radios every guard while alerted and seeing the Operative. Camera mounts now face away from their buildings, and the head sits 0.5 m out so its ray clears the wall. The sweep was tuned to ±35° over 10 s: at ±50° a still Operative at 13 m drained faster than it filled.

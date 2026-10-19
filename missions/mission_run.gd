@@ -157,6 +157,7 @@ func _show_intel() -> void:
 func _on_intel(intel: Node) -> void:
 	if ended or step >= _steps().size() or intel.name != _steps()[step].intel:
 		return
+	get_tree().call_group("codec_live", "live_call", _steps()[step].call)
 	step += 1
 	_show_intel()
 	_say_objective()

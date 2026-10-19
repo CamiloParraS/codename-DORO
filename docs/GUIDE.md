@@ -42,6 +42,7 @@ res://
 ├── ai/              Aigis (campaign module), Glaukopis, mission_tally. Pure logic, no nodes where possible, so it's testable
 ├── areas/           one folder per Area: <area>/<area>.tscn + its pieces
 ├── missions/        campaign.gd (every Mission as data: Area, objective steps, Targets, by index), mission_run.gd, deployment.gd
+├── text/            lines.csv (keys,en,es): every spoken/shown line; imports to .translation (git-ignored, `godot --headless --import`)
 ├── ui/              hud/, radio/, pause/, briefing/, post_mission/, psx_look/, codec/, menus/, free_mode/, debug_overlay/ (autoload)
 └── tests/           test suites (godot_ai expects res://tests/)
 ```

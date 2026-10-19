@@ -158,3 +158,8 @@ debug_overlay={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://text/lines.en.translation", "res://text/lines.es.translation")
+locale/fallback="en"

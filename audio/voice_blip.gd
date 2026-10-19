@@ -6,6 +6,8 @@ extends RefCounted
 const CPS := 30.0
 ## Bands are disjoint: the Voice is told apart by pitch alone. A character nudges it within ±12%.
 const BASE := {"gorgo": 0.5, "promachos": 0.7, "nike": 1.0, "pallas": 1.4, "glaukopis": 2.0}
+## Codec speakers beep too (their own scale: they are never heard beside a Briefing's Voices).
+const CODEC := {"handler": 0.9, "analyst": 1.25, "operative": 0.6}
 const SPREAD := 0.03
 
 var _text: String
@@ -17,14 +19,18 @@ var _n := 0
 func _init(text: String, voice: String) -> void:
 	_text = text
 	_voice = voice
-	if not BASE.has(voice):  # no Voice: shown at once, silent
+	if base(voice) == 0.0:  # no Voice: shown at once, silent
 		_n = text.length()
+
+
+static func base(voice: String) -> float:
+	return BASE.get(voice, CODEC.get(voice, 0.0))
 
 
 static func pitch(voice: String, ch: String) -> float:
 	if ch.strip_edges().is_empty():
 		return 0.0
-	return BASE[voice] * (1.0 + SPREAD * ((ch.unicode_at(0) % 9) - 4))
+	return base(voice) * (1.0 + SPREAD * ((ch.unicode_at(0) % 9) - 4))
 
 
 ## "brief.<voice>.<what>" -> voice; anything else -> "".

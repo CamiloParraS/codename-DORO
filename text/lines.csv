@@ -1,0 +1,28 @@
+keys,en,es
+codec.speaker.handler,METIS,METIS
+codec.speaker.analyst,METIS ANALYST,METIS ANALISTA
+codec.speaker.operative,OPERATIVE,OPERATIVO
+codec.m1.01,"Operative, this is Metis. You're at the Harbour. Palladion's compound sits on this island.","Operativo, aqui Metis. Estas en el Puerto. El complejo de Palladion esta en esta isla."
+codec.m1.02,"Understood. What do I need?","Entendido. Que necesito?"
+codec.m1.03,"Two pieces of intel. Shipping manifests at Warehouse A, then the radio log at the gatehouse.","Dos datos. Los manifiestos de envio del Almacen A y el registro de radio de la garita."
+codec.m1.04,"Our client is a Palladion whistleblower. The manifests will show where the cargo really goes.","Nuestro cliente es un informante de Palladion. Los manifiestos mostraran el destino real de la carga."
+codec.m1.05,"Stay quiet and get out through the Extraction point. Metis out.","Mantente en silencio y sal por el punto de Extraccion. Metis fuera."
+codec.m2.01,"Next is the Radio Relay Station. Everything the island says to the world goes through it.","Ahora la Estacion de Radio. Todo lo que la isla dice al mundo pasa por ella."
+codec.m2.02,"What am I looking for?","Que busco?"
+codec.m2.03,"The relay chief runs it. Kill him or carry him out, and sabotage the relay console.","El jefe de la estacion la dirige. Eliminalo o sacalo de alli, y sabotea la consola."
+codec.m2.04,"Careful. The sabotage takes five seconds of standing still beside the console.","Cuidado. El sabotaje exige cinco segundos quieto junto a la consola."
+codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigacion. Aigis no se construyo en un dia, y aqui se hizo."
+codec.m3.02,"Is the lead researcher a threat?","La investigadora jefa es una amenaza?"
+codec.m3.03,"She is the key. Kill her or carry her out, and take the research files.","Ella es la clave. Eliminala o sacala de alli, y toma los archivos."
+codec.m3.04,"Those files should explain what Aigis really is.","Esos archivos deberian explicar que es Aigis en realidad."
+codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about to give Aigis full authority.","Es aqui. El Nucleo esta bajo el Puerto, y Palladion va a darle a Aigis plena autoridad."
+codec.m4.02,"What is the plan?","Cual es el plan?"
+codec.m4.03,"Reach the freight lift and deal with the security director. Then we feed Aigis memories it can't verify.","Llega al montacargas y ocupate del director de seguridad. Luego le damos a Aigis recuerdos que no puede verificar."
+codec.m4.04,"The same trick it uses on the world. Good luck, Operative.","El mismo truco que usa con el mundo. Suerte, Operativo."
+live.m1.s1.01,"Manifests copied. The cargo is going to the relay station.","Manifiestos copiados. La carga va a la estacion de radio."
+live.m1.s2.01,"Got the radio log. Head for the Extraction point.","Registro de radio obtenido. Ve al punto de Extraccion."
+live.m2.s1.01,"Relay is down. Every guard on the island will be looking for the cause.","La estacion esta caida. Todos los guardias buscaran la causa."
+live.m2.s1.02,"Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.","Sus emisiones eran noticias generadas por maquina. Aigis fabrica las crisis que lo contratan para resolver."
+live.m3.s1.01,"Files secured. Aigis was built from the memories of dead commanders.","Archivos asegurados. Aigis se construyo con los recuerdos de comandantes muertos."
+live.m3.s1.02,"And the Core is under the Harbour. That's where we finish this.","Y el Nucleo esta bajo el Puerto. Ahi terminamos esto."
+live.m4.s1.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas esta abierto. Hagas lo que hagas, Aigis lo recordara."

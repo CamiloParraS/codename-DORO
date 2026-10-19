@@ -29,6 +29,7 @@ var _digits: FontFile  # VT323, the big numbers
 var _crosshairs := {}  # file name -> texture
 var _operative: Node3D
 var _subs := Subtitles.new()
+var _live: CodecCall  # the live Codec call in progress, if any
 
 
 func _ready() -> void:
@@ -44,6 +45,7 @@ func _ready() -> void:
 	_digits.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_to_group("radio_log")
+	add_to_group("codec_live")
 
 
 func _process(delta: float) -> void:
@@ -52,6 +54,12 @@ func _process(delta: float) -> void:
 	_tick_age += delta
 	_read_run()
 	_subs.tick(delta)
+	if _live:
+		var p := _live.advance(delta, true)
+		if not p.is_empty():
+			Mixer.blip(p.back())
+		if _live.done():
+			_live = null
 	for g in get_tree().get_nodes_in_group("guards"):
 		var now: bool = g.alert.state == GuardAlert.State.ALERT
 		if now and not _was_alert.get(g, false):
@@ -86,6 +94,7 @@ func _draw() -> void:
 	_aigis_layer()
 	_voiceprints()
 	_subtitles()
+	_live_call()
 	if _operative.prompt != "":
 		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, HudPalette.WHITE)
 
@@ -93,6 +102,22 @@ func _draw() -> void:
 ## Radio line from a guard (call_group "radio_log").
 func say(who: String, text: String) -> void:
 	_subs.add(who, text)
+
+
+## A live Codec call (call_group "codec_live"): play goes on while it runs.
+func live_call(lines: Array) -> void:
+	_live = CodecCall.new(lines)
+
+
+## Peace Walker style: the CALL bar, then the line as subtitles above the radio lines.
+func _live_call() -> void:
+	if not _live:
+		return
+	var y := size.y - 110.0
+	_t(Vector2(size.x / 2 - 200, y), "CALL >> " + _live.speaker_name(), HudPalette.CHROME)
+	var s := _live.shown()
+	draw_multiline_string_outline(_font, Vector2(size.x / 2 - 200, y + 14), s, HORIZONTAL_ALIGNMENT_LEFT, 400, 8, -1, 4, Color.BLACK)
+	draw_multiline_string(_font, Vector2(size.x / 2 - 200, y + 14), s, HORIZONTAL_ALIGNMENT_LEFT, 400, 8, -1, HudPalette.WHITE)
 
 
 func _subtitles() -> void:
