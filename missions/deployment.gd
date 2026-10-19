@@ -50,6 +50,11 @@ static func reinforcements(deployed: Dictionary) -> int:
 	return 2 if int(deployed.get("combat", 0)) >= 3 else 0
 
 
+## Combat level, for the share of reinforcements that flank (Telegraph).
+static func combat_level(deployed: Dictionary) -> int:
+	return int(deployed.get("combat", 0))
+
+
 ## Stealth (any level): guards head-check before turning; the level sets how often (Telegraph).
 static func head_check_level(deployed: Dictionary) -> int:
 	return int(deployed.get("stealth", 0))

@@ -408,7 +408,7 @@ func test_briefing_names_the_top_answered_habits_and_their_sponsor_hints() -> vo
 	assert_eq(plan.briefing_keys, [
 		"brief.pallas.habit.combat", "brief.promachos.hint.combat.3",
 		"brief.pallas.habit.headshots", "brief.gorgo.hint.headshots.3",
-		"brief.gorgo.close",
+		"brief.promachos.flank", "brief.gorgo.close",
 	])
 
 

@@ -59,3 +59,42 @@ func test_briefing_names_the_head_check_when_stealth_is_deployed() -> void:
 	var plan := Aigis.plan_mission(Aigis.preset_profile("ghost"), 0.0, 3)
 	assert_true(plan.briefing_keys.has("brief.glaukopis.head_check"))
 	assert_false(Aigis.plan_mission(Aigis.preset_profile("ghost"), 0.0, 0).briefing_keys.has("brief.glaukopis.head_check"), "Mission 1 stays clean")
+
+
+# ----- Combat: reinforcements flank -----
+
+func test_flank_share_follows_combat_level_with_the_same_clamp() -> void:
+	for lvl in [1, 2, 3]:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 11
+		var n := 0
+		for i in 2000:
+			if Telegraph.flank(lvl, rng):
+				n += 1
+		assert_true(absf(n / 2000.0 - 0.25 * lvl) < 0.04, "level %d flanked %d/2000" % [lvl, n])
+	assert_false(Telegraph.flank(0, RandomNumberGenerator.new()), "no Combat Countermeasure, no flank")
+
+
+func test_flank_point_sits_to_one_side_of_the_target() -> void:
+	var entry := Vector3(0, 0, 0)
+	var target := Vector3(20, 0, 0)
+	var seen := {}
+	for s in 20:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = s
+		var p := Telegraph.flank_point(entry, target, rng)
+		assert_eq(p.x, 20.0, "beside the target along the approach")
+		assert_eq(absf(p.z), Telegraph.FLANK_OFFSET)
+		seen[signf(p.z)] = true
+	assert_eq(seen.size(), 2, "both sides get used")
+
+
+func test_flank_point_with_no_approach_stays_put() -> void:
+	assert_eq(Telegraph.flank_point(Vector3.ONE, Vector3.ONE, RandomNumberGenerator.new()), Vector3.ONE)
+
+
+func test_metis_and_briefing_name_the_flank() -> void:
+	assert_ne(Telegraph.METIS.get("flank", ""), "")
+	var plan := Aigis.plan_mission(Aigis.preset_profile("butcher"), 0.6, 3)
+	assert_true(plan.briefing_keys.has("brief.promachos.flank"))
+	assert_false(Aigis.plan_mission(Aigis.preset_profile("ghost"), 0.0, 3).briefing_keys.has("brief.promachos.flank"))

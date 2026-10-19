@@ -180,7 +180,7 @@ func chatting() -> bool:
 
 func _refresh_mark() -> void:
 	var talk := on_air()
-	if _tele_left > 0.0 and alert.state == GuardAlert.State.PATROL:
+	if _tele_left > 0.0 and (alert.state == GuardAlert.State.PATROL or _tele_icon == Telegraph.FLANK_ICON):
 		_mark.text = _tele_icon
 		_mark.modulate = HudPalette.AIGIS
 		return

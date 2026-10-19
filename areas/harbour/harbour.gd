@@ -81,7 +81,12 @@ func _process(_delta: float) -> void:
 			g.global_position += Vector3(i * 2.0, 0, 0)
 			g.post = g.global_transform
 			_equip(g)
-			g.on_radio($Operative.global_position, "reinforcements")
+			var rng: RandomNumberGenerator = g.rng
+			var goal: Vector3 = $Operative.global_position
+			if Telegraph.flank(Deployment.combat_level($MissionRun.plan.deployed), rng):
+				goal = Telegraph.flank_point(entry.global_position, goal, rng)
+				g.telegraph("flank", Telegraph.FLANK_ICON, "startle", "Flanking, go wide!")
+			g.on_radio(goal, "reinforcements")
 		$MissionRun.tally.add("spawned", n)
 	_was_alerted = alerted
 
