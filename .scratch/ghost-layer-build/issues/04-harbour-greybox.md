@@ -1,6 +1,6 @@
 # 04: Harbour greybox
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Harbour exists at full size as simple PSone-era geometry, with every spot a later Mission or Countermeasure needs already in place, and a navmesh guards can walk.
 

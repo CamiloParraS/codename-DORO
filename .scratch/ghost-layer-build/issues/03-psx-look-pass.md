@@ -1,6 +1,6 @@
 # 03: PSX look pass
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The game looks modern-retro as decided in the PSX look prototype: low-resolution 3D upscaled with nearest filtering, 15-bit banding, far fog and chunky textures, while the HUD stays crisp.
 

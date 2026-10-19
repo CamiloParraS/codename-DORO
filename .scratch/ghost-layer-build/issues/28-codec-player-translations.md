@@ -1,6 +1,6 @@
 # 28: Codec/subtitle player + CSV translations
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Story plays through one small codec player: paused full-screen Codec calls before each Mission and live calls over a CALL bar during play, all from keyed lines in a CSV translation table.
 

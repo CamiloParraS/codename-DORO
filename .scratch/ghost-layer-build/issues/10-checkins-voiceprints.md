@@ -1,6 +1,6 @@
 # 10: Check-ins + Voiceprint capture
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Guards radio routine check-ins, which show as subtitles and a ((·)) mark, and the Operative records a guard's Voiceprint by staying close during one.
 

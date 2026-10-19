@@ -1,6 +1,6 @@
 # 26: Research annex + Mission 3
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Mission 3 plays in the Research annex: extract the intel that reveals the Core under the Harbour and deal with the lead researcher.
 

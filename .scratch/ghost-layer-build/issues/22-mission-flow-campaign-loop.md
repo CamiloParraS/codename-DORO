@@ -1,6 +1,6 @@
 # 22: Mission flow + campaign loop
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** A campaign plays end to end in memory: each Mission is data (Area, objective steps, Targets, index), objectives advance through steps including intel pickups, and completing one goes to the post-Mission screen and on to the next Mission with its new plan.
 

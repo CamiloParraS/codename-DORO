@@ -1,6 +1,6 @@
 # 05: Guard patrol → alert chain
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Guards patrol the Harbour on a LimboAI behaviour tree, see the Operative with the tested vision rules, and go patrol → suspicion → alert → evasion → patrol, with ?/! marks and a radio alert that puts every guard on alert.
 

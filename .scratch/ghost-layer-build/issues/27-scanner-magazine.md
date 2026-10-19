@@ -1,6 +1,6 @@
 # 27: Scanner + Magazine
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative carries two items cycled on the HUD item card: a Scanner that briefly reveals guard and camera cones through walls, and Magazines thrown to make a knock where they land.
 

@@ -1,6 +1,6 @@
 # 38: Write-up + demo script
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** A 4–6 page Spanish write-up of the game AI, exported to PDF, quoting the generated deployment tables, with a ~10 minute demo script appendix the evaluator can rerun in Free mode.
 

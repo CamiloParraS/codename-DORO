@@ -1,6 +1,6 @@
 # 16: Kill takedown + Lethality
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative can kill from behind with a dedicated key, and every death the Operative causes silently adds to Lethality: shown only in the overlay, folded into the campaign on completion.
 

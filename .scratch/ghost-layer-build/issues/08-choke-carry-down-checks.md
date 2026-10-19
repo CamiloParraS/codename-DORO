@@ -1,6 +1,6 @@
 # 08: Choke takedown, carry, Down checks
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative can sneak up and choke a guard, carry the Neutralized body over the shoulder to hide it, and guards who spot a Down guard walk over, check and wake them.
 

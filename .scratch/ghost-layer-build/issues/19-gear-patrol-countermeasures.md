@@ -1,6 +1,6 @@
 # 19: Gear and patrol Countermeasures
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Every Stealth, Combat, Headshots and Takedowns Countermeasure step deploys and is visible in the world when planned.
 

@@ -1,6 +1,6 @@
 # 31: Core Mission
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The final Mission starts at Mission 1's insertion point in the Harbour, now fully fortified, then goes down the freight lift to the Core room, where the security director stands beside Aigis.
 

@@ -1,6 +1,6 @@
 # 02: Operative movement + shoulder camera
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative can be moved around a test room with the Peace Walker-style camera: running by default, walking quietly, crouching, and a shoulder camera that never gets stuck in walls.
 

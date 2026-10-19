@@ -1,6 +1,6 @@
 # 39: Balance pass + Windows export
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** A full campaign playthrough, tuning of the open numbers (trigger points, band thresholds, timings), and a Windows build exported and rehearsed for the live demo.
 

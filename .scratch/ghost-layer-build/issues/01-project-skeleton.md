@@ -1,6 +1,6 @@
 # 01: Project skeleton + LimboAI smoke test
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The project is ready to build on. Every binding from the spec's input table exists as a named InputMap action, LimboAI is enabled and proven to run a behaviour tree on Godot 4.7 (or the switch to Beehave is made and recorded), and the test suite runs green.
 

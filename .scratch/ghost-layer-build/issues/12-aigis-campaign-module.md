@@ -1,6 +1,6 @@
 # 12: Aigis campaign module
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Aigis's between-Missions brain as a pure, deterministic module: fold a completed Mission into the campaign record, plan the next Mission's Countermeasures through the Voices, and resolve the ending. The four Presets and a generated Preset × Mission deployment table come with it.
 

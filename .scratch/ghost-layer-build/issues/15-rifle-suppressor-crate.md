@@ -1,6 +1,6 @@
 # 15: Rifle + suppressor + resupply crate
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative carries a suppressed assault rifle whose suppressor breaks after 10 shots. After that, shots are loud and send guards to investigate, and a resupply crate restores ammo and the suppressor.
 

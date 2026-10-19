@@ -1,6 +1,6 @@
 # 13: Free mode + first Countermeasures + F3 overlay
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** From a minimal Free mode screen, the presenter picks a Preset and Mission and the Harbour visibly fights back: cameras, helmets and an extra patrol spawn per the plan, and F3 shows why. This is Milestone 1's "done when".
 

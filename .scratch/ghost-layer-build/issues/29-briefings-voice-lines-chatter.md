@@ -1,6 +1,6 @@
 # 29: Briefings + Voice lines + Profile chatter
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Aigis talks: the Briefing before each Mission plays the Voices' lines chosen by plan_mission, the post-Mission screen adds the Dominant Voice's line, and guards hint at and confirm Countermeasures in the field.
 

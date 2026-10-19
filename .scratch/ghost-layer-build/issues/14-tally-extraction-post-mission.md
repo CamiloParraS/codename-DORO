@@ -1,6 +1,6 @@
 # 14: Mission tally + Extraction + post-Mission screen
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Playing a Mission now feeds Aigis: Habit triggers count during play, reaching the Extraction point ends the Mission, and a post-Mission screen shows the six-Habit icon strip with arrows before the record is updated.
 

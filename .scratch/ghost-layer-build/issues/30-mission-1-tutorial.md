@@ -1,6 +1,6 @@
 # 30: Mission 1 tutorial
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Mission 1 teaches the game: the first time each verb is relevant, a contextual prompt appears with one Metis radio line, and a pre-placed eavesdrop spot teaches Spoofing.
 

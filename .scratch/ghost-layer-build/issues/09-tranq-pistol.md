@@ -1,6 +1,6 @@
 # 09: Tranq pistol
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative can aim over the shoulder and tranquilize guards: headshots drop them instantly, body shots after a stumble.
 

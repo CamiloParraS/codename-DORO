@@ -1,6 +1,6 @@
 # 24: Targets + Eliminate
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Missions can require a Target: a distinct, unarmed Palladion member on a fixed route with an escort, who flees to a safe room on alert, and who must be killed (weight 3) or Neutralized and carried to the Extraction point.
 

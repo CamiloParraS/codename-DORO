@@ -1,6 +1,6 @@
 # 11: Glaukopis + radial radio
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative opens a slowed-time radial radio, sends a Spoofed transmission in a guard's voice, and guards obey, unless Glaukopis exposes it. In that case the recipient says "You don't sound right" and searches near where the Operative transmitted from.
 

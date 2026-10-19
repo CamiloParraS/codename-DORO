@@ -1,6 +1,6 @@
 # 17: Open combat
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Going loud is viable but costly: alerted guards shoot back, the Operative survives 4 hits and regenerates, and dying restarts the Mission (Checkpoints come next).
 

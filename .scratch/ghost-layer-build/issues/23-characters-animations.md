@@ -1,6 +1,6 @@
 # 23: Characters + animations
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Operative and guards are Quaternius characters with animations instead of capsules, including the carry pose, and Targets have a distinct silhouette variant ready.
 

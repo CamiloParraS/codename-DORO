@@ -1,6 +1,6 @@
 # 37: Spanish translation
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The whole game plays in Spanish: an agent fills the es column of the translation table, and the user proofreads it.
 

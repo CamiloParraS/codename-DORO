@@ -1,6 +1,6 @@
 # 20: HQ polls + Report in + instant alert
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The Downs ladder makes hiding bodies insufficient: HQ polls guards on the radio, found Down guards raise an instant alert, and the Operative can answer a poll with a "Report in" Spoofed transmission.
 

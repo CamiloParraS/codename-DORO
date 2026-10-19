@@ -1,6 +1,6 @@
 # 32: Finale
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** The campaign ends: a scripted last Spoofed transmission feeds Aigis fabricated memories, the Voices hold the Final debate, the Dominant Voice's ending plays, and the Epilogue reveals that Metis profits from the war.
 

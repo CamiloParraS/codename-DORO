@@ -1,6 +1,6 @@
 # 35: Draft all non-Voice English lines
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Every line not spoken by a Voice exists in English, within the 3,500-word cap: Codec calls, tutorial, guard Profile chatter, HQ radio, Target chatter, intel and story beats, Epilogue, UI strings.
 

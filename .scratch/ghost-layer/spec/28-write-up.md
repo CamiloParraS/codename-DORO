@@ -1,0 +1,3 @@
+# Implementation Decisions: Write-up
+
+One Spanish Markdown document in the repo, exported to PDF, ~4–6 pages, written last; no slides. Sections: the game on one page; AI architecture*; guards; Operator profile; Aigis*; Glaukopis; Lethality → Dominant Voice → ending; evidence*; limits and future work; references (*core sections). Mermaid diagrams for the architecture flow and the alert state machine; a LimboAI editor screenshot of the real guard tree; before/after captures (Harbour Mission 1 under Clean slate vs the Core); debug overlay captures. Terms use the game's Spanish CSV names with the code identifier on first use. Appendix: a ~10 min demo script (Clean slate Harbour → Butcher on the Core → Ghost → a live spoof with Glaukopis doubting → the ending screen).

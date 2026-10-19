@@ -1,6 +1,6 @@
 # 25: Radio relay station + Mission 2
 
-**Spec:** [Ghost Layer spec](../../ghost-layer/spec.md)
+**Spec:** only if this ticket leaves a question open: open the one matching section file listed in [spec index](../../ghost-layer/spec.md), never the whole spec.
 
 **What to build:** Mission 2 plays in the Radio relay station on a ridge: sabotage the relay console and deal with the relay chief, after which HQ sends every guard sweeping the station.
 
