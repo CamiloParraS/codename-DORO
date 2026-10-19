@@ -4,7 +4,7 @@
 ## until its slider moves). The cap and budget still apply by Mission index. Group "mission_plan": F3 previews the plan.
 extends Control
 
-const BRIEFING := "res://ui/briefing/briefing.tscn"
+const MENU := "res://ui/main_menu/main_menu.tscn"
 var _mission_names: Array = Campaign.MISSIONS.map(func(m: Dictionary) -> String: return m.title.get_slice(":", 0))
 
 var preset: String = Aigis.PRESETS.keys()[0]   # or "custom"
@@ -54,12 +54,10 @@ func _ready() -> void:
 	play.text = "PLAY"
 	play.pressed.connect(_play)
 	box.add_child(play)
-	var campaign := Button.new()  # ponytail: the main menu takes this over
-	campaign.text = "NEW CAMPAIGN"
-	campaign.pressed.connect(func() -> void:
-		Campaign.start()
-		get_tree().change_scene_to_file(BRIEFING))
-	box.add_child(campaign)
+	var back := Button.new()
+	back.text = "BACK"
+	back.pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU))
+	box.add_child(back)
 	_label(box, "EVERY MISSION PLAYS IN THE HARBOUR FOR NOW.\nF3: DEBUG OVERLAY", 8).modulate.a = 0.5
 	_refresh()
 	play.grab_focus()
