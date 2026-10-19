@@ -6,8 +6,15 @@
 
 **Blocked by:** 05
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Guard pauses and gestures, then resumes patrol
-- [ ] Weighted trigger as in the Stealth behaviour, tested with a seeded RNG
-- [ ] Briefing line and first-sighting Metis line exist
+- [x] Guard pauses and gestures, then resumes patrol
+- [x] Weighted trigger as in the Stealth behaviour, tested with a seeded RNG
+- [x] Briefing line and first-sighting Metis line exist
+
+## Answer
+
+- Reuses `Guard.telegraph("radio_check", "((?))", "look", mutter)`; `Telegraph.METIS["radio_check"]` is the first-sighting call.
+- `Telegraph.radio_check(level, rng)` / `radio_check_share(level)` (same 25-75% clamp), rolled every `Telegraph.RADIO_CHECK_EVERY` (12 s) of patrol in `Guard.patrol`; on a hit the guard stands still 1 s with the cyan telegraph, then resumes. `Deployment.radio_check_level` feeds `Guard.radio_check_level` (Harbour `_equip`), seeded via `Guard.rng`.
+- Briefing key `brief.glaukopis.radio_check` whenever Spoofing is deployed (never Mission 1). Tests in `tests/test_telegraph.gd`.
+- Open: the `((?))` icon, `look` clip (no radio-handset clip yet), mutter and Metis wording are placeholders.

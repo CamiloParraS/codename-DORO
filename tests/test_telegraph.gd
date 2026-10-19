@@ -98,3 +98,32 @@ func test_metis_and_briefing_name_the_flank() -> void:
 	var plan := Aigis.plan_mission(Aigis.preset_profile("butcher"), 0.6, 3)
 	assert_true(plan.briefing_keys.has("brief.promachos.flank"))
 	assert_false(Aigis.plan_mission(Aigis.preset_profile("ghost"), 0.0, 3).briefing_keys.has("brief.promachos.flank"))
+
+
+func test_radio_check_share_matches_the_clamp_and_seeded_rng() -> void:
+	assert_eq(Telegraph.radio_check_share(0), 0.25)
+	assert_eq(Telegraph.radio_check_share(2), 0.5)
+	assert_eq(Telegraph.radio_check_share(9), 0.75)
+	var a := RandomNumberGenerator.new()
+	var b := RandomNumberGenerator.new()
+	a.seed = 5
+	b.seed = 5
+	var n := 0
+	for i in 2000:
+		var hit := Telegraph.radio_check(3, a)
+		assert_eq(hit, Telegraph.radio_check(3, b))
+		n += int(hit)
+	assert_true(absf(n / 2000.0 - 0.75) < 0.04, "level 3 fired %d/2000" % n)
+	assert_false(Telegraph.radio_check(0, a), "no Spoofing Countermeasure, no radio check")
+
+
+func test_deployment_reads_the_spoofing_level() -> void:
+	assert_eq(Deployment.radio_check_level({"spoofing": 3}), 3)
+	assert_eq(Deployment.radio_check_level({}), 0)
+
+
+func test_briefing_and_metis_name_the_radio_check() -> void:
+	var plan := Aigis.plan_mission(Aigis.preset_profile("trickster"), 0.0, 3)
+	assert_true(plan.briefing_keys.has("brief.glaukopis.radio_check"))
+	assert_false(Aigis.plan_mission(Aigis.preset_profile("trickster"), 0.0, 0).briefing_keys.has("brief.glaukopis.radio_check"), "Mission 1 stays clean")
+	assert_ne(Telegraph.METIS.get("radio_check", ""), "")

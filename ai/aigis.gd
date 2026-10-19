@@ -233,6 +233,8 @@ static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) 
 		keys.append("brief.glaukopis.head_check")
 	if deployed.combat >= 3:
 		keys.append("brief.promachos.flank")
+	if deployed.spoofing > 0:
+		keys.append("brief.glaukopis.radio_check")
 	keys.append("brief.%s.close" % dominant)
 
 	return {

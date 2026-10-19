@@ -60,6 +60,11 @@ static func head_check_level(deployed: Dictionary) -> int:
 	return int(deployed.get("stealth", 0))
 
 
+## Spoofing (any level): guards stop mid-patrol and radio HQ back; the level sets how often (Telegraph).
+static func radio_check_level(deployed: Dictionary) -> int:
+	return int(deployed.get("spoofing", 0))
+
+
 ## Takedowns L1: seconds between a patrolling guard glancing behind it (0 = never).
 static func turn_around_every(deployed: Dictionary) -> float:
 	return 6.0 if int(deployed.get("takedowns", 0)) >= 1 else 0.0

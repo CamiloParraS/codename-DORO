@@ -7,8 +7,11 @@ extends RefCounted
 const DURATION := 1.0
 const MIN_SHARE := 0.25
 const MAX_SHARE := 0.75
+## Seconds of patrolling between Spoofing radio-check rolls.
+const RADIO_CHECK_EVERY := 12.0
 ## Metis's one-line radio call the first time the Operative sees each kind in a Mission.
 const METIS := {
+	"radio_check": "A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.",
 	"head_check": "Guards are glancing back before they turn. Aigis is watching your exits.",
 	"flank": "Reinforcements through the road entry, and they are coming round your side.",
 }
@@ -41,6 +44,16 @@ static func flank_point(entry: Vector3, target: Vector3, rng: RandomNumberGenera
 		return target
 	var side := Vector3(-dir.z, 0.0, dir.x).normalized()
 	return target + side * FLANK_OFFSET * (1.0 if rng.randf() < 0.5 else -1.0)
+
+
+## Spoofing: share of radio-check rolls that fire; the same 25-75% curve as the head-check.
+static func radio_check_share(level: int) -> float:
+	return head_check_share(level)
+
+
+## Does this roll make a guard stop and call HQ back. level 0 (no Spoofing Countermeasure) never does.
+static func radio_check(level: int, rng: RandomNumberGenerator) -> bool:
+	return level > 0 and rng.randf() < radio_check_share(level)
 
 
 ## True once per kind per `seen` (a Mission's dictionary).
