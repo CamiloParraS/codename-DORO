@@ -20,7 +20,7 @@ func _ready() -> void:
 	_lines = _build_lines()
 	for l: String in _lines:
 		# objectives and headings have no Voice: shown at once
-		_blips.append(VoiceBlip.new(l, VoiceBlip.voice_of(l)))
+		_blips.append(VoiceBlip.new(tr(l), VoiceBlip.voice_of(l)))
 
 
 func _process(delta: float) -> void:
