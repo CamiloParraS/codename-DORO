@@ -102,6 +102,7 @@ func _button(text: String, on_press: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.pressed.connect(Mixer.click)
 	if on_press.is_valid():
 		b.pressed.connect(on_press)
 	_box.add_child(b)

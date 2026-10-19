@@ -62,7 +62,7 @@ func _ready() -> void:
 	back.text = "BACK"
 	back.pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU))
 	box.add_child(back)
-	_label(box, "EVERY MISSION PLAYS IN THE HARBOUR FOR NOW.\nF3: DEBUG OVERLAY", 8).modulate.a = 0.5
+	_label(box, "EACH MISSION PLAYS IN ITS OWN AREA.\nF3: DEBUG OVERLAY", 8).modulate.a = 0.5
 	_refresh()
 	play.grab_focus()
 
