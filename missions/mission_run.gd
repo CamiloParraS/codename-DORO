@@ -216,12 +216,22 @@ func _on_extraction() -> void:
 		record = after
 		if campaign:
 			Campaign.record = after
-			if Campaign.slot >= 0:
-				SaveSlots.write(Campaign.slot, after, int(Time.get_unix_time_from_system()))
+			if saves_on_commit(after):
+				save_slot()
 		get_tree().paused = false
 		finished.emit(after)
 		if return_to:
 			get_tree().change_scene_to_file(return_to))
+
+
+## The Core's commit is the last Mission: its slot is marked complete at the Core terminal instead.
+static func saves_on_commit(after: Dictionary) -> bool:
+	return after.mission < Campaign.MISSIONS.size()
+
+
+func save_slot() -> void:
+	if campaign and Campaign.slot >= 0:
+		SaveSlots.write(Campaign.slot, record, int(Time.get_unix_time_from_system()))
 
 
 ## Quit or abort: nothing is applied.

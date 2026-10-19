@@ -25,6 +25,7 @@ func _ready() -> void:
 	var back := Button.new()
 	back.text = "BACK"
 	back.pressed.connect(func() -> void:
+		Mixer.click()
 		closed.emit()
 		queue_free())
 	box.add_child(back)

@@ -39,12 +39,13 @@ res://
 │   ├── audio/       sfx/, music/
 │   └── shaders/     PSX shaders
 ├── actors/          operative/, guard/, security_camera/   (scene + script together)
-├── ai/              Aigis (campaign module), Glaukopis, mission_tally. Pure logic, no nodes where possible, so it's testable
+├── ai/              Aigis (campaign module), Glaukopis, mission_tally. Pure logic, no nodes where possible, so it's testable. Also finale.gd (the ending) and voice_lines.gd (line keys)
 ├── areas/           one folder per Area: <area>/<area>.tscn + its pieces
-├── missions/        campaign.gd (every Mission as data: Area, objective steps, Targets, by index), mission_run.gd, deployment.gd
+├── missions/        campaign.gd (every Mission as data: Area, objective steps, Targets, by index), mission_run.gd, deployment.gd, save_slots.gd (campaign slots), tutorial.gd
 ├── text/            lines.csv (keys,en,es): every spoken/shown line; imports to .translation (git-ignored, `godot --headless --import`)
-├── ui/              hud/, radio/, pause/, briefing/, post_mission/, psx_look/, codec/, menus/, free_mode/, debug_overlay/ (autoload)
-└── tests/           test suites (godot_ai expects res://tests/)
+├── ui/              hud/, radio/, pause/, briefing/, post_mission/, psx_look/, codec/, main_menu/, settings/, finale/, free_mode/, debug_overlay/ (autoload)
+├── tests/           test suites (godot_ai expects res://tests/)
+└── tools/           area builders and bake scripts; run_tests.tscn runs every suite headless: `godot --headless --path . tools/run_tests.tscn`
 ```
 
 Create folders when they're needed, not before (git doesn't track empty folders anyway).
