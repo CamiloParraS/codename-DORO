@@ -80,30 +80,30 @@ post.nike.clean,Nike: Clean work. Almost.,Nike: Trabajo limpio. Casi.
 post.nike.blood,Nike: Blood spilled. We will answer.,Nike: Sangre derramada. Responderemos.
 post.gorgo.clean,Gorgo: Spotless. It changes nothing.,Gorgo: Impecable. No cambia nada.
 post.gorgo.blood,Gorgo: Good. Keep it coming.,Gorgo: Bien. Sigue asi.
-chatter.warn.stealth.1,Heard HQ is tightening up on quiet types. (1),Dicen que la base vigila a los de silencio. (1)
-chatter.confirm.stealth.1,HQ's new quiet measures are live. (1),Las nuevas medidas contra silencio estan activas. (1)
-chatter.warn.stealth.2,Heard HQ is tightening up on quiet types. (2),Dicen que la base vigila a los de silencio. (2)
-chatter.confirm.stealth.2,HQ's new quiet measures are live. (2),Las nuevas medidas contra silencio estan activas. (2)
-chatter.warn.combat.1,Heard HQ is tightening up on loud types. (1),Dicen que la base vigila a los de ruido. (1)
-chatter.confirm.combat.1,HQ's new loud measures are live. (1),Las nuevas medidas contra ruido estan activas. (1)
-chatter.warn.combat.2,Heard HQ is tightening up on loud types. (2),Dicen que la base vigila a los de ruido. (2)
-chatter.confirm.combat.2,HQ's new loud measures are live. (2),Las nuevas medidas contra ruido estan activas. (2)
-chatter.warn.headshots.1,Heard HQ is tightening up on headshot types. (1),Dicen que la base vigila a los de tiro a la cabeza. (1)
-chatter.confirm.headshots.1,HQ's new headshot measures are live. (1),Las nuevas medidas contra tiro a la cabeza estan activas. (1)
-chatter.warn.headshots.2,Heard HQ is tightening up on headshot types. (2),Dicen que la base vigila a los de tiro a la cabeza. (2)
-chatter.confirm.headshots.2,HQ's new headshot measures are live. (2),Las nuevas medidas contra tiro a la cabeza estan activas. (2)
-chatter.warn.takedowns.1,Heard HQ is tightening up on takedown types. (1),Dicen que la base vigila a los de derribo. (1)
-chatter.confirm.takedowns.1,HQ's new takedown measures are live. (1),Las nuevas medidas contra derribo estan activas. (1)
-chatter.warn.takedowns.2,Heard HQ is tightening up on takedown types. (2),Dicen que la base vigila a los de derribo. (2)
-chatter.confirm.takedowns.2,HQ's new takedown measures are live. (2),Las nuevas medidas contra derribo estan activas. (2)
-chatter.warn.downs.1,Heard HQ is tightening up on sleeper types. (1),Dicen que la base vigila a los de dormido. (1)
-chatter.confirm.downs.1,HQ's new sleeper measures are live. (1),Las nuevas medidas contra dormido estan activas. (1)
-chatter.warn.downs.2,Heard HQ is tightening up on sleeper types. (2),Dicen que la base vigila a los de dormido. (2)
-chatter.confirm.downs.2,HQ's new sleeper measures are live. (2),Las nuevas medidas contra dormido estan activas. (2)
-chatter.warn.spoofing.1,Heard HQ is tightening up on spoof types. (1),Dicen que la base vigila a los de suplantacion. (1)
-chatter.confirm.spoofing.1,HQ's new spoof measures are live. (1),Las nuevas medidas contra suplantacion estan activas. (1)
-chatter.warn.spoofing.2,Heard HQ is tightening up on spoof types. (2),Dicen que la base vigila a los de suplantacion. (2)
-chatter.confirm.spoofing.2,HQ's new spoof measures are live. (2),Las nuevas medidas contra suplantacion estan activas. (2)
+chatter.warn.stealth.1,"Funny thing. HQ keeps asking who walks these docks without being seen.",Dicen que la base vigila a los de silencio. (1)
+chatter.confirm.stealth.1,"Cameras are up. HQ finally noticed nobody was watching the quiet corners.",Las nuevas medidas contra silencio estan activas. (1)
+chatter.warn.stealth.2,"Somebody is sneaking round this island, and HQ wants more eyes on every corner.",Dicen que la base vigila a los de silencio. (2)
+chatter.confirm.stealth.2,"New orders: watch the shadows. HQ says our ghost is real.",Las nuevas medidas contra silencio estan activas. (2)
+chatter.warn.combat.1,"HQ is handing out heavier kit. Somebody expects a fight.",Dicen que la base vigila a los de ruido. (1)
+chatter.confirm.combat.1,"Fresh vests and orders to hold the line. HQ is ready for a firefight.",Las nuevas medidas contra ruido estan activas. (1)
+chatter.warn.combat.2,"Word is HQ wants more guns on this island. Fine by me.",Dicen que la base vigila a los de ruido. (2)
+chatter.confirm.combat.2,"We got the extra rifles. Let the shooting start, I'm not worried.",Las nuevas medidas contra ruido estan activas. (2)
+chatter.warn.headshots.1,"HQ is talking about helmets. Somebody keeps aiming at heads.",Dicen que la base vigila a los de tiro a la cabeza. (1)
+chatter.confirm.headshots.1,"Got my helmet. Let's see him try for the head now.",Las nuevas medidas contra tiro a la cabeza estan activas. (1)
+chatter.warn.headshots.2,"They say our people are dropping from head shots. Helmets are coming.",Dicen que la base vigila a los de tiro a la cabeza. (2)
+chatter.confirm.headshots.2,"Helmets issued all round. HQ says that fixes the head shots.",Las nuevas medidas contra tiro a la cabeza estan activas. (2)
+chatter.warn.takedowns.1,"Watch your back. HQ says guards are vanishing from behind.",Dicen que la base vigila a los de derribo. (1)
+chatter.confirm.takedowns.1,"I look over my shoulder every few steps now. HQ's orders.",Las nuevas medidas contra derribo estan activas. (1)
+chatter.warn.takedowns.2,"Orders are to check behind us more often. Somebody is creeping up on guards.",Dicen que la base vigila a los de derribo. (2)
+chatter.confirm.takedowns.2,"They've paired us up on patrol. Nobody walks alone and gets choked.",Las nuevas medidas contra derribo estan activas. (2)
+chatter.warn.downs.1,"HQ is asking about guards found asleep. Somebody is leaving them lying around.",Dicen que la base vigila a los de dormido. (1)
+chatter.confirm.downs.1,"HQ calls at random now. Miss a check-in and they send someone.",Las nuevas medidas contra dormido estan activas. (1)
+chatter.warn.downs.2,"They say bodies keep turning up. HQ will start asking questions.",Dicen que la base vigila a los de dormido. (2)
+chatter.confirm.downs.2,"Find a man asleep and we raise the alarm. HQ's new rule.",Las nuevas medidas contra dormido estan activas. (2)
+chatter.warn.spoofing.1,"HQ thinks someone is faking voices on the radio. Be careful what you answer.",Dicen que la base vigila a los de suplantacion. (1)
+chatter.confirm.spoofing.1,"HQ checks every odd call now. It rings the speaker back to be sure.",Las nuevas medidas contra suplantacion estan activas. (1)
+chatter.warn.spoofing.2,"Heard HQ wants a closer ear on the radio. Something sounded wrong.",Dicen que la base vigila a los de suplantacion. (2)
+chatter.confirm.spoofing.2,"New radio rules. Every voice is checked, and no recording works twice.",Las nuevas medidas contra suplantacion estan activas. (2)
 finale.debate.promachos.pallas,"[promachos] Debate line, ending pallas.","[promachos] Linea del debate, final pallas."
 finale.debate.promachos.nike,"[promachos] Debate line, ending nike.","[promachos] Linea del debate, final nike."
 finale.debate.promachos.gorgo,"[promachos] Debate line, ending gorgo.","[promachos] Linea del debate, final gorgo."
@@ -125,25 +125,25 @@ finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Linea de final 2.
 finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Linea de final 3.
 finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Linea de final 4.
 finale.end.pallas.operative,"[pallas] Operative, this one is for you.","[pallas] Operativo, esto es para ti."
-finale.epi.pallas.1,"[Metis] Epilogue line 1, ending pallas.","[Metis] Linea del epilogo 1, final pallas."
-finale.epi.pallas.2,"[Analyst] Epilogue line 2, ending pallas.","[Analyst] Linea del epilogo 2, final pallas."
-finale.epi.pallas.3,"[Metis] Epilogue line 3, ending pallas.","[Metis] Linea del epilogo 3, final pallas."
-finale.epi.pallas.4,"[Analyst] Epilogue line 4, ending pallas.","[Analyst] Linea del epilogo 4, final pallas."
+finale.epi.pallas.1,"Not one alarm on the whole island. Palladion is still asking how you did it.","[Metis] Linea del epilogo 1, final pallas."
+finale.epi.pallas.2,"And Aigis keeps its core. Palladion pays us for the quiet.","[Analyst] Linea del epilogo 2, final pallas."
+finale.epi.pallas.3,"Our client got her story, and Palladion got a bigger contract. A clean job sells well.","[Metis] Linea del epilogo 3, final pallas."
+finale.epi.pallas.4,"I won't complain. Metis sells quiet, and quiet pays best.","[Analyst] Linea del epilogo 4, final pallas."
 finale.end.nike.1,[nike] Ending line 1.,[nike] Linea de final 1.
 finale.end.nike.2,[nike] Ending line 2.,[nike] Linea de final 2.
 finale.end.nike.3,[nike] Ending line 3.,[nike] Linea de final 3.
 finale.end.nike.4,[nike] Ending line 4.,[nike] Linea de final 4.
 finale.end.nike.operative,"[nike] Operative, this one is for you.","[nike] Operativo, esto es para ti."
-finale.epi.nike.1,"[Metis] Epilogue line 1, ending nike.","[Metis] Linea del epilogo 1, final nike."
-finale.epi.nike.2,"[Analyst] Epilogue line 2, ending nike.","[Analyst] Linea del epilogo 2, final nike."
-finale.epi.nike.3,"[Metis] Epilogue line 3, ending nike.","[Metis] Linea del epilogo 3, final nike."
-finale.epi.nike.4,"[Analyst] Epilogue line 4, ending nike.","[Analyst] Linea del epilogo 4, final nike."
+finale.epi.nike.1,"The island is a mess, but the Core is yours. Palladion calls it a success.","[Metis] Linea del epilogo 1, final nike."
+finale.epi.nike.2,"Aigis ends up with half its memories and twice the budget.","[Analyst] Linea del epilogo 2, final nike."
+finale.epi.nike.3,"Our client gets her answers, and Palladion buys new defences. Everybody pays.","[Metis] Linea del epilogo 3, final nike."
+finale.epi.nike.4,"That's the business. Metis sells the cure and the wound.","[Analyst] Linea del epilogo 4, final nike."
 finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Linea de final 1.
 finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Linea de final 2.
 finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Linea de final 3.
 finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Linea de final 4.
 finale.end.gorgo.operative,"[gorgo] Operative, this one is for you.","[gorgo] Operativo, esto es para ti."
-finale.epi.gorgo.1,"[Metis] Epilogue line 1, ending gorgo.","[Metis] Linea del epilogo 1, final gorgo."
-finale.epi.gorgo.2,"[Analyst] Epilogue line 2, ending gorgo.","[Analyst] Linea del epilogo 2, final gorgo."
-finale.epi.gorgo.3,"[Metis] Epilogue line 3, ending gorgo.","[Metis] Linea del epilogo 3, final gorgo."
-finale.epi.gorgo.4,"[Analyst] Epilogue line 4, ending gorgo.","[Analyst] Linea del epilogo 4, final gorgo."
+finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. Palladion is thrilled.","[Metis] Linea del epilogo 1, final gorgo."
+finale.epi.gorgo.2,"Aigis will learn from this. The next contract will be bigger.","[Analyst] Linea del epilogo 2, final gorgo."
+finale.epi.gorgo.3,"Every body is a line in an invoice. Metis has never been so busy.","[Metis] Linea del epilogo 3, final gorgo."
+finale.epi.gorgo.4,"War is the only market that never closes, Operative.","[Analyst] Linea del epilogo 4, final gorgo."
