@@ -19,6 +19,7 @@ var _voice := ""  # the Dominant Voice, shown once _aigis > 0
 var _tick := ""  # habit just flagged to Aigis's profile
 var _tick_age := 99.0
 var _prev_counts := {}
+var _run_seen := false  # the first read only takes a baseline, so old events never tick
 const TICK_TIME := 2.0
 const ICON := int(HabitGlyphs.SIZE)  # px
 const ICON_STEP := 14
@@ -110,7 +111,8 @@ func _read_run() -> void:
 		return
 	_aigis = HudModel.aigis_weight(run.record.mission, Aigis.lethality_ratio(run.record))
 	_voice = str(run.plan.get("dominant", "")).to_upper()
-	var risen := HudModel.habits_risen(_prev_counts, run.tally.counts)
+	var risen := HudModel.habits_risen(_prev_counts, run.tally.counts) if _run_seen else []
+	_run_seen = true
 	_prev_counts = run.tally.counts.duplicate()
 	if _aigis > 0.0 and not risen.is_empty():
 		_tick = str(risen[0]).to_upper()

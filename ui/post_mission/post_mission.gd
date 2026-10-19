@@ -22,6 +22,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_age += delta
 	queue_redraw()
+	if _age > FIRST + strip.size() * STEP + 0.5:
+		set_process(false)  # everything has landed: nothing left to animate
 
 
 func _unhandled_input(e: InputEvent) -> void:
