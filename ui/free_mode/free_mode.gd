@@ -54,6 +54,10 @@ func _ready() -> void:
 	play.text = "PLAY"
 	play.pressed.connect(_play)
 	box.add_child(play)
+	var finale := Button.new()
+	finale.text = "FINALE"
+	finale.pressed.connect(_finale)
+	box.add_child(finale)
 	var back := Button.new()
 	back.text = "BACK"
 	back.pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU))
@@ -120,6 +124,14 @@ func _refresh() -> void:
 		return Aigis.LADDERS[p.habit][p.level - 1][1]))
 	_summary.text = "%s ON %s: AIGIS DEPLOYS (BUDGET %d)\n%s" % [preset.capitalize().to_upper(),
 		_mission_names[mission], plan.budget, "\n".join(steps).to_upper() if steps else "NOTHING"]
+
+
+## The finale for the picked Preset's record, then back here.
+func _finale() -> void:
+	var f := Control.new()
+	f.set_script(load("res://ui/finale/finale.gd"))
+	add_child(f)
+	f.start(record, scene_file_path)
 
 
 func _play() -> void:

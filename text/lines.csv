@@ -88,3 +88,46 @@ chatter.warn.spoofing.1,Heard HQ is tightening up on spoof types. (1),Dicen que 
 chatter.confirm.spoofing.1,HQ's new spoof measures are live. (1),Las nuevas medidas contra suplantacion estan activas. (1)
 chatter.warn.spoofing.2,Heard HQ is tightening up on spoof types. (2),Dicen que la base vigila a los de suplantacion. (2)
 chatter.confirm.spoofing.2,HQ's new spoof measures are live. (2),Las nuevas medidas contra suplantacion estan activas. (2)
+finale.debate.promachos.pallas,"[promachos] Debate line, ending pallas.","[promachos] Linea del debate, final pallas."
+finale.debate.promachos.nike,"[promachos] Debate line, ending nike.","[promachos] Linea del debate, final nike."
+finale.debate.promachos.gorgo,"[promachos] Debate line, ending gorgo.","[promachos] Linea del debate, final gorgo."
+finale.debate.nike.pallas,"[nike] Debate line, ending pallas.","[nike] Linea del debate, final pallas."
+finale.debate.nike.nike,"[nike] Debate line, ending nike.","[nike] Linea del debate, final nike."
+finale.debate.nike.gorgo,"[nike] Debate line, ending gorgo.","[nike] Linea del debate, final gorgo."
+finale.debate.pallas.pallas,"[pallas] Debate line, ending pallas.","[pallas] Linea del debate, final pallas."
+finale.debate.pallas.nike,"[pallas] Debate line, ending nike.","[pallas] Linea del debate, final nike."
+finale.debate.pallas.gorgo,"[pallas] Debate line, ending gorgo.","[pallas] Linea del debate, final gorgo."
+finale.debate.gorgo.pallas,"[gorgo] Debate line, ending pallas.","[gorgo] Linea del debate, final pallas."
+finale.debate.gorgo.nike,"[gorgo] Debate line, ending nike.","[gorgo] Linea del debate, final nike."
+finale.debate.gorgo.gorgo,"[gorgo] Debate line, ending gorgo.","[gorgo] Linea del debate, final gorgo."
+finale.debate.glaukopis.0,[glaukopis] The memories hold up at Spoofing level 0.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 0.
+finale.debate.glaukopis.1,[glaukopis] The memories hold up at Spoofing level 1.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 1.
+finale.debate.glaukopis.2,[glaukopis] The memories hold up at Spoofing level 2.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 2.
+finale.debate.glaukopis.3,[glaukopis] The memories hold up at Spoofing level 3.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 3.
+finale.end.pallas.1,[pallas] Ending line 1.,[pallas] Linea de final 1.
+finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Linea de final 2.
+finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Linea de final 3.
+finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Linea de final 4.
+finale.end.pallas.operative,"[pallas] Operative, this one is for you.","[pallas] Operativo, esto es para ti."
+finale.epi.pallas.1,"[Metis] Epilogue line 1, ending pallas.","[Metis] Linea del epilogo 1, final pallas."
+finale.epi.pallas.2,"[Analyst] Epilogue line 2, ending pallas.","[Analyst] Linea del epilogo 2, final pallas."
+finale.epi.pallas.3,"[Metis] Epilogue line 3, ending pallas.","[Metis] Linea del epilogo 3, final pallas."
+finale.epi.pallas.4,"[Analyst] Epilogue line 4, ending pallas.","[Analyst] Linea del epilogo 4, final pallas."
+finale.end.nike.1,[nike] Ending line 1.,[nike] Linea de final 1.
+finale.end.nike.2,[nike] Ending line 2.,[nike] Linea de final 2.
+finale.end.nike.3,[nike] Ending line 3.,[nike] Linea de final 3.
+finale.end.nike.4,[nike] Ending line 4.,[nike] Linea de final 4.
+finale.end.nike.operative,"[nike] Operative, this one is for you.","[nike] Operativo, esto es para ti."
+finale.epi.nike.1,"[Metis] Epilogue line 1, ending nike.","[Metis] Linea del epilogo 1, final nike."
+finale.epi.nike.2,"[Analyst] Epilogue line 2, ending nike.","[Analyst] Linea del epilogo 2, final nike."
+finale.epi.nike.3,"[Metis] Epilogue line 3, ending nike.","[Metis] Linea del epilogo 3, final nike."
+finale.epi.nike.4,"[Analyst] Epilogue line 4, ending nike.","[Analyst] Linea del epilogo 4, final nike."
+finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Linea de final 1.
+finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Linea de final 2.
+finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Linea de final 3.
+finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Linea de final 4.
+finale.end.gorgo.operative,"[gorgo] Operative, this one is for you.","[gorgo] Operativo, esto es para ti."
+finale.epi.gorgo.1,"[Metis] Epilogue line 1, ending gorgo.","[Metis] Linea del epilogo 1, final gorgo."
+finale.epi.gorgo.2,"[Analyst] Epilogue line 2, ending gorgo.","[Analyst] Linea del epilogo 2, final gorgo."
+finale.epi.gorgo.3,"[Metis] Epilogue line 3, ending gorgo.","[Metis] Linea del epilogo 3, final gorgo."
+finale.epi.gorgo.4,"[Analyst] Epilogue line 4, ending gorgo.","[Analyst] Linea del epilogo 4, final gorgo."
