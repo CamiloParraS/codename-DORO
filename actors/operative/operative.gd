@@ -215,9 +215,9 @@ func _physics_process(delta: float) -> void:
 		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
-		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
+		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
 	elif aiming:
-		model.rotation.y = lerp_angle(model.rotation.y, _yaw, 12 * delta)
+		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
 	var speed := Locomotion.speed(crouching, looks_walking())
 	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * speed, delta)
 	velocity.x = eased.x

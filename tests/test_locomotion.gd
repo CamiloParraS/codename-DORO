@@ -8,6 +8,15 @@ func suite_name() -> String:
 	return "locomotion"
 
 
+func test_heavier_tuned_values() -> void:
+	assert_eq(Locomotion.RUN, 4.8)
+	assert_eq(Locomotion.WALK, 1.9)
+	assert_eq(Locomotion.CROUCH, 1.3)
+	assert_eq(Locomotion.GET_GOING, 7.0)
+	assert_eq(Locomotion.SLOW_DOWN, 20.0)
+	assert_eq(Locomotion.TURN_RATE, 8.0)
+
+
 func test_speed_by_stance() -> void:
 	assert_eq(Locomotion.speed(false, false), Locomotion.RUN)
 	assert_eq(Locomotion.speed(false, true), Locomotion.WALK)
@@ -38,7 +47,7 @@ func test_move_starts_gradually_and_reaches_full_speed() -> void:
 	var v := Locomotion.move(Vector2.ZERO, Vector2.RIGHT * Locomotion.RUN, 1.0 / 60.0)
 	assert_true(v.length() < Locomotion.RUN * 0.3)  # not a snap from standstill
 	v = Locomotion.move(v, Vector2.RIGHT * Locomotion.RUN, 1.0 / 60.0)
-	for i in 18:  # a third of a second at 60 fps is enough to be at full speed
+	for i in 30:  # half a second at 60 fps is enough to be at full speed
 		v = Locomotion.move(v, Vector2.RIGHT * Locomotion.RUN, 1.0 / 60.0)
 	assert_true(v.length() > Locomotion.RUN * 0.95)
 	assert_true(v.length() < Locomotion.RUN)

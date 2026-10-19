@@ -1,15 +1,17 @@
 ## Node-free movement and look rules for the Operative.
 class_name Locomotion
 
-const RUN := 5.0
-const WALK := 2.0
-const CROUCH := 1.8
+const RUN := 4.8
+const WALK := 1.9
+const CROUCH := 1.3
 const PITCH_MIN := -1.1
 const PITCH_MAX := 0.5
-## Velocity easing, in 1/s: a run takes ~0.15 s to reach full speed; the sharper
+## Velocity easing, in 1/s: a run takes ~0.25 s to reach full speed; the sharper
 ## cut is for slowing (stop, run→walk) so releasing keys never feels slidey.
-const GET_GOING := 10.0
-const SLOW_DOWN := 16.0
+const GET_GOING := 7.0
+const SLOW_DOWN := 20.0
+## Body turn rate toward the move direction or facing, in 1/s.
+const TURN_RATE := 8.0
 
 
 static func speed(crouching: bool, walking: bool) -> float:
