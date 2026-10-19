@@ -20,7 +20,7 @@ var _tick := ""  # habit just flagged to Aigis's profile
 var _tick_age := 99.0
 var _prev_counts := {}
 const TICK_TIME := 2.0
-const ICON := 10  # px, habit glyph
+const ICON := int(HabitGlyphs.SIZE)  # px
 const ICON_STEP := 14
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
@@ -135,32 +135,9 @@ func _aigis_layer() -> void:
 		var hit := h == _tick.to_lower()
 		var col := HudPalette.WHITE if hit and pulse else (HudPalette.AIGIS if hit else HudPalette.CHROME_DIM)
 		col.a *= fade if hit else fade * 0.75
-		_habit_icon(h, Vector2(x0 + i * ICON_STEP, 32), col)
+		HabitGlyphs.draw(self, h, Vector2(x0 + i * ICON_STEP, 32), col)
 	var s := "+" + _tick
 	_t(Vector2(size.x - 8 - s.length() * 8.0, 56), s, Color(HudPalette.AIGIS, fade))
-
-
-## The six Habits as 10 px glyphs, drawn rather than imported: eye, crossed blades, reticle, drop arrow,
-## Z for asleep, signal wave.
-func _habit_icon(habit: String, p: Vector2, col: Color) -> void:
-	var m := ICON / 2.0
-	match habit:
-		"stealth":
-			draw_polyline(PackedVector2Array([p + Vector2(0, m), p + Vector2(m, m - 3), p + Vector2(ICON, m), p + Vector2(m, m + 3), p + Vector2(0, m)]), col, 1.0)
-			draw_rect(Rect2(p + Vector2(m - 1, m - 1), Vector2(2, 2)), col)
-		"combat":
-			draw_line(p, p + Vector2(ICON, ICON), col, 1.0)
-			draw_line(p + Vector2(ICON, 0), p + Vector2(0, ICON), col, 1.0)
-		"headshots":
-			draw_arc(p + Vector2(m, m), m - 1, 0, TAU, 16, col, 1.0)
-			draw_rect(Rect2(p + Vector2(m - 1, m - 1), Vector2(2, 2)), col)
-		"takedowns":
-			draw_polyline(PackedVector2Array([p + Vector2(1, 2), p + Vector2(m, ICON - 3), p + Vector2(ICON - 1, 2)]), col, 1.0)
-			draw_rect(Rect2(p + Vector2(0, ICON - 1), Vector2(ICON, 1)), col)
-		"downs":
-			draw_polyline(PackedVector2Array([p + Vector2(1, 1), p + Vector2(ICON - 1, 1), p + Vector2(1, ICON - 1), p + Vector2(ICON - 1, ICON - 1)]), col, 1.0)
-		"spoofing":
-			draw_polyline(PackedVector2Array([p + Vector2(0, m), p + Vector2(2, 1), p + Vector2(5, ICON - 1), p + Vector2(8, 1), p + Vector2(ICON, m)]), col, 1.0)
 
 
 func _voiceprints() -> void:
