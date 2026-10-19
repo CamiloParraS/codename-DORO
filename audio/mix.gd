@@ -18,16 +18,21 @@ const STREAMS := {
 	&"ambience": "res://assets/audio/ambience_hum.ogg",
 	&"footstep": "res://assets/audio/sfx_footstep.ogg",
 	&"knock": "res://assets/audio/sfx_knock.ogg",
+	&"sting_question": "res://assets/audio/sting_question.ogg",  # Kenney picks, provisional until auditioned
+	&"sting_alert": "res://assets/audio/sting_alert.ogg",
+	&"sting_relief": "res://assets/audio/sting_relief.ogg",
 }
 
 var _vol := {}             # bus -> linear 0..1
 var _duck := 0.0           # current music duck, dB (0 or MusicState.DUCK_DB)
 var _duck_to := 0.0
 var _state := MusicState.new()
+var _beat := AlertBeat.new()
 var _music := {}           # track -> AudioStreamPlayer
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS  # the hit-stop must end (and the stings play) while paused
 	setup_buses()
 	for t in [&"alert", &"evasion"]:
 		_music[t] = _looped(t, MUSIC)
@@ -39,6 +44,17 @@ func _process(delta: float) -> void:
 	for g in get_tree().get_nodes_in_group("guards"):
 		if not g.is_down():
 			states.append(g.alert.state)
+	var now := Time.get_ticks_msec() / 1000.0
+	var cue := _beat.update(states, now)
+	if cue != &"":
+		var p := AudioStreamPlayer.new()
+		p.stream = load(STREAMS[&"sting_" + cue])
+		p.bus = UI
+		p.finished.connect(p.queue_free)
+		add_child(p)
+		p.play()
+	var op := get_tree().get_first_node_in_group("operative")
+	Engine.time_scale = _beat.scale(now, get_tree().paused or (op != null and op.health.dead()))
 	var want := _state.update(delta, states)
 	for t in _music:
 		var p: AudioStreamPlayer = _music[t]
@@ -78,6 +94,10 @@ func codec_call(playing: bool) -> void:
 func advance_duck(delta: float) -> void:
 	_duck = move_toward(_duck, _duck_to, DUCK_SPEED * delta)
 	_apply(MUSIC)
+
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0
 
 
 ## A one-shot on the SFX bus, 3D at `at`'s position.

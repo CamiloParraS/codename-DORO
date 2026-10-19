@@ -46,6 +46,8 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 - Sci-fi Sounds and Interface Sounds by Kenney, https://kenney.nl, CC0 1.0
   - Used in `assets/audio/`: Sci-fi Sounds `spaceEngineLow_000` (ambience_hum), `engineCircular_000` (music_alert, placeholder), `computerNoise_000` (music_evasion, placeholder), `impactMetal_000` (sfx_knock); Interface Sounds `drop_002` (sfx_footstep)
+- "Digital Audio" by Kenney, https://kenney.nl/assets/digital-audio, CC0 1.0
+  - Used in `assets/audio/`: `twoTone1` (sting_alert); Interface Sounds `question_002` (sting_question), `confirmation_002` (sting_relief). Provisional picks, not yet auditioned.
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
 - Freesound sounds (one line per sound: "<title>" by <author>, https://freesound.org/s/<id>/, <CC0 | CC BY 4.0>)
 
