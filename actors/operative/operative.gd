@@ -3,6 +3,7 @@
 extends CharacterBody3D
 
 const KNOCK_COOLDOWN := 1.0
+const STEP_EVERY := 0.35  # seconds between loud footstep sounds
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 2.0
 const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
@@ -37,6 +38,7 @@ var shoulder := 1.0  # +1 right shoulder, -1 left
 var camera: Camera3D
 
 var _knock_left := 0.0
+var _step_left := 0.0
 var _choke_left := 0.0
 var choke_time := CHOKE_TIME   # Takedowns L3 slows it
 var choke_noise := 0.0         # Takedowns L3: metres the struggle is heard
@@ -156,6 +158,7 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("knock") and _knock_left <= 0.0:
 		_knock_left = KNOCK_COOLDOWN
 		Guard.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
+		Mix.sfx_at(self, &"knock")
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
 	elif e.is_action_pressed("kill_takedown") and _choke_left <= 0.0 and not carrying:
@@ -213,6 +216,10 @@ func _physics_process(delta: float) -> void:
 	_knock_left -= delta
 	if moving and not looks_walking() and not crouching:  # running is loud
 		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
+		_step_left -= delta
+		if _step_left <= 0.0:
+			_step_left = STEP_EVERY
+			Mix.sfx_at(self, &"footstep")
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), 12 * delta)
