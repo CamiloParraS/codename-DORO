@@ -57,6 +57,18 @@ static func habits_risen(before: Dictionary, now: Dictionary) -> Array:
 	return out
 
 
+## Gorgo's deception: while she is the Dominant Voice the HUD hides the early part of a detection arc,
+## so a guard noticing you looks calm until its meter passes GORGO_HIDE. Only the warning is delayed:
+## guards, alerts and ALERT arcs are untouched, and the Voice tag stays lit as the tell.
+const GORGO_HIDE := 0.45
+
+
+static func deceive(fill: float, dominant: String) -> float:
+	if dominant.to_lower() == "gorgo" and fill >= 0.0 and fill < GORGO_HIDE:
+		return -1.0
+	return fill
+
+
 ## Chrome to Aigis cyan as `aigis` (0..1) rises, faint to full as the meter fills (width grows too, so
 ## hue is not the only cue); red when alerted.
 static func arc_color(fill: float, alerted: bool, aigis := 1.0) -> Color:

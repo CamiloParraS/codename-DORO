@@ -174,7 +174,7 @@ func _voiceprints() -> void:
 
 func _arcs(fwd: Vector3, right: Vector3) -> void:
 	for g in get_tree().get_nodes_in_group("guards"):
-		var fill := HudModel.arc_fill(g.alert, g.seen_rate > 0.0)
+		var fill := HudModel.deceive(HudModel.arc_fill(g.alert, g.seen_rate > 0.0), _voice if _aigis > 0.0 else "")
 		if fill < 0.0:
 			continue
 		var ang := HudModel.screen_angle(g.global_position - _operative.global_position, fwd, right)

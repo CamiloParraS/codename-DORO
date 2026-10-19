@@ -71,3 +71,11 @@ func test_habits_risen_names_each_habit_once() -> void:
 	assert_eq(risen.size(), 2)
 	assert_true("headshots" in risen)
 	assert_true("combat" in risen)
+
+
+func test_gorgo_hides_only_the_early_arc() -> void:
+	assert_eq(HudModel.deceive(0.2, "GORGO"), -1.0)
+	assert_eq(HudModel.deceive(HudModel.GORGO_HIDE, "gorgo"), HudModel.GORGO_HIDE)
+	assert_eq(HudModel.deceive(1.0, "gorgo"), 1.0)
+	assert_eq(HudModel.deceive(0.2, "nike"), 0.2)
+	assert_eq(HudModel.deceive(-1.0, "gorgo"), -1.0)
