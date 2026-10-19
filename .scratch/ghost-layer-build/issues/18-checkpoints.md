@@ -6,9 +6,9 @@
 
 **Blocked by:** 17, 14, 11
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] One Checkpoint per objective step, held in memory only (in memory, one at Mission start; the per-step calls to `MissionRun.take_checkpoint()` land with objective steps in 22)
-- [ ] The snapshot holds objective step, position, ammo, Scanner charges, Magazines, Mission Habit tally, Lethality so far, Voiceprints and flags, dead guards and body positions (all but objective step, Scanner charges and Magazines, which don't exist yet: 22, 27)
+- [x] One Checkpoint per objective step, held in memory only (in memory, one at Mission start; the per-step calls to `MissionRun.take_checkpoint()` land with objective steps in 22)
+- [x] The snapshot holds objective step, position, ammo, Scanner charges, Magazines, Mission Habit tally, Lethality so far, Voiceprints and flags, dead guards and body positions (all but objective step, Scanner charges and Magazines, which don't exist yet: 22, 27)
 - [x] On restore, dead guards stay dead and bodies stay put; every living guard (Neutralized too) returns to their post with the alert cleared; Countermeasures stay
 - [x] Death and the pause menu's "Restart from checkpoint" both restore

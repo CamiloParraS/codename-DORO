@@ -51,3 +51,24 @@ func test_a_target_flees_only_from_alert_on() -> void:
 	assert_true(Guard.flees(true, GuardAlert.State.ALERT))
 	assert_true(Guard.flees(true, GuardAlert.State.EVASION))
 	assert_false(Guard.flees(false, GuardAlert.State.ALERT), "an ordinary guard never flees")
+
+
+## Extraction waits for every Target: alive and left behind blocks it, dead clears it (a carried one too, by the same check).
+func test_targets_left_until_killed_or_carried() -> void:
+	var run := MissionRun.new()
+	run.record = Aigis.new_record()
+	run.record.mission = 1
+	var t: Guard = load("res://actors/guard/guard.tscn").instantiate()
+	t.add_to_group("targets")
+	_root().add_child(run)
+	_root().add_child(t)
+	assert_eq(run._targets_left().size(), 1)
+	assert_true(run.objective().begins_with("KILL OR CARRY OUT") or run.step < run._steps().size())
+	t.dead = true
+	assert_eq(run._targets_left().size(), 0, "a kill completes it on the spot")
+	t.free()
+	run.free()
+
+
+func _root() -> Node:
+	return (Engine.get_main_loop() as SceneTree).root

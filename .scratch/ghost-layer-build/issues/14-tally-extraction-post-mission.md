@@ -11,7 +11,7 @@
 - [x] Habit triggers from the spec's "Measured by" column add points to a live Mission tally (Lethality joins later), shown in the F3 overlay
 - [x] Reaching the Extraction point with objectives done ends the Mission
 - [x] The post-Mission screen shows a 0–3 icon per Habit with rise/fall arrows, with no raw numbers and no Lethality, in E's white/grey
-- [ ] Completing calls complete_mission; aborting applies nothing
+- [x] Completing calls complete_mission; aborting applies nothing
 
 ## Comments
 

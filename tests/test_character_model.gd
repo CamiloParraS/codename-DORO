@@ -118,5 +118,7 @@ func test_the_pistol_plays_its_own_clips() -> void:
 	m.play("idle")
 	assert_eq(anim.current_animation, "pistol_idle", "the pistol idle, not the rifle's")
 	m.play("run")
-	assert_eq(anim.current_animation, "run", "no pistol run take: the shared one covers")
+	assert_eq(anim.current_animation, "pistol_run", "the pistol has its own run take")
+	m.play("crouch_walk")
+	assert_eq(anim.current_animation, "crouch_walk", "no pistol crouch-walk take: the shared one covers")
 	m.free()
