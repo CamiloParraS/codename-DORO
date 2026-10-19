@@ -19,7 +19,8 @@ func _ready() -> void:
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	_lines = _build_lines()
 	for l: String in _lines:
-		_blips.append(VoiceBlip.new(l, VoiceBlip.voice_of(l))  # objectives and headings have no Voice: shown at once)
+		# objectives and headings have no Voice: shown at once
+		_blips.append(VoiceBlip.new(l, VoiceBlip.voice_of(l)))
 
 
 func _process(delta: float) -> void:
