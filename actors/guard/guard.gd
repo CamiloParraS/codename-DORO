@@ -16,6 +16,7 @@ const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down g
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
+const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MARKS := ["", "?", "!", "?"]
@@ -60,6 +61,8 @@ var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
+var _look_left := 0.0    # seconds left of the look-around clip
+var _prev_state := GuardAlert.State.PATROL
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
@@ -77,6 +80,10 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	_look_left -= delta
+	if GuardAlert.flinches(_prev_state, alert.state):
+		model.react("startle", GuardAlert.FLINCH, 2.2)  # a pose only: the tree and shooting never wait on it
+	_prev_state = alert.state
 	model.play(CharacterModel.guard_clip(is_down(), Vector2(velocity.x, velocity.z).length()))
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	if is_down():
@@ -531,6 +538,9 @@ func search(delta: float, speed: float, sweep: float) -> void:
 	elif goal() != alert.last_known:
 		face(alert.last_known, delta)  # at a Ladder's foot, watching the roof
 	else:
+		if _look_left <= 0.0 and alert.state == GuardAlert.State.EVASION:
+			model.react("look", LOOK_CLIP, 1.0)
+			_look_left = LOOK_CLIP
 		rotation.y += sin(_clock * 1.1) * sweep * delta
 
 

@@ -384,3 +384,11 @@ func test_downs_l2_leaves_alerted_guards_and_unseen_bodies_alone() -> void:
 	a = _suspicious()
 	assert_eq(a.see_down(DT, 0.0, SPOT, true), "", "no sight, no alert")
 	assert_eq(a.state, S.SUSPICION)
+
+
+func test_flinch_fires_on_entering_alert_only_and_is_quick() -> void:
+	assert_true(GuardAlert.flinches(S.PATROL, S.ALERT))
+	assert_true(GuardAlert.flinches(S.EVASION, S.ALERT))
+	assert_false(GuardAlert.flinches(S.ALERT, S.ALERT))
+	assert_false(GuardAlert.flinches(S.PATROL, S.SUSPICION))
+	assert_true(GuardAlert.FLINCH < 0.5, "well under half a second")

@@ -13,6 +13,7 @@ const LOSE_TIME := 3.0     # seconds out of sight before ALERT drops to EVASION
 const SEARCH_TIME := 12.0  # seconds of searching the last known position before back to patrol
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
+const FLINCH := 0.35       # seconds of the startle on going to alert; cosmetic, never holds up the response
 const ORDER_REASONS := {all_clear = "%s called all clear", go = "%s sent it to check a place", hold = "%s told it to hold position"}
 
 var state := State.PATROL
@@ -149,6 +150,11 @@ func stand_down(who: String, order := "all_clear") -> String:
 	if state == State.PATROL:
 		return "" if order == "all_clear" else why
 	return _go(State.PATROL, why)
+
+
+## Does going from `from` to `to` earn the guard a flinch: entering ALERT.
+static func flinches(from: State, to: State) -> bool:
+	return to == State.ALERT and from != State.ALERT
 
 
 func _go(to: State, reason: String) -> String:

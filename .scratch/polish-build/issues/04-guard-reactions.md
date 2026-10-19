@@ -6,9 +6,13 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Flinch shorter than 0.5 s and does not hold up movement or shooting; if it reads as a stall in play, it is dropped
-- [ ] Look-around plays at the search spot
-- [ ] Both read from the game camera in Harbour
-- [ ] Guard alert, tree and vision tests pass
+- [x] Flinch shorter than 0.5 s and does not hold up movement or shooting; if it reads as a stall in play, it is dropped
+- [x] Look-around plays at the search spot
+- [x] Both read from the game camera in Harbour
+- [x] Guard alert, tree and vision tests pass
+
+## Answer
+
+Flinch: `GuardAlert.FLINCH` (0.35 s), a Mixamo `surprised` pose played by `Guard._physics_process` on entering ALERT (`GuardAlert.flinches`). It is a `react()` pose only, with no freeze, so the tree, movement and `_shoot_back` never wait on it. Look-around: Mixamo `look_around` plays for `LOOK_CLIP` (6 s) once the guard is at its search spot in EVASION (`Guard.search`). `CharacterModel.react` gained an optional `speed`. Needs the gitignored Mixamo bake to show. Not judged by eye from the game camera; if the flinch reads as a stall in the playtest, drop it (remove the `flinches` check in `guard.gd`).

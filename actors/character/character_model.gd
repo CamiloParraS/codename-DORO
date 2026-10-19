@@ -24,6 +24,7 @@ const MIXAMO_CLIPS := {
 	"crouch_walk": "rifle_crouch_walk", "takedown": "elbow_punching",
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reload",
 	"carry": "carrying", "down": "sleeping_idle",
+	"startle": "surprised", "look": "look_around",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
 ## crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
@@ -154,15 +155,16 @@ func _clips() -> AnimationLibrary:
 
 
 ## Plays a one-shot over whatever the model was doing, squeezed into `seconds` (0 = its own length).
+## speed > 0 plays the start of a long clip at that speed for `seconds` instead of squeezing it whole.
 ## Does nothing without the Mixamo bake.
-func react(clip: String, seconds := 0.0) -> void:
+func react(clip: String, seconds := 0.0, speed := 0.0) -> void:
 	clip = _swapped(clip)
 	if not _anim.has_animation(clip):
 		return
 	var length := _anim.get_animation(clip).length
 	_busy = seconds if seconds > 0.0 else length
 	_clip = clip
-	_anim.play(clip, 0.1, length / _busy)
+	_anim.play(clip, 0.1, speed if speed > 0.0 else length / _busy)
 
 
 func play(clip: String) -> void:
