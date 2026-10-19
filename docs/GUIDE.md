@@ -16,42 +16,6 @@ Personal reference: how this project is planned and built, where things live, an
 
 > Godot's FileSystem panel hides folders that start with a dot (`.scratch`) and folders with a `.gdignore` (`_raw`). Open them from Explorer or VS Code.
 
-## The flow
-
-```
-/wayfinder (decision tickets)  ← YOU ARE HERE
-   └─ prototypes and grillings, one ticket per session
-/to-spec      the map collapses into a buildable spec
-/to-tickets   the spec splits into build tickets
-/implement    one ticket per session (/clear between each)
-   └─ /tdd + /code-review inside
-/retro        after the build, improve the environment
-```
-
-## How to work a ticket
-
-1. `/clear` (a new session for each ticket).
-2. `/wayfinder .scratch/ghost-layer/map.md <ticket>`. Leave out the ticket to take the next one on the frontier.
-3. Wayfinder calls `/prototype` or the grilling itself. Prototypes are tickets too: **always enter through `/wayfinder`** so the decision gets recorded in the map.
-4. At the end the ticket is `Status: resolved` and the map has its pointer.
-
-**Parallel:** yes, if they don't touch the same thing. A prototype (Godot) + a grilling (conversation only) = OK. Two prototypes at once = NO (same editor and project through the MCP).
-
-**Prototypes** live on their own `prototype/<name>` branch. They're throwaway code: the answer gets carried into the real code, not the prototype itself.
-
-## Next steps (as of 2026-10-09)
-
-Done: **Core stealth feel prototype** (`04`), with the prototype on branch `prototype/stealth-core`.
-
-Frontier:
-1. **Spoofing prototype** (`05`): unblocked by 04.
-2. **PSX look and HUD prototype** (`06`): don't run it alongside 05 (both are prototypes).
-3. **Combat verbs and Lethality** (`07`): short, a grilling, so it can run alongside either. It unblocks the profile ticket.
-
-Then: profile (`08`) → five Voices (`09`) and campaign (`10`) → narrative (`11`). When there are no tickets left and the fog is cleared: `/to-spec`.
-
-**Planning budget:** about 4 days. Anything not decided by then gets a default in the spec.
-
 ## Assets: the flow of a download
 
 1. Download into `_raw/<source>/` (the zip, the FBX, whatever arrives).
