@@ -6,6 +6,7 @@ extends Node
 
 
 func _ready() -> void:
+	await get_tree().process_frame  # the root is busy setting up children during _ready; tree-bound tests need it settled
 	var want := OS.get_cmdline_user_args()
 	var suites := []
 	for f in DirAccess.get_files_at("res://tests"):
