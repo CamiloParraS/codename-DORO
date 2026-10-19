@@ -51,6 +51,7 @@ var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
 var head_check_level := 0        # Stealth Countermeasure: how often it glances back before turning (Telegraph)
 var rng := RandomNumberGenerator.new()  # seed it for a repeatable run
+var radio_check_level := 0       # Spoofing Countermeasure: how often it stops to call HQ back (Telegraph)
 var instant_down := false       # Downs L2: seeing a Down guard raises the alert, no check
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
@@ -63,6 +64,7 @@ var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
+var _radio_clock := 0.0
 var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
 var _tele_icon := ""
 var _look_left := 0.0   # seconds left of the look-around clip
@@ -502,6 +504,14 @@ func patrol(delta: float) -> void:
 			_turn_clock = 0.0
 			_glance = 1.5
 			_glance_yaw = rotation.y + PI
+	if radio_check_level > 0:
+		_radio_clock += delta
+		if _radio_clock >= Telegraph.RADIO_CHECK_EVERY:
+			_radio_clock = 0.0
+			if Telegraph.radio_check(radio_check_level, rng):  # Spoofing: stops mid-patrol to call HQ back
+				_glance = Telegraph.DURATION
+				_glance_yaw = rotation.y
+				telegraph("radio_check", "((?))", "look", "HQ, confirm that last transmission.")
 	if _pause > 0.0:
 		_pause -= delta
 		_face_stop(_stop, delta)

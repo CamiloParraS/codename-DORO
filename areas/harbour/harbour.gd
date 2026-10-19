@@ -94,7 +94,8 @@ func _equip(g: Guard) -> void:
 	g.body_hits_to_kill = Deployment.body_hits_to_kill(deployed)
 	g.turn_every = Deployment.turn_around_every(deployed)
 	g.head_check_level = Deployment.head_check_level(deployed)
-	g.instant_down = Deployment.instant_alert_on_down(deployed)
+	g.radio_check_level = Deployment.radio_check_level(deployed)
+	g.instant_down =Deployment.instant_alert_on_down(deployed)
 
 
 ## Takedowns L2: every second patrolling guard walks the first one's route, starting beside it.
