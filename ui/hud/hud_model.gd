@@ -37,9 +37,9 @@ static func screen_angle(offset: Vector3, forward: Vector3, right: Vector3) -> f
 	return atan2(offset.dot(right), offset.dot(forward)) - PI / 2
 
 
-## White to yellow as the meter fills; red when alerted.
+## Faint to full Aigis cyan as the meter fills (width grows too, so hue is not the only cue); red when alerted.
 static func arc_color(fill: float, alerted: bool) -> Color:
-	var c := Color(1, 0.2, 0.2) if alerted else Color.WHITE.lerp(Color(1, 0.85, 0.2), fill)
+	var c: Color = HudPalette.DANGER if alerted else HudPalette.AIGIS
 	c.a = 0.35 + 0.65 * fill
 	return c
 

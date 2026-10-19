@@ -228,7 +228,7 @@ func _guard(guard_name: String) -> Node3D:
 	return null
 
 
-# --- Drawing: HUD E's white/grey -----------------------------------------------------------------
+# --- Drawing: HudPalette chrome -----------------------------------------------------------------
 
 func _draw() -> void:
 	if not menu:
@@ -237,11 +237,11 @@ func _draw() -> void:
 	var c := size / 2
 	var opts := menu.options()
 	var n := opts.size()
-	_centered(c + Vector2(0, -R_OUT - 30), _crumb(), Color(1, 1, 1, 0.85))
-	_centered(c + Vector2(0, 4), STEP_TITLES[menu.step], Color.WHITE)
-	_centered(c + Vector2(0, R_OUT + 34), "LMB OK  RMB BACK  Q CLOSE", Color(1, 1, 1, 0.6))
+	_centered(c + Vector2(0, -R_OUT - 30), _crumb(), HudPalette.CHROME)
+	_centered(c + Vector2(0, 4), STEP_TITLES[menu.step], HudPalette.WHITE)
+	_centered(c + Vector2(0, R_OUT + 34), "LMB OK  RMB BACK  Q CLOSE", HudPalette.CHROME_DIM)
 	if n == 0:
-		_centered(c + Vector2(0, 20), "NO VOICEPRINTS", Color(0.7, 0.7, 0.7))
+		_centered(c + Vector2(0, 20), "NO VOICEPRINTS", HudPalette.CHROME_DIM)
 		return
 	var hover := _hover()
 	var step := TAU / n
@@ -250,7 +250,7 @@ func _draw() -> void:
 		var on := i == hover
 		var gap := 0.04 if n > 1 else 0.0
 		draw_arc(c, (R_IN + R_OUT) / 2, mid - step / 2 + gap, mid + step / 2 - gap, 24,
-			Color(1, 1, 1, 0.75) if on else Color(0.55, 0.55, 0.55, 0.45), R_OUT - R_IN)
+			Color(HudPalette.CHROME, 0.8) if on else Color(HudPalette.CHROME, 0.25), R_OUT - R_IN)
 		var label: String = ("%d %s" % [i + 1, opts[i][0]]) if i < 9 else opts[i][0]
 		var dir := Vector2.from_angle(mid)
 		var p := c + dir * (R_OUT + 8) + Vector2(0, 4 + 4 * dir.y)
@@ -258,9 +258,9 @@ func _draw() -> void:
 			p.x -= label.length() * 8
 		elif dir.x <= 0.2:
 			p.x -= label.length() * 4
-		_t(p, label, Color.WHITE if on else Color(0.75, 0.75, 0.75))
+		_t(p, label, HudPalette.WHITE if on else HudPalette.CHROME_DIM)
 	if _pointer.length() > 12.0:
-		draw_circle(c + _pointer.normalized() * (R_IN - 6), 2.5, Color.WHITE)
+		draw_circle(c + _pointer.normalized() * (R_IN - 6), 2.5, HudPalette.WHITE)
 
 
 func _crumb() -> String:
@@ -281,5 +281,6 @@ func _centered(pos: Vector2, s: String, col: Color) -> void:
 
 
 func _t(pos: Vector2, s: String, col: Color) -> void:
-	draw_string(_font, pos + Vector2(1, 1), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0, 0, 0, col.a))
+	for o in [Vector2(1, 1), Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1)]:  # same 4-way outline as hud.gd
+		draw_string(_font, pos + o, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0, 0, 0, col.a))
 	draw_string(_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)

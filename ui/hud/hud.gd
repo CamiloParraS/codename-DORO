@@ -1,21 +1,22 @@
 ## HUD E (Peace Walker side strips) on a 640x360 logical canvas, drawn by hand: detection arcs around
 ## the screen centre, red edge flash on alert, ALERT/EVASION strip with stance and empty item/weapon
-## cards on the right, life bar on the left, compass top-right. Lifted from the PSX look prototype.
+## cards on the right, life bar on the left, voiceprints top-right. Lifted from the PSX look prototype.
 ## Lives on CanvasLayer 1 so the banding pass on layer 0 does not touch it.
 extends Control
 
 const PIP_COLUMN := 48.0  # px tall, weapon card
 const SUPPRESSOR_Y := 80  # px down the weapon card
 const RESERVE_Y := 92
-const RED := Color(1, 0.22, 0.2)
-const ORANGE := Color(1, 0.6, 0.15)
 const RING := 96.0
 const FLASH_TIME := 1.0
 
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
 var _flash := 0.0
+var _phase_name := ""  # last phase drawn, to time the chip's entrance
+var _phase_age := 0.0
 var _was_alert := {}  # guard -> was in ALERT last frame
 var _font: FontFile
+var _digits: FontFile  # VT323, the big numbers
 var _crosshairs := {}  # file name -> texture
 var _operative: Node3D
 var _subs := Subtitles.new()
@@ -28,12 +29,17 @@ func _ready() -> void:
 	_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	_font.hinting = TextServer.HINTING_NONE
 	_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	_digits = load("res://assets/fonts/vt323_regular.ttf")
+	_digits.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	_digits.hinting = TextServer.HINTING_NONE
+	_digits.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_to_group("radio_log")
 
 
 func _process(delta: float) -> void:
 	_flash = maxf(_flash - delta / FLASH_TIME, 0.0)
+	_phase_age += delta
 	_subs.tick(delta)
 	for g in get_tree().get_nodes_in_group("guards"):
 		var now: bool = g.alert.state == GuardAlert.State.ALERT
@@ -47,7 +53,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	if _flash > 0.0:
-		var c := Color(RED, _flash * 0.8)
+		var c := Color(HudPalette.DANGER, _flash * _flash * 0.8)  # squared: hits hard, then eases out
 		var w := 8.0
 		draw_rect(Rect2(0, 0, size.x, w), c)
 		draw_rect(Rect2(0, size.y - w, size.x, w), c)
@@ -65,11 +71,11 @@ func _draw() -> void:
 		draw_texture(tex, (size / 2 - tex.get_size() / 2).round())
 	_left()
 	_right()
-	_compass(fwd, right)
+	_phase()
 	_voiceprints()
 	_subtitles()
 	if _operative.prompt != "":
-		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, Color.WHITE)
+		_t(Vector2(size.x / 2 - _operative.prompt.length() * 4, size.y - 60), _operative.prompt, HudPalette.WHITE)
 
 
 ## Radio line from a guard (call_group "radio_log").
@@ -82,15 +88,17 @@ func _subtitles() -> void:
 	for l in _subs.lines:
 		var a := Subtitles.alpha(l["age"])
 		var s: String = "%s: %s" % [l["who"], l["text"]]
-		_t(Vector2(size.x / 2 - s.length() * 4, y), s, Color(1, 1, 1, a))
+		_t(Vector2(size.x / 2 - s.length() * 4, y), s, Color(HudPalette.CHROME, a))
 		y += 12.0
 
 
 func _voiceprints() -> void:
-	var p := Vector2(size.x - 112, 78)
-	_t(p, "VP", Color(1, 1, 1, 0.85))
+	if _operative.voiceprints.held.is_empty():  # a bare "VP" with nothing under it is noise
+		return
+	var p := Vector2(size.x - 42, 16)  # top right, where the compass was; Aigis cues will share this corner
+	_t(p, "VP", HudPalette.CHROME_DIM)
 	for i in _operative.voiceprints.held.size():
-		_t(p + Vector2(0, 10 * (i + 1)), _operative.voiceprints.held[i], Color.WHITE)
+		_t(p + Vector2(0, 10 * (i + 1)), _operative.voiceprints.held[i], HudPalette.CHROME)
 
 
 func _arcs(fwd: Vector3, right: Vector3) -> void:
@@ -108,34 +116,56 @@ func _left() -> void:
 	var lb := Rect2(10, size.y - 104, 7, 86)
 	draw_rect(lb, Color(0.3, 0.3, 0.3, 0.6))
 	var lh := lb.size.y * life
-	draw_rect(Rect2(lb.position.x, lb.end.y - lh, lb.size.x, lh), Color.WHITE if life > 0.4 else RED)
-	_vt(Vector2(30, lb.end.y), "OPERATIVE", Color(1, 1, 1, 0.85))
+	draw_rect(Rect2(lb.position.x, lb.end.y - lh, lb.size.x, lh), HudPalette.CHROME if life > 0.4 else HudPalette.DANGER)
+	_vt(Vector2(30, lb.end.y), "OPERATIVE", HudPalette.CHROME)
 
 
 func _right() -> void:
 	var sx := size.x - 42
-	var ph := HudModel.phase(get_tree().get_nodes_in_group("guards").map(func(g): return g.alert))
-	if ph[0] != "":
-		_vt(Vector2(sx + 22, 98), "%s %05.2f" % ph, RED if ph[0] == "ALERT" else ORANGE)
-	draw_rect(Rect2(sx, 104, 34, 24), Color(0, 0, 0, 0.4))
 	_stance(Rect2(sx + 9, 105, 16, 22))
-	draw_rect(Rect2(sx, 132, 34, 74), Color(0, 0, 0, 0.55))            # item card
 	var it: Items = _operative.items
 	var live: bool = it.scanning() or _operative.throwing
-	_t(Vector2(sx + 3, 144), it.label(), ORANGE if live else Color.WHITE)
-	_t(Vector2(sx + 9, 164), "%02d" % it.count(), Color.WHITE if it.count() > 0 else RED)
-	var wc := Rect2(sx, 210, 34, size.y - 220)
-	draw_rect(wc, Color(0, 0, 0, 0.55))  # weapon card
+	_t(Vector2(sx + 3, 144), it.label(), HudPalette.WHITE if live else HudPalette.CHROME)
+	_t(Vector2(sx + 9, 164), "%02d" % it.count(), HudPalette.CHROME if it.count() > 0 else HudPalette.DANGER)
+	var wc := Rect2(sx, 210, 34, size.y - 220)  # weapon column, no backing: the text outline carries contrast
 	var gun: Gun = _operative.gun()
-	_t(wc.position + Vector2(3, 12), gun.label, Color.WHITE)
+	_t(wc.position + Vector2(3, 12), gun.label, HudPalette.CHROME)
 	var lit := HudModel.pips_lit(gun.loaded, gun.load_size, gun.pip_count)
 	var pip_h := PIP_COLUMN / gun.pip_count  # the column is a fixed height, 4 or 6 pips
 	for i in gun.pip_count:  # pip column, top pip is the next round
 		var full: bool = i >= gun.pip_count - lit
-		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * pip_h, 12, pip_h - 4), Color.WHITE if full else Color(1, 1, 1, 0.2))
+		draw_rect(Rect2(wc.position.x + 11, wc.position.y + 20 + i * pip_h, 12, pip_h - 4), HudPalette.CHROME if full else Color(1, 1, 1, 0.2))
 	if gun.suppressor_max >= 0:  # shots left on the suppressor
-		_t(wc.position + Vector2(3, SUPPRESSOR_Y), "S%02d" % gun.suppressor, Color.WHITE if gun.suppressed() else RED)
-	_t(wc.position + Vector2(9, RESERVE_Y), "%02d" % gun.reserve, ORANGE if gun.reloading() else Color.WHITE)
+		_t(wc.position + Vector2(3, SUPPRESSOR_Y), "S%02d" % gun.suppressor, HudPalette.CHROME if gun.suppressed() else HudPalette.DANGER)
+	_t(wc.position + Vector2(9, RESERVE_Y), "%02d" % gun.reserve, HudPalette.WHITE if gun.reloading() else HudPalette.CHROME_DIM)
+
+
+## The one container on the HUD, top centre. ALERT is a solid red chip; EVASION is an outlined chip with a
+## bar draining to the end of the search, so the two differ by shape and motion as well as hue.
+func _phase() -> void:
+	var ph := HudModel.phase(get_tree().get_nodes_in_group("guards").map(func(g): return g.alert))
+	if ph[0] != _phase_name:
+		_phase_name = ph[0]
+		_phase_age = 0.0
+	if ph[0] == "":
+		return
+	var alert: bool = ph[0] == "ALERT"
+	var secs := str(ceili(ph[1]))  # whole seconds: the hundredths were noise at a glance
+	var secs_w := _digits.get_string_size(secs, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
+	var r := Rect2(0, 10, ph[0].length() * 8 + secs_w + 22, 22)
+	r.position.x = roundf((size.x - r.size.x) / 2)
+	var pop := clampf(_phase_age / 0.2, 0.0, 1.0)  # EVASION fades in over 0.2 s
+	if alert:  # two hard flickers on arrival, in step with the edge flash
+		var lit: bool = _phase_age > 0.32 or int(_phase_age * 12.5) % 2 == 0
+		draw_rect(r, HudPalette.DANGER if lit else HudPalette.DANGER.darkened(0.6))
+	else:
+		draw_rect(r, Color(0, 0, 0, 0.5 * pop))
+		draw_rect(r, Color(HudPalette.EVASION, pop), false, 1.0)
+		var left: float = clampf(ph[1] / GuardAlert.SEARCH_TIME, 0.0, 1.0)
+		draw_rect(Rect2(r.position.x, r.end.y + 2, r.size.x * left, 2), HudPalette.EVASION)
+	var col := Color.BLACK if alert else HudPalette.EVASION
+	draw_string(_font, r.position + Vector2(6, 15), ph[0], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+	draw_string(_digits, r.position + Vector2(ph[0].length() * 8 + 14, 17), secs, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, col)
 
 
 func _crosshair(file: String) -> Texture2D:
@@ -152,18 +182,9 @@ func _stance(r: Rect2) -> void:
 	draw_rect(Rect2(r.position.x + r.size.x * 0.32, top, r.size.x * 0.36, r.end.y - top - r.size.y * 0.1), col)
 
 
-func _compass(fwd: Vector3, right: Vector3) -> void:
-	var cc := Vector2(size.x - 84, 40)
-	draw_circle(cc, 28, Color(0, 0, 0, 0.45))
-	draw_arc(cc, 28, 0, TAU, 32, Color(1, 1, 1, 0.8), 1.0)
-	draw_arc(cc, 8, 0, TAU, 16, Color(1, 1, 1, 0.6), 1.0)
-	_t(cc + Vector2(-4, 3), "^", Color.WHITE)
-	var north := HudModel.screen_angle(Vector3.FORWARD, fwd, right)
-	_t(cc + Vector2.from_angle(north) * 21 + Vector2(-4, 4), "N", RED)
-
-
 func _t(pos: Vector2, s: String, col: Color) -> void:
-	draw_string(_font, pos + Vector2(1, 1), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0, 0, 0, col.a))
+	for o in [Vector2(1, 1), Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1)]:  # 4-way outline replaces card backings
+		draw_string(_font, pos + o, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0, 0, 0, col.a))
 	draw_string(_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
 
 
