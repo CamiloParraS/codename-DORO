@@ -16,9 +16,6 @@ const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative ca
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
-## ponytail: hardcoded until the settings menu exists.
-var sensitivity := 0.0025
-var invert_y := false
 var crouching := false
 var walking := false
 var moving := false
@@ -131,7 +128,7 @@ func _apply_crouch() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		var l := Locomotion.look(_yaw, _pitch, e.relative, sensitivity, invert_y)
+		var l := Locomotion.look(_yaw, _pitch, e.relative, GameSettings.current.sensitivity, GameSettings.current.invert_y)
 		_yaw = l.x
 		_pitch = l.y
 	elif ladder:  # both hands on the rungs: the only move is to drop off

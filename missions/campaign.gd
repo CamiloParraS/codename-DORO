@@ -33,11 +33,14 @@ const MISSIONS := [
 
 ## The campaign being played. Only a committed post-Mission screen moves it on (MissionRun).
 static var record := Aigis.new_record()
+## The save slot (0-2) the campaign autosaves to; -1 = none.
+static var slot := -1
 
 
 ## New game.
 static func start() -> void:
 	record = Aigis.new_record()
+	slot = -1
 
 
 ## Past the Core.

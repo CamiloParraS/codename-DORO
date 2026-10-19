@@ -181,6 +181,8 @@ func _on_extraction() -> void:
 		record = after
 		if campaign:
 			Campaign.record = after
+			if Campaign.slot >= 0:
+				SaveSlots.write(Campaign.slot, after, int(Time.get_unix_time_from_system()))
 		get_tree().paused = false
 		finished.emit(after)
 		if return_to:
