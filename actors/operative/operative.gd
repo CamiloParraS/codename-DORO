@@ -16,9 +16,6 @@ const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative ca
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
-## ponytail: hardcoded until the settings menu exists.
-var sensitivity := 0.0025
-var invert_y := false
 var crouching := false
 var walking := false
 var moving := false
@@ -131,7 +128,7 @@ func _apply_crouch() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		var l := Locomotion.look(_yaw, _pitch, e.relative, sensitivity, invert_y)
+		var l := Locomotion.look(_yaw, _pitch, e.relative, GameSettings.current.sensitivity, GameSettings.current.invert_y)
 		_yaw = l.x
 		_pitch = l.y
 	elif ladder:  # both hands on the rungs: the only move is to drop off
@@ -203,6 +200,7 @@ func _physics_process(delta: float) -> void:
 			_choking = null
 			_choke_left = 0.0
 		elif _choke_left <= 0.0:
+			Mix.sfx_at(self, &"takedown")
 			if _killing:
 				if not _victim_down:  # a kill from behind is a takedown too
 					get_tree().call_group("mission_tally", "event", "takedown")
@@ -303,6 +301,7 @@ func _throw_magazine() -> void:
 	if items.throw(carrying != null):
 		var land := _flight()[-1]
 		Guard.broadcast(get_tree(), land, GuardAlert.KNOCK_RANGE, "a thrown magazine")
+		Mix.sfx_at(self, &"mag_land", land)
 
 
 ## Hitscan from the screen centre. Tranq: a hit on a standing guard's head Neutralizes it, on the body
@@ -315,6 +314,7 @@ func _fire() -> void:
 		return
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
+	Mix.sfx_at(self, Mix.shot_sound(quiet))
 	model.react("fire", 0.3)
 	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
 	_yaw += randf_range(-0.3, 0.3) * arm.kick

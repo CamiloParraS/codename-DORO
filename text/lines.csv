@@ -42,3 +42,108 @@ live.m2.s1.02,"Its broadcasts were machine-made news. Aigis manufactures the cri
 live.m3.s1.01,"Files secured. Aigis was built from the memories of dead commanders.","Archivos asegurados. Aigis se construyo con los recuerdos de comandantes muertos."
 live.m3.s1.02,"And the Core is under the Harbour. That's where we finish this.","Y el Nucleo esta bajo el Puerto. Ahi terminamos esto."
 live.m4.s1.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas esta abierto. Hagas lo que hagas, Aigis lo recordara."
+core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Nucleo. Sella el montacargas y bloquea la sala."
+brief.pallas.habit.stealth,You favour the quiet approach. Aigis noticed.,Prefieres el enfoque de silencio. Aigis lo noto.
+brief.glaukopis.hint.stealth.1,"[glaukopis] Expect an answer to your quiet habit, level 1.","[glaukopis] Espera una respuesta a tu habito de silencio, nivel 1."
+brief.promachos.hint.stealth.2,"[promachos] Expect an answer to your quiet habit, level 2.","[promachos] Espera una respuesta a tu habito de silencio, nivel 2."
+brief.gorgo.hint.stealth.3,"[gorgo] Expect an answer to your quiet habit, level 3.","[gorgo] Espera una respuesta a tu habito de silencio, nivel 3."
+brief.pallas.habit.combat,You favour the loud approach. Aigis noticed.,Prefieres el enfoque de ruido. Aigis lo noto.
+brief.gorgo.hint.combat.1,"[gorgo] Expect an answer to your loud habit, level 1.","[gorgo] Espera una respuesta a tu habito de ruido, nivel 1."
+brief.promachos.hint.combat.2,"[promachos] Expect an answer to your loud habit, level 2.","[promachos] Espera una respuesta a tu habito de ruido, nivel 2."
+brief.promachos.hint.combat.3,"[promachos] Expect an answer to your loud habit, level 3.","[promachos] Espera una respuesta a tu habito de ruido, nivel 3."
+brief.pallas.habit.headshots,You favour the headshot approach. Aigis noticed.,Prefieres el enfoque de tiro a la cabeza. Aigis lo noto.
+brief.gorgo.hint.headshots.1,"[gorgo] Expect an answer to your headshot habit, level 1.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 1."
+brief.gorgo.hint.headshots.2,"[gorgo] Expect an answer to your headshot habit, level 2.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 2."
+brief.gorgo.hint.headshots.3,"[gorgo] Expect an answer to your headshot habit, level 3.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 3."
+brief.pallas.habit.takedowns,You favour the takedown approach. Aigis noticed.,Prefieres el enfoque de derribo. Aigis lo noto.
+brief.pallas.hint.takedowns.1,"[pallas] Expect an answer to your takedown habit, level 1.","[pallas] Espera una respuesta a tu habito de derribo, nivel 1."
+brief.gorgo.hint.takedowns.2,"[gorgo] Expect an answer to your takedown habit, level 2.","[gorgo] Espera una respuesta a tu habito de derribo, nivel 2."
+brief.nike.hint.takedowns.3,"[nike] Expect an answer to your takedown habit, level 3.","[nike] Espera una respuesta a tu habito de derribo, nivel 3."
+brief.pallas.habit.downs,You favour the sleeper approach. Aigis noticed.,Prefieres el enfoque de dormido. Aigis lo noto.
+brief.pallas.hint.downs.1,"[pallas] Expect an answer to your sleeper habit, level 1.","[pallas] Espera una respuesta a tu habito de dormido, nivel 1."
+brief.nike.hint.downs.2,"[nike] Expect an answer to your sleeper habit, level 2.","[nike] Espera una respuesta a tu habito de dormido, nivel 2."
+brief.pallas.hint.downs.3,"[pallas] Expect an answer to your sleeper habit, level 3.","[pallas] Espera una respuesta a tu habito de dormido, nivel 3."
+brief.pallas.habit.spoofing,You favour the spoof approach. Aigis noticed.,Prefieres el enfoque de suplantacion. Aigis lo noto.
+brief.glaukopis.hint.spoofing.1,"[glaukopis] Expect an answer to your spoof habit, level 1.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 1."
+brief.glaukopis.hint.spoofing.2,"[glaukopis] Expect an answer to your spoof habit, level 2.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 2."
+brief.glaukopis.hint.spoofing.3,"[glaukopis] Expect an answer to your spoof habit, level 3.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 3."
+brief.nike.noisy_choke,Chokes will not be quiet this time.,Los estrangulamientos no seran silenciosos esta vez.
+brief.glaukopis.head_check,Guards check behind them before they turn.,Los guardias miran atras antes de girar.
+brief.promachos.flank,Reinforcements will come round your flank.,Los refuerzos te rodearan por el flanco.
+brief.glaukopis.radio_check,Guards will call HQ back to verify the radio.,Los guardias llamaran a la base para verificar la radio.
+brief.pallas.close,Pallas: Walk softly. We are watching.,Palas: Camina con cuidado. Estamos mirando.
+brief.nike.close,"Nike: Make it count, Operative.","Nike: Que cuente, Operativo."
+brief.gorgo.close,Gorgo: We will be ready for you.,Gorgo: Estaremos listos para ti.
+post.pallas.clean,Pallas: Not a soul harmed. We noted it.,Palas: Ni un alma herida. Lo anotamos.
+post.pallas.blood,Pallas: There was blood. We noted that too.,Palas: Hubo sangre. Tambien lo anotamos.
+post.nike.clean,Nike: Clean work. Almost.,Nike: Trabajo limpio. Casi.
+post.nike.blood,Nike: Blood spilled. We will answer.,Nike: Sangre derramada. Responderemos.
+post.gorgo.clean,Gorgo: Spotless. It changes nothing.,Gorgo: Impecable. No cambia nada.
+post.gorgo.blood,Gorgo: Good. Keep it coming.,Gorgo: Bien. Sigue asi.
+chatter.warn.stealth.1,Heard HQ is tightening up on quiet types. (1),Dicen que la base vigila a los de silencio. (1)
+chatter.confirm.stealth.1,HQ's new quiet measures are live. (1),Las nuevas medidas contra silencio estan activas. (1)
+chatter.warn.stealth.2,Heard HQ is tightening up on quiet types. (2),Dicen que la base vigila a los de silencio. (2)
+chatter.confirm.stealth.2,HQ's new quiet measures are live. (2),Las nuevas medidas contra silencio estan activas. (2)
+chatter.warn.combat.1,Heard HQ is tightening up on loud types. (1),Dicen que la base vigila a los de ruido. (1)
+chatter.confirm.combat.1,HQ's new loud measures are live. (1),Las nuevas medidas contra ruido estan activas. (1)
+chatter.warn.combat.2,Heard HQ is tightening up on loud types. (2),Dicen que la base vigila a los de ruido. (2)
+chatter.confirm.combat.2,HQ's new loud measures are live. (2),Las nuevas medidas contra ruido estan activas. (2)
+chatter.warn.headshots.1,Heard HQ is tightening up on headshot types. (1),Dicen que la base vigila a los de tiro a la cabeza. (1)
+chatter.confirm.headshots.1,HQ's new headshot measures are live. (1),Las nuevas medidas contra tiro a la cabeza estan activas. (1)
+chatter.warn.headshots.2,Heard HQ is tightening up on headshot types. (2),Dicen que la base vigila a los de tiro a la cabeza. (2)
+chatter.confirm.headshots.2,HQ's new headshot measures are live. (2),Las nuevas medidas contra tiro a la cabeza estan activas. (2)
+chatter.warn.takedowns.1,Heard HQ is tightening up on takedown types. (1),Dicen que la base vigila a los de derribo. (1)
+chatter.confirm.takedowns.1,HQ's new takedown measures are live. (1),Las nuevas medidas contra derribo estan activas. (1)
+chatter.warn.takedowns.2,Heard HQ is tightening up on takedown types. (2),Dicen que la base vigila a los de derribo. (2)
+chatter.confirm.takedowns.2,HQ's new takedown measures are live. (2),Las nuevas medidas contra derribo estan activas. (2)
+chatter.warn.downs.1,Heard HQ is tightening up on sleeper types. (1),Dicen que la base vigila a los de dormido. (1)
+chatter.confirm.downs.1,HQ's new sleeper measures are live. (1),Las nuevas medidas contra dormido estan activas. (1)
+chatter.warn.downs.2,Heard HQ is tightening up on sleeper types. (2),Dicen que la base vigila a los de dormido. (2)
+chatter.confirm.downs.2,HQ's new sleeper measures are live. (2),Las nuevas medidas contra dormido estan activas. (2)
+chatter.warn.spoofing.1,Heard HQ is tightening up on spoof types. (1),Dicen que la base vigila a los de suplantacion. (1)
+chatter.confirm.spoofing.1,HQ's new spoof measures are live. (1),Las nuevas medidas contra suplantacion estan activas. (1)
+chatter.warn.spoofing.2,Heard HQ is tightening up on spoof types. (2),Dicen que la base vigila a los de suplantacion. (2)
+chatter.confirm.spoofing.2,HQ's new spoof measures are live. (2),Las nuevas medidas contra suplantacion estan activas. (2)
+finale.debate.promachos.pallas,"[promachos] Debate line, ending pallas.","[promachos] Linea del debate, final pallas."
+finale.debate.promachos.nike,"[promachos] Debate line, ending nike.","[promachos] Linea del debate, final nike."
+finale.debate.promachos.gorgo,"[promachos] Debate line, ending gorgo.","[promachos] Linea del debate, final gorgo."
+finale.debate.nike.pallas,"[nike] Debate line, ending pallas.","[nike] Linea del debate, final pallas."
+finale.debate.nike.nike,"[nike] Debate line, ending nike.","[nike] Linea del debate, final nike."
+finale.debate.nike.gorgo,"[nike] Debate line, ending gorgo.","[nike] Linea del debate, final gorgo."
+finale.debate.pallas.pallas,"[pallas] Debate line, ending pallas.","[pallas] Linea del debate, final pallas."
+finale.debate.pallas.nike,"[pallas] Debate line, ending nike.","[pallas] Linea del debate, final nike."
+finale.debate.pallas.gorgo,"[pallas] Debate line, ending gorgo.","[pallas] Linea del debate, final gorgo."
+finale.debate.gorgo.pallas,"[gorgo] Debate line, ending pallas.","[gorgo] Linea del debate, final pallas."
+finale.debate.gorgo.nike,"[gorgo] Debate line, ending nike.","[gorgo] Linea del debate, final nike."
+finale.debate.gorgo.gorgo,"[gorgo] Debate line, ending gorgo.","[gorgo] Linea del debate, final gorgo."
+finale.debate.glaukopis.0,[glaukopis] The memories hold up at Spoofing level 0.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 0.
+finale.debate.glaukopis.1,[glaukopis] The memories hold up at Spoofing level 1.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 1.
+finale.debate.glaukopis.2,[glaukopis] The memories hold up at Spoofing level 2.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 2.
+finale.debate.glaukopis.3,[glaukopis] The memories hold up at Spoofing level 3.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 3.
+finale.end.pallas.1,[pallas] Ending line 1.,[pallas] Linea de final 1.
+finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Linea de final 2.
+finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Linea de final 3.
+finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Linea de final 4.
+finale.end.pallas.operative,"[pallas] Operative, this one is for you.","[pallas] Operativo, esto es para ti."
+finale.epi.pallas.1,"[Metis] Epilogue line 1, ending pallas.","[Metis] Linea del epilogo 1, final pallas."
+finale.epi.pallas.2,"[Analyst] Epilogue line 2, ending pallas.","[Analyst] Linea del epilogo 2, final pallas."
+finale.epi.pallas.3,"[Metis] Epilogue line 3, ending pallas.","[Metis] Linea del epilogo 3, final pallas."
+finale.epi.pallas.4,"[Analyst] Epilogue line 4, ending pallas.","[Analyst] Linea del epilogo 4, final pallas."
+finale.end.nike.1,[nike] Ending line 1.,[nike] Linea de final 1.
+finale.end.nike.2,[nike] Ending line 2.,[nike] Linea de final 2.
+finale.end.nike.3,[nike] Ending line 3.,[nike] Linea de final 3.
+finale.end.nike.4,[nike] Ending line 4.,[nike] Linea de final 4.
+finale.end.nike.operative,"[nike] Operative, this one is for you.","[nike] Operativo, esto es para ti."
+finale.epi.nike.1,"[Metis] Epilogue line 1, ending nike.","[Metis] Linea del epilogo 1, final nike."
+finale.epi.nike.2,"[Analyst] Epilogue line 2, ending nike.","[Analyst] Linea del epilogo 2, final nike."
+finale.epi.nike.3,"[Metis] Epilogue line 3, ending nike.","[Metis] Linea del epilogo 3, final nike."
+finale.epi.nike.4,"[Analyst] Epilogue line 4, ending nike.","[Analyst] Linea del epilogo 4, final nike."
+finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Linea de final 1.
+finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Linea de final 2.
+finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Linea de final 3.
+finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Linea de final 4.
+finale.end.gorgo.operative,"[gorgo] Operative, this one is for you.","[gorgo] Operativo, esto es para ti."
+finale.epi.gorgo.1,"[Metis] Epilogue line 1, ending gorgo.","[Metis] Linea del epilogo 1, final gorgo."
+finale.epi.gorgo.2,"[Analyst] Epilogue line 2, ending gorgo.","[Analyst] Linea del epilogo 2, final gorgo."
+finale.epi.gorgo.3,"[Metis] Epilogue line 3, ending gorgo.","[Metis] Linea del epilogo 3, final gorgo."
+finale.epi.gorgo.4,"[Analyst] Epilogue line 4, ending gorgo.","[Analyst] Linea del epilogo 4, final gorgo."

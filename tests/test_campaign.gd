@@ -11,7 +11,7 @@ func suite_name() -> String:
 func test_four_missions_in_index_order_with_their_areas() -> void:
 	assert_eq(Campaign.MISSIONS.size(), Aigis.CAPS.size(), "Missions 1-3 and the Core")
 	assert_eq(Campaign.MISSIONS[0].area, "res://areas/harbour/harbour.tscn")
-	assert_eq(Campaign.MISSIONS[3].area, "res://areas/harbour/harbour.tscn", "the Core starts in the Harbour")
+	assert_eq(Campaign.MISSIONS[3].area, "res://areas/core/core.tscn", "the Core has its own Area, entered at the Harbour")
 	assert_eq(Campaign.MISSIONS[0].targets, [], "Mission 1 has no Target")
 
 

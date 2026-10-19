@@ -6,11 +6,11 @@ extends RefCounted
 const HARBOUR := "res://areas/harbour/harbour.tscn"
 const RELAY_STATION := "res://areas/relay_station/relay_station.tscn"
 const RESEARCH_ANNEX := "res://areas/research_annex/research_annex.tscn"
+const CORE := "res://areas/core/core.tscn"
 
 ## title; area: the Area scene; targets: Target names (each is killed or carried to Extraction); steps, in order:
 ## {intel: the pickup in the Area that completes it, objective: what the pause screen shows, call: the live
 ## Codec call it triggers}. codec: the full-screen Codec call before the Mission. A call is [[speaker, key], ...].
-## ponytail: the Core plays an intel step in the Harbour until the Core Mission lands with its own objective.
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, targets = [],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
@@ -25,7 +25,7 @@ const MISSIONS := [
 		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03"], ["analyst", "codec.m3.04"]], steps = [
 		{intel = "ResearchFiles", objective = "EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE", call = [["analyst", "live.m3.s1.01"], ["analyst", "live.m3.s1.02"]]},
 	]},
-	{title = "CORE", area = HARBOUR, targets = ["SECURITY DIRECTOR"],
+	{title = "CORE", area = CORE, targets = ["SECURITY DIRECTOR"],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["analyst", "codec.m4.03"], ["analyst", "codec.m4.04"]], steps = [
 		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT", call = [["handler", "live.m4.s1.01"]]},
 	]},
@@ -33,11 +33,14 @@ const MISSIONS := [
 
 ## The campaign being played. Only a committed post-Mission screen moves it on (MissionRun).
 static var record := Aigis.new_record()
+## The save slot (0-2) the campaign autosaves to; -1 = none.
+static var slot := -1
 
 
 ## New game.
 static func start() -> void:
 	record = Aigis.new_record()
+	slot = -1
 
 
 ## Past the Core.
