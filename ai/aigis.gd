@@ -229,6 +229,8 @@ static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) 
 		keys.append("brief.%s.hint.%s.%d" % [LADDERS[h][deployed[h] - 1][0], h, deployed[h]])
 	if deployed.takedowns == 3:
 		keys.append("brief.nike.noisy_choke")
+	if deployed.stealth > 0:
+		keys.append("brief.glaukopis.head_check")
 	keys.append("brief.%s.close" % dominant)
 
 	return {

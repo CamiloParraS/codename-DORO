@@ -93,6 +93,7 @@ func _equip(g: Guard) -> void:
 		g.wear_vest()
 	g.body_hits_to_kill = Deployment.body_hits_to_kill(deployed)
 	g.turn_every = Deployment.turn_around_every(deployed)
+	g.head_check_level = Deployment.head_check_level(deployed)
 	g.instant_down = Deployment.instant_alert_on_down(deployed)
 
 

@@ -49,7 +49,9 @@ var helmet := false              # Headshots Countermeasure: a headshot counts a
 var vest := false                # Combat L1: tranq body shots do nothing, rifle body hits take longer
 var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
-var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
+var head_check_level := 0        # Stealth Countermeasure: how often it glances back before turning (Telegraph)
+var rng := RandomNumberGenerator.new()  # seed it for a repeatable run
+var instant_down := false       # Downs L2: seeing a Down guard raises the alert, no check
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 
@@ -61,7 +63,9 @@ var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
 var _clock := 0.0
-var _look_left := 0.0    # seconds left of the look-around clip
+var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
+var _tele_icon := ""
+var _look_left := 0.0   # seconds left of the look-around clip
 var _prev_state := GuardAlert.State.PATROL
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
@@ -81,6 +85,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_clock += delta
 	_look_left -= delta
+	_tele_left -= delta
 	if GuardAlert.flinches(_prev_state, alert.state):
 		model.react("startle", GuardAlert.FLINCH, 2.2)  # a pose only: the tree and shooting never wait on it
 	_prev_state = alert.state
@@ -175,6 +180,10 @@ func chatting() -> bool:
 
 func _refresh_mark() -> void:
 	var talk := on_air()
+	if _tele_left > 0.0 and alert.state == GuardAlert.State.PATROL:
+		_mark.text = _tele_icon
+		_mark.modulate = HudPalette.AIGIS
+		return
 	_mark.text = "((·))" if talk else MARKS[alert.state]
 	_mark.modulate = Color.WHITE if talk else MARK_COLORS[alert.state]
 
@@ -502,6 +511,27 @@ func patrol(delta: float) -> void:
 		_stop = stops[_wp] if _wp < stops.size() else {}
 		_wp = (_wp + 1) % route.size()
 		_pause = _stop.get("hold", PAUSE)
+		if route.size() > 1 and Telegraph.head_check(head_check_level, rng):  # Stealth: looks back before it turns
+			_glance = Telegraph.DURATION
+			_glance_yaw = rotation.y
+			telegraph("head_check", "?", "look", "Hm?")
+
+
+## The shared Aigis telegraph: a cyan icon over the head and a pose for Telegraph.DURATION, so the
+## Operative can read what Aigis changed. kind keys Metis's first-sighting call (Telegraph.METIS);
+## mutter is an optional subtitle line when the Operative is within earshot.
+func telegraph(kind: String, icon: String, clip: String, mutter := "") -> void:
+	_tele_left = Telegraph.DURATION
+	_tele_icon = icon
+	model.react(clip, Telegraph.DURATION, 1.0)
+	_refresh_mark()
+	if not operative or _flat_dist(operative.global_position) > Chat.HEARD:
+		return
+	if mutter != "":
+		radio_say(mutter)
+	var run := get_tree().get_first_node_in_group("mission_plan")
+	if run and Telegraph.METIS.has(kind) and Telegraph.first_sighting(run.telegraphs_seen, kind):
+		get_tree().call_group("radio_log", "say", "METIS", Telegraph.METIS[kind])
 
 
 ## At a stop with a facing, turns to it (sweeping when it scans); a plain stop leaves the guard as it is.

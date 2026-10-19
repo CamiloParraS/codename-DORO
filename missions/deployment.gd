@@ -50,6 +50,11 @@ static func reinforcements(deployed: Dictionary) -> int:
 	return 2 if int(deployed.get("combat", 0)) >= 3 else 0
 
 
+## Stealth (any level): guards head-check before turning; the level sets how often (Telegraph).
+static func head_check_level(deployed: Dictionary) -> int:
+	return int(deployed.get("stealth", 0))
+
+
 ## Takedowns L1: seconds between a patrolling guard glancing behind it (0 = never).
 static func turn_around_every(deployed: Dictionary) -> float:
 	return 6.0 if int(deployed.get("takedowns", 0)) >= 1 else 0.0
