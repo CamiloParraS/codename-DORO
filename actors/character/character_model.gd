@@ -17,12 +17,13 @@ const GUARD_SKINS := [
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
-## Game clip -> Mixamo clip that replaces it (idle, walk and run have no Mixamo match and stay as they are).
+## Game clip -> Mixamo clip that replaces it (idle has no Mixamo match and stays as it is).
 ## hit, fire and reload are new one-shots for react().
 const MIXAMO_CLIPS := {
 	"aim": "rifle_aiming_idle", "crouch_idle": "pistol_kneeling_idle",
 	"crouch_walk": "rifle_crouch_walk", "takedown": "elbow_punching",
-	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reload",
+	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
+	"walk": "walk_with_rifle", "run": "rifle_run",
 	"carry": "carrying", "down": "sleeping_idle",
 	"startle": "surprised", "look": "look_around",
 }
@@ -30,7 +31,7 @@ const MIXAMO_CLIPS := {
 ## crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
 const PISTOL_CLIPS := {
 	"idle": "pistol_idle",
-	"walk": "pistol_strafe",
+	"walk": "pistol_walk_arc", "run": "pistol_run",
 	"aim": "pistol_aim",
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.

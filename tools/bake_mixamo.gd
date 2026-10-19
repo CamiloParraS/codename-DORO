@@ -10,7 +10,7 @@ const SRC := ["_raw/Models_Animations/animations/mixamo/", "_raw/Models_Animatio
 const OUT := "res://assets/models/animations/mixamo_clips.res"
 const BODY := "res://assets/models/characters/Nikita_Rigged.glb"
 const KEY_FPS := 30.0
-const LOOPS := ["idle", "walk", "strafe", "aim", "carrying"]  # clips whose name contains one of these loop
+const LOOPS := ["idle", "walk", "strafe", "aim", "carrying", "pistol_run", "rifle_run"]  # clips whose name contains one of these loop
 const BONES := {
 	"Hips": "pelvis", "Spine": "spine_01", "Spine1": "spine_02", "Spine2": "spine_03", "Neck": "neck_01",
 	"Head": "Head", "LeftShoulder": "clavicle_l", "LeftArm": "upperarm_l", "LeftForeArm": "lowerarm_l",
