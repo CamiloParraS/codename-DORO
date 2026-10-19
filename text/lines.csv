@@ -21,6 +21,22 @@ codec.m4.03,"Reach the freight lift and deal with the security director. Then we
 codec.m4.04,"The same trick it uses on the world. Good luck, Operative.","El mismo truco que usa con el mundo. Suerte, Operativo."
 live.m1.s1.01,"Manifests copied. The cargo is going to the relay station.","Manifiestos copiados. La carga va a la estacion de radio."
 live.m1.s2.01,"Got the radio log. Head for the Extraction point.","Registro de radio obtenido. Ve al punto de Extraccion."
+tutorial.crouch.prompt,[C] CROUCH: SLOWER BUT QUIETER,[C] AGACHARSE: MAS LENTO PERO MAS SILENCIOSO
+tutorial.crouch.line,"Guard ahead. Crouch and he'll hear you less.","Guardia al frente. Agachate y te oira menos."
+tutorial.takedown.prompt,[E] CHOKE FROM BEHIND: HE GOES DOWN QUIETLY,[E] ESTRANGULAR POR LA ESPALDA: CAE EN SILENCIO
+tutorial.takedown.line,"Get behind him and choke him out. No noise, no alarm.","Ponte a su espalda y duermelo. Sin ruido, sin alarma."
+tutorial.carry.prompt,[E] CARRY THE BODY: HIDE IT BEFORE ANYONE FINDS IT,[E] CARGAR EL CUERPO: ESCONDELO ANTES DE QUE LO ENCUENTREN
+tutorial.carry.line,"A body left in the open gets found. Pick him up and hide him.","Un cuerpo a la vista se encuentra. Cargalo y escondelo."
+tutorial.tranq.prompt,[1] TRANQ PISTOL: [RMB] AIM  [LMB] FIRE,[1] PISTOLA TRANQUILIZANTE: [RMB] APUNTAR  [LMB] DISPARAR
+tutorial.tranq.line,"The tranq pistol is silent. Aim for the head and he's out cold.","La pistola tranquilizante es silenciosa. Apunta a la cabeza y cae dormido."
+tutorial.eavesdrop.prompt,STAY CLOSE WHILE HE CALLS IN: YOUR RADIO RECORDS HIS VOICE,QUEDATE CERCA MIENTRAS REPORTA: TU RADIO GRABA SU VOZ
+tutorial.eavesdrop.line,"Guards check in by radio. Stay near one while he talks and we'll get his Voiceprint.","Los guardias reportan por radio. Quedate cerca mientras habla y tendremos su huella de voz."
+tutorial.radio.prompt,[Q] RADIO MENU: SPOOF A TRANSMISSION WITH A VOICEPRINT,[Q] MENU DE RADIO: FALSIFICA UNA TRANSMISION CON UNA HUELLA DE VOZ
+tutorial.radio.line,"Got a Voiceprint. Open the radio and I can send a call in his voice.","Tenemos una huella de voz. Abre la radio y puedo enviar una llamada con su voz."
+tutorial.scanner.prompt,[F] SCANNER: SHOWS GUARD VISION CONES FOR 10 SECONDS,[F] ESCANER: MUESTRA LOS CONOS DE VISION DE LOS GUARDIAS 10 SEGUNDOS
+tutorial.scanner.line,"Use the Scanner. You'll see where they're looking before they see you.","Usa el escaner. Veras hacia donde miran antes de que te vean."
+tutorial.magazine.prompt,[F] MAGAZINE: HOLD TO AIM  RELEASE TO THROW AS A DISTRACTION,[F] CARGADOR: MANTEN PARA APUNTAR  SUELTA PARA LANZAR COMO DISTRACCION
+tutorial.magazine.line,"Throw a magazine and the noise pulls him away from his post.","Lanza un cargador y el ruido lo aparta de su puesto."
 live.m2.s1.01,"Relay is down. Every guard on the island will be looking for the cause.","La estacion esta caida. Todos los guardias buscaran la causa."
 live.m2.s1.02,"Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.","Sus emisiones eran noticias generadas por maquina. Aigis fabrica las crisis que lo contratan para resolver."
 live.m3.s1.01,"Files secured. Aigis was built from the memories of dead commanders.","Archivos asegurados. Aigis se construyo con los recuerdos de comandantes muertos."
