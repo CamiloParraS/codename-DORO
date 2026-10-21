@@ -15,29 +15,29 @@ const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, targets = [],
 		open = [["analyst", "live.m1.open.01"]],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
-		{intel = "IntelManifests", objective = "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A", call = [["analyst", "live.m1.s1.01"]], hint = ["hint.m1.s1.1", "hint.m1.s1.2"]},
-		{intel = "IntelRadioLog", objective = "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE", call = [["analyst", "live.m1.s2.01"]], hint = ["hint.m1.s2.1", "hint.m1.s2.2"]},
-		{intel = "IntelLift", objective = "CHECK THE FREIGHT LIFT'S CONTROLS", call = [["analyst", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
+		{intel = "IntelManifests", objective = "objective.m1.s1", call = [["analyst", "live.m1.s1.01"]], hint = ["hint.m1.s1.1", "hint.m1.s1.2"]},
+		{intel = "IntelRadioLog", objective = "objective.m1.s2", call = [["analyst", "live.m1.s2.01"]], hint = ["hint.m1.s2.1", "hint.m1.s2.2"]},
+		{intel = "IntelLift", objective = "objective.m1.s3", call = [["analyst", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, targets = ["RELAY CHIEF"],
 		open = [["analyst", "live.m2.open.01"]],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["analyst", "codec.m2.03"], ["handler", "codec.m2.04"]], steps = [
-		{intel = "IntelGarage", objective = "RECOVER THE ENCRYPTION KEYS FROM THE GARAGE", call = [["analyst", "live.m2.s1.01"]], hint = ["hint.m2.s1.1", "hint.m2.s1.2"]},
-		{intel = "RelayConsole", objective = "SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"]], hint = ["hint.m2.s2.1", "hint.m2.s2.2"]},
-		{intel = "IntelMess", objective = "SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS", call = [["analyst", "live.m2.s3.01"]], hint = ["hint.m2.s3.1", "hint.m2.s3.2"]},
+		{intel = "IntelGarage", objective = "objective.m2.s1", call = [["analyst", "live.m2.s1.01"]], hint = ["hint.m2.s1.1", "hint.m2.s1.2"]},
+		{intel = "RelayConsole", objective = "objective.m2.s2", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"]], hint = ["hint.m2.s2.1", "hint.m2.s2.2"]},
+		{intel = "IntelMess", objective = "objective.m2.s3", call = [["analyst", "live.m2.s3.01"]], hint = ["hint.m2.s3.1", "hint.m2.s3.2"]},
 	]},
 	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, targets = ["LEAD RESEARCHER"],
 		open = [["analyst", "live.m3.open.01"]],
 		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03"], ["analyst", "codec.m3.04"]], steps = [
-		{intel = "IntelOffice", objective = "DOWNLOAD THE ACCESS LOGS FROM THE OFFICE", call = [["analyst", "live.m3.s1.01"]], hint = ["hint.m3.s1.1", "hint.m3.s1.2"]},
-		{intel = "IntelVault", objective = "OPEN THE VAULT AT THE END OF THE CORRIDOR", call = [["analyst", "live.m3.s2.01"]], hint = ["hint.m3.s2.1", "hint.m3.s2.2"]},
-		{intel = "ResearchFiles", objective = "EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]], hint = ["hint.m3.s3.1", "hint.m3.s3.2"]},
+		{intel = "IntelOffice", objective = "objective.m3.s1", call = [["analyst", "live.m3.s1.01"]], hint = ["hint.m3.s1.1", "hint.m3.s1.2"]},
+		{intel = "IntelVault", objective = "objective.m3.s2", call = [["analyst", "live.m3.s2.01"]], hint = ["hint.m3.s2.1", "hint.m3.s2.2"]},
+		{intel = "ResearchFiles", objective = "objective.m3.s3", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]], hint = ["hint.m3.s3.1", "hint.m3.s3.2"]},
 	]},
 	{title = "CORE", area = CORE, targets = ["SECURITY DIRECTOR"],
 		open = [["analyst", "live.m4.open.01"]],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["analyst", "codec.m4.03"], ["analyst", "codec.m4.04"]], steps = [
-		{intel = "IntelManifests", objective = "TAKE THE LIFT ACCESS CODES FROM WAREHOUSE A", call = [["analyst", "live.m4.s1.01"]], hint = ["hint.m4.s1.1", "hint.m4.s1.2"]},
-		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT", call = [["handler", "live.m4.s2.01"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
+		{intel = "IntelManifests", objective = "objective.m4.s1", call = [["analyst", "live.m4.s1.01"]], hint = ["hint.m4.s1.1", "hint.m4.s1.2"]},
+		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
 	]},
 ]
 
@@ -61,7 +61,7 @@ static func done() -> bool:
 ## What to do now in Mission mission_index with step steps done: the step's objective, then extract.
 static func objective(mission_index: int, step: int) -> String:
 	var steps: Array = MISSIONS[mission_index].steps
-	return steps[step].objective if step < steps.size() else "REACH THE EXTRACTION POINT"
+	return TranslationServer.translate(steps[step].objective) if step < steps.size() else TranslationServer.translate("objective.extract")
 
 
 ## Start the Mission record.mission names in its Area. Committing its post-Mission screen goes to

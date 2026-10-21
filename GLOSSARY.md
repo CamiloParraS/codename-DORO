@@ -140,6 +140,24 @@ _Avoid_: Body (when it might be alive)
 The ? or ! shown above a guard's head: ? while suspicious, ! once alerted.
 _Avoid_: Mark (that is not a Target), indicator, bubble
 
+### Guidance
+
+**Hint**:
+A nudge from Metis toward the current objective step, in two tiers: a direction, then the route. Given when the Operative has been idle or wandering for a while, or on request from the radio menu.
+_Avoid_: Tip (that is the tutorial's prompt), clue, help
+
+**Radar**:
+The HUD square at the bottom-left, north-up, showing guards within 30 m (farther ones pinned to its edge) and where the objective is. Jammed, with static, during an Alert or Evasion.
+_Avoid_: Minimap, Scanner (that shows vision cones)
+
+**Session log**:
+The playtest's own record of each Mission played: time, darts, rifle shots, Spoofed transmissions and every idle. Written to `user://session_log.txt` when a Mission ends, is aborted, or the game quits.
+_Avoid_: Telemetry, analytics
+
+**Idle**:
+Seconds since the last progress (a step done, a Checkpoint, an Alert ending). Alert and Evasion time never counts. Idles over a minute go in the Session log, and the Hint tracker reads it.
+_Avoid_: AFK, stall
+
 ### Equipment
 
 **Scanner**:

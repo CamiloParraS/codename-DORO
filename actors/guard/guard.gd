@@ -638,7 +638,8 @@ func _holds() -> bool:
 			continue
 		if g == self:
 			me = squad.size()
-		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known})
+		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known,
+			fresh = g.is_in_group("reinforcements") and not g.alert.saw})
 	return Engage.holds(me, seen_rate > 0.0, _flat_dist(operative.global_position), squad)
 
 

@@ -293,7 +293,7 @@ func _radar() -> void:
 	var half := RadarModel.HALF
 	draw_rect(r, HudPalette.SHADE)
 	draw_rect(r, HudPalette.CHROME_DIM, false)
-	var origin := Vector2(_operative.global_position.x, _operative.global_position.z)
+	var origin := RadarModel.flat(_operative.global_position)
 	if RadarModel.jammed(_phase_name):
 		for i in 60:
 			var p := r.position + Vector2(randf_range(0, r.size.x - 8), randf_range(0, r.size.y))
@@ -306,20 +306,19 @@ func _radar() -> void:
 		draw_line(c + Vector2(o, -half), c + Vector2(o, half), Color(HudPalette.CHROME, 0.12))
 		draw_line(c + Vector2(-half, o), c + Vector2(half, o), Color(HudPalette.CHROME, 0.12))
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
-		var off := Vector2(g.global_position.x, g.global_position.z) - origin
-		if g.is_down() or not RadarModel.in_range(off):
+		if g.is_down():
 			continue
-		var p := c + RadarModel.unit(off) * (half - 2)
-		var face := Vector2(-g.global_basis.z.x, -g.global_basis.z.z).normalized()
+		var p := c + RadarModel.blip(RadarModel.flat(g.global_position) - origin, 2)
+		var face := RadarModel.facing(g.global_basis)
 		draw_circle(p, 2, HudPalette.CHROME)
 		draw_line(p, p + face * 6, Color(HudPalette.CHROME, 0.8), 1.0)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	for b: Dictionary in (run.radar_blips() if run else []):
-		var p := c + RadarModel.unit(Vector2(b.pos.x, b.pos.z) - origin) * (half - 4)
+		var p := c + RadarModel.blip(RadarModel.flat(b.pos) - origin, 4)
 		if b.target:
 			draw_arc(p, 4, 0, TAU, 12, HudPalette.WHITE, 1.0)
 			draw_circle(p, 1.5, HudPalette.WHITE)
 		else:
 			draw_colored_polygon(PackedVector2Array([p + Vector2(0, -4), p + Vector2(4, 0), p + Vector2(0, 4), p + Vector2(-4, 0)]), HudPalette.WHITE)
-	var f := Vector2(-_operative.global_basis.z.x, -_operative.global_basis.z.z).normalized()
+	var f := RadarModel.facing(_operative.global_basis)
 	draw_colored_polygon(PackedVector2Array([c + f * 4, c + f.rotated(2.5) * 3, c + f.rotated(-2.5) * 3]), HudPalette.WHITE)
