@@ -46,4 +46,4 @@ Habit levels: Combat 3, Headshots 3, Takedowns 1. Lethality ratio: 0.60.
 | Mission 1 (Harbour) | Gorgo | 0 | none | none |
 | Mission 2 (Relay station) | Gorgo | 2 | Combat | vests [Gorgo, pinned]; helmets on 33% [Gorgo, 600] |
 | Mission 3 (Research annex) | Gorgo | 4 | Combat | vests [Gorgo, pinned]; +2 guards [Promachos, pinned]; helmets on 33% [Gorgo, 600]; helmets on 66% [Gorgo, 600] |
-| Core | Gorgo | 6 | Combat | vests [Gorgo, pinned]; +2 guards [Promachos, pinned]; 2 reinforcements per alert [Promachos, pinned]; helmets on 33% [Gorgo, 600]; helmets on 66% [Gorgo, 600]; helmets on 100% [Gorgo, 600] |
+| Core | Gorgo | 6 | Combat | vests [Gorgo, pinned]; +2 guards [Promachos, pinned]; squads of 5 reinforcements [Promachos, pinned]; helmets on 33% [Gorgo, 600]; helmets on 66% [Gorgo, 600]; helmets on 100% [Gorgo, 600] |

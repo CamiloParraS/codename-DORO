@@ -28,11 +28,12 @@ func hit() -> void:
 	quiet = 0.0
 
 
-func tick(delta: float) -> void:
+## alerted: no regeneration while an Alert holds.
+func tick(delta: float, alerted := false) -> void:
 	if dead():
 		return
 	quiet += delta
-	if quiet >= REGEN_DELAY:
+	if quiet >= REGEN_DELAY and not alerted:
 		damage = maxf(damage - REGEN_RATE * delta, 0.0)
 
 

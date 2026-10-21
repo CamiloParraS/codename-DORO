@@ -90,7 +90,7 @@ const RAMPS := [
 const GUARD_POSTS := [
 	["PostA1", [16, 67.5, 0], 0, {}, [[44, 67.5, {hold = 4.0, f = 0}]]],                 # south yard walk
 	["PostA2", [10, 50, 0], 90, {scan = 60.0}, []],                                      # lobby
-	["PostA3", [8, 43.5, 0], 90, {}, [[52, 43.5, {hold = 4.0, f = 270}]]],               # corridor, end to end
+	["PostA3", [8, 43.5, 0], 90, {}, [[11, 43.5, {hold = 5.0, f = 180}], [52, 43.5, {hold = 4.0, f = 270}]]],  # corridor, end to end; looks into the lobby through its doorway (Spoof spot: the lobby guard is witnessed)
 	["PostA4", [20, 58.5, 0], 0, {chat = true}, []],                                     # the pair by the container: eavesdrop spot
 	["PostA5", [14, 14, 0], 90, {}, [[56, 14, {hold = 4.0, f = 180}], [56, 24, {}]]],    # north strip loop
 	["PostA6", [40, 8, 0], 180, {scan = 60.0}, []],                                      # north gate
@@ -120,7 +120,47 @@ const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [40, 2, 0], Extraction = [70, 10, 0],
 	ResupplyCrate = [55, 64, 1], SafeRoom = [48, 36, 0], ResearchFiles = [27, 50, 0],
 }
+const INTEL := {IntelOffice = [24, 37], IntelVault = [48, 37]}  # the files in the Archive are the last step
 const START_FACING := 45
+## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## doorways, the Crawlspace mouths and stair feet.
+const DRESS := [
+	# corridor and room lights (the roof's underside is at 4)
+	["ceiling_lamp", [15, 43.5, 3.8], 0], ["ceiling_lamp", [30, 43.5, 3.8], 0], ["ceiling_lamp", [45, 43.5, 3.8], 0],
+	["ceiling_lamp", [12, 37, 3.8], 0], ["ceiling_lamp", [24, 37, 3.8], 0], ["ceiling_lamp", [36, 37, 3.8], 0],
+	["ceiling_lamp", [48, 37, 3.8], 0], ["ceiling_lamp", [15, 49.5, 3.8], 0], ["ceiling_lamp", [32, 49.5, 3.8], 0],
+	["ceiling_lamp", [47, 49.5, 3.8], 0],
+	# N1: lockers and racking on the west wall
+	["locker", [6.6, 39.5, 0], 90], ["shelf", [6.5, 35, 0], 90], ["shelf", [6.5, 35.8, 0], 90],
+	# office
+	["table", [27, 38, 0], 0], ["monitor", [26.7, 38, 0.96], 0], ["pc", [27.6, 38, 0.96], 0],
+	["chair", [27, 39.2, 0], 180], ["cabinet_b", [28.5, 32.6, 0], 180],
+	# lab: benches along both side walls
+	["table", [31.2, 37, 0], 90], ["monitoring_screen", [31.1, 36.6, 0.96], 270],
+	["table", [40.8, 37, 0], 90], ["monitor", [40.9, 37.3, 0.96], 90], ["pc", [40.9, 36.4, 0.96], 90],
+	# vault
+	["cabinet_b", [44, 32.6, 0], 180], ["cabinet_b", [45.3, 32.6, 0], 180], ["cardboard_box", [52.5, 40.5, 0], 20],
+	# lobby
+	["vending_machine", [23.3, 52, 0], 270], ["chair", [6.5, 47, 0], 90], ["chair", [6.5, 48, 0], 90],
+	# Archive: racking on the south and west walls
+	["shelf", [34.5, 53.4, 0], 180], ["shelf", [35.3, 53.4, 0], 180], ["shelf", [36.1, 53.4, 0], 180],
+	["shelf", [36.9, 53.4, 0], 180], ["shelf", [37.7, 53.4, 0], 180],
+	["shelf", [24.6, 47.5, 0], 90], ["shelf", [24.6, 48.3, 0], 90],
+	# loading hall
+	["pallet_stack", [51.5, 52.5, 0], 0], ["crate_wide", [42.5, 52.8, 0], 0], ["cardboard_box", [44.5, 53.1, 0], 30],
+	["cabinet_a", [53.4, 46.5, 0], 270],
+	# outside: floodlights at the gate and over the Extraction point
+	["lamp_post", [74, 12, 0], 270], ["lamp_post", [45.5, 5, 0], 180], ["lamp_post", [4.6, 66, 0], 90],
+	["barrel_a", [36.5, 17.5, 0], 0], ["barrel_b", [37.3, 18.1, 0], 0], ["tank_tall", [73.5, 27, 0], 0],
+	["cone", [37, 1, 0], 0], ["cone", [43, 1, 0], 0],
+	# yard and dock
+	["pallet_stack", [5.5, 60, 0], 90], ["generator", [24, 74.5, 0], 0], ["jerrycan", [26.3, 74.6, 0], 30],
+	["drum", [60.5, 70, 0], 0], ["drum", [61, 70.8, 0], 40], ["pallet", [56, 73, 0], 0],
+]
+## Out on the plain past the north fence, into the fog.
+const BACKDROP_DRESS := [
+	["chimney", [20, -25, 0], 0, 2.0], ["tank_tall", [64, -20, 0], 0, 2.5], ["shed", [-15, 30, 0], 90, 1.5],
+]
 ## The diagram's three, plus the Dock its deception Approaches send guards to.
 const SPOOFS := {SpoofYard = [26, 70, 0], SpoofNorth = [12, 24, 0], SpoofQuarry = [60, 20, 0], SpoofDock = [59, 58, 0]}
 
@@ -167,6 +207,7 @@ func _build() -> void:
 		_wall_run(solid.get_node("Lab"), w)
 	for r in RAMPS:
 		_ramp(solid, r)
+	_dress(nav, DRESS)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -174,6 +215,7 @@ func _build() -> void:
 	var nm := nav.navigation_mesh
 
 	_backdrop()
+	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
 	_sun()
 
 	var spots := _group(_root, "Spots")
@@ -195,7 +237,7 @@ func _build() -> void:
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y += 1.5
-	_intel({ResearchFiles = SPOTS.ResearchFiles})
+	_intel({IntelOffice = INTEL.IntelOffice, IntelVault = INTEL.IntelVault, ResearchFiles = SPOTS.ResearchFiles})
 	_save(OUT)
 	await _report_reach(nm, SPOTS.OperativeStart, REACH, CARRY)
 	quit()

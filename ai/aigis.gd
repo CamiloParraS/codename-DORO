@@ -19,7 +19,7 @@ const VOICES: Array[String] = ["promachos", "nike", "pallas", "gorgo", "glaukopi
 ## A step's id is "<habit>.<level>", e.g. "headshots.2".
 const LADDERS := {
 	"stealth": [["glaukopis", "security cameras"], ["promachos", "one extra patrol"], ["gorgo", "overwatch sentries"]],
-	"combat": [["gorgo", "vests"], ["promachos", "+2 guards"], ["promachos", "2 reinforcements per alert"]],
+	"combat": [["gorgo", "vests"], ["promachos", "+2 guards"], ["promachos", "squads of 5 reinforcements"]],
 	"headshots": [["gorgo", "helmets on 33%"], ["gorgo", "helmets on 66%"], ["gorgo", "helmets on 100%"]],
 	"takedowns": [["pallas", "guards turn around more often"], ["gorgo", "patrols in pairs"], ["nike", "slow, noisy choke"]],
 	"downs": [["pallas", "random HQ poll"], ["nike", "found Down guard = instant alert"], ["pallas", "targeted HQ poll"]],

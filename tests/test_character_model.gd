@@ -29,7 +29,7 @@ func test_guard_clip_by_speed() -> void:
 
 
 func test_every_clip_the_game_asks_for_is_baked() -> void:
-	for c in ["idle", "walk", "run", "crouch_idle", "crouch_walk", "aim", "takedown", "down", "carry"]:
+	for c in ["idle", "walk", "run", "crouch_idle", "crouch_walk", "aim", "takedown", "down", "carry", "hit"]:
 		assert_true(CharacterModel.CLIPS.has_animation(c), c)
 
 

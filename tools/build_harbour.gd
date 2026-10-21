@@ -105,7 +105,7 @@ const GUARD_POSTS := [
 	["PostY3", [30, 47.5, 0], 90, {}, [[43, 47.5, {}], [46, 64, {}], [28, 62, {}]]],   # container lanes
 	["PostY4", [40, 18, 0], 180, {scan = 90.0}, []],                                  # gatehouse post
 	["PostY5", [17, 32, 0], 90, {scan = 60.0}, []],                                   # lift chokepoint
-	["PostY6", [22, 22, 0], 90, {}, [[48, 20.5, {}], [48, 40, {}], [22, 43, {}]]],     # centre loop round Warehouse B
+	["PostY6", [22, 22, 0], 90, {}, [[48, 20.5, {hold = 6.0, f = 90}], [48, 40, {}], [22, 43, {}]]],     # centre loop round Warehouse B; holds facing the gatehouse post (Spoof spot: whoever moves PostY4 is witnessed)
 ]
 const EXTRA_POSTS := [
 	["PostExtra1", [30, 44, 0], 0, {}, [[33, 40, {hold = 3.0, f = 0}], [33, 57.5, {hold = 3.0, f = 0}]]],  # Stealth L2: looks into both Crawlspaces
@@ -133,6 +133,44 @@ const SPOOFS := {SpoofDock = [52, 72], SpoofWarehouse = [42, 40], SpoofGatehouse
 const EAVESDROP := {EavesdropSpot = [56, 36]}
 const INTEL := {IntelManifests = [9, 60], IntelRadioLog = [44, 9], IntelLift = [8, 32]}
 
+## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## doorways, Crawlspace mouths and Ladders.
+const DRESS := [
+	# quay: bollards on the edge, floodlights leaning over the yard
+	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],
+	["bollard", [61, 42, 0], 0], ["bollard", [61, 52, 0], 0],
+	["lamp_post", [61.2, 12, 0], 270], ["lamp_post", [61.2, 34, 0], 270], ["lamp_post", [61.2, 57, 0], 270],
+	["lamp_post", [55.5, 78.5, 0], 270],  # over the Extraction point at the pier tip
+	["lamp_post", [35, 3.5, 0], 225], ["lamp_post", [3.5, 44, 0], 90],
+	# pier
+	["crate_small", [49, 72, 0], 10], ["supply_crate", [49.2, 72.6, 0.36], 80], ["drum", [55, 71.5, 0], 0],
+	# north-west corner and the lift control hut
+	["drum", [3.5, 3.5, 0], 0], ["drum", [4.4, 3.6, 0], 30], ["barrel_a", [3.7, 4.5, 0], 0],
+	["tank_tall", [4.5, 14, 0], 0], ["generator", [18.5, 17, 0], 0], ["jerrycan", [21, 17, 0], 60],
+	# road in: cones either side of the barrier lane
+	["cone", [27, 0, 0], 0], ["cone", [33, 0, 0], 0], ["cone", [27, -3, 0], 0], ["cone", [33, -3, 0], 0],
+	# Warehouse A outside, by its north door
+	["pallet_stack", [8.5, 45.5, 0], 0], ["crate_wide", [19.5, 45.8, 0], 0],
+	["barrel_b", [22.5, 46, 0], 0], ["barrel_a", [23.2, 46.6, 0], 40],
+	["pipe_riser", [25.5, 36, 0], 90],  # on Warehouse B's west wall
+	["drum", [48, 51.5, 0], 0], ["drum", [48.7, 50.8, 0], 20],
+	# Warehouse A inside: racking on the south wall, stock, lights
+	["shelf", [15.5, 63.3, 0], 180], ["shelf", [16.3, 63.3, 0], 180], ["shelf", [17.1, 63.3, 0], 180],
+	["pallet_stack", [21.5, 61.5, 0], 0], ["crate_wide", [8.5, 50.5, 0], 90],
+	["cardboard_box", [20.5, 49, 0], 15], ["cardboard_box", [21.3, 49.2, 0], 40],
+	["ceiling_lamp", [11, 56, 4.8], 0], ["ceiling_lamp", [19, 56, 4.8], 0],
+	# gatehouse inside: the radio desk and a locker
+	["table", [39, 7, 0], 0], ["monitor", [39, 7, 0.96], 0], ["chair", [39, 8.3, 0], 180],
+	["locker", [36.7, 12.5, 0], 90], ["ceiling_lamp", [42, 10, 3.8], 0],
+	["vent_unit", [40, 8, 4.3], 0],  # on the gatehouse roof
+	# freighter deck
+	["drum", [73, 6.5, DECK], 0], ["drum", [73.8, 7, DECK], 40], ["crate_wide", [75.5, 44, DECK], 90],
+]
+## Seen over the cliff and across the water: no gameplay, far enough to sit in the fog.
+const BACKDROP_DRESS := [
+	["chimney", [-16, 10, 0], 0, 2.0], ["chimney", [-20, 52, 0], 0, 1.6], ["tank_tall", [-10, 18, 0], 0, 3.0],
+]
+
 
 func _build() -> void:
 	_root = Node3D.new()
@@ -152,6 +190,7 @@ func _build() -> void:
 	for b in BUILDINGS:
 		_building(_group(solid, b[0]), b)
 	_gangway(solid)
+	_dress(nav, DRESS)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -161,6 +200,7 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l)
 	_backdrop()
+	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
 	_sun()
 
 	var spots := _group(_root, "Spots")

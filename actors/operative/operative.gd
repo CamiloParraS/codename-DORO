@@ -180,7 +180,7 @@ func _physics_process(delta: float) -> void:
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
-	health.tick(delta)
+	health.tick(delta, get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT))
 	items.tick(delta)
 	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
 	tranq.tick(delta, carrying != null)
@@ -313,7 +313,7 @@ func _fire() -> void:
 	if not arm.fire(carrying != null):
 		return
 	if not quiet:
-		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot")
+		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot", null, true)
 	Mix.sfx_at(self, Mix.shot_sound(quiet))
 	model.react("fire", 0.3)
 	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
@@ -359,9 +359,7 @@ func _interact() -> void:
 		if choke_noise > 0.0:
 			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
-		tranq.refill()
-		rifle.refill()
-		items.refill()
+		items.resupply([tranq, rifle])
 	elif _ladder_near():
 		_mount(_ladder_near())
 
@@ -438,7 +436,7 @@ func _update_prompt() -> void:
 		prompt = "E carry · X kill" if _nearest(true, true) else "E carry"
 	elif _nearest(false):
 		prompt = "E choke · X kill"
-	elif _crate_near():
+	elif _crate_near() and not items.crate_used:
 		prompt = "E resupply"
 	elif _ladder_near():
 		prompt = "E climb"

@@ -14,6 +14,7 @@ const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
 const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
+const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal hit
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
@@ -251,6 +252,7 @@ func shoot(head: bool, from: Vector3) -> void:
 	if bullet_kills(head, helmet, hits, body_hits_to_kill):
 		kill()
 	else:
+		model.react("hit", HIT_TIME)
 		_changed(alert.hear(from, "a bullet"))
 
 
@@ -271,6 +273,7 @@ func tranquilize(head: bool, from: Vector3) -> void:
 		return
 	if not vest:  # a vest stops the dart: the guard only hears it hit
 		stumble_left = Tranq.BODY_DELAY
+		model.react("hit", HIT_TIME)
 	_changed(alert.hear(from, "a dart"))
 
 
@@ -375,10 +378,11 @@ func _sense_down() -> Array:
 
 
 ## Every guard within radius of pos hears it (GuardAlert.in_earshot: through walls).
-static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String, except: Guard = null) -> void:
+## alarming (a loud shot): they go straight to ALERT instead of suspicion.
+static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String, except: Guard = null, alarming := false) -> void:
 	for g in tree.get_nodes_in_group("guards"):
 		if g != except and GuardAlert.in_earshot(g.global_position, pos, radius):
-			g.on_noise(pos, what)
+			g.on_shot(pos) if alarming else g.on_noise(pos, what)
 
 
 ## Applies a state change, and radios everyone when it raised an alert by sight.
@@ -402,6 +406,13 @@ func on_noise(pos: Vector3, what: String) -> void:
 	if is_down():
 		return
 	_changed(alert.hear(pos, what))
+
+
+## A loud gunshot reached this guard: straight to ALERT.
+func on_shot(pos: Vector3) -> void:
+	if is_down():
+		return
+	_changed(alert.shot(pos))
 
 
 ## Sets seen_rate (0 = not seen) and, when seen, _saw to what was seen.
@@ -608,9 +619,27 @@ func chase(delta: float) -> void:
 	if _fleeing():
 		_flee(delta)
 		return
+	if _holds():
+		if seen_rate > 0.0:
+			face(operative.global_position, delta)
+		return
 	_walk_to(goal(), CHASE_SPEED, delta)
 	if seen_rate > 0.0:
 		face(operative.global_position, delta)
+
+
+## Engage.holds for this guard among the alerted ones: a guard that sees the Operative from afar stands
+## and shoots; with nobody in sight for a while, only the nearest pushes up.
+func _holds() -> bool:
+	var squad := []
+	var me := 0
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		if g.alert.state != GuardAlert.State.ALERT or g.is_down() or g.target:
+			continue
+		if g == self:
+			me = squad.size()
+		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known})
+	return Engage.holds(me, seen_rate > 0.0, _flat_dist(operative.global_position), squad)
 
 
 func _flee(delta: float) -> void:

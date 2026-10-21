@@ -87,7 +87,7 @@ func test_combat_ladder_on_the_core() -> void:
 	var d := _deployed("butcher", CORE)
 	assert_true(Deployment.vests(d))
 	assert_eq(Deployment.extra_guards(d), 2)
-	assert_eq(Deployment.reinforcements(d), 2)
+	assert_eq(Deployment.squad_size(d), 5)
 	assert_eq(Deployment.body_hits_to_kill(d), 4)
 
 
@@ -97,8 +97,10 @@ func test_combat_ladder_steps() -> void:
 	assert_true(Deployment.vests({"combat": 1}))
 	assert_eq(Deployment.extra_guards({"combat": 1}), 0)
 	assert_eq(Deployment.extra_guards({"combat": 2}), 2)
-	assert_eq(Deployment.reinforcements({"combat": 2}), 0)
-	assert_eq(Deployment.reinforcements({"combat": 3}), 2)
+	assert_eq(Deployment.squad_size({"combat": 2}), 3, "every Alert brings a squad of 3")
+	assert_eq(Deployment.squad_size({"combat": 3}), 5)
+	assert_false(Deployment.flanks({"combat": 2}))
+	assert_true(Deployment.flanks({"combat": 3}))
 
 
 func test_sentries_from_stealth_3() -> void:

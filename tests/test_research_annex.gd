@@ -80,7 +80,7 @@ func test_mission_3_plays_here_with_the_research_files_as_its_step_and_the_resea
 	assert_eq(m.area, SCENE)
 	assert_eq(m.targets, ["LEAD RESEARCHER"])
 	var a: Node = load(SCENE).instantiate()
-	var files: Area3D = a.get_node("Intel/" + m.steps[0].intel)
+	var files: Area3D = a.get_node("Intel/" + m.steps[-1].intel)
 	assert_true(files.get_script().resource_path.ends_with("intel_pickup.gd"), "an intel pickup: MissionRun treats it as the step")
 	a.free()
 

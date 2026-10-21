@@ -91,7 +91,9 @@ func test_mission_2_plays_here_with_the_console_as_its_step_and_the_chief_as_tar
 	assert_eq(m.area, SCENE)
 	assert_eq(m.targets, ["RELAY CHIEF"])
 	var a: Node = load(SCENE).instantiate()
-	assert_true(a.get_node("Intel/" + m.steps[0].intel) is Area3D)
+	for s: Dictionary in m.steps:
+		assert_true(a.get_node("Intel/" + s.intel) is Area3D, s.intel)
+	assert_eq(m.steps[1].intel, "RelayConsole", "the sabotage is the middle step")
 	a.free()
 
 

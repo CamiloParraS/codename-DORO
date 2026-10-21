@@ -21,6 +21,7 @@ var reserve := 0
 var reload_left := 0.0
 var suppressor_max := -1 # shots before the suppressor breaks; -1 = it never breaks
 var suppressor := -1
+var resupply := -1       # rounds a crate adds, capped at total; -1 = a full resupply
 
 
 ## Radians of aim error: none with both hands, SPREAD_ONE_HAND while carrying.
@@ -36,10 +37,14 @@ func suppressed() -> bool:
 	return suppressor != 0
 
 
-## Resupply crate: a full load, a full reserve and a fresh suppressor.
+## Resupply crate: a fresh suppressor, and either a full load and reserve or `resupply` more rounds
+## (never past `total`).
 func refill() -> void:
-	loaded = load_size
-	reserve = total - load_size
+	if resupply < 0:
+		loaded = load_size
+		reserve = total - load_size
+	else:
+		reserve = mini(reserve + resupply, total - loaded)
 	reload_left = 0.0
 	cooldown = 0.0
 	suppressor = suppressor_max

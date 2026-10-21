@@ -10,14 +10,14 @@ func suite_name() -> String:
 
 func test_a_gun_copy_keeps_its_ammo_and_suppressor() -> void:
 	var r := Rifle.new()
-	for i in 3:
+	for i in 2:
 		r.fire(false)
 		r.tick(Rifle.INTERVAL, false)
 	var c: Rifle = MissionRun.copy(r)
-	assert_eq(c.loaded, 27)
-	assert_eq(c.suppressor, 7)
+	assert_eq(c.loaded, 10)
+	assert_eq(c.suppressor, 1)
 	c.fire(false)
-	assert_eq(r.loaded, 27, "firing the copy leaves the original alone")
+	assert_eq(r.loaded, 10, "firing the copy leaves the original alone")
 
 
 func test_voiceprints_copy_is_deep() -> void:

@@ -10,7 +10,7 @@ extends Node3D
 
 const GUARD := preload("res://actors/guard/guard.tscn")
 
-var _was_alerted := false
+var _waves := Reinforcements.new()
 var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
 
 
@@ -67,28 +67,45 @@ func _spawn_targets(guards: Array) -> void:
 	$MissionRun.tally.add("targets", names.size())
 
 
-## Combat L3: each time an alert goes up from none, the road entry sends guards who head for it.
-func _process(_delta: float) -> void:
-	var alerted := get_tree().get_nodes_in_group("guards").any(
-		func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT)
-	var n := Deployment.reinforcements($MissionRun.plan.deployed)
-	if alerted and not _was_alerted and n > 0:
-		var entry: Marker3D = $Spots/RoadEntry
-		for i in n:
-			_reinforcements += 1
-			var g := spawn_guard(entry)
-			g.name = "GuardRoad%d" % _reinforcements
-			g.global_position += Vector3(i * 2.0, 0, 0)
-			g.post = g.global_transform
-			_equip(g)
-			var rng: RandomNumberGenerator = g.rng
-			var goal: Vector3 = $Operative.global_position
-			if Telegraph.flank(Deployment.combat_level($MissionRun.plan.deployed), rng):
-				goal = Telegraph.flank_point(entry.global_position, goal, rng)
-				g.telegraph("flank", Telegraph.FLANK_ICON, "startle", "Flanking, go wide!")
-			g.on_radio(goal, "reinforcements")
-		$MissionRun.tally.add("spawned", n)
-	_was_alerted = alerted
+## Reinforcements: the road entry sends a squad on every Alert and another every 30 s while it holds
+## (Reinforcements), and takes back the ones that return to it on patrol.
+func _process(delta: float) -> void:
+	var guards := get_tree().get_nodes_in_group("guards")
+	var alive := get_tree().get_nodes_in_group("reinforcements").filter(func(g: Guard) -> bool: return not g.is_down()).size()
+	var n := _waves.tick(delta, guards.any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT),
+		alive, Deployment.squad_size($MissionRun.plan.deployed))
+	if n > 0:
+		_send(n)
+	_dismiss_returned()
+
+
+func _send(n: int) -> void:
+	var deployed: Dictionary = $MissionRun.plan.deployed
+	var entry: Marker3D = $Spots/RoadEntry
+	for i in n:
+		_reinforcements += 1
+		var g := spawn_guard(entry)
+		g.name = "GuardRoad%d" % _reinforcements
+		g.global_position += Vector3((i % 3 - 1) * 1.5, 0, i / 3 * 2.0)
+		g.post = g.global_transform
+		g.add_to_group("reinforcements")
+		_equip(g)
+		var goal: Vector3 = $Operative.global_position
+		if Deployment.flanks(deployed) and Telegraph.flank(Deployment.combat_level(deployed), g.rng):
+			goal = Telegraph.flank_point(entry.global_position, goal, g.rng)
+			g.telegraph("flank", Telegraph.FLANK_ICON, "startle", "Flanking, go wide!")
+		g.on_radio(goal, "reinforcements")
+	$MissionRun.tally.add("spawned", n)  # one that leaves alive still counts: a life spared
+
+
+## A reinforcement whose Alert is over walks its patrol back to the entry (its post) and leaves. Every way
+## out of an Alert (Evasion giving up, a believed all-units all clear) ends here.
+func _dismiss_returned() -> void:
+	var entry: Vector3 = $Spots/RoadEntry.global_position
+	for g: Guard in get_tree().get_nodes_in_group("reinforcements"):
+		if g.alert.state == GuardAlert.State.PATROL and not g.is_down() and Vector2(g.global_position.x - entry.x, g.global_position.z - entry.z).length() < Guard.REACHED * 2.0:
+			g.remove_from_group("guards")
+			g.queue_free()
 
 
 ## Combat L1 vests, the Takedowns L1 glance and Downs L2's instant alert, on every guard including reinforcements.

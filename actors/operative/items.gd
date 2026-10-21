@@ -1,5 +1,5 @@
 ## The Operative's two items, node-free: the Scanner (3 charges, shows cones for ~10 s) and the Magazine
-## (4 per Mission, thrown as a knock). The wheel cycles which one F uses. Resupply refills both.
+## (4 per Mission, thrown as a knock). The wheel cycles which one F uses. The resupply crate refills both, once.
 class_name Items
 extends RefCounted
 
@@ -17,6 +17,7 @@ var selected := Kind.SCANNER
 var charges := SCANNER_CHARGES
 var magazines := MAGAZINES
 var scan_left := 0.0
+var crate_used := false
 
 
 func cycle(dir: int) -> void:
@@ -61,7 +62,18 @@ func tick(delta: float) -> void:
 	scan_left = maxf(scan_left - delta, 0.0)
 
 
-## Resupply crate.
+## Resupply crate: one use per Mission. Refills both items and every gun; false once spent.
+## Lives here so the Checkpoint snapshot of Items carries it.
+func resupply(guns: Array) -> bool:
+	if crate_used:
+		return false
+	crate_used = true
+	refill()
+	for g in guns:
+		g.refill()
+	return true
+
+
 func refill() -> void:
 	charges = SCANNER_CHARGES
 	magazines = MAGAZINES

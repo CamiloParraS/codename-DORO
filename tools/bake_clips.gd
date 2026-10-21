@@ -16,6 +16,7 @@ const CLIPS := {
 	"takedown": ["UAL1_Standard.glb", "Punch_Cross", false],
 	"down": ["UAL1_Standard.glb", "Death01", false],
 	"carry": ["UAL2_Standard.glb", "Walk_Carry", true],
+	"hit": ["UAL1_Standard.glb", "Hit_Chest", false],
 }
 
 

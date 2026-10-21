@@ -121,14 +121,37 @@ const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [82, 44, 3], Extraction = [9, 14, 6],
 	ResupplyCrate = [50, 64, 1], SafeRoom = [60, 12, 6], RelayConsole = [40, 20, 6],
 }
+const INTEL := {IntelGarage = [55, 67, 0], IntelMess = [58, 42, 3]}  # the console is the middle step
 const START_FACING := 45
+## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## doorways, the Crawlspace mouths, Ladders and ramp landings.
+const DRESS := [
+	# motor pool: fuel store by the fuel hut, stock by the start, floodlights on the south rail
+	["drum", [64.5, 66.5, 0], 0], ["drum", [65.3, 67.2, 0], 30], ["barrel_a", [64.6, 68, 0], 0],
+	["jerrycan", [64.6, 71.5, 0], 90], ["jerrycan", [65.2, 71.7, 0], 70], ["generator", [67, 74.5, 0], 0],
+	["pallet_stack", [6.5, 58.5, 0], 0], ["crate_wide", [11, 74.5, 0], 0], ["supply_crate", [11, 74.5, 0.67], 20],
+	["lamp_post", [30, 75.3, 0], 0], ["lamp_post", [60, 75.3, 0], 0],
+	# garage inside
+	["cabinet_b", [46.5, 62.55, 0], 180], ["cabinet_a", [48, 62.55, 0], 180], ["ceiling_lamp", [51, 67, 4.8], 0],
+	["cardboard_box", [56.5, 71, 0], 10],
+	# barracks terrace
+	["crate_wide", [14, 33.2, 3], 0], ["barrel_b", [16, 33, 3], 0], ["drum", [65.5, 39, 3], 0],
+	["jerrycan", [57, 46.6, 3], 0], ["lamp_post", [46, 32.6, 3], 180], ["vent_unit", [58, 42, 6.8], 90],
+	# summit: generator by its shed, the console's screens, floodlight over the helipad
+	["generator", [19, 9.2, 6], 0], ["tank_tall", [25, 6, 6], 0], ["drum", [5.5, 24, 6], 0], ["drum", [6.3, 24.5, 6], 50],
+	["monitoring_screen", [39.6, 18, 7.1], 180], ["monitoring_screen", [40.4, 18, 7.1], 180],
+	["cabinet_a", [38, 18.3, 6], 270], ["lamp_post", [4.6, 10, 6], 90],
+	# office inside
+	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 0], ["chair", [61, 11.2, 6], 180],
+	["locker", [53, 8.65, 6], 180], ["ceiling_lamp", [57, 13, 9.5], 0],
+]
 const SPOOFS := {SpoofGarage = [47, 60, 0], SpoofMess = [50, 44, 3], SpoofHelipad = [12, 16, 6], SpoofMast = [44, 15, 6]}
 
 ## What the navmesh must reach from the start: every terrace, the office roof, the catwalk, and every objective.
 const REACH := {
 	MotorPool = [30, 74, 0], BarracksTerrace = [40, 54, 3], Summit = [28, 26, 6], OfficeRoof = [58, 12, 10],
 	Catwalk = [45, 10.8, 10], Helipad = [9, 14, 6], Console = [40, 20, 6], SafeRoom = [60, 12, 6],
-	ChiefMess = [50, 41, 3], ChiefLookout = [34, 40, 3], ScreeTop = [6.5, 31, 6],
+	ChiefMess = [50, 41, 3], IntelGarage = [55, 67, 0], IntelMess = [58, 42, 3], ChiefLookout = [34, 40, 3], ScreeTop = [6.5, 31, 6],
 }
 ## The two carry routes, chief to helipad, as waypoints the shortest path is forced through. The scree
 ## route is pinned to the barracks' north side: left free, the path query can take the long way round.
@@ -159,6 +182,7 @@ func _build() -> void:
 		_building(_group(solid, b[0]), b)
 	for r in RAMPS:
 		_ramp(solid, r)
+	_dress(nav, DRESS)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -190,7 +214,8 @@ func _build() -> void:
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y += 1.5
-	var intel := _group(_root, "Intel")
+	_intel(INTEL)
+	var intel: Node3D = _root.get_node("Intel")
 	var console := _area(intel, "RelayConsole", SPOTS.RelayConsole, Vector3(5, 3, 5), "res://areas/relay_station/relay_console.gd")
 	console.position.y += 1.5
 	_save(OUT)

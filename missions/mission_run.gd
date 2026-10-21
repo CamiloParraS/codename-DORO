@@ -186,6 +186,7 @@ func _steps() -> Array:
 func _show_intel() -> void:
 	for i: Node3D in get_tree().get_nodes_in_group("intel"):
 		i.visible = step < _steps().size() and i.name == _steps()[step].intel
+		i.set_deferred("monitoring", i.visible)  # a hidden pickup is inert: it can't open the Core's lift early
 
 
 ## The current step's intel reached: the step is done, and that's a Checkpoint.

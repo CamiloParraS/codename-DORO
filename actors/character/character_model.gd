@@ -9,11 +9,15 @@ const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 ## The Target is a PSX character on the Mixamo rig, with its own clips from tools/bake_target.gd (gitignored).
 const TARGET_BODY := preload("res://assets/models/characters/target/target.fbx")
 const TARGET_CLIPS := "res://assets/models/animations/target_clips.res"
-## Guard looks: the Police 21/22 textures of the PSX pack, baked onto Nikita's UVs (_raw/work/bake/bake.py).
+## Guard looks: police, firefighter, doctor and hazmat textures of the PSX pack, baked onto Nikita's UVs
+## (_raw/work/bake/bake.py). The Operative wears its own, baked the same way.
 const GUARD_SKINS := [
 	preload("res://assets/models/characters/guard/guard_21.png"),
-	preload("res://assets/models/characters/guard/guard_22.png"),
+	preload("res://assets/models/characters/guard/guard_firefighter.png"),
+	preload("res://assets/models/characters/guard/guard_doctor.png"),
+	preload("res://assets/models/characters/guard/guard_hazmat.png"),
 ]
+const OPERATIVE_SKIN := preload("res://assets/models/characters/operative.png")
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
@@ -36,11 +40,6 @@ const PISTOL_CLIPS := {
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
-## The body is white and tinted per kind; the gear parts carry their own colours.
-const TINTS := {
-	Kind.OPERATIVE: Color(0.3, 0.36, 0.5),
-	Kind.GUARD: Color(0.45, 0.5, 0.33),
-}
 ## Gear parts shown per kind. Helmet and Vest are the guard Countermeasures: hidden until wear().
 const DRESS := {
 	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
@@ -109,12 +108,9 @@ func _ready() -> void:
 	_anim.deterministic = true  # bones a clip doesn't key (the Quaternius clips skip spine_01) go back to rest
 	_anim.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	if kind != Kind.TARGET:
-		var tint := StandardMaterial3D.new()
-		tint.albedo_color = TINTS[kind]
-		if kind == Kind.GUARD:  # a PSX look, one of the skins by the guard's name
-			tint.albedo_color = Color.WHITE
-			tint.albedo_texture = GUARD_SKINS[String(get_parent().name).hash() % GUARD_SKINS.size()]
-			tint.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		var tint := StandardMaterial3D.new()  # a PSX look: the Operative's skin, or a guard's by its name
+		tint.albedo_texture = OPERATIVE_SKIN if kind == Kind.OPERATIVE else GUARD_SKINS[String(get_parent().name).hash() % GUARD_SKINS.size()]
+		tint.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 		tint.roughness = 0.9
 		_part("Nikita").material_override = tint
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:

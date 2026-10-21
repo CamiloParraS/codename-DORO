@@ -45,9 +45,14 @@ static func extra_guards(deployed: Dictionary) -> int:
 	return 2 if int(deployed.get("combat", 0)) >= 2 else 0
 
 
-## Combat L3: guards arriving from the road entry each time an alert is raised.
-static func reinforcements(deployed: Dictionary) -> int:
-	return 2 if int(deployed.get("combat", 0)) >= 3 else 0
+## Reinforcements: the squad the road entry sends (3; Combat L3: 5, some flanking). Every Alert brings one.
+static func squad_size(deployed: Dictionary) -> int:
+	return Reinforcements.SQUAD_L3 if int(deployed.get("combat", 0)) >= 3 else Reinforcements.SQUAD
+
+
+## Combat L3: a share of each squad flanks (Telegraph).
+static func flanks(deployed: Dictionary) -> bool:
+	return int(deployed.get("combat", 0)) >= 3
 
 
 ## Combat level, for the share of reinforcements that flank (Telegraph).

@@ -9,8 +9,9 @@ enum State { PATROL, SUSPICION, ALERT, EVASION }
 const SUSPECT_AT := 0.35   # meter level where a guard goes "?"
 const DRAIN := 0.25        # meter drain per second while the Operative is out of sight
 const LOOK_TIME := 5.0     # seconds a suspicious guard looks around the spot before giving up
-const LOSE_TIME := 3.0     # seconds out of sight before ALERT drops to EVASION
-const SEARCH_TIME := 12.0  # seconds of searching the last known position before back to patrol
+const LOSE_TIME := 20.0    # seconds out of sight before ALERT drops to EVASION
+const SEARCH_TIME := 30.0  # seconds of searching the last known position before back to patrol
+const CAMERA_LOSE_TIME := 3.0  # a camera drops its alert this quickly: it never searches
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
 const FLINCH := 0.35       # seconds of the startle on going to alert; cosmetic, never holds up the response
@@ -62,7 +63,7 @@ func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_tar
 
 
 ## A security camera's tick: the same meter and drain, but no suspicion step: a full meter goes
-## straight to ALERT (the camera radios it). It drops back to PATROL, meter empty, after LOSE_TIME
+## straight to ALERT (the camera radios it). It drops back to PATROL, meter empty, after CAMERA_LOSE_TIME
 ## unseen. The camera passes its front-cone rate only.
 func camera_tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String) -> String:
 	var seen := seen_rate > 0.0
@@ -70,7 +71,7 @@ func camera_tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String)
 		last_known = seen_pos
 	if state == State.ALERT:
 		unseen = 0.0 if seen else unseen + delta
-		if unseen >= LOSE_TIME:
+		if unseen >= CAMERA_LOSE_TIME:
 			return _go(State.PATROL, "camera lost you")
 		return ""
 	meter = minf(meter + seen_rate * delta, 1.0) if seen else maxf(meter - DRAIN * delta, 0.0)
@@ -90,6 +91,14 @@ func hear(pos: Vector3, what: String) -> String:
 		meter = maxf(meter, SUSPECT_AT)
 		return _go(State.SUSPICION, "heard %s" % what)
 	return ""
+
+
+## A loud gunshot at pos reached this guard: straight to alert, not suspicion.
+func shot(pos: Vector3) -> String:
+	if state == State.ALERT:
+		return ""
+	last_known = pos
+	return _go(State.ALERT, "heard a gunshot")
 
 
 ## The guard sees a Down guard at pos (rate: the same vision fill as for the Operative). It fills the

@@ -28,6 +28,14 @@ const CORE_POSTS := [
 const CORE_TARGET_POSTS := [  # the security director paces beside the terminal
 	["TargetPost1", [-26, 36, 0], 90, {hold = 5.0}, [[-26, 28, {hold = 5.0, f = 270}]]],
 ]
+## The corridor's and room's dressing, on top of the Harbour's DRESS.
+const CORE_DRESS := [
+	["ceiling_lamp", [-4, 32, 3.8], 0], ["ceiling_lamp", [-10, 32, 3.8], 0],
+	["ceiling_lamp", [-24, 27, 3.8], 0], ["ceiling_lamp", [-24, 37, 3.8], 0], ["ceiling_lamp", [-17, 32, 3.8], 0],
+	["monitoring_screen", [-33.1, 31, 1], 90], ["monitoring_screen", [-33.1, 33, 1], 90],
+	["cabinet_b", [-33.5, 38, 0], 90], ["cabinet_b", [-33.5, 39.3, 0], 90], ["cabinet_a", [-33.5, 25, 0], 90],
+	["pipe_riser", [-14.9, 23, 0], 270], ["pipe_riser", [-14.9, 41, 0], 270],
+]
 const CORE_REACH := {
 	LiftMouth = [8, 32, 0], Corridor = [-6, 32, 0], RoomDoor = [-15, 32, 0], Room = [-24, 32, 0],
 	Director = [-26, 36, 0], DirectorRoute = [-26, 28, 0], SafeRoom = [-30, 25, 0], Terminal = [-31, 32, 0],
@@ -57,6 +65,7 @@ func _build() -> void:
 	for b in BUILDINGS + [CORE_BUILDING]:
 		_building(_group(solid, b[0]), b)
 	_gangway(solid)
+	_dress(nav, DRESS + CORE_DRESS)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -67,11 +76,13 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l)
 	_backdrop()
+	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
 	_sun()
 
 	var spots := SPOTS.duplicate()
 	spots.SafeRoom = [-30, 25, 0]
 	spots.Extraction = [-24, 32, 0]
+	spots.RoadEntry = [-12, 32, 0]  # reinforcements come down the corridor, near CoreEntry
 	var spot_group := _group(_root, "Spots")
 	for n in spots:
 		_marker(spot_group, n, spots[n], 180 if n == "OperativeStart" else 0, {}, "spot")
@@ -98,7 +109,7 @@ func _build() -> void:
 	ep.position.y = 1.5
 	_area(_root, "CoreEntry", [-16, 32, 1.5], Vector3(2, 3, 4), "res://areas/core/core_entry.gd")
 	_area(_root, "CoreTerminal", [-31.5, 32, 1.5], Vector3(3, 3, 4), "res://areas/core/core_terminal.gd")
-	_intel({IntelLift = INTEL.IntelLift})
+	_intel({IntelManifests = INTEL.IntelManifests, IntelLift = INTEL.IntelLift})
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(CORE_OUT)

@@ -21,6 +21,17 @@ const PROPS := {
 	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
 }
 
+## Set dressing below this height (after scale) gets no collider: cones, cans, desk clutter.
+const DRESS_SOLID_H := 0.6
+## Colliders that differ from the model's bounds: the lamp post's arm overhangs, so only its pole blocks;
+## ceiling lamps hang out of reach.
+const DRESS_SHAPES := {lamp_post = Vector3(0.4, 6, 0.4), ceiling_lamp = Vector3.ZERO}
+## Models that light up: [light offset in the model's own axes, range, colour].
+const DRESS_LIGHTS := {
+	lamp_post = [Vector3(0, 5.4, -1.1), 12.0, Color(1, 0.85, 0.6)],
+	ceiling_lamp = [Vector3(0, -0.4, 0), 9.0, Color(1, 0.95, 0.85)],
+}
+
 var _root: Node3D
 var _mats := {}
 
@@ -119,7 +130,8 @@ func _add(parent: Node, n: Node) -> void:
 func _own(n: Node) -> void:
 	for c in n.get_children():
 		c.owner = _root
-		_own(c)
+		if c.scene_file_path == "":  # a model instance saves as a reference, not its insides
+			_own(c)
 
 
 func _group(parent: Node, name: String) -> Node3D:
@@ -180,6 +192,59 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	if name == "ResupplyCrate":
 		b.add_to_group("resupply_crate", true)
 	return b
+
+
+## Set dressing from assets/models/props: [model, [x, y, h], facing, scale (1 if missing)], each standing on
+## its base at h. Call it before the bake: anything DRESS_SOLID_H or taller is a StaticBody3D whose box
+## collider (layer 1) the navmesh routes round, centred on the body like _box's so _check_markers sees it.
+func _dress(parent: Node3D, items: Array) -> void:
+	var g := _group(parent, "Dressing")
+	for it in items:
+		var key: String = it[0]
+		var s: float = it[3] if it.size() > 3 else 1.0
+		var m: Node3D = load("res://assets/models/props/%s.glb" % key).instantiate()
+		var box := _model_box(m)
+		var size: Vector3 = DRESS_SHAPES.get(key, box.size) * s
+		var solid := size.y >= DRESS_SOLID_H
+		var b: Node3D = StaticBody3D.new() if solid else Node3D.new()
+		b.name = "%s%d" % [key.to_pascal_case(), g.get_child_count()]
+		b.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(-it[2])), _p(it[1]) + Vector3.UP * size.y / 2)
+		g.add_child(b)
+		if solid:
+			var shape := CollisionShape3D.new()
+			shape.name = "Shape"
+			shape.shape = _box_shape(size)
+			b.add_child(shape)
+		b.add_child(m)
+		m.scale = Vector3.ONE * s
+		m.position = Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * s - Vector3.UP * size.y / 2
+		if DRESS_LIGHTS.has(key):
+			var l := OmniLight3D.new()
+			l.name = "Light"
+			l.position = m.position + DRESS_LIGHTS[key][0] * s
+			l.omni_range = DRESS_LIGHTS[key][1]
+			l.light_color = DRESS_LIGHTS[key][2]
+			l.light_energy = 3.0
+			b.add_child(l)
+	if _root.is_ancestor_of(g):  # dressing in the NavRegion is owned by _bake
+		g.owner = _root
+		_own(g)
+
+
+## The bounds of a model instance outside the tree, in its own axes.
+func _model_box(m: Node3D) -> AABB:
+	var box := AABB()
+	var first := true
+	for v: VisualInstance3D in m.find_children("*", "VisualInstance3D", true, false):
+		var xf := Transform3D.IDENTITY
+		var n: Node = v
+		while n != m:
+			xf = (n as Node3D).transform * xf
+			n = n.get_parent()
+		var b := xf * v.get_aabb()
+		box = b if first else box.merge(b)
+		first = false
+	return box
 
 
 ## Four walls with 2 m door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre]],
@@ -338,13 +403,13 @@ func _camera_poles(parent: Node3D, cameras: Array) -> void:
 			_box(parent, c[0] + "Pole", [c[1][0] - 0.1, c[1][1] - 0.1, 0.2, 0.2], c[3], c[1][2], "metal", Color(0.5, 0.5, 0.5))
 
 
-## Intel pickups: {name: [x, y]}, each a small unshaded slab 0.6 m up under $Intel.
+## Intel pickups: {name: [x, y[, floor h]]}, each a small unshaded slab 0.6 m up under $Intel.
 func _intel(pickups: Dictionary) -> void:
 	var intel := _group(_root, "Intel")
 	var intel_mat := StandardMaterial3D.new()
 	intel_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	for n in pickups:
-		var a := _area(intel, n, [pickups[n][0], pickups[n][1], 0.6], Vector3(1.5, 2, 1.5), "res://areas/intel_pickup.gd")
+		var a := _area(intel, n, [pickups[n][0], pickups[n][1], pickups[n][2] + 0.6 if pickups[n].size() > 2 else 0.6], Vector3(1.5, 2, 1.5), "res://areas/intel_pickup.gd")
 		var m := MeshInstance3D.new()
 		m.name = "Mesh"
 		m.mesh = _box_mesh(Vector3(0.4, 0.1, 0.3), intel_mat)

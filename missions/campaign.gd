@@ -16,18 +16,24 @@ const MISSIONS := [
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
 		{intel = "IntelManifests", objective = "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A", call = [["analyst", "live.m1.s1.01"]]},
 		{intel = "IntelRadioLog", objective = "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE", call = [["analyst", "live.m1.s2.01"]]},
+		{intel = "IntelLift", objective = "CHECK THE FREIGHT LIFT'S CONTROLS", call = [["analyst", "live.m1.s3.01"]]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, targets = ["RELAY CHIEF"],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["analyst", "codec.m2.03"], ["handler", "codec.m2.04"]], steps = [
-		{intel = "RelayConsole", objective = "SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS", call = [["handler", "live.m2.s1.01"], ["analyst", "live.m2.s1.02"]]},
+		{intel = "IntelGarage", objective = "RECOVER THE ENCRYPTION KEYS FROM THE GARAGE", call = [["analyst", "live.m2.s1.01"]]},
+		{intel = "RelayConsole", objective = "SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"]]},
+		{intel = "IntelMess", objective = "SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS", call = [["analyst", "live.m2.s3.01"]]},
 	]},
 	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, targets = ["LEAD RESEARCHER"],
 		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03"], ["analyst", "codec.m3.04"]], steps = [
-		{intel = "ResearchFiles", objective = "EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE", call = [["analyst", "live.m3.s1.01"], ["analyst", "live.m3.s1.02"]]},
+		{intel = "IntelOffice", objective = "DOWNLOAD THE ACCESS LOGS FROM THE OFFICE", call = [["analyst", "live.m3.s1.01"]]},
+		{intel = "IntelVault", objective = "OPEN THE VAULT AT THE END OF THE CORRIDOR", call = [["analyst", "live.m3.s2.01"]]},
+		{intel = "ResearchFiles", objective = "EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]]},
 	]},
 	{title = "CORE", area = CORE, targets = ["SECURITY DIRECTOR"],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["analyst", "codec.m4.03"], ["analyst", "codec.m4.04"]], steps = [
-		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT", call = [["handler", "live.m4.s1.01"]]},
+		{intel = "IntelManifests", objective = "TAKE THE LIFT ACCESS CODES FROM WAREHOUSE A", call = [["analyst", "live.m4.s1.01"]]},
+		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT", call = [["handler", "live.m4.s2.01"]]},
 	]},
 ]
 

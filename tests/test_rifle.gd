@@ -8,20 +8,20 @@ func suite_name() -> String:
 	return "rifle"
 
 
-func test_starts_30_in_load_60_total_suppressed() -> void:
+func test_starts_12_in_load_36_total_suppressed() -> void:
 	var r := Rifle.new()
-	assert_eq(r.loaded, 30)
-	assert_eq(r.loaded + r.reserve, 60)
+	assert_eq(r.loaded, 12)
+	assert_eq(r.loaded + r.reserve, 36)
 	assert_true(r.suppressed())
 
 
-func test_suppressor_breaks_after_10_shots() -> void:
+func test_suppressor_breaks_after_3_shots() -> void:
 	var r := Rifle.new()
-	for i in 10:
+	for i in 3:
 		assert_true(r.suppressed(), "shot %d is quiet" % (i + 1))
 		assert_true(r.fire(false))
 		r.tick(Rifle.INTERVAL, false)
-	assert_false(r.suppressed(), "the 11th shot is loud")
+	assert_false(r.suppressed(), "the 4th shot is loud")
 	assert_eq(r.suppressor, 0)
 	r.fire(false)
 	assert_eq(r.suppressor, 0)
@@ -32,29 +32,31 @@ func test_a_dry_click_does_not_wear_the_suppressor() -> void:
 	r.loaded = 0
 	r.reload_left = 1.0
 	assert_false(r.fire(false))
-	assert_eq(r.suppressor, 10)
+	assert_eq(r.suppressor, 3)
 
 
-func test_empty_load_reloads_30_from_reserve() -> void:
+func test_empty_load_reloads_12_from_reserve() -> void:
 	var r := Rifle.new()
-	for i in 30:
+	for i in 12:
 		r.fire(false)
 		r.tick(Rifle.INTERVAL, false)
 	assert_true(r.reloading())
 	r.tick(Tranq.RELOAD_TIME + 0.01, false)
-	assert_eq(r.loaded, 30)
-	assert_eq(r.reserve, 0)
+	assert_eq(r.loaded, 12)
+	assert_eq(r.reserve, 12)
 
 
-func test_refill_restores_ammo_and_suppressor() -> void:
+func test_refill_adds_12_capped_at_36_and_restores_the_suppressor() -> void:
 	var r := Rifle.new()
-	for i in 40:
+	for i in 20:
 		r.fire(false)
 		r.tick(2.0, false)
+	assert_eq(r.loaded + r.reserve, 16)
 	r.refill()
-	assert_eq(r.loaded, 30)
-	assert_eq(r.reserve, 30)
-	assert_eq(r.suppressor, 10)
+	assert_eq(r.loaded + r.reserve, 28, "adds 12")
+	assert_eq(r.suppressor, 3)
+	r.refill()
+	assert_eq(r.loaded + r.reserve, 36, "capped at the 36 maximum")
 	assert_false(r.reloading())
 
 
@@ -75,14 +77,14 @@ func test_rifle_is_automatic_and_paced() -> void:
 	assert_false(r.can_fire(), "the next round waits for the interval")
 	r.tick(Rifle.INTERVAL + 0.01, false)
 	assert_true(r.can_fire())
-	assert_eq(r.loaded, 29)
+	assert_eq(r.loaded, 11)
 
 
 func test_a_gated_shot_does_not_wear_the_suppressor() -> void:
 	var r := Rifle.new()
 	r.fire(false)
 	r.fire(false)
-	assert_eq(r.suppressor, 9)
+	assert_eq(r.suppressor, 2)
 
 
 func test_pistol_is_semi_auto_without_recoil_and_the_weapons_differ_on_screen() -> void:

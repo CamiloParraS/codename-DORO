@@ -39,7 +39,8 @@ func test_every_intel_step_is_in_its_area() -> void:
 func test_objective_is_the_current_step_then_extraction() -> void:
 	assert_eq(Campaign.objective(0, 0), "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A")
 	assert_eq(Campaign.objective(0, 1), "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE")
-	assert_eq(Campaign.objective(0, 2), "REACH THE EXTRACTION POINT", "every step done")
+	assert_eq(Campaign.objective(0, 2), "CHECK THE FREIGHT LIFT'S CONTROLS")
+	assert_eq(Campaign.objective(0, 3), "REACH THE EXTRACTION POINT", "every step done")
 
 
 ## Linear, no replays: each completed Mission moves the record on, and the Core ends the campaign.
@@ -52,3 +53,12 @@ func test_a_new_campaign_runs_mission_1_to_done() -> void:
 	assert_true(Campaign.done(), "after the Core")
 	Campaign.start()
 	assert_false(Campaign.done(), "a new game starts over")
+
+
+## A first run takes 20-30 min: three steps a Mission, two in the Core; the Target's kill or carry stays last.
+func test_three_steps_a_mission_and_two_in_the_core() -> void:
+	assert_eq(Campaign.MISSIONS.map(func(m: Dictionary) -> int: return m.steps.size()), [3, 3, 3, 2])
+	for m: Dictionary in Campaign.MISSIONS:
+		var intels: Array = m.steps.map(func(s: Dictionary) -> String: return s.intel)
+		for i in intels:
+			assert_eq(intels.count(i), 1, "%s: %s once" % [m.title, i])

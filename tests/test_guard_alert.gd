@@ -153,11 +153,11 @@ func test_radio_alerts_from_any_calm_state() -> void:
 
 func test_radio_to_an_alerted_guard_is_ignored() -> void:
 	var a := _alerted()
-	_run(a, 2.0, 0.0)
+	_run(a, GuardAlert.LOSE_TIME - 1.0, 0.0)
 	assert_eq(a.radio(Vector3(50, 0, 50), "Nikos"), "")
 	assert_eq(a.last_known, SPOT, "keeps chasing its own lead")
 	_run(a, 1.2, 0.0)
-	assert_eq(a.state, S.EVASION, "the radio didn't reset the 3 s")
+	assert_eq(a.state, S.EVASION, "the radio didn't reset the clock")
 
 
 func test_radioed_alert_also_drops_after_3s() -> void:
@@ -205,8 +205,8 @@ func test_full_cycle() -> void:
 	var reasons: Array[String] = []
 	reasons.append_array(_run(a, 0.5, 1.0))          # suspicion at 0.35
 	reasons.append_array(_run(a, 1.0, 1.0))          # alert at 1.0
-	reasons.append_array(_run(a, 3.2, 0.0))          # lost: evasion
-	reasons.append_array(_run(a, 12.2, 0.0, true))   # search: patrol
+	reasons.append_array(_run(a, GuardAlert.LOSE_TIME + 0.2, 0.0))  # lost: evasion
+	reasons.append_array(_run(a, GuardAlert.SEARCH_TIME + 0.2, 0.0, true))  # search: patrol
 	assert_eq(reasons.size(), 4, str(reasons))
 	assert_eq(a.state, S.PATROL)
 	for r in reasons:
@@ -392,3 +392,34 @@ func test_flinch_fires_on_entering_alert_only_and_is_quick() -> void:
 	assert_false(GuardAlert.flinches(S.ALERT, S.ALERT))
 	assert_false(GuardAlert.flinches(S.PATROL, S.SUSPICION))
 	assert_true(GuardAlert.FLINCH < 0.5, "well under half a second")
+
+
+func test_a_loud_shot_goes_straight_to_alert_not_suspicion() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.shot(SPOT), "heard a gunshot")
+	assert_eq(a.state, S.ALERT)
+	assert_eq(a.last_known, SPOT)
+	assert_eq(a.shot(SPOT), "", "already alerted")
+	var e := _evading()
+	e.shot(SPOT)
+	assert_eq(e.state, S.ALERT, "a searching guard too")
+
+
+func test_alert_lasts_20_s_unseen_and_the_search_30_s() -> void:
+	assert_eq(GuardAlert.LOSE_TIME, 20.0)
+	assert_eq(GuardAlert.SEARCH_TIME, 30.0)
+	var a := _alerted()
+	_run(a, 19.5, 0.0)
+	assert_eq(a.state, S.ALERT)
+	_run(a, 1.0, 0.0)
+	assert_eq(a.state, S.EVASION)
+
+
+func test_a_camera_still_drops_its_alert_after_3_s() -> void:
+	var a := GuardAlert.new()
+	a.camera_tick(DT, 1.0, SPOT, "test")
+	a.meter = 1.0
+	a.camera_tick(DT, 1.0, SPOT, "test")
+	for i in 80:
+		a.camera_tick(DT, 0.0, SPOT, "test")
+	assert_eq(a.state, S.PATROL)

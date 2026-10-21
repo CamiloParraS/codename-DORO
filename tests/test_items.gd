@@ -77,3 +77,22 @@ func test_arc_lands_15_m_out_on_level_ground() -> void:
 			break
 	assert_true(absf(-pts[down].z - 15.0) < 0.3, "landed %s" % pts[down])
 	assert_true(absf(pts[down].x) < 0.001)
+
+
+func test_the_crate_works_once_and_a_checkpoint_copy_remembers() -> void:
+	var i := Items.new()
+	var t := Tranq.new()
+	var r := Rifle.new()
+	i.charges = 0
+	t.loaded = 0
+	t.reserve = 0
+	var before: Items = MissionRun.copy(i)
+	assert_true(i.resupply([t, r]))
+	assert_eq(i.charges, Items.SCANNER_CHARGES)
+	assert_eq(t.loaded + t.reserve, Tranq.new().total)
+	i.charges = 0
+	assert_false(i.resupply([t, r]), "spent")
+	assert_eq(i.charges, 0)
+	var after: Items = MissionRun.copy(i)
+	assert_false(after.resupply([t, r]), "a restore to a Checkpoint after use keeps it spent")
+	assert_true(before.resupply([t, r]), "a restore to one before use gives the crate back")
