@@ -18,9 +18,15 @@ func test_beyond_range_pins_to_the_edge_keeping_direction() -> void:
 	assert_eq(RadarModel.unit(Vector2(0, 300)), Vector2(0, 1))
 
 
-func test_guards_show_only_inside_range() -> void:
-	assert_true(RadarModel.in_range(Vector2(29, -29)))
-	assert_false(RadarModel.in_range(Vector2(31, 0)))
+func test_a_far_blip_sits_inside_the_border_on_the_edge() -> void:
+	assert_eq(RadarModel.blip(Vector2(500, 0), 2.0), Vector2(RadarModel.HALF - 2.0, 0))
+	assert_eq(RadarModel.blip(Vector2(0, -15), 4.0), Vector2(0, -0.5 * (RadarModel.HALF - 4.0)))
+
+
+func test_flat_and_facing_drop_height() -> void:
+	assert_eq(RadarModel.flat(Vector3(3, 9, -4)), Vector2(3, -4))
+	assert_eq(RadarModel.facing(Basis.IDENTITY), Vector2(0, -1), "-Z is north, up the screen")
+	assert_eq(RadarModel.facing(Basis(Vector3.UP, PI / 2)).snapped(Vector2(0.01, 0.01)), Vector2(-1, 0))
 
 
 func test_alert_and_evasion_jam_the_radar() -> void:
