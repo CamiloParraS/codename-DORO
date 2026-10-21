@@ -27,6 +27,8 @@ var telegraphs_seen := {}          # Telegraph kinds Metis has already called th
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var step := 0                      # objective steps done
 var ended := false
+var hints := HintTracker.new()     # Metis's Hints for the current step
+var _opened := false              # the opening call has been made
 var _down := {}
 var _known := {}
 var _checkpoint := {}
@@ -77,6 +79,7 @@ func restore_checkpoint() -> void:
 		return
 	tally = copy(_checkpoint.tally)
 	step = _checkpoint.step
+	hints.new_step()
 	_show_intel()
 	var radio := get_tree().get_first_node_in_group("radio")
 	if radio:
@@ -136,8 +139,44 @@ func _physics_process(delta: float) -> void:
 		_known[g] = g.known_down
 	tally.set_alert(alert)
 	if not get_tree().paused:
-		SessionLog.current.tick(delta, alert or get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.EVASION))
+		var alerting: bool = alert or get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.EVASION)
+		SessionLog.current.tick(delta, alerting)
+		_guide(delta, alerting)
 	_teach(delta)
+
+
+## Metis's live calls: the opening call once the Operative spawns unseen, then a Hint when it is idle or wandering.
+func _guide(delta: float, alerting: bool) -> void:
+	var op: Node3D = get_tree().get_first_node_in_group("operative")
+	if not op:
+		return
+	if not _opened:
+		if not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
+			_opened = true
+			get_tree().call_group("codec_live", "live_call", Campaign.MISSIONS[record.mission].open)
+		return
+	if step >= _steps().size():
+		return
+	var dist := INF
+	for i: Node3D in get_tree().get_nodes_in_group("intel"):
+		if i.name == _steps()[step].intel:
+			dist = _flat(op, i)
+	_hint(hints.update(delta, SessionLog.current.idle_seconds(), dist, alerting))
+
+
+## "Request hint" in the radio menu: the next tier now, or Metis says there is no more.
+func request_hint() -> void:
+	if ended or step >= _steps().size():
+		return
+	var tier := hints.request()
+	if tier == 0:
+		get_tree().call_group("radio_log", "say", "METIS", tr("hint.none"))
+	_hint(tier)
+
+
+func _hint(tier: int) -> void:
+	if tier > 0:
+		get_tree().call_group("codec_live", "live_call", [["analyst", _steps()[step].hint[tier - 1]]])
 
 
 ## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time each verb matters.
@@ -219,6 +258,7 @@ func _on_intel(intel: Node) -> void:
 		return
 	get_tree().call_group("codec_live", "live_call", _steps()[step].call)
 	step += 1
+	hints.new_step()
 	_show_intel()
 	_say_objective()
 	take_checkpoint()

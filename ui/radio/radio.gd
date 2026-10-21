@@ -79,6 +79,7 @@ func _open() -> void:
 	for m: Node3D in get_tree().get_nodes_in_group("spoof_place"):
 		_places[String(m.name).trim_prefix("Spoof").capitalize()] = m.global_position
 	menu = RadioMenu.new(_operative.voiceprints.held.duplicate(), up, _places.keys(), hq.who())
+	menu.hint_label = tr("radio.request_hint")
 	_pointer = Vector2.ZERO
 	Engine.time_scale = SLOW
 	_operative.radio_open = true
@@ -102,6 +103,10 @@ func _choose(i: int) -> void:
 	if not menu.choose(i):
 		return
 	var pick := menu.pick
+	if pick.has("hint"):
+		close()
+		get_tree().call_group("mission_plan", "request_hint")
+		return
 	var line := menu.line()
 	close()
 	_send(pick, line)

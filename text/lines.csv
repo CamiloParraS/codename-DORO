@@ -153,3 +153,31 @@ finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. 
 finale.epi.gorgo.2,"Aigis will learn from this. The next contract will be bigger.","[Analyst] Linea del epilogo 2, final gorgo."
 finale.epi.gorgo.3,"Every body is a line in an invoice. Metis has never been so busy.","[Metis] Linea del epilogo 3, final gorgo."
 finale.epi.gorgo.4,"War is the only market that never closes, Operative.","[Analyst] Linea del epilogo 4, final gorgo."
+live.m1.open.01,Start at Warehouse A. Find the shipping manifests.,Empieza en el Almacen A. Busca los manifiestos de envio.
+live.m2.open.01,First the garage. We need the encryption keys.,Primero el garaje. Necesitamos las llaves de cifrado.
+live.m3.open.01,The office first. Download the access logs.,Primero la oficina. Descarga los registros de acceso.
+live.m4.open.01,Warehouse A again. The lift access codes are there.,Otra vez el Almacen A. Ahi estan los codigos del montacargas.
+hint.m1.s1.1,"The manifests are in Warehouse A, west of the quay.","Los manifiestos estan en el Almacen A, al oeste del muelle."
+hint.m1.s1.2,Go along the quay and use the shadows. Listen to the guards check in; a Voiceprint can move one of them later.,Ve por el muelle y usa las sombras. Escucha los reportes de los guardias; una huella de voz puede mover a uno despues.
+hint.m1.s2.1,"The radio log is in the gatehouse, north of the yard.","El registro de radio esta en la garita, al norte del patio."
+hint.m1.s2.2,The guard at the gatehouse sees everything. With a Voiceprint you could Spoof him away to Warehouse B. Or take the long way round.,El guardia de la garita lo ve todo. Con una huella de voz podrias mandarlo al Almacen B con un Spoof. O rodea por el camino largo.
+hint.m1.s3.1,The freight lift is at the western edge of the Harbour.,El montacargas esta en el borde oeste del Puerto.
+hint.m1.s3.2,Stay behind the warehouses and come in from the south. The control room is quiet if you are.,Quedate detras de los almacenes y entra por el sur. La sala de control esta tranquila si tu lo estas.
+hint.m2.s1.1,The garage is in the south of the station.,El garaje esta en el sur de la estacion.
+hint.m2.s1.2,"Keep to the fence line and wait for the patrol to pass. The keys are inside, on the desk.","Sigue la linea de la valla y espera a que pase la patrulla. Las llaves estan dentro, sobre el escritorio."
+hint.m2.s2.1,The relay console is up on the summit.,"La consola de la estacion esta arriba, en la cima."
+hint.m2.s2.2,"Take the path up the scree. Sabotage takes five seconds, so make sure nobody can see you.","Sube por el pedregal. El sabotaje tarda cinco segundos, asegurate de que nadie te vea."
+hint.m2.s3.1,The mess hut is in the middle of the station.,El comedor esta en el centro de la estacion.
+hint.m2.s3.2,"The chief's escort sees the door. A Spoof can send the escort away, or you can go in through the back.","La escolta del jefe ve la puerta. Un Spoof puede alejar a la escolta, o puedes entrar por detras."
+hint.m3.s1.1,The office is in the middle of the annex.,La oficina esta en el centro del anexo.
+hint.m3.s1.2,Use the side door from the yard and keep out of the corridor's line of sight.,Usa la puerta lateral del patio y evita la linea de vision del pasillo.
+hint.m3.s2.1,The vault is at the east end of the corridor.,La boveda esta en el extremo este del pasillo.
+hint.m3.s2.2,"Time your steps to the guard's turn. The corridor is long, but he only looks away for a few seconds.","Calcula tus pasos con el giro del guardia. El pasillo es largo, pero solo mira a otro lado unos segundos."
+hint.m3.s3.1,"The research files are in the Archive, past the lobby.","Los archivos de investigacion estan en el Archivo, pasado el vestibulo."
+hint.m3.s3.2,"The lobby guard blocks the way. Record the pair chatting, then Spoof him out. Or go around by the crawlspace.",El guardia del vestibulo bloquea el paso. Graba a la pareja que charla y luego mandalo lejos con un Spoof. O rodea por el conducto.
+hint.m4.s1.1,"The lift codes are in Warehouse A, same as before.","Los codigos estan en el Almacen A, igual que antes."
+hint.m4.s1.2,The guards here are on alert for you. Move slowly and keep to cover.,Los guardias estan alerta por ti. Muevete despacio y usa las coberturas.
+hint.m4.s2.1,The freight lift is at the west edge of the Harbour.,El montacargas esta en el borde oeste del Puerto.
+hint.m4.s2.2,"The control room has a guard. Spoof him away to the lift control, or wait until his back is turned.","La sala de control tiene un guardia. Mandalo al control del montacargas con un Spoof, o espera a que te de la espalda."
+hint.none,"That is all I have, Operative. You know the way.","Es todo lo que tengo, Operativo. Ya sabes el camino."
+radio.request_hint,Request hint,Pedir pista

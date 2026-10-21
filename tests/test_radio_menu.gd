@@ -62,6 +62,14 @@ func test_back_from_place_and_first_step() -> void:
 	assert_eq(m.step, "order")
 
 
+func test_request_hint_is_a_speaker_step_pick_that_needs_no_voiceprint() -> void:
+	var m := RadioMenu.new([], ["Dimos"], ["Dock"])
+	m.hint_label = "Request hint"
+	assert_eq(m.options(), [["Request hint", "hint"]])
+	assert_true(m.choose(0))
+	assert_true(m.pick.has("hint"))
+
+
 func test_out_of_range_choice_does_nothing() -> void:
 	var m := RadioMenu.new([], ["Dimos"], ["Dock"])
 	assert_true(m.options().is_empty())  # no Voiceprints yet
