@@ -312,6 +312,7 @@ func _fire() -> void:
 	var quiet := arm.suppressed()
 	if not arm.fire(carrying != null):
 		return
+	get_tree().call_group("mission_tally", "event", "rifle" if arm.lethal else "dart")
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot", null, true)
 	Mix.sfx_at(self, Mix.shot_sound(quiet))
