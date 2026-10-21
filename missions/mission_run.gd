@@ -16,6 +16,8 @@ signal finished(new_record: Dictionary)
 
 const SCREEN := preload("res://ui/post_mission/post_mission.gd")
 
+const LOG_PATH := "user://session_log.txt"  # rewritten at each Mission's end; the observer opens it
+
 var tally := MissionTally.new()
 var record := Aigis.new_record()
 var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
@@ -41,6 +43,7 @@ func _ready() -> void:
 	for i in get_tree().get_nodes_in_group("intel"):
 		i.reached.connect(_on_intel.bind(i))
 	_show_intel()
+	SessionLog.current.start_mission(record.mission)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
@@ -49,6 +52,7 @@ func _ready() -> void:
 ## dead and where they lie, and which cameras are destroyed.
 ## The Operative's snapshot keeps its Scanner charges and Magazines.
 func take_checkpoint() -> void:
+	SessionLog.current.progress()
 	var dead := {}
 	for g in get_tree().get_nodes_in_group("guards"):
 		if g.dead:  # a body on the shoulder is kept as dropped where the Operative stands
@@ -107,6 +111,7 @@ static func copy(o: Object) -> Object:
 
 func event(name_: String) -> void:
 	if not ended:
+		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
 		tally.add(name_)
 
 
@@ -130,6 +135,8 @@ func _physics_process(delta: float) -> void:
 			tally.add("down_found")
 		_known[g] = g.known_down
 	tally.set_alert(alert)
+	if not get_tree().paused:
+		SessionLog.current.tick(delta, alert or get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.EVASION))
 	_teach(delta)
 
 
@@ -221,9 +228,12 @@ func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
 	ended = true
+	SessionLog.current.finish_mission()
+	SessionLog.current.write(LOG_PATH)
 	var after := Aigis.complete_mission(record, tally.counts)
 	var screen := SCREEN.new()
 	screen.strip = MissionTally.strip(record, after)
+	screen.seconds = SessionLog.current.missions.back().seconds
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -255,4 +265,6 @@ func save_slot() -> void:
 ## Quit or abort: nothing is applied.
 func abort() -> void:
 	ended = true
+	SessionLog.current.finish_mission()
+	SessionLog.current.write(LOG_PATH)
 	tally = MissionTally.new()
