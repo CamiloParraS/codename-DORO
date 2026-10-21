@@ -163,6 +163,23 @@ func objective() -> String:
 	return Campaign.objective(record.mission, step)
 
 
+## Where the Radar points now, as {pos: Vector3, target: bool}: the current step's intel, then each Target
+## still to kill or carry, then Extraction.
+func radar_blips() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if step < _steps().size():
+		for i: Node3D in get_tree().get_nodes_in_group("intel"):
+			if i.name == _steps()[step].intel:
+				out.append({pos = i.global_position, target = false})
+	elif not _targets_left().is_empty():
+		for t: Guard in _targets_left():
+			out.append({pos = t.global_position, target = true})
+	else:
+		for e: Node3D in get_tree().get_nodes_in_group("extraction"):
+			out.append({pos = e.global_position, target = false})
+	return out
+
+
 ## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count,
 ## unless it lies in the Extraction point: the Core room is one, so a choke there needs no carry).
 func _targets_left() -> Array:
