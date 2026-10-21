@@ -42,6 +42,11 @@ func progress() -> void:
 	_idle = 0.0
 
 
+## Seconds played in the current (latest) Mission.
+func seconds() -> float:
+	return 0.0 if missions.is_empty() else missions.back().seconds
+
+
 func idle_seconds() -> float:
 	return _idle
 

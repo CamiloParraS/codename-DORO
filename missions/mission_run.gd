@@ -157,10 +157,8 @@ func _guide(delta: float, alerting: bool) -> void:
 		return
 	if step >= _steps().size():
 		return
-	var dist := INF
-	for i: Node3D in get_tree().get_nodes_in_group("intel"):
-		if i.name == _steps()[step].intel:
-			dist = _flat(op, i)
+	var intel := _step_intel()
+	var dist := _flat(op, intel) if intel else INF
 	_hint(hints.update(delta, SessionLog.current.idle_seconds(), dist, alerting))
 
 
@@ -205,7 +203,7 @@ static func _flat(a: Node3D, b: Node3D) -> float:
 ## What to do now, for the pause screen: the steps, then the Targets, then Extraction.
 func objective() -> String:
 	if step >= _steps().size() and not _targets_left().is_empty():
-		return "KILL OR CARRY OUT: " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
+		return tr("objective.targets") + ": " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
 	return Campaign.objective(record.mission, step)
 
 
@@ -214,9 +212,9 @@ func objective() -> String:
 func radar_blips() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if step < _steps().size():
-		for i: Node3D in get_tree().get_nodes_in_group("intel"):
-			if i.name == _steps()[step].intel:
-				out.append({pos = i.global_position, target = false})
+		var intel := _step_intel()
+		if intel:
+			out.append({pos = intel.global_position, target = false})
 	elif not _targets_left().is_empty():
 		for t: Guard in _targets_left():
 			out.append({pos = t.global_position, target = true})
@@ -239,6 +237,14 @@ func _at_extraction(t: Guard) -> bool:
 
 func _say_objective() -> void:
 	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
+
+
+## The current step's intel pickup in the Area, or null.
+func _step_intel() -> Node3D:
+	for i: Node3D in get_tree().get_nodes_in_group("intel"):
+		if i.name == _steps()[step].intel:
+			return i
+	return null
 
 
 func _steps() -> Array:
@@ -267,13 +273,11 @@ func _on_intel(intel: Node) -> void:
 func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
-	ended = true
-	SessionLog.current.finish_mission()
-	SessionLog.current.write(LOG_PATH)
+	_finish()
 	var after := Aigis.complete_mission(record, tally.counts)
 	var screen := SCREEN.new()
 	screen.strip = MissionTally.strip(record, after)
-	screen.seconds = SessionLog.current.missions.back().seconds
+	screen.seconds = SessionLog.current.seconds()
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -304,7 +308,18 @@ func save_slot() -> void:
 
 ## Quit or abort: nothing is applied.
 func abort() -> void:
+	_finish()
+	tally = MissionTally.new()
+
+
+## The Mission is over: no more play, and the session log is on disk.
+func _finish() -> void:
 	ended = true
 	SessionLog.current.finish_mission()
 	SessionLog.current.write(LOG_PATH)
-	tally = MissionTally.new()
+
+
+## Quitting (or leaving the scene) mid-Mission still writes the log.
+func _exit_tree() -> void:
+	if not ended:
+		_finish()

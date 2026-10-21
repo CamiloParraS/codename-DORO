@@ -75,3 +75,11 @@ func test_text_has_one_line_per_mission_and_each_idle() -> void:
 	var text := l.to_text()
 	assert_contains(text, "mission 1 time 125 s darts 1 rifle 0 spoofs 0")
 	assert_contains(text, "idle 125 s")
+
+
+func test_seconds_is_the_latest_missions_time() -> void:
+	var log := SessionLog.new()
+	assert_eq(log.seconds(), 0.0, "no Mission yet")
+	log.start_mission(0)
+	log.tick(2.5, false)
+	assert_eq(log.seconds(), 2.5)
