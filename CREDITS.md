@@ -17,6 +17,14 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Pizza Doggy's PSX Mega Pack pistol and suppressor (`assets/models/weapons/pistol.glb`, `suppressor.glb`), by Pizza Doggy, link: https://itch.io/profile/pizzadoggy. Same license as the line below.
 - Pizza Doggy's Mystery Package vol. 1-14 (pizza doggy models) by Pizza Doggy, link: https://itch.io/profile/pizzadoggy
   License: Pizza Doggy's Game Assets License Agreement (dated 2026-09-01). Proprietary, not Creative Commons. Commercial and non-commercial game use allowed, modification allowed, no royalties. Attribution optional ("Game Assets by Pizza Doggy"). Not allowed: redistributing or selling the assets as standalone or reusable files, asset packs, or uploading/using them for AI training or AI generation.
+- Set dressing in `assets/models/props/` (placed by each Area's `DRESS` data in `tools/build_*.gd`):
+  - Pizza Doggy's PSX Mega Pack (same license as the line above): `drum`, `crate_small`, `supply_crate`, `cardboard_box`, `vending_machine`, `jerrycan`, `pc`, `monitor`, `monitoring_screen`, `chair`, `shelf`, `table`, `locker`, `ceiling_lamp`.
+  - PSX Industrial Environment Asset Pack by godgoldfear (CC 4.0, see below), split out of its FBX in Blender, metallic zeroed: `generator`, `pallet`, `pallet_stack`, `barrel_a`, `barrel_b`, `crate_wide`, `cabinet_a`, `cabinet_b`, `pipe_riser`, `tank_tall`, `vent_unit`, `chimney`, `shed`.
+  - PSX style barriers by valsekemarplant (CC0, see below): `bollard`, `cone`.
+  - Also from godgoldfear's pack, textures relinked and split out in Blender (`_raw/work/bl/export_props.py`, `fence.py`): `fence` (frame plus chain-link panel), `roadblock`, `sandbags`, `pipe_arch`, `tank_wide`, and the Backdrop blocks `block_tall`, `block_wide`, `block_hall`, `block_long`.
+  - Surface textures in `assets/textures/` (cropped and cut to 128 px): `asphalt`, `concrete`, `corrugated_rust`, `panels`, `cargo_green`, `hatch`, `bridge_windows`, `hazard` from godgoldfear's pack (CC 4.0); `deck_plate`, `rust`, `planks`, `rock` from Screaming Brain Studios' Tiny Texture Pack 2 (CC0, see below).
+  - `crane_tower`, `crane_boom`: made for this project in Blender (procedural lattice, `_raw/work/bl/crane.blend`, exported by `export_crane.py`).
+  - `lamp_post`: made for this project in Blender (`_raw/blender/dressing_props.blend`).
 - Character animations from Mixamo (c) Adobe, https://www.mixamo.com, used under Mixamo's free terms; raw files are not redistributed.
 - 3D model of a M4A1 in PS1 style by Plewr, https://plewr.itch.io/psx-style-m4a1-model, CC0 1.0
 - PSX Industrial Environment Asset Pack by godgoldfear, https://godgoldfear.itch.io/psx-industrial-environment-asset-pack, CC 4.0
@@ -64,5 +72,6 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Godot Engine, MIT License, https://godotengine.org
 - LimboAI 1.8.1 by Serhii Snitsaruk and contributors, https://github.com/limbonaut/limboai, MIT License (behaviour trees)
 - Pizza Doggy's Rusty PSX Style Kidnapper's Van (Mystery Package vol. 8) and PSX Mega Pack dinner table (`assets/models/props/van.glb`, `desk.glb`, skinned onto the Truck and the relay console desk). Pizza Doggy's Game Assets License Agreement, see above.
-- Characters PSX `Character_21_Police` and `Character_22_Police` textures by Elbolilloduro, CC0 1.0, baked onto Nikita's UVs as the guards' skins (`assets/models/characters/guard/`).
+- Characters PSX `Character_21_Police`, `Character_23_Firefighter`, `Character_25_Doctor`, `Character_27_HM` textures (guard skins, `assets/models/characters/guard/`) by Elbolilloduro, CC0 1.0, baked onto Nikita's UVs (`_raw/work/bake/bake.py`).
 - Operative skin (`assets/models/characters/operative.png`): self-made, painted on Nikita's UV layout (`assets/textures/characters/nikita_uv_labeled.png`).
+- Quaternius Universal Animation Library `Hit_Chest` clip, CC0, baked into `clips.res` as `hit` (`tools/bake_clips.gd`).

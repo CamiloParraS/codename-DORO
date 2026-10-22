@@ -13,13 +13,32 @@ const TEX := {
 	ground = "res://assets/textures/dirt_03_128.png", brick = "res://assets/textures/brick_07_128.png",
 	metal = "res://assets/textures/metal_05_128.png", stone = "res://assets/textures/stone_07_128.png",
 	wood = "res://assets/textures/wood_07_128.png",
+	asphalt = "res://assets/textures/asphalt_128.png", concrete = "res://assets/textures/concrete_128.png",
+	corrugated = "res://assets/textures/corrugated_rust_128.png", panels = "res://assets/textures/panels_128.png",
+	deck_plate = "res://assets/textures/deck_plate_128.png", rust = "res://assets/textures/rust_128.png",
+	planks = "res://assets/textures/planks_128.png", rock = "res://assets/textures/rock_128.png",
+	cargo = "res://assets/textures/cargo_green_128.png",
+	hatch = "res://assets/textures/hatch_128.png", windows = "res://assets/textures/bridge_windows_128.png",
+	hazard = "res://assets/textures/hazard_128.png",
+}
+## Metres per repeat where it isn't 2: wall textures span a wall's height.
+const TILE := {asphalt = 6.0, concrete = 4.0, corrugated = 5.0, panels = 4.0, rock = 6.0, cargo = 2.6,
+	hatch = 2.5, windows = 3.0, hazard = 1.0}
+## Materials whose top and sides differ: key = [top, sides].
+const SPLIT := {
+	quay = ["asphalt", "concrete"], deck = ["deck_plate", "rust"], pier = ["planks", "rust"], kerb = ["concrete", "hazard"],
+	hatch_cover = ["hatch", "rust"], superstructure = ["deck_plate", "windows"],
 }
 
 ## Boxes that wear a model (areas/prop_skin.gd) instead of their box mesh.
 const PROPS := {
 	ResupplyCrate = "crate", DockCrate1 = "container_a", DockCrate2 = "container_b", Container1 = "container_a", Container2 = "container_b",
 	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
+	Crane = "crane_tower", CraneBoom = "crane_boom",
 }
+## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
+## equal share of the length and the full height; its depth scales with its height.
+const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock"}
 
 ## Set dressing below this height (after scale) gets no collider: cones, cans, desk clutter.
 const DRESS_SOLID_H := 0.6
@@ -28,7 +47,7 @@ const DRESS_SOLID_H := 0.6
 const DRESS_SHAPES := {lamp_post = Vector3(0.4, 6, 0.4), ceiling_lamp = Vector3.ZERO}
 ## Models that light up: [light offset in the model's own axes, range, colour].
 const DRESS_LIGHTS := {
-	lamp_post = [Vector3(0, 5.4, -1.1), 12.0, Color(1, 0.85, 0.6)],
+	lamp_post = [Vector3(0, 5.4, -1.1), 14.0, Color(1, 0.62, 0.3)],  # sodium
 	ceiling_lamp = [Vector3(0, -0.4, 0), 9.0, Color(1, 0.95, 0.85)],
 }
 
@@ -68,13 +87,50 @@ func _bake(nav: NavigationRegion3D) -> void:
 	_own(nav)
 
 
-func _sun() -> void:
+## Each Area's light and fog: sun [pitch, yaw], colour and energy; ambient colour and energy; fog (also the
+## sky) colour, begin and end in metres.
+const MOODS := {
+	harbour = {sun = [-18, 235], sun_c = Color(0.95, 0.7, 0.55), sun_e = 0.55, amb = Color(0.42, 0.5, 0.7), amb_e = 0.75,
+		fog = Color(0.24, 0.29, 0.4), fog_from = 18.0, fog_to = 110.0},  # dusk-blue haze, last light low in the west
+	relay_station = {sun = [-50, 140], sun_c = Color(0.5, 0.55, 0.75), sun_e = 0.25, amb = Color(0.5, 0.34, 0.22), amb_e = 0.7,
+		fog = Color(0.2, 0.12, 0.07), fog_from = 15.0, fog_to = 80.0},  # sodium orange night under a thin moon
+	research_annex = {sun = [-65, 20], sun_c = Color(0.92, 0.96, 1.0), sun_e = 0.9, amb = Color(0.75, 0.8, 0.85), amb_e = 0.55,
+		fog = Color(0.66, 0.7, 0.75), fog_from = 30.0, fog_to = 130.0},  # cold clinical white overcast
+	core = {sun = [-60, 35], sun_c = Color(0.7, 0.3, 0.25), sun_e = 0.35, amb = Color(0.55, 0.2, 0.17), amb_e = 0.8,
+		fog = Color(0.18, 0.05, 0.05), fog_from = 15.0, fog_to = 80.0},  # dim red emergency light
+}
+
+
+## The Sun and a WorldEnvironment set from the Area's MOODS entry (psx_look's environment is the fallback).
+func _mood(area: String) -> void:
+	var md: Dictionary = MOODS[area]
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
-	sun.rotation_degrees = Vector3(-55, 35, 0)
+	sun.rotation_degrees = Vector3(md.sun[0], md.sun[1], 0)
 	sun.position.y = 20
+	sun.light_color = md.sun_c
+	sun.light_energy = md.sun_e
 	sun.shadow_enabled = true
 	_add(_root, sun)
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = md.fog
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = md.amb
+	env.ambient_light_energy = md.amb_e
+	env.fog_enabled = true
+	env.fog_mode = Environment.FOG_MODE_DEPTH
+	env.fog_light_color = md.fog
+	env.fog_density = 1.0
+	env.fog_depth_begin = md.fog_from
+	env.fog_depth_end = md.fog_to
+	env.glow_enabled = true  # lamps bloom a little at 480 lines
+	env.glow_intensity = 0.6
+	env.glow_hdr_threshold = 0.9
+	var we := WorldEnvironment.new()
+	we.name = "Mood"
+	we.environment = env
+	_add(_root, we)
 
 
 ## The Operative at $Spots/OperativeStart, the HUD and the MissionRun.
@@ -149,9 +205,14 @@ func _mat(key: String, tint: Color) -> ShaderMaterial:
 	if not _mats.has(k):
 		var m := ShaderMaterial.new()
 		m.shader = load("res://assets/shaders/psx_surface.gdshader")
-		m.set_shader_parameter("albedo_tex", load(TEX[key]))
+		var top: String = SPLIT[key][0] if SPLIT.has(key) else key
+		m.set_shader_parameter("albedo_tex", load(TEX[top]))
 		m.set_shader_parameter("tint", tint)
-		m.set_shader_parameter("tile_m", 2.0)
+		m.set_shader_parameter("tile_m", TILE.get(top, 2.0))
+		if SPLIT.has(key):
+			m.set_shader_parameter("split", true)
+			m.set_shader_parameter("side_tex", load(TEX[SPLIT[key][1]]))
+			m.set_shader_parameter("side_tile_m", TILE.get(SPLIT[key][1], 2.0))
 		_mats[k] = m
 	return _mats[k]
 
@@ -180,7 +241,10 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	shape.name = "Shape"
 	shape.shape = _box_shape(size)
 	b.add_child(shape)
-	if layer == 1:
+	var row: String = ROWS.keys().reduce(func(found: String, k: String) -> String: return k if name.begins_with(k) else found, "")
+	if layer == 1 and row != "":
+		_row(b, size, ROWS[row])
+	elif layer == 1:
 		var m := MeshInstance3D.new()
 		m.name = "Mesh"
 		m.mesh = _box_mesh(size, _mat(mat, tint))
@@ -192,6 +256,30 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	if name == "ResupplyCrate":
 		b.add_to_group("resupply_crate", true)
 	return b
+
+
+## A row of `key` models filling a box of `size` centred on b, along its long side.
+func _row(b: Node3D, size: Vector3, key: String) -> void:
+	var scene: PackedScene = load("res://assets/models/props/%s.glb" % key)
+	var probe: Node3D = scene.instantiate()
+	var box := _model_box(probe)
+	probe.free()
+	var along_x := size.x >= size.z
+	var length := size.x if along_x else size.z
+	var m_along_x := box.size.x >= box.size.z
+	var m_len := box.size.x if m_along_x else box.size.z
+	var sh := size.y / box.size.y
+	var n := maxi(1, roundi(length / (m_len * sh)))
+	var sl := length / n / m_len
+	var fit := Vector3(sl, sh, sh) if m_along_x else Vector3(sh, sh, sl)
+	var turn := Basis(Vector3.UP, PI / 2) if m_along_x != along_x else Basis()
+	for i in n:
+		var m: Node3D = scene.instantiate()
+		m.name = "Row%d" % i
+		m.basis = turn * Basis.from_scale(fit)
+		var at := -length / 2 + (i + 0.5) * length / n
+		m.position = (Vector3(at, 0, 0) if along_x else Vector3(0, 0, at)) - m.basis * box.get_center()
+		b.add_child(m)
 
 
 ## Set dressing from assets/models/props: [model, [x, y, h], facing, scale (1 if missing)], each standing on
@@ -248,7 +336,7 @@ func _model_box(m: Node3D) -> AABB:
 
 
 ## Four walls with 2 m door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre]],
-## tint, base]. The walls stand on base (0 if missing).
+## tint, base, wall material]. The walls stand on base (0 if missing) and are brick unless given.
 func _building(parent: Node3D, b: Array) -> void:
 	var r: Array = b[1]
 	var h: float = b[2]
@@ -271,7 +359,7 @@ func _building(parent: Node3D, b: Array) -> void:
 		for i in spans.size():
 			var s: Array = spans[i]
 			var rect := [s[0], w[1], s[1] - s[0], w[3] - w[1]] if ns else [w[0], s[0], w[2] - w[0], s[1] - s[0]]
-			_box(parent, "Wall%s%d" % [side, i], rect, base, base + h, "brick", b[4])
+			_box(parent, "Wall%s%d" % [side, i], rect, base, base + h, b[6] if b.size() > 6 else "brick", b[4])
 	_box(parent, "Roof", r, base + h, base + h + 0.3, "metal", Color(0.6, 0.6, 0.6))
 
 
@@ -353,7 +441,7 @@ func _ladder(parent: Node3D, l: Array) -> Node3D:
 	var rungs := MeshInstance3D.new()
 	rungs.name = "Rungs"
 	var tall: float = l[2][2] - l[1][2] + 1.0
-	rungs.mesh = _box_mesh(Vector3(0.6, tall, 0.1), _mat("metal", Color(0.4, 0.9, 1.0)))
+	rungs.mesh = _box_mesh(Vector3(0.6, tall, 0.1), _mat("metal", Color(1.0, 0.85, 0.25)))
 	_add(n, rungs)
 	_place(rungs, Transform3D(Basis.looking_at(toward), bottom + toward.normalized() * 0.4 + Vector3.UP * (tall / 2)))
 	return n

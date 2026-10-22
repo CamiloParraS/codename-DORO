@@ -193,7 +193,7 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l).set_meta("walkable", true)
 	_backdrop()
-	_sun()
+	_mood("relay_station")
 
 	var spots := _group(_root, "Spots")
 	for n in SPOTS:

@@ -59,6 +59,7 @@ func _build() -> void:
 			_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
 	for s in CORE_SOLID:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
+	_crane_lattice(solid)
 	_camera_poles(solid, CAMERAS)
 	for l in LOW:
 		_box(solid, "Low%d" % solid.get_child_count(), l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
@@ -77,7 +78,7 @@ func _build() -> void:
 		_ladder(ladders, l)
 	_backdrop()
 	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
-	_sun()
+	_mood("core")
 
 	var spots := SPOTS.duplicate()
 	spots.SafeRoom = [-30, 25, 0]

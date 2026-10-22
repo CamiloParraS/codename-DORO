@@ -1,6 +1,6 @@
 ## Autoload: the PSX look. 3D renders at 854x480 and is upscaled with nearest filtering at any window
 ## size, then a banding pass runs on layer 0 so the HUD (layer 1+) stays crisp. Also owns the default
-## sky and far fog; an Area that wants its own WorldEnvironment can add one.
+## sky and far fog as the world's fallback environment: an Area's own WorldEnvironment (its mood) wins.
 extends CanvasLayer
 
 const INTERNAL_HEIGHT := 480
@@ -23,9 +23,7 @@ func _ready() -> void:
 	env.fog_density = 1.0
 	env.fog_depth_begin = FOG_BEGIN
 	env.fog_depth_end = FOG_END
-	var we := WorldEnvironment.new()
-	we.environment = env
-	add_child(we)
+	get_viewport().find_world_3d().fallback_environment = env
 
 	var post := ColorRect.new()
 	post.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

@@ -216,7 +216,7 @@ func _build() -> void:
 
 	_backdrop()
 	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
-	_sun()
+	_mood("research_annex")
 
 	var spots := _group(_root, "Spots")
 	for n in SPOTS:
