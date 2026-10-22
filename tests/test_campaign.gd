@@ -38,8 +38,8 @@ func test_every_intel_step_is_in_its_area() -> void:
 
 func test_objective_is_the_current_step_then_extraction() -> void:
 	assert_eq(Campaign.objective(0, 0), "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A")
-	assert_eq(Campaign.objective(0, 1), "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE")
-	assert_eq(Campaign.objective(0, 2), "CHECK THE FREIGHT LIFT'S CONTROLS")
+	assert_eq(Campaign.objective(0, 1), "CHECK THE FREIGHT LIFT'S CONTROLS")
+	assert_eq(Campaign.objective(0, 2), "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE")
 	assert_eq(Campaign.objective(0, 3), "REACH THE EXTRACTION POINT", "every step done")
 
 

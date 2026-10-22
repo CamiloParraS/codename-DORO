@@ -70,5 +70,26 @@ func test_targets_left_until_killed_or_carried() -> void:
 	run.free()
 
 
+## The Extraction beacon stays hidden until every step is done, so it can't give the route away early.
+func test_the_extraction_beacon_shows_once_every_step_is_done() -> void:
+	var ep := Area3D.new()
+	ep.set_script(load("res://areas/extraction_point.gd"))
+	var shape := CollisionShape3D.new()
+	shape.name = "Shape"
+	shape.shape = BoxShape3D.new()
+	ep.add_child(shape)
+	_root().add_child(ep)
+	var run := MissionRun.new()
+	run.record = Aigis.new_record()
+	_root().add_child(run)
+	run._show_intel()
+	assert_false(ep.get_node("Beacon").visible)
+	run.step = run._steps().size()
+	run._show_intel()
+	assert_true(ep.get_node("Beacon").visible)
+	run.free()
+	ep.free()
+
+
 func _root() -> Node:
 	return (Engine.get_main_loop() as SceneTree).root

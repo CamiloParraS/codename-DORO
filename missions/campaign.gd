@@ -15,8 +15,8 @@ const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, targets = [],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
 		{intel = "IntelManifests", objective = "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A", call = [["analyst", "live.m1.s1.01"]]},
-		{intel = "IntelRadioLog", objective = "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE", call = [["analyst", "live.m1.s2.01"]]},
-		{intel = "IntelLift", objective = "CHECK THE FREIGHT LIFT'S CONTROLS", call = [["analyst", "live.m1.s3.01"]]},
+		{intel = "IntelLift", objective = "CHECK THE FREIGHT LIFT'S CONTROLS", call = [["analyst", "live.m1.s2.01"]]},
+		{intel = "IntelRadioLog", objective = "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE", call = [["analyst", "live.m1.s3.01"]]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, targets = ["RELAY CHIEF"],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["analyst", "codec.m2.03"], ["handler", "codec.m2.04"]], steps = [

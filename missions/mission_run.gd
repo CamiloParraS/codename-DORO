@@ -40,7 +40,7 @@ func _ready() -> void:
 		e.reached.connect(_on_extraction)
 	for i in get_tree().get_nodes_in_group("intel"):
 		i.reached.connect(_on_intel.bind(i))
-	_show_intel()
+	_show_intel.call_deferred()  # once the Extraction point has added its beacon
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
@@ -182,11 +182,15 @@ func _steps() -> Array:
 	return Campaign.MISSIONS[record.mission].steps
 
 
-## Only the current step's intel is shown.
+## Only the current step's intel is shown, and the Extraction beacon only once every step is done.
 func _show_intel() -> void:
 	for i: Node3D in get_tree().get_nodes_in_group("intel"):
 		i.visible = step < _steps().size() and i.name == _steps()[step].intel
 		i.set_deferred("monitoring", i.visible)  # a hidden pickup is inert: it can't open the Core's lift early
+	for e in get_tree().get_nodes_in_group("extraction"):
+		var beacon: Node3D = e.get_node_or_null("Beacon")
+		if beacon:
+			beacon.visible = step >= _steps().size()
 
 
 ## The current step's intel reached: the step is done, and that's a Checkpoint.

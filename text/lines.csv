@@ -4,7 +4,7 @@ codec.speaker.analyst,METIS ANALYST,METIS ANALISTA
 codec.speaker.operative,OPERATIVE,OPERATIVO
 codec.m1.01,"Operative, this is Metis. You're at the Harbour. Palladion's compound sits on this island.","Operativo, aqui Metis. Estas en el Puerto. El complejo de Palladion esta en esta isla."
 codec.m1.02,"Understood. What do I need?","Entendido. Que necesito?"
-codec.m1.03,"Two pieces of intel. Shipping manifests at Warehouse A, then the radio log at the gatehouse.","Dos datos. Los manifiestos de envio del Almacen A y el registro de radio de la garita."
+codec.m1.03,"Start with the shipping manifests at Warehouse A. I'll route you from what they show.","Empieza por los manifiestos de envio del Almacen A. Te guiare segun lo que muestren."
 codec.m1.04,"Our client is a Palladion whistleblower. The manifests will show where the cargo really goes.","Nuestro cliente es un informante de Palladion. Los manifiestos mostraran el destino real de la carga."
 codec.m1.05,"Stay quiet and get out through the Extraction point. Metis out.","Mantente en silencio y sal por el punto de Extraccion. Metis fuera."
 codec.m2.01,"Next is the Radio Relay Station. Everything the island says to the world goes through it.","Ahora la Estacion de Radio. Todo lo que la isla dice al mundo pasa por ella."
@@ -19,9 +19,9 @@ codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about
 codec.m4.02,"What is the plan?","Cual es el plan?"
 codec.m4.03,"Reach the freight lift and deal with the security director. Then we feed Aigis memories it can't verify.","Llega al montacargas y ocupate del director de seguridad. Luego le damos a Aigis recuerdos que no puede verificar."
 codec.m4.04,"The same trick it uses on the world. Good luck, Operative.","El mismo truco que usa con el mundo. Suerte, Operativo."
-live.m1.s1.01,"Manifests copied. The cargo is going to the relay station.","Manifiestos copiados. La carga va a la estacion de radio."
-live.m1.s2.01,"Got the radio log. Now see what the freight lift is for.","Registro de radio obtenido. Ahora averigua para que sirve el montacargas."
-live.m1.s3.01,"The lift goes below the Harbour. Get out before they notice.","El montacargas baja bajo el Puerto. Sal antes de que lo noten."
+live.m1.s1.01,"Manifests copied. Half the cargo never leaves the yard. Find out where the freight lift takes it.","Manifiestos copiados. La mitad de la carga nunca sale del patio. Averigua adonde la lleva el montacargas."
+live.m1.s2.01,"The lift goes below the Harbour. Whoever runs it reports by radio: copy the log at the gatehouse.","El montacargas baja bajo el Puerto. Quien lo maneja reporta por radio: copia el registro de la garita."
+live.m1.s3.01,"Got the radio log. Their orders come from the relay station. Head for the Extraction point.","Registro de radio obtenido. Sus ordenes vienen de la estacion de radio. Ve al punto de Extraccion."
 tutorial.crouch.prompt,[C] CROUCH: SLOWER BUT QUIETER,[C] AGACHARSE: MAS LENTO PERO MAS SILENCIOSO
 tutorial.crouch.line,"Guard ahead. Crouch and he'll hear you less.","Guardia al frente. Agachate y te oira menos."
 tutorial.takedown.prompt,[E] CHOKE FROM BEHIND: HE GOES DOWN QUIETLY,[E] ESTRANGULAR POR LA ESPALDA: CAE EN SILENCIO
