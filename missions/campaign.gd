@@ -9,14 +9,15 @@ const RESEARCH_ANNEX := "res://areas/research_annex/research_annex.tscn"
 const CORE := "res://areas/core/core.tscn"
 
 ## title; area: the Area scene; targets: Target names (each is killed or carried to Extraction); steps, in order:
-## {intel: the pickup in the Area that completes it, objective: what the pause screen shows, call: the live
+## {intel: the node in group "intel" whose `reached` completes it (a pickup, a console, an objective watch),
+## objective: what the pause screen shows, call: the live
 ## Codec call it triggers}. codec: the full-screen Codec call before the Mission. A call is [[speaker, key], ...].
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, targets = [],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
-		{intel = "IntelManifests", objective = "FIND THE SHIPPING MANIFESTS AT WAREHOUSE A", call = [["analyst", "live.m1.s1.01"]]},
-		{intel = "IntelLift", objective = "CHECK THE FREIGHT LIFT'S CONTROLS", call = [["analyst", "live.m1.s2.01"]]},
-		{intel = "IntelRadioLog", objective = "COPY THE RELAY STATION'S RADIO LOG AT THE GATEHOUSE", call = [["analyst", "live.m1.s3.01"]]},
+		{intel = "IntelSmokeBreak", objective = "LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE", call = [["analyst", "live.m1.s1.01"]]},
+		{intel = "IntelForeman", objective = "HOLD UP THE YARD FOREMAN FOR THE LIFT CODE", call = [["analyst", "live.m1.s2.01"]]},
+		{intel = "IntelLiftPanel", objective = "ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING", call = [["analyst", "live.m1.s3.01"]]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, targets = ["RELAY CHIEF"],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["analyst", "codec.m2.03"], ["handler", "codec.m2.04"]], steps = [
@@ -32,8 +33,8 @@ const MISSIONS := [
 	]},
 	{title = "CORE", area = CORE, targets = ["SECURITY DIRECTOR"],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["analyst", "codec.m4.03"], ["analyst", "codec.m4.04"]], steps = [
-		{intel = "IntelManifests", objective = "TAKE THE LIFT ACCESS CODES FROM WAREHOUSE A", call = [["analyst", "live.m4.s1.01"]]},
-		{intel = "IntelLift", objective = "REACH THE FREIGHT LIFT", call = [["handler", "live.m4.s2.01"]]},
+		{intel = "IntelOps", objective = "REACH THE OPERATIONS BUILDING", call = [["analyst", "live.m4.s1.01"]]},
+		{intel = "IntelLift", objective = "TAKE THE FREIGHT LIFT DOWN", call = [["handler", "live.m4.s2.01"]]},
 	]},
 ]
 

@@ -83,6 +83,8 @@ func test_harbour_has_an_eavesdrop_spot_near_a_check_in_route() -> void:
 			var points := [post.position]
 			for p: Marker3D in post.get_children():
 				points.append(post.transform * p.position)
+			if points.size() == 1:  # a guard that stands (a chatting pair's post)
+				best = minf(best, Vector2(points[0].x - at.x, points[0].z - at.z).length())
 			for i in points.size() - 1:  # the route is a polyline the guard walks
 				var q := Geometry2D.get_closest_point_to_segment(Vector2(at.x, at.z), Vector2(points[i].x, points[i].z), Vector2(points[i + 1].x, points[i + 1].z))
 				best = minf(best, q.distance_to(Vector2(at.x, at.z)))

@@ -3,7 +3,8 @@
 ## is staffed, so the Area sets its own guard count. Marker meta (all optional): `hold` (seconds) and
 ## `scan` (degrees) make a stop that faces the marker's -Z, held that long and swept across that arc (a
 ## routeless post with `scan` is a scanning post; a sentry high point reads `scan` too); `chat` on a post
-## staffs it with a chatting pair. Crawlspaces and Ladders are plain geometry this script never reads.
+## staffs it with a chatting pair; `holdup` names what a Hold-up gets out of its guard. Crawlspaces and
+## Ladders are plain geometry this script never reads.
 ## Places the Countermeasures MissionRun's plan deploys (Deployment) at those built-in spots.
 ## Open harbour.tscn and press F6 (Mission 1, nothing deployed), or start it from Free mode.
 extends Node3D
@@ -67,8 +68,9 @@ func _spawn_targets(guards: Array) -> void:
 	$MissionRun.tally.add("targets", names.size())
 
 
-## Reinforcements: the road entry sends a squad on every Alert and another every 30 s while it holds
-## (Reinforcements), and takes back the ones that return to it on patrol.
+## Reinforcements: a squad on every Alert and another every 30 s while it holds (Reinforcements), from
+## the entry nearest the Operative (the road, or the freighter's bridge for the deck), and takes back the
+## ones that return to it on patrol.
 func _process(delta: float) -> void:
 	var guards := get_tree().get_nodes_in_group("guards")
 	var alive := get_tree().get_nodes_in_group("reinforcements").filter(func(g: Guard) -> bool: return not g.is_down()).size()
@@ -81,7 +83,7 @@ func _process(delta: float) -> void:
 
 func _send(n: int) -> void:
 	var deployed: Dictionary = $MissionRun.plan.deployed
-	var entry: Marker3D = $Spots/RoadEntry
+	var entry := _entry_for($Operative.global_position)
 	for i in n:
 		_reinforcements += 1
 		var g := spawn_guard(entry)
@@ -98,11 +100,20 @@ func _send(n: int) -> void:
 	$MissionRun.tally.add("spawned", n)  # one that leaves alive still counts: a life spared
 
 
-## A reinforcement whose Alert is over walks its patrol back to the entry (its post) and leaves. Every way
+## The reinforcement entry nearest pos: $Spots/RoadEntry, or $Spots/DeckEntry where there is one.
+func _entry_for(pos: Vector3) -> Marker3D:
+	var best: Marker3D = $Spots/RoadEntry
+	var deck: Marker3D = $Spots.get_node_or_null("DeckEntry")
+	if deck and deck.global_position.distance_to(pos) < best.global_position.distance_to(pos):
+		best = deck
+	return best
+
+
+## A reinforcement whose Alert is over walks its patrol back to its entry (its post) and leaves. Every way
 ## out of an Alert (Evasion giving up, a believed all-units all clear) ends here.
 func _dismiss_returned() -> void:
-	var entry: Vector3 = $Spots/RoadEntry.global_position
 	for g: Guard in get_tree().get_nodes_in_group("reinforcements"):
+		var entry := g.post.origin
 		if g.alert.state == GuardAlert.State.PATROL and not g.is_down() and Vector2(g.global_position.x - entry.x, g.global_position.z - entry.z).length() < Guard.REACHED * 2.0:
 			g.remove_from_group("guards")
 			g.queue_free()
@@ -179,6 +190,7 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 			g.route.append(wp.global_position)
 			g.stops.append(stop_of(wp))
 	g.operative = $Operative
+	g.holdup_answer = post.get_meta("holdup", "")
 	add_child(g)
 	g.global_transform = post.global_transform
 	g.post = post.global_transform

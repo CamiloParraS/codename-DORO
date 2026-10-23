@@ -45,7 +45,7 @@ func test_posts_declare_idle_behaviours() -> void:
 	var h: Node = load(SCENE).instantiate()
 	var posts: Array = h.get_node("GuardPosts").get_children()
 	assert_eq(posts.filter(func(p: Node) -> bool: return p.has_meta("chat")).size(), 1)
-	assert_true(posts.filter(func(p: Node) -> bool: return p.has_meta("scan")).size() >= 4)
+	assert_true(posts.filter(func(p: Node) -> bool: return p.has_meta("scan")).size() >= 3)  # the gangway, the roof, the south door
 	var look_ins: Array = h.get_node("ExtraGuardPosts/PostExtra1").get_children()
 	assert_true(look_ins.all(func(m: Node) -> bool: return m.has_meta("hold")), "Stealth L2 looks into the Crawlspaces")
 	h.free()

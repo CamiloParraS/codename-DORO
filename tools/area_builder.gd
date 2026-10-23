@@ -33,6 +33,7 @@ const SPLIT := {
 ## Boxes that wear a model (areas/prop_skin.gd) instead of their box mesh.
 const PROPS := {
 	ResupplyCrate = "crate", DockCrate1 = "container_a", DockCrate2 = "container_b", Container1 = "container_a", Container2 = "container_b",
+	Container3 = "container_a", Container4 = "container_b", Container5 = "container_b", Container6 = "container_a",
 	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
 	Crane = "crane_tower", CraneBoom = "crane_boom",
 }
@@ -335,8 +336,8 @@ func _model_box(m: Node3D) -> AABB:
 	return box
 
 
-## Four walls with 2 m door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre]],
-## tint, base, wall material]. The walls stand on base (0 if missing) and are brick unless given.
+## Four walls with door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre(, width)]],
+## tint, base, wall material]. A door is 2 m wide unless given. The walls stand on base (0 if missing) and are brick unless given.
 func _building(parent: Node3D, b: Array) -> void:
 	var r: Array = b[1]
 	var h: float = b[2]
@@ -353,7 +354,8 @@ func _building(parent: Node3D, b: Array) -> void:
 		var doors := []
 		for d in b[3]:
 			if d[0] == side:
-				doors.append([d[1] - 1.0, d[1] + 1.0])
+				var half: float = (d[2] if d.size() > 2 else 2.0) / 2.0
+				doors.append([d[1] - half, d[1] + half])
 		doors.sort()
 		var spans := _spans(w[0] if ns else w[1], w[2] if ns else w[3], doors)
 		for i in spans.size():

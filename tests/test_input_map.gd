@@ -20,6 +20,7 @@ const EXPECTED := {
 	"item_use": [KEY_F],
 	"interact": [KEY_E],
 	"kill_takedown": [KEY_X],
+	"fulton": [KEY_G],
 	"knock": [KEY_V],
 	"radio": [KEY_Q],
 	"codec_advance": [MOUSE_BUTTON_LEFT, KEY_SPACE, KEY_ENTER],

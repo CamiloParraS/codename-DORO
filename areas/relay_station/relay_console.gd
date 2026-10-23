@@ -1,6 +1,7 @@
-## The relay console: Mission 2's sabotage step. Standing still beside it with E held for HOLD_TIME s
+## The relay console: Mission 2's sabotage step. Standing still beside it with E held for hold_time s
 ## (in the open, so exposed) sabotages it, which completes the step like an intel pickup does. SWEEP_DELAY s
 ## later HQ radios the sweep and every guard not already alerted searches where it stands: suspicion, never alert.
+## Any hold-E step reuses it (the Harbour's lift panel: 4 s, no sweep).
 extends Area3D
 
 signal reached
@@ -9,6 +10,9 @@ const HOLD_TIME := 5.0
 const SWEEP_DELAY := 30.0
 const LINE := "Relay's offline. All units, sweep the station."
 
+@export var hold_time := HOLD_TIME
+@export var prompt := "hold E to sabotage"
+@export var sweeps := true
 var held := 0.0
 var done := false
 var _operative: Node3D
@@ -31,7 +35,7 @@ func _physics_process(delta: float) -> void:
 	if not _operative or done:
 		held = 0.0
 		return
-	_operative.prompt = "hold E to sabotage"
+	_operative.prompt = prompt
 	tick(delta, Input.is_action_pressed("interact") and not _operative.moving)
 
 
@@ -40,10 +44,11 @@ func tick(delta: float, holding: bool) -> void:
 	if done:
 		return
 	held = held + delta if holding else 0.0
-	if held >= HOLD_TIME:
+	if held >= hold_time:
 		done = true
 		reached.emit()
-		get_tree().create_timer(SWEEP_DELAY).timeout.connect(sweep)
+		if sweeps:
+			get_tree().create_timer(SWEEP_DELAY).timeout.connect(sweep)
 
 
 ## HQ orders the sweep.

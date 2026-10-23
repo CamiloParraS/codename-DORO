@@ -20,6 +20,17 @@ const CORE_SOLID := [
 	["ConsoleDesk", [-33.7, 30.5, 1.2, 3], 0, 1, "metal", Color.WHITE],  # the Core terminal's desk
 ]
 const CORE_BUILDING := ["CoreRoom", ROOM, 4.0, [["E", 32.0]], Color(0.7, 0.75, 0.8)]  # one door, east, onto the corridor
+## What the Core changes on the Harbour surface (pw-feel issue 07): the smoke break is over and the code is
+## known, so the pair and the Foreman are gone; a stern Patroller closes the deck's way round the bridge and
+## the stern drop; the Operations building's north door is sealed and an Interceptor stands in the lift hall.
+## Its steps are reaching the building (IntelOps) and taking the lift (IntelLift).
+const CORE_DROP_POSTS := ["PostP", "PostForeman"]
+const CORE_HARBOUR_POSTS := [
+	["PostStern", [74, 58, DECK], 270, {role = "patroller", enc = 1}, [[66.2, 58, {hold = 3.0, f = 0}]]],
+	["PostLiftHall", [15.5, 25, 0], 180, {hold = 5.0, role = "interceptor", enc = 3}, []],
+]
+const CORE_SEAL := [["OpsNorthPlug", [19, 19.85, 2, 0.3], 0, 4, "panels", Color.WHITE]]
+const CORE_INTEL := {IntelOps = [19.5, 32], IntelLift = [8, 32]}
 ## The room's two guards (the director's escort is the third).
 const CORE_POSTS := [
 	["PostCore1", [-20, 25, 0], 180, {scan = 90.0}, []],
@@ -37,7 +48,7 @@ const CORE_DRESS := [
 	["pipe_riser", [-14.9, 23, 0], 270], ["pipe_riser", [-14.9, 41, 0], 270],
 ]
 const CORE_REACH := {
-	LiftMouth = [8, 32, 0], Corridor = [-6, 32, 0], RoomDoor = [-15, 32, 0], Room = [-24, 32, 0],
+	OpsEastDoor = [23.2, 32, 0], LiftHall = [15.5, 30, 0], LiftMouth = [8, 32, 0], Corridor = [-6, 32, 0], RoomDoor = [-15, 32, 0], Room = [-24, 32, 0],
 	Director = [-26, 36, 0], DirectorRoute = [-26, 28, 0], SafeRoom = [-30, 25, 0], Terminal = [-31, 32, 0],
 }
 
@@ -57,7 +68,7 @@ func _build() -> void:
 	for s in SOLID:
 		if s[0] != "Cliff":
 			_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
-	for s in CORE_SOLID:
+	for s in CORE_SOLID + CORE_SEAL:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
 	_crane_lattice(solid)
 	_camera_poles(solid, CAMERAS)
@@ -93,13 +104,15 @@ func _build() -> void:
 	var cams := _group(_root, "CameraMounts")
 	for c in CAMERAS:
 		_marker(cams, c[0], c[1], c[2], {}, "camera_mount")
-	_posts("GuardPosts", GUARD_POSTS + CORE_POSTS, "guard_post")
+	var harbour_posts := GUARD_POSTS.filter(func(p: Array) -> bool: return p[0] not in CORE_DROP_POSTS)
+	_posts("GuardPosts", harbour_posts + CORE_HARBOUR_POSTS + CORE_POSTS, "guard_post")
 	_posts("TargetPosts", CORE_TARGET_POSTS, "target_post")
 	_posts("ExtraGuardPosts", EXTRA_POSTS, "guard_post_extra")
 	var spoofs := _group(_root, "SpoofPlaces")
 	for n in SPOOFS:
 		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
 
+	_rooms()
 	_actors()
 	# the lift's door: outside the NavRegion, so the navmesh is open and only bodies are held back
 	var door := _box(_root, "LiftDoor", [0.5, 31, 0.5, 2], 0, 3, "metal", Color(0.9, 0.5, 0.2))
@@ -110,7 +123,7 @@ func _build() -> void:
 	ep.position.y = 1.5
 	_area(_root, "CoreEntry", [-16, 32, 1.5], Vector3(2, 3, 4), "res://areas/core/core_entry.gd")
 	_area(_root, "CoreTerminal", [-31.5, 32, 1.5], Vector3(3, 3, 4), "res://areas/core/core_terminal.gd")
-	_intel({IntelManifests = INTEL.IntelManifests, IntelLift = INTEL.IntelLift})
+	_intel(CORE_INTEL)
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(CORE_OUT)

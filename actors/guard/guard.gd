@@ -41,6 +41,9 @@ var dead := false                # killed: Down for good, and a guard who checks
 var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
+var held_up := false             # Hold-up: frozen at gunpoint (Operative), until released
+var answered := false            # gave its one Hold-up answer
+var holdup_answer := ""          # what a Hold-up gets out of it (text key holdup.<answer>); "" = its Voiceprint
 var carrier: Node3D:             # the Operative carrying this guard
 	set(v):
 		carrier = v
@@ -100,7 +103,7 @@ func _physics_process(delta: float) -> void:
 	if is_down():
 		_down_tick(delta)
 		return
-	if held:
+	if held or held_up:
 		return
 	if stumble_left > 0.0:
 		stumble_left -= delta
@@ -214,7 +217,7 @@ func is_down() -> bool:
 
 ## Could it answer an HQ poll right now: up, not being choked, not stumbling from a dart.
 func can_radio() -> bool:
-	return not is_down() and not held and stumble_left <= 0.0
+	return not is_down() and not held and not held_up and stumble_left <= 0.0
 
 
 ## Put out of action (a choke); choking a Neutralized guard again restarts the clock.
@@ -222,6 +225,7 @@ func neutralize() -> void:
 	neutral_left = NEUTRALIZED_TIME
 	stumble_left = 0.0
 	held = false
+	held_up = false
 	alert = GuardAlert.new()
 	order = {}
 	seen_rate = 0.0
@@ -310,6 +314,8 @@ func return_to_post() -> void:
 	alert = GuardAlert.new()  # remembering nothing, not even waking
 	stumble_left = 0.0
 	held = false
+	held_up = false
+	answered = false
 	order = {}
 	seen_rate = 0.0
 	last_reason = ""
@@ -331,6 +337,70 @@ func can_be_choked(from: Vector3) -> bool:
 	if is_down() or alert.state >= GuardAlert.State.ALERT:
 		return false
 	return not GuardVision.in_front(from - global_position, -global_basis.z)
+
+
+## Can the Operative at `from` hold it up: the same as a choke (up, not alerted, not facing it).
+func can_be_held_up(from: Vector3) -> bool:
+	return not held_up and can_be_choked(from)
+
+
+## Held up: it freezes where it stands. No hands-up clip yet, so a startle and a mark.
+func hold_up() -> void:
+	held_up = true
+	velocity = Vector3.ZERO
+	model.react("startle", GuardAlert.FLINCH)
+	_mark.text = "hands up"
+	_mark.modulate = MARK_COLORS[GuardAlert.State.SUSPICION]
+
+
+## Let go (out of range, aim lost, an Alert): it turns on where the Operative stood, suspicious.
+func release(from: Vector3) -> void:
+	if not held_up:
+		return
+	held_up = false
+	if not is_down():
+		_changed(alert.hear(from, "a stick-up"))
+
+
+## Its one Hold-up answer: what holdup_answer names, else its Voiceprint for the Operative op.
+func answer(op: Node3D) -> void:
+	if answered:
+		return
+	answered = true
+	if holdup_answer != "":
+		radio_say(tr("holdup." + holdup_answer))
+		return
+	if not str(name) in op.voiceprints.held:
+		op.voiceprints.held.append(str(name))
+	radio_say(tr("holdup.voiceprint"))
+
+
+## Fultoned: a balloon lifts it out of the Area for good (the Operative already took it out of "guards").
+func fulton() -> void:
+	held_up = false
+	var balloon := MeshInstance3D.new()
+	var ball := SphereMesh.new()
+	ball.radius = 0.8
+	ball.height = 1.6
+	var m := StandardMaterial3D.new()
+	m.albedo_color = Color(0.9, 0.85, 0.75)
+	ball.material = m
+	balloon.mesh = ball
+	balloon.position.y = 3.0
+	add_child(balloon)
+	var t := create_tween()
+	t.tween_property(self, "global_position", global_position + Vector3.UP * 1.5, 1.0)
+	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, 2.0)
+	t.tween_callback(queue_free)
+
+
+## Does it have a line of sight to point p within reach (a Fulton balloon: seen whichever way it faces).
+func sees_point(p: Vector3, reach: float) -> bool:
+	var eye := global_position + Vector3.UP * EYE
+	if is_down() or eye.distance_to(p) > reach:
+		return false
+	var q := PhysicsRayQueryParameters3D.create(eye, p, 1, [get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
 func _lie(on: bool) -> void:

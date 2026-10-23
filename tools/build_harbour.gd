@@ -1,6 +1,7 @@
-## Builds areas/harbour/harbour.tscn, the Tanker berth greybox, from the Harbour diagram's variant B data
-## (.scratch/area-redesign/issues/04-harbour-diagram.md), and bakes its navmesh. Until the layout settles
-## this file is the Harbour's source: change the data here and rebuild, don't hand-edit the scene.
+## Builds areas/harbour/harbour.tscn, the Harbour as three connected Encounters (pw-feel issue 07, drawn in
+## .scratch/pw-feel/prototypes/harbour-encounters.html on the Tanker berth outline of area-redesign issue 04),
+## and bakes its navmesh. This file is the Harbour's source: change the data here and rebuild, don't
+## hand-edit the scene. build_core.gd builds the Core on the same data.
 ##   godot --headless --path . --script tools/build_harbour.gd
 ## Data is in diagram metres (tools/area_builder.gd).
 extends "res://tools/area_builder.gd"
@@ -10,13 +11,22 @@ const DECK := 2.0         # the freighter's deck height above the quay
 const CONTAINER_H := 2.6
 const KERB_H := 0.5       # no jump, so a kerb holds the Operative off the sea
 
+## The three Encounters, one per objective step, joined safe → exposed → safe: [id, name, problem, rect,
+## exit spot [x, y, h], next]. Guard posts carry their Encounter as `enc` meta. The north yard (gatehouse,
+## road) belongs to none: it is where reinforcements come in and Targets run to.
+const ENCOUNTERS := [
+	[1, "Perimeter", "timing", [64.6, 3.2, 12.6, 57], [65.4, 46, DECK], 2],             # the freighter deck; exit down the gangway
+	[2, "Loading yard", "positioning", [26, 19, 36, 47], [27, 39.3, 0], 3],          # container lanes; exit along Warehouse B's south wall
+	[3, "Operations building", "manipulation", [2, 18, 24, 60], [11, 74, 0], 0],     # Ops round the lift mouth; exit to the slipway
+]
 
 ## Walkable at quay height, top at 0: [rect, material].
 const LAND := [
 	[[2, 2, 60, 68], "quay"],     # the yard
 	[[26, -6, 8, 8], "quay"],     # the road through the north fence
-	[[48, 70, 8, 9], "pier"],       # south pier, the Extraction point at its tip
-	[[62, 60, 8, 7], "pier"],       # the pontoon under the stern pier
+	[[48, 70, 8, 9], "pier"],     # south pier
+	[[62, 60, 8, 7], "pier"],     # the pontoon under the stern pier
+	[[7, 70, 8, 7], "pier"],      # the slipway behind Warehouse A, the Extraction point at its tip
 ]
 ## Solid boxes: [name, rect, h0, h1, material, tint].
 const SOLID := [
@@ -30,13 +40,17 @@ const SOLID := [
 	["KerbE1", [61.7, 2, 0.3, 42.8], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
 	["KerbE2", [61.7, 47.2, 0.3, 12.8], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
 	["KerbE3", [61.7, 67, 0.3, 3], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
-	["KerbS1", [2, 69.7, 46, 0.3], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
+	["KerbS1", [2, 69.7, 5, 0.3], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
+	["KerbS1b", [15, 69.7, 33, 0.3], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
 	["KerbS2", [56, 69.7, 6, 0.3], 0, KERB_H, "kerb", Color(0.85, 0.85, 0.8)],
 	["KerbPierW", [47.7, 70, 0.3, 9.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbPierE", [56, 70, 0.3, 9.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbPierTip", [47.7, 79, 8.6, 0.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbPontoonS", [62, 66.7, 8, 0.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbPontoonE", [69.7, 60, 0.3, 7], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
+	["KerbSlipW", [6.7, 70, 0.3, 7.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
+	["KerbSlipE", [15, 70, 0.3, 7.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
+	["KerbSlipTip", [6.7, 77, 8.6, 0.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	# the freighter: hull to deck height, bow, rails with a gap for the gangway and the stern drop
 	["Hull", [65, 11, 12, 49], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
 	["Bow", [67.5, 5, 7, 6], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
@@ -57,30 +71,50 @@ const SOLID := [
 	["DeckContainer3", [66.5, 36, 2.4, 6], DECK, DECK + CONTAINER_H, "metal", Color(0.3, 0.6, 0.35)],
 	["HatchStarboard", [73, 12, 3, 7], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
 	["HatchPort", [68, 12, 2.5, 5], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
-	# yard, east to west
+	# the Loading yard: two columns of containers either side of a 3 m mid lane (x 47-50), with lane W
+	# (x 41-44) beyond; the gaps in the columns are staggered so no cross lane runs straight through
 	["Crane", [54, 18, 4, 4], 0, 8, "hatch", Color(1.0, 0.78, 0.2)],
 	["CraneBoom", [58, 19.5, 7, 1], 7.5, 8, "hatch", Color(1.0, 0.78, 0.2)],
 	["ResupplyCrate", [58.5, 49, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
 	["Container1", [44, 42, 3, 10], 0, CONTAINER_H, "metal", Color(0.75, 0.3, 0.25)],
 	["Container2", [38, 56, 3, 8], 0, CONTAINER_H, "metal", Color(0.3, 0.5, 0.8)],
-	["LiftControl", [16, 19, 5, 5], 0, 3.5, "panels", Color.WHITE],
-	# the freight lift, set into the cliff, mouth east
+	["Container3", [44, 26, 3, 10], 0, CONTAINER_H, "metal", Color(0.3, 0.6, 0.35)],
+	["Container4", [50, 32, 3, 8], 0, CONTAINER_H, "metal", Color(0.8, 0.4, 0.2)],
+	["Container5", [50, 46, 3, 8], 0, CONTAINER_H, "metal", Color(0.3, 0.5, 0.8)],
+	["Container6", [38, 44, 3, 8], 0, CONTAINER_H, "metal", Color(0.75, 0.3, 0.25)],
+	# the freight lift, set into the cliff, mouth east (lined up over the Core: don't move it)
 	["LiftWallN", [2, 26, 12, 0.5], 0, 6, "concrete", Color(0.75, 0.75, 0.75)],
 	["LiftWallS", [2, 37.5, 12, 0.5], 0, 6, "concrete", Color(0.75, 0.75, 0.75)],
 	["LiftRoof", [2, 26, 12, 12], 6, 6.5, "concrete", Color(0.75, 0.75, 0.75)],
+	# the Operations building's inside: control room (north), lobby, locker room (south), and the lift hall
+	# (x 14-17) along the lift mouth, joined to the control and locker rooms by doors at y 22-24 and 38.5-40.5
+	["OpsWallN1", [17, 29.35, 2.5, 0.3], 0, 4, "panels", Color.WHITE],
+	["OpsWallN2", [21.5, 29.35, 1.5, 0.3], 0, 4, "panels", Color.WHITE],
+	["OpsWallS1", [17, 34.35, 2.5, 0.3], 0, 4, "panels", Color.WHITE],
+	["OpsWallS2", [21.5, 34.35, 1.5, 0.3], 0, 4, "panels", Color.WHITE],
+	["OpsWallW1", [16.85, 20, 0.3, 2], 0, 4, "panels", Color.WHITE],
+	["OpsWallW2", [16.85, 24, 0.3, 5.5], 0, 4, "panels", Color.WHITE],
+	["OpsWallW3", [16.85, 34.5, 0.3, 4], 0, 4, "panels", Color.WHITE],
+	["OpsWallW4", [16.85, 40.5, 0.3, 1.5], 0, 4, "panels", Color.WHITE],
+	["LiftPanel", [21.5, 20.3, 1.2, 0.6], 0, 1.2, "metal", Color.WHITE],
+	# shuts the exit strip off from the yard: the way to the slipway is through Encounter 3
+	["FenceExit", [24.3, 64, 0.4, 5.7], 0, 3, "metal", Color(0.6, 0.65, 0.6)],
 ]
 ## The crane is open lattice: its tower and boom sit on the guards' layer, which blocks bodies but not sight,
 ## shots or the camera. Only these parts block sight: [name, rect, h0, h1], the machinery base and the top plate.
 const CRANE_SOLID := [["CraneBase", [54, 18, 4, 4], 0, 2.4], ["CranePlate", [54, 18, 4, 4], 7.7, 8]]
 ## Low cover: [rect, h0].
 const LOW := [
-	[[51, 28, 1, 12], 0], [[44, 22, 6, 1.2], 0], [[26, 45, 8, 1.2], 0], [[16, 40, 6, 1.2], 0],
-	[[48, 14, 1.2, 6], 0], [[52, 56, 6, 1.2], 0],
+	[[44, 22, 6, 1.2], 0], [[26, 45, 8, 1.2], 0], [[48, 14, 1.2, 6], 0], [[52, 56, 6, 1.2], 0],
+	[[8, 43, 5, 1.2], 0],        # the forecourt, in front of the lift housing
+	[[66, 21, 1.2, 3], DECK],    # deck crates by the port rail, halfway from the hatches to Container 3
 ]
-## Enterable buildings: [name, rect, height, doors [[side, centre]], tint, base, wall material]. A door is a 2 m gap.
+## Enterable buildings: [name, rect, height, doors [[side, centre(, width)]], tint, base, wall material].
 const BUILDINGS := [
 	["Gatehouse", [36, 6, 12, 8], 4.0, [["W", 10.0], ["S", 42.0]], Color.WHITE, 0.0, "panels"],
-	["WarehouseA", [6, 48, 18, 16], 5.0, [["E", 54.0], ["N", 14.0]], Color(0.9, 0.9, 0.9), 0.0, "corrugated"],
+	["WarehouseA", [6, 48, 18, 16], 5.0, [["E", 54.0], ["N", 14.0], ["S", 14.0]], Color(0.9, 0.9, 0.9), 0.0, "corrugated"],
+	# its west side is open across the lift mouth (y 26.5-37.5)
+	["Operations", [14, 20, 9, 22], 4.0, [["W", 32.0, 11.0], ["E", 32.0], ["N", 20.0], ["S", 20.0]], Color(0.85, 0.9, 1.0), 0.0, "panels"],
 ]
 ## Crawlspaces: a structure [name, rect, height, material, tint] with a 1.2 m tunnel through it along
 ## x = axis_x (N-S) or y = axis_y (E-W). Mouths get a carry block each.
@@ -88,6 +122,12 @@ const CRAWLSPACES := [
 	{name = "StackCrawl", rect = [28, 51, 10, 5], h = CONTAINER_H, mat = "cargo", tint = Color.WHITE, axis_x = 33.0},
 	{name = "WarehouseBCrawl", rect = [26, 28.5, 14, 10], h = 6.0, mat = "corrugated", tint = Color(0.8, 0.88, 1.0), axis_x = 33.0},
 	{name = "SternPierCrawl", rect = [58.5, 60, 10, 7], h = 1.5, mat = "pier", tint = Color.WHITE, axis_y = 64.0},
+]
+## No Fulton under a roof: [name, rect, h0, h1]. Everything else, the deck and the roofs included, is open sky.
+const ROOMS := [
+	["Operations", [14, 20, 9, 22], 0, 4], ["LiftHousing", [2, 26, 12, 12], 0, 6], ["WarehouseA", [6, 48, 18, 16], 0, 5],
+	["Gatehouse", [36, 6, 12, 8], 0, 4], ["StackCrawl", [28, 51, 10, 5], 0, 1.2], ["WarehouseBCrawl", [26, 28.5, 14, 10], 0, 1.2],
+	["SternPierCrawl", [58.5, 60, 10, 7], 0, 1.2],
 ]
 ## Ladders: [name, bottom [x, y, h], top [x, y, h]]. The rungs run up the face at the bottom marker.
 const LADDERS := [
@@ -97,68 +137,91 @@ const LADDERS := [
 ## The gangway: a ramp from the port rail gap down to the quay.
 const GANGWAY := {top = [65, 46], bottom = [61, 46], width = 2.4}
 
-## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat.
+## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat, and
+## role (gatekeeper, observer, patroller, interceptor, investigator), enc (Encounter), holdup (what a
+## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 11 spawned: 5 / 3 / 3.
 const GUARD_POSTS := [
-	["PostO1", [70, 25, DECK], 90, {hold = 5.0}, []],                                 # deck look-out across the starboard hatches
-	["PostO2", [70.5, 30, DECK], 180, {}, [[70.5, 42, {}]]],                          # port-side deck loop
-	["PostP", [73, 58, DECK], 0, {chat = true}, []],                                  # smoke break behind the bridge
-	["PostO5", [66.5, 45, DECK], 10, {scan = 60.0}, []],                              # gangway head
-	["PostY1", [58, 24, 0], 180, {}, [[58, 48, {hold = 4.0, f = 90}], [57, 59, {}]]],  # quay; holds facing the gangway foot
-	["PostY2", [12, 57, 0], 80, {scan = 90.0}, []],                                   # on the manifests
-	["PostY3", [30, 47.5, 0], 90, {}, [[43, 47.5, {}], [46, 64, {}], [28, 62, {}]]],   # container lanes
-	["PostY4", [40, 18, 0], 180, {scan = 90.0}, []],                                  # gatehouse post
-	["PostY5", [17, 32, 0], 90, {scan = 60.0}, []],                                   # lift chokepoint
-	["PostY6", [22, 22, 0], 90, {}, [[48, 20.5, {hold = 6.0, f = 90}], [48, 40, {}], [22, 43, {}]]],     # centre loop round Warehouse B; holds facing the gatehouse post (Spoof spot: whoever moves PostY4 is witnessed)
+	# E1 Perimeter: learn the rhythm. O2 keeps aft of y 42, out of sight of a Hold-up behind O1.
+	["PostO1", [70, 25, DECK], 90, {hold = 5.0, role = "observer", enc = 1}, []],                          # look-out across the starboard hatches
+	["PostO2", [70.5, 42, DECK], 180, {role = "patroller", enc = 1}, [[72, 47, {hold = 6.0, f = 180}]]],  # paces aft; chats 6 s at the bridge door
+	["PostP", [73, 58, DECK], 0, {chat = true, role = "investigator", enc = 1}, []],                         # smoke break behind the bridge: step 1
+	["PostO5", [66.5, 45, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                      # gangway head, sweeps up the deck
+	# E2 Loading yard: overlapping threats
+	["PostY1", [58, 24, 0], 180, {role = "patroller", enc = 2}, [[58, 48, {hold = 4.0, f = 90}], [57, 59, {}]]],  # quay; holds facing the gangway foot
+	["PostForeman", [48.5, 24, 0], 180, {role = "patroller", enc = 2, holdup = "lift_code"},                 # the lane loop: step 2
+		[[48.5, 39, {hold = 3.0, f = 270}], [42.5, 39, {}], [42.5, 54, {hold = 3.0, f = 90}], [48.5, 54, {}]]],
+	["PostObserver", [38.5, 38, 6], 150, {scan = 90.0, role = "observer", enc = 2}, []],                     # Warehouse B roof's south-east edge (from the middle the roof hides the ground)
+	# E3 Operations: three guarded doors
+	["PostGate", [20, 45, 0], 120, {scan = 60.0, role = "gatekeeper", enc = 3}, []],                          # south door, watches the yard's exit
+	["PostAlley", [24.5, 44, 0], 0, {role = "interceptor", enc = 3}, [[24.5, 22, {hold = 3.0, f = 0}]]],     # the alley; holds facing the north door's approach
+	["PostOps", [21.5, 23, 0], 0, {hold = 5.0, role = "investigator", enc = 3}, [[20.5, 32, {hold = 3.0, f = 90}]]],  # at the lift panel, then the lobby
 ]
+## Order matters (harbour.gd): the first is Stealth L2's patrol, the rest are Combat L2's guards.
 const EXTRA_POSTS := [
-	["PostExtra1", [30, 44, 0], 0, {}, [[33, 40, {hold = 3.0, f = 0}], [33, 57.5, {hold = 3.0, f = 0}]]],  # Stealth L2: looks into both Crawlspaces
-	["PostExtra2", [26, 55, 0], 90, {hold = 5.0}, []],   # Combat L2: Warehouse A east door
-	["PostExtra3", [45, 17, 0], 135, {hold = 5.0}, []],  # Combat L2: gatehouse south door
+	["PostExtra1", [30, 44, 0], 0, {role = "patroller"}, [[33, 40, {hold = 3.0, f = 0}], [33, 57.5, {hold = 3.0, f = 0}]]],  # looks into both lane Crawlspaces
+	["PostExtra2", [15.5, 31, 0], 90, {hold = 5.0, role = "interceptor"}, []],   # in the lift hall
+	["PostExtra3", [59, 44, 0], 45, {hold = 5.0, role = "gatekeeper"}, []],      # at the gangway foot
 ]
-const TARGET_POSTS := [  # ponytail: the Core's director waits by the lift until the Core Mission builds the gallery room
+const TARGET_POSTS := [  # ponytail: unused, the Core places its own director; kept for a Harbour Target
 	["TargetPost1", [10, 30, 0], 180, {}, [[10, 35, {}]]],
 ]
 const SENTRIES := [
-	["SentryCrane", [56, 19.5, 8], 200, {scan = 90.0}],
-	["SentryWarehouseB", [34, 31, 6], 160, {scan = 90.0}],
+	["SentryCrane", [56, 19.5, 8], 230, {scan = 90.0}],
+	["SentryBridge", [71, 52, 8], 0, {scan = 90.0}],
 ]
 ## Camera mounts: [name, [x, y, h], facing, pole base h]. Without a pole base the mount is on a wall face.
 const CAMERAS := [
-	["CamWarehouseA", [24.05, 47.95, 4], 310], ["CamPier", [56.5, 61.5, 3], 80, 0.0],
-	["CamGatehouse", [36, 14, 3.8], 200], ["CamLift", [14.05, 26.25, 5], 110],
+	["CamGangway", [67, 47.95, 5], 340], ["CamLanes", [53.5, 25, 3], 194, 0.0],
+	["CamOps", [22, 42.05, 3.6], 150], ["CamAlley", [25.95, 29, 5], 200],
 ]
+## DeckEntry: reinforcements for an Operative nearer the deck come out of the bridge (harbour.gd).
 const SPOTS := {
-	OperativeStart = [71, 7, DECK], RoadEntry = [30, -2, 0], Extraction = [52, 77, 0],
+	OperativeStart = [71, 7, DECK], RoadEntry = [30, -2, 0], DeckEntry = [71, 46.6, DECK], Extraction = [11, 74, 0],
 	ResupplyCrate = [59, 49.5, 1], FreightLift = [8, 32, 0], SafeRoom = [46, 7.5, 0],
 }
-const SPOOFS := {SpoofDock = [52, 72], SpoofWarehouse = [42, 40], SpoofGatehouse = [40, 16.5], SpoofLiftControl = [18.5, 26]}
-## Mission 1's tutorial teaches eavesdropping here: 2 m beside PostY1's quay route, in Voiceprint range of its check-ins.
-const EAVESDROP := {EavesdropSpot = [56, 36]}
-const INTEL := {IntelManifests = [9, 60], IntelRadioLog = [44, 9], IntelLift = [8, 32]}
+const SPOOFS := {SpoofDock = [52, 72], SpoofWarehouse = [42, 40], SpoofGatehouse = [40, 16.5], SpoofForecourt = [14, 46]}
+## Where to eavesdrop the smoke break: [x, y, h]. Within 6 m of the pair's B seat, the bridge corner hiding it from A.
+const EAVESDROP := {EavesdropSpot = [75.9, 53, DECK]}
+## Mission 1's steps (Campaign data names them), each done with a verb rather than a walk-in pickup
+## (areas/intel_pickup.gd). watch (objective_watch.gd): a guard's Voiceprint or Hold-up answer; console (relay_console.gd): hold E.
+const OBJECTIVES := {
+	IntelSmokeBreak = {at = [75.9, 53, DECK], watch = "voiceprint", guards = ["GuardPA", "GuardPB"]},
+	IntelForeman = {at = [48.5, 50, 0], watch = "answer", guards = ["GuardForeman"]},
+	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "hold E to enter the code"},
+}
+## Safe → exposed → safe crossings, as drawn and timed in the prototype: [id, Encounter, [[x, y, h]...]]. The build
+## checks both ends are on the navmesh; the prototype's vision sim times them (.scratch/pw-feel/research/harbour-generator-data.md).
+const CROSSINGS := [
+	["X1", 1, [[67.2, 16.5, DECK], [66.6, 20.6, DECK]]], ["X2", 1, [[65.7, 24.4, DECK], [65.7, 35.6, DECK]]],
+	["X3", 1, [[69.6, 41.6, DECK], [72, 45.4, DECK]]], ["X4", 1, [[76, 43, DECK], [75.9, 53, DECK]]],
+	["X5", 1, [[65.4, 46, DECK], [53.6, 47.5, 0]]], ["X6", 1, [[66, 50, DECK], [69.1, 59.4, DECK]]],
+	["X7", 2, [[53.6, 45.5, 0], [48.5, 43, 0]]], ["X8", 2, [[51, 57.5, 0], [48.5, 47, 0]]],
+	["X9", 2, [[47.5, 37, 0], [27, 39.1, 0]]], ["X10", 3, [[26.5, 39.4, 0], [23.2, 32, 0]]],
+	["X11", 3, [[31, 26.5, 0], [20, 19.6, 0]]], ["X12", 3, [[15.5, 34, 0], [21.2, 21.8, 0]]],
+	["X13", 3, [[20, 42.6, 0], [11, 73, 0]]],
+]
 
 ## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
-## doorways, Crawlspace mouths and Ladders.
+## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
 	# quay: bollards on the edge, floodlights leaning over the yard
 	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],
 	["bollard", [61, 42, 0], 0], ["bollard", [61, 52, 0], 0],
 	["lamp_post", [61.2, 12, 0], 270], ["lamp_post", [61.2, 34, 0], 270], ["lamp_post", [61.2, 57, 0], 270],
-	["lamp_post", [55.5, 78.5, 0], 270],  # over the Extraction point at the pier tip
+	["lamp_post", [55.5, 78.5, 0], 270], ["lamp_post", [14.4, 76.5, 0], 270],  # the south pier, the slipway
 	["lamp_post", [35, 3.5, 0], 225], ["lamp_post", [3.5, 44, 0], 90],
 	# pier
 	["crate_small", [49, 72, 0], 10], ["supply_crate", [49.2, 72.6, 0.36], 80], ["drum", [55, 71.5, 0], 0],
-	# north-west corner and the lift control hut
+	# north-west corner, by the Operations building's north door
 	["drum", [3.5, 3.5, 0], 0], ["drum", [4.4, 3.6, 0], 30], ["barrel_a", [3.7, 4.5, 0], 0],
-	["tank_tall", [4.5, 14, 0], 0], ["generator", [18.5, 17, 0], 0], ["jerrycan", [21, 17, 0], 60],
+	["tank_tall", [4.5, 14, 0], 0], ["generator", [16, 17, 0], 0], ["jerrycan", [14.5, 17.5, 0], 60],
 	# road in: cones either side of the barrier lane
 	["cone", [27, 0, 0], 0], ["cone", [33, 0, 0], 0], ["cone", [27, -3, 0], 0], ["cone", [33, -3, 0], 0],
-	# Warehouse A outside, by its north door
-	["pallet_stack", [8.5, 45.5, 0], 0], ["crate_wide", [19.5, 45.8, 0], 0],
-	["barrel_b", [22.5, 46, 0], 0], ["barrel_a", [23.2, 46.6, 0], 40],
-	["pipe_riser", [25.5, 36, 0], 90],  # on Warehouse B's west wall
-	["drum", [48, 51.5, 0], 0], ["drum", [48.7, 50.8, 0], 20],
-	# Warehouse A inside: racking on the south wall, stock, lights
-	["crate_wide", [16.3, 63, 0], 0], ["crate_small", [16, 63, 0.67], 15], ["crate_wide", [18.3, 63, 0], 0],
+	# the forecourt, by Warehouse A's north door
+	["pallet_stack", [8.5, 45.5, 0], 0], ["barrel_b", [22.5, 46.5, 0], 0], ["barrel_a", [23.2, 47.1, 0], 40],
+	["drum", [36.5, 58.5, 0], 0], ["drum", [37.2, 57.8, 0], 20],
+	# Warehouse A inside: racking on the south wall (clear of the south door, x 13-15), stock, lights
+	["crate_wide", [17.3, 63, 0], 0], ["crate_small", [17, 63, 0.67], 15], ["crate_wide", [19.3, 63, 0], 0],
 	["pallet_stack", [21.5, 61.5, 0], 0], ["crate_wide", [8.5, 50.5, 0], 90],
 	["cardboard_box", [20.5, 49, 0], 15], ["cardboard_box", [21.3, 49.2, 0], 40],
 	["ceiling_lamp", [11, 56, 4.8], 0], ["ceiling_lamp", [19, 56, 4.8], 0],
@@ -167,24 +230,27 @@ const DRESS := [
 	["locker", [36.7, 12.5, 0], 90], ["ceiling_lamp", [42, 10, 3.8], 0],
 	["vent_unit", [40, 8, 4.3], 0],  # on the gatehouse roof
 	# freighter deck
-	["drum", [73, 6.5, DECK], 0], ["drum", [73.8, 7, DECK], 40], ["crate_wide", [75.5, 44, DECK], 90],
+	["drum", [73, 6.5, DECK], 0], ["drum", [73.8, 7, DECK], 40],
 	# the freight lift lit from inside, so the way down reads from the yard; sandbags at the road gate
 	["ceiling_lamp", [7, 32, 5.9], 0], ["sandbags", [23.5, 5, 0], 0], ["pipe_arch", [3.6, 20, 0], 0],
-	# second pass: the lift as a working freight bay (cabinets, generator, pipes, lamps over the mouth)
+	# the lift as a working freight bay (cabinets, generator, pipes, lamps over the mouth)
 	["cabinet_b", [4, 26.9, 0], 0], ["cabinet_a", [5.5, 26.9, 0], 0], ["generator", [4.5, 36.7, 0], 180],
 	["pipe_riser", [2.6, 29, 0], 270], ["ceiling_lamp", [11.5, 28, 5.9], 0], ["ceiling_lamp", [11.5, 36, 5.9], 0],
-	# Warehouse A stock along the walls, the middle kept open for PostY2's sweep
-	["pallet_stack", [8, 62.5, 0], 0], ["supply_crate", [11, 62.8, 0], 0], ["cabinet_b", [6.6, 55, 0], 270],
+	# Warehouse A stock along the walls, the middle kept open
+	["pallet_stack", [8, 62.5, 0], 0], ["supply_crate", [10.5, 62.8, 0], 0], ["cabinet_b", [6.6, 55, 0], 270],
 	["cabinet_a", [6.6, 56.4, 0], 270], ["drum", [22.8, 58, 0], 0], ["drum", [23, 59, 0], 30],
-	["barrel_b", [22.6, 60, 0], 0], ["vent_unit", [12, 63.4, 3], 180],
+	["barrel_b", [22.6, 60, 0], 0], ["vent_unit", [11, 63.4, 3], 180],
 	# gatehouse: the guard room's screens, cabinets and a drinks machine
 	["monitoring_screen", [42.5, 6.9, 0], 0], ["cabinet_a", [47.3, 12.5, 0], 90], ["cabinet_b", [47.3, 11, 0], 90],
 	["vending_machine", [37.2, 7, 0], 0],
+	# the Operations building: the control room's screens, the locker room's cabinets, lights
+	["monitoring_screen", [19, 20.6, 0], 0], ["cabinet_a", [22.4, 28.5, 0], 270], ["cabinet_b", [22.4, 39, 0], 270],
+	["cabinet_a", [22.4, 37.5, 0], 270], ["ceiling_lamp", [20, 25, 3.8], 0], ["ceiling_lamp", [20, 32, 3.8], 0],
+	["ceiling_lamp", [20, 38, 3.8], 0], ["ceiling_lamp", [15.5, 31, 3.8], 0],
 	# a parked van in the north-west corner
 	["van", [10, 8, 0], 90],
-	# deck: mast lights over the bow (the start) and the starboard walk, some cargo by the port rail
+	# deck: mast lights over the bow (the start) and the starboard walk
 	["lamp_post", [68.2, 8, DECK], 90], ["lamp_post", [76.2, 41, DECK], 270],
-	["pallet", [67.5, 22, DECK], 0], ["crate_small", [67.3, 23.5, DECK], 20],
 ]
 ## Seen over the cliff and across the water: no gameplay, far enough to sit in the fog.
 const BACKDROP_DRESS := [
@@ -203,12 +269,12 @@ const MARKINGS := [
 	[[29.85, 3, 0.15, 24], 1.5],    # drive from the gate down to Warehouse B
 	[[60.8, 3, 0.2, 56], 0],        # quay edge line
 	[[57.5, 4, 0.15, 54], 2.0],     # quay lane
-	[[14.5, 27.5, 0.2, 9], 0], [[18.3, 27.5, 0.2, 9], 0],   # the lift's loading box
-	[[14.5, 27.5, 4, 0.2], 0], [[14.5, 36.3, 4, 0.2], 0],
+	[[48.4, 23.5, 0.15, 33], 1.5],  # the mid lane
 ]
 ## Small lights with a lamp you can see from afar: [[x, y, h], colour, range, pole base h or -1 for none].
 const BEACONS := [
-	[[55.9, 79.1, 2.2], Color(1, 0.15, 0.1), 7.0, 0.5],    # the Extraction pier tip
+	[[14.9, 77.1, 2.2], Color(1, 0.15, 0.1), 7.0, 0.5],    # the slipway tip, the Extraction point
+	[[55.9, 79.1, 2.2], Color(1, 0.15, 0.1), 5.0, 0.5],    # the south pier tip
 	[[66.8, 49, 7.2], Color(1, 0.12, 0.1), 5.0, -1],        # port sidelight on the bridge
 	[[75.2, 49, 7.2], Color(0.15, 1, 0.3), 5.0, -1],        # starboard sidelight
 	[[71, 52, 10.5], Color(1, 0.95, 0.85), 6.0, 8.0],       # masthead light over the bridge roof
@@ -239,6 +305,7 @@ func _build() -> void:
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
 	_bake(nav)
+	var nm := nav.navigation_mesh
 
 	var ladders := _group(_root, "Ladders")
 	for l in LADDERS:
@@ -264,22 +331,58 @@ func _build() -> void:
 	var spoofs := _group(_root, "SpoofPlaces")
 	for n in SPOOFS:
 		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
-
 	var eavesdrops := _group(_root, "EavesdropSpots")
 	for n in EAVESDROP:
-		_marker(eavesdrops, n, EAVESDROP[n] + [0], 0, {}, "eavesdrop_spot")
+		_marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
+	_rooms()
 
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y = 1.5
-	_intel(INTEL)
+	_objectives()
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(OUT)
+	await _report_reach(nm, SPOTS.OperativeStart, _reach(), {})
 	quit()
 
 
 # --- Harbour-only builders ---------------------------------------------------------------------
+
+## The ROOMS as no-Fulton boxes (areas/no_fulton.gd) under $NoFulton.
+func _rooms() -> void:
+	var g := _group(_root, "NoFulton")
+	for r in ROOMS:
+		var rect: Array = r[1]
+		_area(g, r[0], [rect[0] + rect[2] / 2.0, rect[1] + rect[3] / 2.0, (r[2] + r[3]) / 2.0],
+			Vector3(rect[2], r[3] - r[2], rect[3]), "res://areas/no_fulton.gd")
+
+
+## Mission 1's OBJECTIVES under $Intel, where MissionRun finds every step.
+func _objectives() -> void:
+	var intel := _group(_root, "Intel")
+	for n in OBJECTIVES:
+		var o: Dictionary = OBJECTIVES[n]
+		var at := [o.at[0], o.at[1], o.at[2] + 1.5]
+		if o.has("console"):
+			var c := _area(intel, n, at, Vector3(3, 3, 3), "res://areas/relay_station/relay_console.gd")
+			c.set("hold_time", o.console)
+			c.set("prompt", o.prompt)
+			c.set("sweeps", false)
+		else:
+			var w := _area(intel, n, at, Vector3(1, 1, 1), "res://areas/objective_watch.gd")
+			w.set("verb", o.watch)
+			w.set("guards", PackedStringArray(o.guards))
+
+
+## What the navmesh must reach from the start: every objective, the Extraction point, both ends of every crossing.
+func _reach() -> Dictionary:
+	var r := {Extraction = SPOTS.Extraction, LiftPanel = [21.5, 22.2, 0], Eavesdrop = EAVESDROP.EavesdropSpot}
+	for x in CROSSINGS:
+		r[x[0] + "a"] = x[2][0]
+		r[x[0] + "b"] = x[2][-1]
+	return r
+
 
 ## The gangway: a sloped deck from the ship's port gap to the quay, with side rails.
 func _gangway(parent: Node3D) -> void:

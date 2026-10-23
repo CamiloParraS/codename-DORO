@@ -116,7 +116,7 @@ func _send(pick: Dictionary, line: String) -> void:
 	var recipients: Array = pick.recipients.map(_guard).filter(func(g): return g != null)
 	var j := _judge(pick.speaker, line, {
 		recipients = pick.recipients, all_units = pick.all_units, order = pick.order, place = pick.place,
-		seen_by = recipients.filter(func(r): return r != speaker and r.can_see(speaker)).map(func(r): return String(r.name)),
+		seen_by = recipients.filter(func(r): return speaker != null and r != speaker and r.can_see(speaker)).map(func(r): return String(r.name)),
 		sees_operative = recipients.filter(func(r): return r.seen_rate > 0.0).map(func(r): return String(r.name)),
 	})
 	var from := _operative.global_position
@@ -146,12 +146,8 @@ func _report_in(who: String, line: String) -> void:
 ## Glaukopis judges a transmission as `who` on the facts on the ground (`extra`: the order, the
 ## recipients and what they can see), then it is logged and tallied as a Spoof.
 func _judge(who: String, line: String, extra: Dictionary) -> Dictionary:
-	var speaker := _guard(who)
-	var facts := {
-		now = _now, speaker = who, since_alert = _now - _last_alert,
-		speaker_known_down = speaker.is_down() and speaker.known_down,
-		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
-	}
+	var facts := {now = _now, speaker = who, since_alert = _now - _last_alert}
+	facts.merge(speaker_facts(_guard(who)))
 	facts.merge(extra)
 	var deployed := _deployed()
 	glaukopis.expose_at = Deployment.expose_at(deployed)
@@ -221,6 +217,18 @@ func _deployed() -> Dictionary:
 	return run.plan.deployed if run else {}
 
 
+## What Glaukopis may hold against the voice's owner. A speaker no longer in the Area (Fultoned, or a
+## reinforcement gone back out: the Voiceprint outlives him) is neither known Down nor busy.
+static func speaker_facts(speaker: Node3D) -> Dictionary:
+	if speaker == null:
+		return {speaker_known_down = false, speaker_busy = false}
+	return {
+		speaker_known_down = speaker.is_down() and speaker.known_down,
+		speaker_busy = not speaker.is_down() and speaker.alert.state != GuardAlert.State.PATROL,
+	}
+
+
+## The guard by name, or null once it has left the Area (Fultoned, or a reinforcement gone back out).
 func _guard(guard_name: String) -> Node3D:
 	for g in get_tree().get_nodes_in_group("guards"):
 		if g.name == guard_name:
