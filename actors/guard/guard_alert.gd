@@ -150,6 +150,14 @@ func hear(pos: Vector3, what: String) -> String:
 	return ""
 
 
+## Freed from a Hold-up by the Operative at pos: a Radio call on him (stoppable like any other).
+func freed(pos: Vector3) -> String:
+	if state == State.ALERT or calling:
+		return ""
+	last_known = pos
+	return _call("freed from a hold-up")
+
+
 ## A loud gunshot at pos reached this guard: a Radio call, not suspicion. A searching guard searches there.
 func shot(pos: Vector3) -> String:
 	if state == State.ALERT or calling:

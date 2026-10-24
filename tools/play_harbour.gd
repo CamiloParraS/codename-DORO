@@ -174,6 +174,14 @@ func mission_1() -> void:
 	for i in 20:
 		aim_at(op, fm)
 		await get_tree().physics_frame
+	check(not fm.held_up, "aiming alone holds nobody up")
+	for down in [true, false]:  # tap E: an event, as _unhandled_input wants
+		var e := InputEventAction.new()
+		e.action = &"interact"
+		e.pressed = down
+		Input.parse_input_event(e)
+		aim_at(op, fm)
+		await get_tree().physics_frame
 	check(fm.held_up, "the Foreman is held up at 4 m from behind")
 	var froze := fm.global_position
 	for i in 60:
