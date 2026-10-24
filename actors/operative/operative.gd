@@ -14,9 +14,6 @@ const LADDER_REACH := 1.2     # metres to a Ladder's Bottom or Top marker to cli
 const CLIMB_SPEED := 1.8
 const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative carrying a body
 const NoFulton := preload("res://areas/no_fulton.gd")
-const HOLDUP_RANGE := 6.0     # metres: aim at an unaware guard this close to hold it up (pw-feel 06)
-const HOLDUP_AIM_GRACE := 4.0 # seconds off aim before a held-up guard is free
-const ASK_TIME := 2.0         # seconds of E held to get a held-up guard's answer
 const FULTON_TIME := 3.0      # seconds of the Fulton key held, standing still, beside a Neutralized guard (pw-feel 05)
 const FULTONS := 3            # balloons per Mission
 const BALLOON_SEEN := 20.0    # metres from which a guard with a line of sight to the balloon comes to look
@@ -62,7 +59,7 @@ var _back_arm: SpringArm3D
 var _shape: CollisionShape3D
 var model: CharacterModel
 var _view := ItemView.new()
-var _aim_off := 0.0      # seconds the gun has been off held_up
+var _holdup := Holdup.new()  # the clock on held_up
 var _ask := 0.0          # seconds of E held on held_up
 var _fultoning: Guard
 var _fulton_left := 0.0
@@ -367,6 +364,12 @@ func _interact() -> void:
 		return
 	if held_up and not held_up.answered:
 		return  # E is for questioning him (_hold_up)
+	var aimed := _holdup_target() if not held_up else null
+	if aimed:
+		held_up = aimed
+		_holdup = Holdup.new()
+		held_up.hold_up()
+		return
 	var g := _nearest(true)
 	if g:
 		if not g.dead:
@@ -458,6 +461,8 @@ func _update_prompt() -> void:
 		prompt = "killing..." if _killing else "choking..."
 	elif held_up and not held_up.answered:
 		prompt = "questioning..." if _ask > 0.0 else "hold E question"
+	elif not held_up and _holdup_target():
+		prompt = "E hold up"
 	elif _fultoning:
 		prompt = "Fulton..."
 	elif _nearest(true):
@@ -480,31 +485,34 @@ func _fulton_hint() -> String:
 	return " · hold G Fulton" if NoFulton.open_sky(get_tree(), g.global_position) else " · no Fulton indoors"
 
 
-## Hold-up: aiming a gun at a guard within HOLDUP_RANGE that can't see you (a choke's rule) freezes it.
-## It goes free on an Alert, when you leave the range, or after HOLDUP_AIM_GRACE s with the gun off it.
-## E held ASK_TIME s gets its one answer (Guard.answer); after that E chokes it.
+## Hold-up: E with the gun aimed (Holdup.RANGE, Guard.can_be_held_up) freezes the guard; Holdup.tick frees him.
+## E held Holdup.ASK_TIME s gets his one answer (Guard.answer); after that E chokes him. The clock runs in
+## _physics_process, so a paused tree (a full-screen Codec call) stops it.
 func _hold_up(delta: float) -> void:
 	if held_up and (not is_instance_valid(held_up) or held_up.is_down() or not held_up.held_up):
 		held_up = null
-	var aimed := _aimed_guard() if aiming and not carrying else null
 	if not held_up:
 		_ask = 0.0
-		if aimed and _flat_dist(aimed) <= HOLDUP_RANGE and aimed.can_be_held_up(global_position):
-			held_up = aimed
-			_aim_off = 0.0
-			aimed.hold_up()
 		return
-	_aim_off = 0.0 if aimed == held_up else _aim_off + delta
-	if _flat_dist(held_up) > HOLDUP_RANGE or _aim_off > HOLDUP_AIM_GRACE or held_up.alert.state >= GuardAlert.State.ALERT:
+	var on_aim := aiming and not gun().reloading() and _aimed_guard() == held_up
+	if _holdup.tick(delta, on_aim, _flat_dist(held_up), held_up.alert.state >= GuardAlert.State.ALERT):
 		held_up.release(global_position)
 		held_up = null
 		return
 	if not held_up.answered and Input.is_action_pressed("interact"):
 		_ask += delta
-		if _ask >= ASK_TIME:
+		if _ask >= Holdup.ASK_TIME:
 			held_up.answer(self)
 	else:
 		_ask = 0.0
+
+
+## The guard E would hold up now: aimed at (not carrying, choking or reloading), within range, unaware.
+func _holdup_target() -> Guard:
+	if not aiming or carrying or _choking or gun().reloading():
+		return null
+	var g := _aimed_guard()
+	return g if g and _flat_dist(g) <= Holdup.RANGE and g.can_be_held_up(global_position) else null
 
 
 ## The standing guard under the crosshair, if any.

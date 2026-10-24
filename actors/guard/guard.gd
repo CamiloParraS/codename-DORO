@@ -108,7 +108,7 @@ func _physics_process(delta: float) -> void:
 	_prev_state = alert.state
 	_prev_calling = alert.calling
 	var flat := Vector2(velocity.x, velocity.z).length()
-	model.play(CharacterModel.guard_clip(is_down(), flat), flat)
+	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	if is_down():
 		_down_tick(delta)
@@ -371,12 +371,13 @@ func can_be_choked(from: Vector3) -> bool:
 	return not GuardVision.in_front(from - global_position, -global_basis.z)
 
 
-## Can the Operative at `from` hold it up: the same as a choke (up, not alerted, not facing it).
+## Can the Operative at `from` hold it up: as for a choke (up, not alerted, not facing it), and it
+## doesn't see him and isn't radioing.
 func can_be_held_up(from: Vector3) -> bool:
-	return not held_up and can_be_choked(from)
+	return not held_up and seen_rate <= 0.0 and not alert.calling and not AlertChain.area.calling(self) and can_be_choked(from)
 
 
-## Held up: it freezes where it stands. No hands-up clip yet, so a startle and a mark.
+## Held up: it kneels where it stands (the "kneel" clip). A startle first, and a mark.
 func hold_up() -> void:
 	held_up = true
 	velocity = Vector3.ZERO
@@ -385,26 +386,36 @@ func hold_up() -> void:
 	_mark.modulate = MARK_COLORS[GuardAlert.State.SUSPICION]
 
 
-## Let go (out of range, aim lost, an Alert): it turns on where the Operative stood, suspicious.
+## Freed (out of range, aim lost, an Alert, a partner saw it): "?", it grabs its gun and starts a
+## stoppable Radio call on where the Operative stood.
 func release(from: Vector3) -> void:
 	if not held_up:
 		return
 	held_up = false
 	if not is_down():
-		_changed(alert.hear(from, "a stick-up"))
+		model.react("startle", GuardAlert.FLINCH)
+		_changed(alert.freed(from))
 
 
-## Its one Hold-up answer: what holdup_answer names, else its Voiceprint for the Operative op.
+## Its one Hold-up answer for the Operative op (Holdup.answer): holdup_answer if scripted, else its
+## Voiceprint, else where the current objective's intel is, else a free 10 s Scanner reveal.
 func answer(op: Node3D) -> void:
 	if answered:
 		return
 	answered = true
-	if holdup_answer != "":
-		radio_say(tr("holdup." + holdup_answer))
-		return
-	if not str(name) in op.voiceprints.held:
-		op.voiceprints.held.append(str(name))
-	radio_say(tr("holdup.voiceprint"))
+	var run := get_tree().get_first_node_in_group("mission_plan")
+	var intel: String = run.intel_hint(global_position) if run else ""
+	var what := Holdup.answer(holdup_answer, not str(name) in op.voiceprints.held, intel != "")
+	Mixer.blip(0.8)  # a guard's voice blip under his line
+	match what:
+		"voiceprint":
+			op.voiceprints.held.append(str(name))
+			get_tree().call_group("mission_tally", "event", "interrogated_voiceprint")
+		"objective":  # where, on the INTEL line (MissionRun._say_objective's)
+			get_tree().call_group("radio_log", "say", "INTEL", intel)
+		"scan":
+			op.items.scan_left = Items.SCANNER_TIME
+	radio_say(tr("holdup." + what))
 
 
 ## Fultoned: a balloon lifts it out of the Area for good (the Operative already took it out of "guards").

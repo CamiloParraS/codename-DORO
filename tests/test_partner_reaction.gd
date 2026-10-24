@@ -129,5 +129,6 @@ func test_a_held_up_guard_seen_by_a_partner_is_freed_and_the_partner_reacts() ->
 	b.hold_up()
 	b._physics_process(DT)
 	assert_false(b.held_up, "freed")
-	assert_eq(a.last_reason, "saw Nikos drop")
+	assert_true(b.alert.calling, "the freed guard radios, and shouts")
+	assert_eq(a.last_reason, "Nikos shouted, running over", "saw him kneel, then hears him")
 	_free([a, b])

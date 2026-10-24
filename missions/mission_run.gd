@@ -249,6 +249,13 @@ func objective() -> String:
 	return Campaign.objective(record.mission, step)
 
 
+## The objective and where its intel lies from `from` ("<objective> · 42 m north-east", Holdup.bearing), or ""
+## past the steps: what a held-up guard gives up when the Operative already holds his Voiceprint.
+func intel_hint(from: Vector3) -> String:
+	var intel := _step_intel() if step < _steps().size() else null
+	return objective() + " · " + Holdup.bearing(intel.global_position - from) if intel else ""
+
+
 ## Where the Radar points now, as {pos: Vector3, target: bool}: the current step's intel, then each Target
 ## still to kill or carry, then Extraction.
 func radar_blips() -> Array[Dictionary]:

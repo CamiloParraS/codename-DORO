@@ -42,6 +42,7 @@ const TRIGGERS := {
 	"woken": ["downs", 15],             # a Neutralized guard woken by another
 	"spoof": ["spoofing", 20],          # a Spoofed transmission sent
 	"spoof_exposed": ["spoofing", 20],  # extra weight when it was exposed
+	"interrogated_voiceprint": ["spoofing", 10],  # a held-up guard gave up his Voiceprint
 }
 const NO_ALERT_POINTS := 50  # Stealth points for a Mission completed with no alert
 const TUG_SHARE := 0.3       # a side wins the tug of war leading by 30% of both sides' points
