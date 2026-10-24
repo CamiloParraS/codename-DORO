@@ -246,14 +246,14 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## A guard's bullet landed. Dying restores the last Checkpoint (MissionRun).
+## A guard's bullet landed. Dying opens the Game Over screen (MissionRun).
 func take_hit() -> void:
 	if health.dead():
 		return
 	health.hit()
 	model.react("hit")
 	if health.dead():
-		get_tree().call_group.call_deferred("checkpoint", "restore_checkpoint")
+		get_tree().call_group.call_deferred("checkpoint", "game_over")
 
 
 ## What a Checkpoint keeps of the Operative: where it stands and looks, its guns and Voiceprints.

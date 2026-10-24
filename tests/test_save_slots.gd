@@ -39,6 +39,23 @@ func test_a_slot_round_trips_a_record() -> void:
 	assert_eq(typeof(s.record.points.stealth), TYPE_INT, "JSON floats come back as ints")
 
 
+func test_cleared_missions_round_trip() -> void:
+	var missions := {"0": {pre = _record(0), best = {rank = "A", time = 312.5, kills = 0, alerts = 1}}}
+	SaveSlots.write(1, _record(), 1000, DIR, missions)
+	var back: Dictionary = SaveSlots.read(1, DIR).missions
+	assert_eq(back, missions)
+	assert_eq(typeof(back["0"].best.kills), TYPE_INT)
+
+
+func test_an_old_slot_file_loads_with_no_mission_record() -> void:
+	_write_raw(SaveSlots.path(0, DIR), JSON.stringify({record = _record(), saved = 5}))
+	var s := SaveSlots.read(0, DIR)
+	assert_eq(s.record, _record())
+	assert_eq(s.missions, {})
+	_write_raw(SaveSlots.path(0, DIR), JSON.stringify({record = _record(), saved = 5, missions = {"0": {pre = 3}, "1": "x"}}))
+	assert_eq(SaveSlots.read(0, DIR).missions, {}, "a malformed cleared Mission is dropped, the slot still loads")
+
+
 func test_missing_and_unreadable_files_are_empty_slots() -> void:
 	assert_eq(SaveSlots.read(0, DIR), {})
 	_write_raw(SaveSlots.path(0, DIR), "{not json")

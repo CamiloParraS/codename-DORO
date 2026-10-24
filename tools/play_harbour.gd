@@ -14,6 +14,7 @@ var _area: Node
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	await mission_1()
+	await continues()
 	await core()
 	print("play_harbour: %d failed" % fails)
 	get_tree().quit(1 if fails else 0)
@@ -235,6 +236,34 @@ func mission_1() -> void:
 	await frames(10)
 	check(run.ended, "the slipway's Extraction point ends the Mission")
 	get_tree().paused = false
+	area.queue_free()
+	await frames(5)
+
+
+## Rank vs Checkpoint (pw-feel 04): a death opens Game Over; CONTINUE rolls the tally back but the kill,
+## the Continue and the time stay on the Rank; a pause-menu restart is a Continue too.
+func continues() -> void:
+	print("--- Continue: Rank counters outlive a Checkpoint")
+	var area := await load_area("res://areas/harbour/harbour.tscn", 0)
+	var run: MissionRun = area.get_node("MissionRun")
+	var op: Node3D = area.get_node("Operative")
+	guard("GuardForeman").kill()
+	run.event("takedown")  # a Habit-relevant action
+	for i in Health.HITS_TO_DIE:
+		op.take_hit()
+	await frames(2)
+	var screen := area.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("continued"))
+	check(screen.size() == 1 and get_tree().paused, "death opens the Game Over screen over a paused Area")
+	var t := run.rank.seconds
+	await frames(30)
+	check(run.rank.seconds > t, "Rank time runs through Game Over")
+	screen[0].continued.emit()
+	await frames(2)
+	check(not get_tree().paused and not is_instance_valid(screen[0]), "CONTINUE closes it")
+	check(run.rank.kills == 1 and run.rank.continues == 1, "the kill and the Continue stay on the Rank (kills %d, continues %d)" % [run.rank.kills, run.rank.continues])
+	check(not run.tally.counts.has("kill") and not run.tally.counts.has("takedown"), "the tally (Habits, Lethality) rolls back: %s" % [run.tally.counts])
+	get_tree().call_group("checkpoint", "restore_checkpoint")  # the pause menu's restart
+	check(run.rank.continues == 2, "a pause-menu restart is a Continue")
 	area.queue_free()
 	await frames(5)
 

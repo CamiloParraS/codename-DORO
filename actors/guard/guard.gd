@@ -90,9 +90,13 @@ var _spot_for: Variant = null  # the last known point its reserved search spot i
 @onready var model: CharacterModel = $Model
 
 
+func _seed() -> void:
+	rng.seed = hash(name)
+
+
 func _ready() -> void:
 	add_to_group("guards")
-	(func() -> void: rng.seed = hash(name)).call_deferred()  # repeatable per guard, after the Area names it; tests reseed
+	_seed.call_deferred()  # repeatable per guard, after the Area names it; tests reseed (a method, so a guard freed first is skipped)
 	if target:
 		add_to_group("targets")
 	else:
