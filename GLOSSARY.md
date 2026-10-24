@@ -31,7 +31,7 @@ The grade (S, A, B or C) a Mission attempt earns from how it was played: time, A
 _Avoid_: Score, grade, rating
 
 **Continue**:
-Resuming from the last Checkpoint after dying, or by restarting from it in the pause menu. Unlimited, but each one counts against the Rank.
+Resuming from the last Checkpoint after dying (CONTINUE on the Game Over screen), or by restarting from it in the pause menu. Unlimited, but each one counts against the Rank.
 _Avoid_: Retry, respawn, lives
 
 **Mission Record**:
@@ -55,7 +55,7 @@ The scenery outside an Area's playable boundary (sea, cliffs, distant buildings,
 _Avoid_: Skybox, decoration, set dressing
 
 **Checkpoint**:
-A point inside a Mission, one per objective step, where the Operative resumes after dying. Everything since it, including Profile points and Lethality, is undone; the Rank is not.
+A point inside a Mission, one at its start and one per objective step, where the Operative resumes after dying. Everything since it, including Profile points and Lethality, is undone; the Rank is not.
 _Avoid_: Save, save point, respawn
 
 **Core**:

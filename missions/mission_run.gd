@@ -8,13 +8,19 @@
 ## before the Area reads it. Group "mission_plan": the F3 overlay reads record, plan and tally.
 ## Checkpoints (in memory only): one is taken once the Area is built, and one at each objective step.
 ## restore_checkpoint() (group "checkpoint": death, the pause screen) undoes everything
-## since, except that the dead stay dead and Countermeasures stay as deployed.
+## since, except that the dead stay dead and Countermeasures stay as deployed, and the Rank counters
+## (`rank`: kills, Alerts, found, Continues, time) run on: each restore is one Continue. Death opens the
+## Game Over screen (game_over()), whose CONTINUE restores.
+## replay: a Mission select replay, played against the record before its first clear; committing writes
+## only its Mission Record (Campaign.missions), never the slot's record.
 class_name MissionRun
 extends Node
 
 signal finished(new_record: Dictionary)
 
 const SCREEN := preload("res://ui/post_mission/post_mission.gd")
+const GAME_OVER := preload("res://ui/game_over/game_over.gd")
+const MENU := "res://ui/main_menu/main_menu.tscn"
 
 const LOG_PATH := "user://session_log.txt"  # rewritten at each Mission's end; the observer opens it
 
@@ -23,6 +29,9 @@ var record := Aigis.new_record()
 var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
 var return_to := ""                # scene to go back to once committed (Briefing, Free mode); "" stays
 var campaign := false              # committing moves Campaign.record on (never in Free mode)
+var replay := false                # a Mission select replay (campaign is false)
+var rank := Rank.new()             # run-wide: a Checkpoint never restores it
+var first_s := false               # set on commit: the slot's first S on this Mission (Requisition unlocks)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var step := 0                      # objective steps done
@@ -32,6 +41,7 @@ var _opened := false              # the opening call has been made
 var _down := {}
 var _known := {}
 var _checkpoint := {}
+var _game_over: Control
 
 
 func _ready() -> void:
@@ -88,6 +98,12 @@ func take_checkpoint() -> void:
 func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
 		return
+	rank.continues += 1
+	if _game_over:
+		_game_over.get_parent().queue_free()
+		_game_over = null
+		get_tree().paused = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	tally = copy(_checkpoint.tally)
 	step = _checkpoint.step
 	hints.new_step()
@@ -124,15 +140,41 @@ static func copy(o: Object) -> Object:
 	return c
 
 
+## The Operative died: the Game Over screen, over a paused tree (time still counts for Rank).
+func game_over() -> void:
+	if ended or _game_over:
+		return
+	_game_over = GAME_OVER.new()
+	_game_over.continues = rank.continues
+	_game_over.continued.connect(restore_checkpoint)
+	_game_over.quit.connect(func() -> void:
+		abort()
+		get_tree().paused = false
+		get_tree().change_scene_to_file(MENU))
+	_overlay(_game_over)
+	get_tree().paused = true
+
+
+func _overlay(screen: Control) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 2
+	layer.add_child(screen)
+	add_child(layer)
+
+
 func event(name_: String) -> void:
 	if not ended:
 		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
 		tally.add(name_)
+		if name_ == "kill" or name_ == "target_kill":
+			rank.kills += 1
 
 
 func _physics_process(delta: float) -> void:
 	if ended:
 		return
+	if not get_tree().paused or _game_over:
+		rank.seconds += delta
 	if not get_tree().paused:
 		_run_chain(delta)
 	for g in get_tree().get_nodes_in_group("guards"):
@@ -148,6 +190,7 @@ func _physics_process(delta: float) -> void:
 		_down[g] = d
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
+			rank.found += 1
 		_known[g] = g.known_down
 	tally.alert_active = AlertChain.area.phase == AlertChain.Phase.ALERT
 	if not get_tree().paused:
@@ -172,6 +215,7 @@ func _run_chain(delta: float) -> void:
 		&"alert", &"realert":
 			if ev == &"alert":
 				tally.add("alert")
+				rank.alerts += 1
 			var pos := chain.call_pos if ev == &"alert" or not spotter else spotter.alert.last_known
 			var who := str(chain.caller.name) if ev == &"alert" and chain.caller is Node else "HQ"
 			for g: Guard in guards:
@@ -321,16 +365,20 @@ func _on_extraction() -> void:
 		return
 	_finish()
 	var after := Aigis.complete_mission(record, tally.counts)
+	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
+	screen.rank = rank
+	screen.par = par
+	screen.rank_only = not campaign  # replays and Free mode: the Rank page only
 	screen.strip = MissionTally.strip(record, after)
-	screen.seconds = SessionLog.current.seconds()
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
-	var layer := CanvasLayer.new()
-	layer.layer = 2
-	layer.add_child(screen)
-	add_child(layer)
+	_overlay(screen)
 	get_tree().paused = true
 	screen.committed.connect(func() -> void:
+		if campaign or replay:
+			first_s = Campaign.commit_record(record.mission, record, rank.stats(par))
+		if replay:
+			save_slot()  # the Mission Record only: Campaign.record is untouched
 		record = after
 		if campaign:
 			Campaign.record = after
@@ -348,8 +396,8 @@ static func saves_on_commit(after: Dictionary) -> bool:
 
 
 func save_slot() -> void:
-	if campaign and Campaign.slot >= 0:
-		SaveSlots.write(Campaign.slot, record, int(Time.get_unix_time_from_system()))
+	if (campaign or replay) and Campaign.slot >= 0:
+		SaveSlots.write(Campaign.slot, Campaign.record, int(Time.get_unix_time_from_system()), SaveSlots.USER, Campaign.missions)
 
 
 ## Quit or abort: nothing is applied.

@@ -1,5 +1,6 @@
-## Main menu: Continue (the latest unfinished slot, hidden if none), New game, Load, Free mode,
-## Settings, Quit. New game and Load pick one of the three slots; overwriting asks first.
+## Main menu: Continue (the latest unfinished slot, hidden if none), New game, Load, Mission select,
+## Free mode, Settings, Quit. New game and Load pick one of the three slots; overwriting asks first.
+## Mission select picks a slot, then one of its cleared Missions (with its Mission Record) to replay.
 ## Loading a complete slot goes to the Briefing, which replays the finale and returns here.
 extends Control
 
@@ -34,6 +35,7 @@ func _main() -> void:
 		_button("CONTINUE", func() -> void: _play_slot(cont))
 	_button("NEW GAME", func() -> void: _slots(true))
 	_button("LOAD", func() -> void: _slots(false))
+	_button("MISSION SELECT", _select_slot)
 	_button("FREE MODE", func() -> void: get_tree().change_scene_to_file(FREE_MODE))
 	_button("SETTINGS", _settings)
 	_button("QUIT", func() -> void: get_tree().quit())
@@ -58,6 +60,33 @@ func _slots(new_game: bool) -> void:
 	_focus_first()
 
 
+func _select_slot() -> void:
+	_clear("MISSION SELECT: PICK A SLOT")
+	for i in SaveSlots.COUNT:
+		var s := SaveSlots.read(i)
+		var b := _button("%d  %s" % [i + 1, SaveSlots.label(s)], func() -> void: _missions(i, s))
+		b.disabled = s.is_empty() or s.missions.is_empty()  # a new slot has nothing to select
+	_button("BACK", _main)
+	_focus_first()
+
+
+func _missions(slot: int, s: Dictionary) -> void:
+	_clear("MISSION SELECT")
+	for k in Campaign.MISSIONS.size():
+		var m: Dictionary = s.missions.get(str(k), {})
+		if m.is_empty():
+			continue
+		var b: Dictionary = m.best
+		_button("%s  %s  %d:%02d  KILLS %d  ALERTS %d" % [Campaign.MISSIONS[k].title, b.rank, int(b.time) / 60, int(b.time) % 60, b.kills, b.alerts],
+			func() -> void:
+				Campaign.record = s.record
+				Campaign.missions = s.missions
+				Campaign.slot = slot
+				Campaign.play(get_tree(), m.pre.duplicate(true), scene_file_path, false, true))
+	_button("BACK", _select_slot)
+	_focus_first()
+
+
 func _new_game(slot: int) -> void:
 	Campaign.start()
 	Campaign.slot = slot
@@ -66,7 +95,9 @@ func _new_game(slot: int) -> void:
 
 
 func _play_slot(slot: int) -> void:
-	Campaign.record = SaveSlots.read(slot).record
+	var s := SaveSlots.read(slot)
+	Campaign.record = s.record
+	Campaign.missions = s.missions
 	Campaign.slot = slot
 	get_tree().change_scene_to_file(BRIEFING)
 
