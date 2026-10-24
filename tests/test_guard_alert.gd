@@ -441,3 +441,36 @@ func test_noise_more_than_1_s_into_suspicion_adds_035() -> void:
 	a.hear(SPOT, "footsteps")
 	assert_eq(a.hear(SPOT, "footsteps"), "heard footsteps again", "repeated noise escalates to a call")
 	assert_true(a.calling)
+
+
+func test_a_partner_drop_is_suspicion_then_a_radio_call_3_s_later() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.see_drop(SPOT, "Kostas"), "saw Kostas drop")
+	assert_eq(a.state, S.SUSPICION)
+	assert_eq(a.last_known, SPOT)
+	assert_eq(_run(a, 2.9, 0.0), [])
+	assert_false(a.calling)
+	assert_eq(_run(a, 0.15, 0.0), ["Kostas is down"])
+	assert_true(a.calling)
+
+
+func test_seeing_the_operative_during_the_3_s_is_an_ordinary_spotting() -> void:
+	var a := GuardAlert.new()
+	a.see_drop(SPOT, "Kostas")
+	assert_eq(_run(a, 1.0, 5.0), ["spotted you (test)"])
+	assert_true(a.calling)
+
+
+func test_a_second_drop_doesnt_restart_the_3_s() -> void:
+	var a := GuardAlert.new()
+	a.see_drop(SPOT, "Kostas")
+	_run(a, 2.0, 0.0)
+	a.see_drop(SPOT, "Nikos")
+	assert_eq(_run(a, 1.05, 0.0), ["Kostas is down"])
+
+
+func test_calling_or_alerted_guards_ignore_a_drop() -> void:
+	assert_eq(_alerted().see_drop(SPOT, "Kostas"), "")
+	var a := GuardAlert.new()
+	a.shot(SPOT)
+	assert_eq(a.see_drop(SPOT, "Kostas"), "")

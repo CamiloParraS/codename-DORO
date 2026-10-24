@@ -192,6 +192,10 @@ _Avoid_: Search mode, lost
 The 60 s phase after Evasion, after a stopped Radio call's local search, or after a guard finds a Neutralized partner or wakes up: guards are back on patrol, faster, more watchful and more numerous. A new trigger restarts the 60 s. It is not an Alert.
 _Avoid_: Wary, aftermath, yellow alert
 
+**Partner reaction**:
+A guard who sees another guard drop (darted, choked, killed) or kneel at gunpoint, in his front cone within 15 m, goes ? and calls the name, which sends the guards within 15 m to ?; 3 s later he goes ! and starts a Radio call.
+_Avoid_: Buddy check, witness
+
 **Hold-up**:
 Holding a guard at gunpoint from close behind until he surrenders, so he can be interrogated.
 _Avoid_: Stick-up, arrest, freeze

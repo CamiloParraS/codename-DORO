@@ -163,7 +163,12 @@ func mission_1() -> void:
 
 	# step 2: hold up the Foreman from behind and question him
 	var fm := guard("GuardForeman")
-	await place(op, fm.global_position + fm.global_basis.z * 4.0)
+	var obs := guard("GuardObserver")
+	for i in 60 * 60:  # the roof Observer sweeps lane W's north end: a Hold-up he sees frees the Foreman (Partner reaction)
+		if obs._flat_dist(fm.global_position) > GuardAlert.PARTNER_RANGE:
+			break
+		await get_tree().physics_frame
+	await place(op,fm.global_position + fm.global_basis.z * 4.0)
 	Input.action_press("aim")
 	for i in 20:
 		aim_at(op, fm)
