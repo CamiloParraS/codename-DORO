@@ -1,5 +1,6 @@
 ## A security camera (Stealth L1): sweeps from its mount, fills the guards' meter with its front cone
-## only, and radios an alert when the meter fills, with no suspicion step (GuardAlert.camera_tick).
+## only, and when the meter fills (no suspicion step, GuardAlert.camera_tick) starts a 1.5 s Radio call,
+## lamp blinking red, once. Leaving the cone or destroying the camera stops the call.
 ## The tranq does nothing to it: a dart just stops on its body. The rifle destroys it, and a destroyed
 ## camera counts as a missing guard once HQ polls exist (they read `destroyed`). Spawned by the Area on a camera mount,
 ## facing the way the mount faces.
@@ -16,6 +17,7 @@ var operative: Node3D
 var alert := GuardAlert.new()
 var last_reason := ""            # for the debug overlay
 var destroyed := false
+var seeing := false              # the Operative is in its cone (the AlertChain counts it as a sighting)
 var _t := 0.0
 var _yaw := 0.0
 var _head := Node3D.new()
@@ -54,7 +56,9 @@ func _ready() -> void:
 
 ## A rifle hit: goes dark and dead, silently.
 func destroy() -> void:
+	AlertChain.area.stop_call(self)
 	destroyed = true
+	seeing = false
 	alert = GuardAlert.new()
 	set_physics_process(false)
 	_lamp.albedo_color = Color.BLACK
@@ -85,13 +89,20 @@ func _physics_process(delta: float) -> void:
 	if not operative:
 		return
 	var rate := _sense()
+	seeing = rate[0] > 0.0
 	var why := alert.camera_tick(delta, rate[0], operative.global_position, rate[1])
 	if why != "":
 		last_reason = why
-	if alert.state == GuardAlert.State.ALERT and (why != "" or rate[0] > 0.0):
-		for g in get_tree().get_nodes_in_group("guards"):  # guards already alerted ignore it
-			g.on_radio(alert.last_known, name)
+	var chain := AlertChain.area
+	if alert.state == GuardAlert.State.ALERT and why != "":
+		chain.start_call(self, alert.last_known, AlertChain.CAMERA_CALL_TIME)  # once per full meter
+	elif chain.calling(self) and not seeing:
+		chain.stop_call(self)
+		alert.state = GuardAlert.State.PATROL  # the meter, still full, drains from here
+		last_reason = "camera lost you before it called"
 	var c: Color = LAMP[0].lerp(LAMP[1], alert.meter)
+	if chain.calling(self) and int(_t * 8.0) % 2 == 0:
+		c = Color.BLACK  # the red lamp blinks through the window
 	_lamp.albedo_color = c
 	_lamp.emission = c
 

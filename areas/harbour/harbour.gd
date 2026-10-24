@@ -33,6 +33,7 @@ func _ready() -> void:
 	_spawn_targets(guards)
 	if Deployment.pairs(deployed):
 		_pair_up(guards.filter(func(g: Guard) -> bool: return g.route.size() > 1))
+	_set_detours(guards)
 	$MissionRun.tally.add("spawned", guards.size())  # escorts included, Targets not (they add 3 each)  # the Lethality denominator (reinforcements add theirs)
 	var helmets := Deployment.helmets(deployed, guards.size())
 	for i in guards.size():
@@ -68,17 +69,30 @@ func _spawn_targets(guards: Array) -> void:
 	$MissionRun.tally.add("targets", names.size())
 
 
-## Reinforcements: a squad on every Alert and another every 30 s while it holds (Reinforcements), from
-## the entry nearest the Operative (the road, or the freighter's bridge for the deck), and takes back the
-## ones that return to it on patrol.
-func _process(delta: float) -> void:
-	var guards := get_tree().get_nodes_in_group("guards")
+## Caution detours: every guard of an Encounter gets the other route points of its Encounter's posts.
+func _set_detours(guards: Array) -> void:
+	var points := {}  # Encounter -> [Vector3]
+	for post: Marker3D in $GuardPosts.get_children():
+		var enc: int = post.get_meta("enc", 0)
+		if enc:
+			var at: Array = points.get_or_add(enc, [])
+			at.append(post.global_position)
+			for wp: Marker3D in post.get_children():
+				at.append(wp.global_position)
+	for g: Guard in guards:
+		for p: Vector3 in points.get(g.encounter, []):
+			if g.route.all(func(r: Vector3) -> bool: return r.distance_to(p) > Guard.REACHED * 2.0):
+				g.detours.append(p)
+
+
+## Reinforcements: a squad once per completed Radio call (Reinforcements), from the entry nearest the
+## Operative (the road, or the freighter's bridge for the deck); they leave when Caution ends.
+func _process(_delta: float) -> void:
 	var alive := get_tree().get_nodes_in_group("reinforcements").filter(func(g: Guard) -> bool: return not g.is_down()).size()
-	var n := _waves.tick(delta, guards.any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT),
-		alive, Deployment.squad_size($MissionRun.plan.deployed))
+	var n := _waves.tick(AlertChain.area.alerts, alive, Deployment.squad_size($MissionRun.plan.deployed))
 	if n > 0:
 		_send(n)
-	_dismiss_returned()
+	_dismiss()
 
 
 func _send(n: int) -> void:
@@ -109,13 +123,13 @@ func _entry_for(pos: Vector3) -> Marker3D:
 	return best
 
 
-## A reinforcement whose Alert is over walks its patrol back to its entry (its post) and leaves. Every way
-## out of an Alert (Evasion giving up, a believed all-units all clear) ends here.
-func _dismiss_returned() -> void:
+## Once Caution has ended, every reinforcement still standing leaves.
+## ponytail: they vanish where they stand; walk them out to the entry if it reads badly.
+func _dismiss() -> void:
+	if not Reinforcements.leaves(AlertChain.area.phase):
+		return
 	for g: Guard in get_tree().get_nodes_in_group("reinforcements"):
-		var entry := g.post.origin
-		var at_entry := Vector2(g.global_position.x - entry.x, g.global_position.z - entry.z).length() < Guard.REACHED * 2.0
-		if not g.is_down() and _waves.leaves(g.alert.state == GuardAlert.State.PATROL, at_entry):
+		if not g.is_down():
 			g.remove_from_group("guards")
 			g.queue_free()
 
@@ -192,6 +206,7 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 			g.stops.append(stop_of(wp))
 	g.operative = $Operative
 	g.holdup_answer = post.get_meta("holdup", "")
+	g.encounter = post.get_meta("enc", 0)
 	add_child(g)
 	g.global_transform = post.global_transform
 	g.post = post.global_transform

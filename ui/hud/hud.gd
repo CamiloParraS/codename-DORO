@@ -229,10 +229,10 @@ func _right() -> void:
 	_t(wc.position + Vector2(9, RESERVE_Y), "%02d" % gun.reserve, HudPalette.WHITE if gun.reloading() else HudPalette.CHROME_DIM)
 
 
-## The one container on the HUD, top centre. ALERT is a solid red chip; EVASION is an outlined chip with a
-## bar draining to the end of the search, so the two differ by shape and motion as well as hue.
+## The one container on the HUD, top centre. ALERT is a solid red chip; EVASION and CAUTION are outlined
+## chips with a bar draining to the phase's end, so the two differ by shape and motion as well as hue.
 func _phase() -> void:
-	var ph := HudModel.phase(get_tree().get_nodes_in_group("guards").map(func(g): return g.alert))
+	var ph := HudModel.phase(AlertChain.area)
 	if ph[0] != _phase_name:
 		_phase_name = ph[0]
 		_phase_age = 0.0
@@ -250,7 +250,7 @@ func _phase() -> void:
 	else:
 		draw_rect(r, Color(0, 0, 0, 0.5 * pop))
 		draw_rect(r, Color(HudPalette.EVASION, pop), false, 1.0)
-		var left: float = clampf(ph[1] / GuardAlert.SEARCH_TIME, 0.0, 1.0)
+		var left: float = clampf(ph[2], 0.0, 1.0)
 		draw_rect(Rect2(r.position.x, r.end.y + 2, r.size.x * left, 2), HudPalette.EVASION)
 	var col := Color.BLACK if alert else HudPalette.EVASION
 	draw_string(_font, r.position + Vector2(6, 15), ph[0], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
@@ -310,7 +310,8 @@ func _radar() -> void:
 			continue
 		var p := c + RadarModel.blip(RadarModel.flat(g.global_position) - origin, 2)
 		var face := RadarModel.facing(g.global_basis)
-		draw_circle(p, 2, HudPalette.CHROME)
+		var mid_call := AlertChain.area.calling(g) and int(Time.get_ticks_msec() / 150) % 2 == 0  # flashes red mid-call
+		draw_circle(p, 2, HudPalette.DANGER if mid_call else HudPalette.CHROME)
 		draw_line(p, p + face * 6, Color(HudPalette.CHROME, 0.8), 1.0)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	for b: Dictionary in (run.radar_blips() if run else []):

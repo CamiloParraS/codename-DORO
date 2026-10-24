@@ -30,7 +30,7 @@ func _alerted() -> GuardAlert:
 
 func _evading() -> GuardAlert:
 	var a := _alerted()
-	_run(a, GuardAlert.LOSE_TIME + 0.1, 0.0)
+	a.evade()
 	return a
 
 
@@ -65,12 +65,15 @@ func test_meter_drains_025_per_second() -> void:
 	assert_eq(a.meter, 0.0, "never below zero")
 
 
-func test_full_meter_alerts_straight_from_patrol() -> void:
+func test_a_full_meter_starts_a_radio_call_not_an_alert() -> void:
 	var a := GuardAlert.new()
 	var why := a.tick(1.0, 5.0, SPOT, "running, 3 m, in front", false)
-	assert_eq(a.state, S.ALERT)
+	assert_eq(a.state, S.SUSPICION, "only a completed call is an Alert")
+	assert_true(a.calling)
 	assert_eq(a.meter, 1.0)
 	assert_contains(why, "running, 3 m, in front")
+	assert_eq(_run(a, 5.0, 1.0), [], "calling: no more reasons until the chain decides")
+	assert_true(a.calling)
 
 
 func test_suspicion_fills_on_to_alert() -> void:
@@ -78,7 +81,7 @@ func test_suspicion_fills_on_to_alert() -> void:
 	a.tick(1.0, 0.4, SPOT, "test", false)
 	assert_eq(a.state, S.SUSPICION)
 	a.tick(1.0, 0.6, SPOT, "test", false)
-	assert_eq(a.state, S.ALERT)
+	assert_true(a.calling)
 
 
 func test_suspicion_looks_around_5s_at_the_spot() -> void:
@@ -102,30 +105,10 @@ func test_sighting_restarts_the_look_around() -> void:
 	assert_eq(a.state, S.SUSPICION, "the glimpse reset the 5 s")
 
 
-func test_alert_lost_after_3s_unseen() -> void:
-	var a := _alerted()
-	_run(a, GuardAlert.LOSE_TIME - 0.2, 0.0)
-	assert_eq(a.state, S.ALERT)
-	assert_eq(_run(a, 0.4, 0.0), ["lost sight of you, searching"])
-	assert_eq(a.state, S.EVASION)
 
 
-func test_sight_during_alert_resets_the_3s() -> void:
-	var a := _alerted()
-	_run(a, GuardAlert.LOSE_TIME - 0.5, 0.0)
-	a.tick(DT, 0.5, SPOT, "test", false)
-	_run(a, GuardAlert.LOSE_TIME - 0.5, 0.0)
-	assert_eq(a.state, S.ALERT)
 
 
-func test_evasion_searches_12s_at_the_spot() -> void:
-	var a := _evading()
-	assert_eq(_run(a, 20.0, 0.0, false), [], "the search only counts at the spot")
-	_run(a, GuardAlert.SEARCH_TIME - 0.2, 0.0, true)
-	assert_eq(a.state, S.EVASION)
-	assert_eq(_run(a, 0.4, 0.0, true), ["gave up the search"])
-	assert_eq(a.state, S.PATROL)
-	assert_eq(a.meter, 0.0)
 
 
 func test_sighting_during_evasion_realerts_at_once() -> void:
@@ -153,17 +136,10 @@ func test_radio_alerts_from_any_calm_state() -> void:
 
 func test_radio_to_an_alerted_guard_is_ignored() -> void:
 	var a := _alerted()
-	_run(a, GuardAlert.LOSE_TIME - 1.0, 0.0)
 	assert_eq(a.radio(Vector3(50, 0, 50), "Nikos"), "")
 	assert_eq(a.last_known, SPOT, "keeps chasing its own lead")
-	_run(a, 1.2, 0.0)
-	assert_eq(a.state, S.EVASION, "the radio didn't reset the clock")
 
 
-func test_radioed_alert_also_drops_after_3s() -> void:
-	var a := _alerted()
-	_run(a, GuardAlert.LOSE_TIME + 0.1, 0.0)
-	assert_eq(a.state, S.EVASION)
 
 
 func test_noise_never_alerts() -> void:
@@ -200,17 +176,6 @@ func test_quiet_frames_return_no_reason() -> void:
 	assert_eq(_run(a, 2.0, 1.0), [], "staying alerted while seen")
 
 
-func test_full_cycle() -> void:
-	var a := GuardAlert.new()
-	var reasons: Array[String] = []
-	reasons.append_array(_run(a, 0.5, 1.0))          # suspicion at 0.35
-	reasons.append_array(_run(a, 1.0, 1.0))          # alert at 1.0
-	reasons.append_array(_run(a, GuardAlert.LOSE_TIME + 0.2, 0.0))  # lost: evasion
-	reasons.append_array(_run(a, GuardAlert.SEARCH_TIME + 0.2, 0.0, true))  # search: patrol
-	assert_eq(reasons.size(), 4, str(reasons))
-	assert_eq(a.state, S.PATROL)
-	for r in reasons:
-		assert_ne(r, "")
 
 
 func _suspicious() -> GuardAlert:
@@ -238,13 +203,13 @@ func test_down_guard_sighting_redirects_the_search_and_alerted_guards_ignore_it(
 	assert_eq(a.last_known, SPOT)
 
 
-func test_checking_a_dead_guard_raises_the_alert() -> void:
+func test_checking_a_dead_guard_starts_a_radio_call() -> void:
 	var a := _suspicious()
 	assert_eq(a.check_down(true), "found a dead guard")
-	assert_eq(a.state, S.ALERT)
+	assert_true(a.calling)
 	a = _evading()
-	a.check_down(true)
-	assert_eq(a.state, S.ALERT)
+	assert_eq(a.check_down(true), "", "the hunt is on already")
+	assert_eq(a.state, S.EVASION)
 
 
 func test_checking_a_neutralized_guard_wakes_it_and_stays_suspicious() -> void:
@@ -364,17 +329,14 @@ func test_downs_l2_a_down_guard_in_sight_is_an_instant_alert() -> void:
 	assert_eq(a.see_down(1.0, 0.2, SPOT, true), "", "the meter still has to fill to suspicion")
 	assert_eq(a.state, S.PATROL)
 	assert_eq(a.see_down(1.0, 5.0, SPOT, true), "found a Down guard")
-	assert_eq(a.state, S.ALERT)
+	assert_true(a.calling, "a stoppable Radio call")
 	assert_eq(a.last_known, SPOT)
 
 
 func test_downs_l2_a_suspicious_guard_that_sees_a_body_alerts_without_walking_over() -> void:
 	var a := _suspicious()
 	assert_eq(a.see_down(DT, 1.0, SPOT, true), "found a Down guard")
-	assert_eq(a.state, S.ALERT)
-	a = _evading()
-	a.see_down(DT, 1.0, SPOT, true)
-	assert_eq(a.state, S.ALERT)
+	assert_true(a.calling)
 
 
 func test_downs_l2_leaves_alerted_guards_and_unseen_bodies_alone() -> void:
@@ -394,25 +356,18 @@ func test_flinch_fires_on_entering_alert_only_and_is_quick() -> void:
 	assert_true(GuardAlert.FLINCH < 0.5, "well under half a second")
 
 
-func test_a_loud_shot_goes_straight_to_alert_not_suspicion() -> void:
+func test_a_loud_shot_starts_a_radio_call_not_suspicion() -> void:
 	var a := GuardAlert.new()
 	assert_eq(a.shot(SPOT), "heard a gunshot")
-	assert_eq(a.state, S.ALERT)
+	assert_true(a.calling)
 	assert_eq(a.last_known, SPOT)
-	assert_eq(a.shot(SPOT), "", "already alerted")
+	assert_eq(a.shot(SPOT), "", "already calling")
 	var e := _evading()
-	e.shot(SPOT)
-	assert_eq(e.state, S.ALERT, "a searching guard too")
+	e.shot(Vector3(9, 0, 9))
+	assert_eq(e.state, S.EVASION, "a searching guard searches there")
+	assert_eq(e.last_known, Vector3(9, 0, 9))
 
 
-func test_alert_lasts_20_s_unseen_and_the_search_30_s() -> void:
-	assert_eq(GuardAlert.LOSE_TIME, 20.0)
-	assert_eq(GuardAlert.SEARCH_TIME, 30.0)
-	var a := _alerted()
-	_run(a, 19.5, 0.0)
-	assert_eq(a.state, S.ALERT)
-	_run(a, 1.0, 0.0)
-	assert_eq(a.state, S.EVASION)
 
 
 func test_a_camera_still_drops_its_alert_after_3_s() -> void:
@@ -423,3 +378,66 @@ func test_a_camera_still_drops_its_alert_after_3_s() -> void:
 	for i in 80:
 		a.camera_tick(DT, 0.0, SPOT, "test")
 	assert_eq(a.state, S.PATROL)
+
+
+func test_the_chain_moves_alert_to_evasion_and_back_to_patrol() -> void:
+	var a := _alerted()
+	assert_eq(_run(a, 60.0, 0.0), [], "a guard never drops its own Alert")
+	assert_eq(a.evade(), "lost sight of you, searching")
+	assert_eq(a.state, S.EVASION)
+	assert_eq(_run(a, 60.0, 0.0, true), [], "nor ends its own search")
+	assert_eq(a.give_up(), "gave up the search")
+	assert_eq(a.state, S.PATROL)
+	assert_eq(a.meter, 0.0)
+	assert_eq(GuardAlert.new().evade(), "", "only from ALERT")
+
+
+func test_a_responder_runs_over_and_its_search_ends_on_patrol() -> void:
+	var a := GuardAlert.new()
+	assert_eq(a.respond(SPOT, "Kostas", "Kostas"), "Kostas shouted, running over")
+	assert_eq(a.state, S.SUSPICION)
+	assert_true(a.rushing)
+	assert_eq(a.heard, "Kostas")
+	assert_eq(a.last_known, SPOT)
+	assert_eq(a.respond(SPOT, "Nikos", "Nikos"), "", "already responding")
+	assert_eq(_alerted().respond(SPOT, "Kostas", "Kostas"), "", "a hunting guard ignores it")
+	_run(a, GuardAlert.LOOK_TIME + 0.1, 0.0, true)
+	assert_eq(a.state, S.PATROL)
+	assert_false(a.rushing)
+
+
+func test_a_calling_guard_ignores_shouts_and_noise() -> void:
+	var a := GuardAlert.new()
+	a.tick(1.0, 5.0, SPOT, "test", false)
+	assert_eq(a.respond(Vector3(9, 0, 9), "Kostas", "Kostas"), "")
+	assert_eq(a.hear(Vector3(9, 0, 9), "a knock"), "")
+	assert_eq(a.last_known, SPOT)
+
+
+func test_continuous_noise_moves_the_look_point_but_never_restarts_the_look_around() -> void:
+	var a := GuardAlert.new()
+	a.hear(SPOT, "footsteps")
+	a.meter = 0.0  # so the noise fill can't start a call
+	var spot := SPOT
+	for i in roundi((GuardAlert.LOOK_TIME - 0.2) / DT):
+		a.tick(DT, 0.0, SPOT, "", true)
+		if i < 5:  # inside the 1 s grace: nothing added
+			spot = Vector3(i, 0, 0)
+			a.hear(spot, "footsteps")
+	assert_eq(a.last_known, spot, "the look point moved")
+	assert_eq(a.state, S.SUSPICION)
+	assert_eq(_run(a, 0.4, 0.0, true), ["found nothing, back to patrol"], "the 5 s ran on")
+
+
+func test_noise_more_than_1_s_into_suspicion_adds_035() -> void:
+	var a := GuardAlert.new()
+	a.hear(SPOT, "footsteps")
+	a.hear(SPOT, "footsteps")
+	assert_eq(a.meter, GuardAlert.SUSPECT_AT, "inside the grace")
+	_run(a, 1.2, 0.0)
+	var m := a.meter
+	a.hear(SPOT, "footsteps")
+	assert_true(is_equal_approx(a.meter, m + 0.35), "%f" % a.meter)
+	a.hear(SPOT, "footsteps")
+	assert_eq(a.hear(SPOT, "footsteps"), "heard footsteps again", "repeated noise escalates to a call")
+	assert_true(a.calling)

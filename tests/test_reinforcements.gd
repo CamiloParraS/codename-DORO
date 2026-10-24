@@ -1,42 +1,75 @@
 @tool
 extends McpTestSuite
 
-## Reinforcement waves, how alerted guards engage, and health during an Alert.
+## Reinforcements, how alerted guards engage, and health during an Alert.
 
 
 func suite_name() -> String:
 	return "reinforcements"
 
 
-func _run(r: Reinforcements, seconds: float, alerted: bool, alive := 0, squad := 3) -> int:
+## Runs a chain for `seconds` (seen: the Operative in sight), with r answering it; returns how many were sent.
+func _run(c: AlertChain, r: Reinforcements, seconds: float, seen := false, alive := 0, squad := 3) -> int:
 	var sent := 0
 	for i in roundi(seconds * 10):
-		sent += r.tick(0.1, alerted, alive, squad)
+		c.tick(0.1, seen)
+		sent += r.tick(c.alerts, alive, squad)
 	return sent
 
 
-func test_a_squad_at_once_then_another_every_30_s_of_alert() -> void:
+func test_one_squad_per_completed_call_however_long_the_alert_holds() -> void:
+	var c := AlertChain.new()
 	var r := Reinforcements.new()
-	assert_eq(_run(r, 0.1, true), 3, "at once")
-	assert_eq(_run(r, 29.0, true), 0)
-	assert_eq(_run(r, 1.5, true), 3, "the 30 s wave")
+	c.start_call("Kostas", Vector3.ZERO)
+	assert_eq(_run(c, r, 1.9), 0, "nobody while the call runs")
+	assert_eq(_run(c, r, 0.1), 3, "the call completed")
+	assert_eq(_run(c, r, 120.0, true), 0, "never a second squad for the same call")
+	assert_eq(_run(c, r, 21.0), 0, "Evasion sends nobody")
+	assert_eq(_run(c, r, 0.1, true), 0, "nor a sighting in Evasion: no new call")
 
 
-func test_none_in_evasion_and_the_wait_is_cancelled() -> void:
+func test_a_stopped_call_and_caution_send_nobody() -> void:
+	var c := AlertChain.new()
 	var r := Reinforcements.new()
-	_run(r, 0.1, true)
-	assert_eq(_run(r, 29.0, true), 0)
-	assert_eq(_run(r, 60.0, false), 0, "evasion sends nobody")
-	assert_eq(_run(r, 0.1, true), 3, "a new Alert starts over with a squad")
+	c.start_call("Kostas", Vector3.ZERO)
+	c.stop_call("Kostas")
+	c.caution()
+	assert_eq(_run(c, r, 70.0), 0)
 
 
-func test_a_wave_tops_up_to_the_cap_of_6() -> void:
+func test_a_new_completed_call_after_normal_sends_again() -> void:
+	var c := AlertChain.new()
 	var r := Reinforcements.new()
-	assert_eq(_run(r, 0.1, true, 4), 2)
-	assert_eq(_run(r, 0.1, false), 0)
-	assert_eq(_run(r, 0.1, true, 6), 0)
+	c.start_call("Kostas", Vector3.ZERO)
+	_run(c, r, 2.0)
+	_run(c, r, 115.0)
+	assert_eq(c.phase, AlertChain.Phase.NORMAL)
+	c.start_call("Nikos", Vector3.ZERO)
+	assert_eq(_run(c, r, 2.0), 3)
+
+
+func test_a_squad_tops_up_to_the_cap_of_6() -> void:
+	var c := AlertChain.new()
+	c.start_call("Kostas", Vector3.ZERO)
+	c.tick(2.0, false)
+	assert_eq(Reinforcements.new().tick(c.alerts, 4, 3), 2)
+	assert_eq(Reinforcements.new().tick(c.alerts, 6, 3), 0)
 	assert_eq(Deployment.squad_size({"combat": 3}), 5)
-	assert_eq(_run(Reinforcements.new(), 0.1, true, 3, 5), 3, "a squad of 5 is still held to the cap")
+	assert_eq(Reinforcements.new().tick(c.alerts, 3, 5), 3, "a squad of 5 is still held to the cap")
+
+
+func test_a_fresh_chain_after_a_checkpoint_restore_is_answered_again() -> void:
+	var r := Reinforcements.new()
+	assert_eq(r.tick(2, 0, 3), 3)
+	assert_eq(r.tick(0, 0, 3), 0)
+	assert_eq(r.tick(1, 0, 3), 3)
+
+
+func test_reinforcements_stay_through_evasion_and_caution_and_leave_in_normal() -> void:
+	assert_false(Reinforcements.leaves(AlertChain.Phase.ALERT))
+	assert_false(Reinforcements.leaves(AlertChain.Phase.EVASION))
+	assert_false(Reinforcements.leaves(AlertChain.Phase.CAUTION))
+	assert_true(Reinforcements.leaves(AlertChain.Phase.NORMAL))
 
 
 func test_a_guard_that_sees_from_beyond_10_m_holds_and_closer_it_pushes() -> void:
@@ -66,20 +99,6 @@ func test_a_new_alert_marks_a_guard_as_not_having_seen() -> void:
 	assert_true(a.saw)
 
 
-func test_a_reinforcement_leaves_at_the_entry_or_once_the_alert_has_long_passed() -> void:
-	var r := Reinforcements.new()
-	_run(r, 0.1, true)
-	assert_false(r.leaves(false, true), "still searching")
-	assert_true(r.leaves(true, true), "home on patrol")
-	assert_false(r.leaves(true, false))
-	_run(r, Reinforcements.LEAVE_AFTER - 1.0, false)
-	assert_false(r.leaves(false, false))
-	_run(r, 2.0, false)
-	assert_true(r.leaves(false, false), "never made it back to patrol")
-	_run(r, 0.1, true)
-	assert_false(r.leaves(false, false), "a new Alert resets the wait")
-
-
 func test_with_nobody_in_sight_for_5_s_only_the_nearest_pushes() -> void:
 	var squad := [
 		{pos = Vector3(30, 0, 0), unseen = 6.0, last_known = Vector3.ZERO},
@@ -102,14 +121,12 @@ func test_no_regeneration_during_an_alert() -> void:
 	assert_eq(h.life(), 1.0)
 
 
-func test_an_all_units_all_clear_ends_the_alert_and_cancels_waves() -> void:
+func test_an_all_units_all_clear_ends_the_alert() -> void:
 	var guards: Array[GuardAlert] = []
 	for i in 3:
 		var a := GuardAlert.new()
 		a.radio(Vector3.ZERO, "Kostas")
 		guards.append(a)
-	var r := Reinforcements.new()
-	assert_eq(_run(r, 0.1, true), 3)
 	guards[0].stand_down("Nikos")
 	assert_true(guards.any(func(a: GuardAlert) -> bool: return a.state == GuardAlert.State.ALERT), "chosen guards only: the Alert holds")
 	for a in guards:
@@ -117,4 +134,9 @@ func test_an_all_units_all_clear_ends_the_alert_and_cancels_waves() -> void:
 	var alerted := guards.any(func(a: GuardAlert) -> bool: return a.state == GuardAlert.State.ALERT)
 	assert_false(alerted)
 	assert_eq(guards[1].state, GuardAlert.State.PATROL, "straight to patrol, Evasion skipped")
-	assert_eq(_run(r, 60.0, alerted), 0, "the pending wave is cancelled")
+	var c := AlertChain.new()
+	c.start_call("Kostas", Vector3.ZERO)
+	c.tick(2.0, false)
+	c.stand_down()  # MissionRun: nobody hunts any more
+	assert_eq(c.phase, AlertChain.Phase.NORMAL)
+	assert_true(Reinforcements.leaves(c.phase), "the reinforcements leave at once")

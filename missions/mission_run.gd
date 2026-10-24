@@ -46,7 +46,18 @@ func _ready() -> void:
 		i.reached.connect(_on_intel.bind(i))
 	_show_intel.call_deferred()  # once the Extraction point has added its beacon
 	SessionLog.current.start_mission(record.mission)
+	_fresh_chain()
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
+
+
+## A new AlertChain for the Area, its search spots the Crawlspace mouths and Ladder feet.
+## ponytail: no "far side of cover" spots yet; add markers in the area builder if searches look thin.
+func _fresh_chain() -> void:
+	AlertChain.area = AlertChain.new()
+	for n: Node3D in get_parent().find_children("CarryBlock*", "StaticBody3D", true, false):  # one at each mouth
+		AlertChain.area.spots.append(n.global_position)
+	for l: Node3D in get_tree().get_nodes_in_group("ladders"):
+		AlertChain.area.spots.append(l.get_node("Bottom").global_position)
 
 
 ## Snapshot: the objective step, the Operative (position, ammo, Voiceprints), the tally (Habits and
@@ -100,6 +111,7 @@ func restore_checkpoint() -> void:
 	for c in get_tree().get_nodes_in_group("cameras"):
 		if c not in _checkpoint.destroyed:
 			c.repair()
+	_fresh_chain()  # after return_to_post(), whose wake would trigger Caution
 
 
 ## A deep copy of a node-free state object (a Gun, Voiceprints, the tally, Glaukopis).
@@ -121,9 +133,9 @@ func event(name_: String) -> void:
 func _physics_process(delta: float) -> void:
 	if ended:
 		return
-	var alert := false
+	if not get_tree().paused:
+		_run_chain(delta)
 	for g in get_tree().get_nodes_in_group("guards"):
-		alert = alert or g.alert.state == GuardAlert.State.ALERT
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
@@ -137,12 +149,42 @@ func _physics_process(delta: float) -> void:
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
 		_known[g] = g.known_down
-	tally.set_alert(alert)
+	tally.alert_active = AlertChain.area.phase == AlertChain.Phase.ALERT
 	if not get_tree().paused:
-		var alerting: bool = alert or get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.EVASION)
+		var alerting: bool = AlertChain.area.phase in [AlertChain.Phase.ALERT, AlertChain.Phase.EVASION]
 		SessionLog.current.tick(delta, alerting)
 		_guide(delta, alerting)
 	_teach(delta)
+
+
+## Ticks the AlertChain and passes its events to the guards. Only a completed call counts as an Alert
+## for Rank (the tally's "alert"); its Reinforcements are the Area's to send (chain.alerts).
+func _run_chain(delta: float) -> void:
+	var chain := AlertChain.area
+	var guards := get_tree().get_nodes_in_group("guards").filter(func(g: Guard) -> bool: return not g.is_down())
+	var spotter: Guard = null
+	for g: Guard in guards:
+		if g.seen_rate > 0.0:
+			spotter = g
+	var cam_sees := get_tree().get_nodes_in_group("cameras").any(func(c: SecurityCamera) -> bool: return c.seeing)
+	var ev := chain.tick(delta, spotter != null or cam_sees)
+	match ev:
+		&"alert", &"realert":
+			if ev == &"alert":
+				tally.add("alert")
+			var pos := chain.call_pos if ev == &"alert" or not spotter else spotter.alert.last_known
+			var who := str(chain.caller.name) if ev == &"alert" and chain.caller is Node else "HQ"
+			for g: Guard in guards:
+				g.on_radio(pos, who)
+		&"evasion":
+			for g: Guard in guards:
+				g.on_phase(AlertChain.Phase.EVASION)
+		&"caution":
+			for g: Guard in guards:
+				g.on_phase(AlertChain.Phase.CAUTION)
+	var hunting := guards.any(func(g: Guard) -> bool: return g.alert.state >= GuardAlert.State.ALERT)
+	if chain.phase in [AlertChain.Phase.ALERT, AlertChain.Phase.EVASION] and not hunting:
+		chain.stand_down()
 
 
 ## Metis's live calls: the opening call once the Operative spawns unseen, then a Hint when it is idle or wandering.

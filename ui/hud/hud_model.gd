@@ -4,21 +4,17 @@ class_name HudModel
 extends RefCounted
 
 
-## [name, seconds left] for the right strip: ALERT counts down to losing the Operative, EVASION to the
-## end of the search. Takes every guard's GuardAlert. ["", 0] when nobody is hunting.
-static func phase(alerts: Array) -> Array:
-	var alert_left := -1.0
-	var evasion_left := -1.0
-	for a: GuardAlert in alerts:
-		if a.state == GuardAlert.State.ALERT:
-			alert_left = maxf(alert_left, GuardAlert.LOSE_TIME - a.unseen)
-		elif a.state == GuardAlert.State.EVASION:
-			evasion_left = maxf(evasion_left, GuardAlert.SEARCH_TIME - a.timer)
-	if alert_left >= 0.0:
-		return ["ALERT", alert_left]
-	if evasion_left >= 0.0:
-		return ["EVASION", evasion_left]
-	return ["", 0.0]
+## [name, seconds left, fraction left] for the top chip, from the Area's AlertChain: ALERT counts down
+## to losing the Operative, EVASION to the end of the search, CAUTION to Normal. ["", 0, 0] in Normal.
+static func phase(chain: AlertChain) -> Array:
+	match chain.phase:
+		AlertChain.Phase.ALERT:
+			return ["ALERT", chain.left, chain.left / AlertChain.ALERT_TIME]
+		AlertChain.Phase.EVASION:
+			return ["EVASION", chain.left, chain.left / AlertChain.EVASION_TIME]
+		AlertChain.Phase.CAUTION:
+			return ["CAUTION", chain.left, chain.left / AlertChain.CAUTION_TIME]
+	return ["", 0.0, 0.0]
 
 
 ## Fill 0..1 of the arc a guard shows, or -1 for none: a filling meter, or 1 for a guard that sees you
