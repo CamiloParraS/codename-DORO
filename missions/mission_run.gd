@@ -162,6 +162,11 @@ func _overlay(screen: Control) -> void:
 	add_child(layer)
 
 
+## Guards (not Targets) Fultoned this run, as of the last Checkpoint restore: 07b's Recruits.
+func fultoned() -> int:
+	return int(tally.counts.get("fulton", 0))
+
+
 func event(name_: String) -> void:
 	if not ended:
 		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back

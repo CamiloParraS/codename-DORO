@@ -203,6 +203,11 @@ func mission_1() -> void:
 	fm.neutralize()
 	await place(op, fm.global_position + Vector3(1.0, 0, 0))
 	Input.action_press("fulton")
+	await secs(1.5)
+	Input.action_release("fulton")
+	await frames(2)
+	check(fm.is_in_group("guards") and op.fultons == 3, "releasing G early cancels and spends no balloon")
+	Input.action_press("fulton")
 	await secs(3.3)
 	Input.action_release("fulton")
 	check(not fm.is_in_group("guards") and op.fultons == 2 and run.tally.counts.get("fulton", 0) == 1, "Fulton in the open lifts the Foreman out (3 s, a balloon spent)")
@@ -224,9 +229,15 @@ func mission_1() -> void:
 	await secs(4.0)
 	Input.action_release("fulton")
 	check(ops.is_in_group("guards") and op.fultons == 2, "Fulton refused inside the Operations building")
+	var hq: HqRadio = radio.hq
+	check(hq.gone.has("GuardForeman") and hq._info(get_tree().get_nodes_in_group("guards")).any(func(i: Dictionary) -> bool: return i.name == "GuardForeman" and not i.can_answer),
+		"the Fultoned Foreman stays on HQ's poll roster, unable to answer")
 
 	# step 3: the lift panel, then out by the slipway
+	ops.global_position = at(22.8, 22.4)
 	await place(op, at(22, 22.4))
+	await frames(5)
+	check("hold E to enter the code" in op.prompt and "E carry" in op.prompt, "beside the lift panel and a body, both prompts show (%s)" % op.prompt)
 	Input.action_press("interact")
 	await secs(4.3)
 	Input.action_release("interact")
@@ -264,6 +275,12 @@ func continues() -> void:
 	check(not run.tally.counts.has("kill") and not run.tally.counts.has("takedown"), "the tally (Habits, Lethality) rolls back: %s" % [run.tally.counts])
 	get_tree().call_group("checkpoint", "restore_checkpoint")  # the pause menu's restart
 	check(run.rank.continues == 2, "a pause-menu restart is a Continue")
+	var y1 := guard("GuardY1")
+	y1.neutralize()
+	op.launch_fulton(y1)
+	check(op.fultons == op.get_script().FULTONS - 1 and run.fultoned() == 1, "a Fulton spends a balloon and counts a guard Fultoned")
+	get_tree().call_group("checkpoint", "restore_checkpoint")
+	check(op.fultons == op.get_script().FULTONS and run.fultoned() == 0, "a Continue returns to the Checkpoint's balloons and Fultoned count")
 	area.queue_free()
 	await frames(5)
 
@@ -287,5 +304,10 @@ func core() -> void:
 	await place(op, at(8, 32))
 	await frames(10)
 	check(run.step == 2 and area.get_node_or_null("LiftDoor") == null, "step 2: the lift opens")
+	var director: Guard = get_tree().get_nodes_in_group("targets")[0]
+	director.neutralize()
+	op.launch_fulton(director)
+	check(run._targets_left().is_empty() and not run.tally.counts.has("target_kill") and run.fultoned() == 0,
+		"a Fultoned Target is delivered, weighs nothing in Lethality and isn't a Recruit")
 	area.queue_free()
 	await frames(5)

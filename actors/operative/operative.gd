@@ -15,8 +15,7 @@ const CLIMB_SPEED := 1.8
 const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative carrying a body
 const NoFulton := preload("res://areas/no_fulton.gd")
 const FULTON_TIME := 3.0      # seconds of the Fulton key held, standing still, beside a Neutralized guard (pw-feel 05)
-const FULTONS := 3            # balloons per Mission
-const BALLOON_SEEN := 20.0    # metres from which a guard with a line of sight to the balloon comes to look
+const FULTONS := 3            # balloons per Mission, refilled at its start (the one place 07b's upgrade raises)
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
@@ -37,7 +36,7 @@ var throwing := false    # F held on the Magazine: the arc shows, release throws
 var health := Health.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var held_up: Guard       # the guard at gunpoint
-var fultons := FULTONS   # balloons left; spent ones stay spent through a Checkpoint, like the guards they lifted
+var fultons := FULTONS   # balloons left; a Continue returns to the Checkpoint's count
 var camera: Camera3D
 
 var _knock_left := 0.0
@@ -261,7 +260,7 @@ func snapshot() -> Dictionary:
 	return {
 		xform = global_transform, yaw = _yaw, pitch = _pitch, crouching = crouching,
 		tranq = MissionRun.copy(tranq), rifle = MissionRun.copy(rifle), rifle_in_hand = _gun == rifle,
-		voiceprints = MissionRun.copy(voiceprints), items = MissionRun.copy(items),
+		voiceprints = MissionRun.copy(voiceprints), items = MissionRun.copy(items), fultons = fultons,
 	}
 
 
@@ -290,6 +289,7 @@ func restore(s: Dictionary) -> void:
 	model.hold("rifle" if s.rifle_in_hand else "tranq")
 	voiceprints = MissionRun.copy(s.voiceprints)
 	items = MissionRun.copy(s.items)
+	fultons = s.fultons
 	items.scan_left = 0.0
 	throwing = false
 	health = Health.new()
@@ -459,27 +459,31 @@ func _update_prompt() -> void:
 		prompt = "E drop"
 	elif _choking:
 		prompt = "killing..." if _killing else "choking..."
-	elif held_up and not held_up.answered:
-		prompt = "questioning..." if _ask > 0.0 else "hold E question"
-	elif not held_up and _holdup_target():
-		prompt = "E hold up"
 	elif _fultoning:
 		prompt = "Fulton..."
+	elif held_up and not held_up.answered:
+		prompt = ("questioning..." if _ask > 0.0 else "hold E question") + _fulton_hint()
+	elif not held_up and _holdup_target():
+		prompt = "E hold up"
 	elif _nearest(true):
 		prompt = ("E carry · X kill" if _nearest(true, true) else "E carry") + _fulton_hint()
 	elif _nearest(false):
-		prompt = "E choke · X kill"
+		prompt = "E choke · X kill" + _fulton_hint()
 	elif _crate_near() and not items.crate_used:
 		prompt = "E resupply"
 	elif _ladder_near():
 		prompt = "E climb"
 	else:
 		prompt = ""
+	for c in get_tree().get_nodes_in_group("intel"):  # a hold-E console: its line beside the carry and Fulton ones
+		var line: String = c.prompt_for(self) if c.has_method("prompt_for") else ""
+		if line != "":
+			prompt = line if prompt == "" else prompt + " · " + line
 
 
-## What the Fulton key would do beside a Down guard.
+## What the Fulton key would do beside a Neutralized or kneeling guard.
 func _fulton_hint() -> String:
-	var g := _nearest(true, true)
+	var g := _fulton_target()
 	if not g or fultons <= 0:
 		return ""
 	return " · hold G Fulton" if NoFulton.open_sky(get_tree(), g.global_position) else " · no Fulton indoors"
@@ -523,9 +527,10 @@ func _aimed_guard() -> Guard:
 	return hit["collider"] if not hit.is_empty() and hit["collider"] is Guard else null
 
 
-## Fulton: hold the key FULTON_TIME s, standing still, beside a Neutralized (not dead) guard under open sky.
+## Fulton: hold the key FULTON_TIME s, standing still, beside a Neutralized or kneeling (not dead) guard under
+## open sky. Releasing, moving or the guard waking cancels and spends nothing.
 func _fulton(delta: float) -> void:
-	var g := _nearest(true, true) if Input.is_action_pressed("fulton") and not carrying and not moving and fultons > 0 else null
+	var g := _fulton_target() if Input.is_action_pressed("fulton") and not carrying and not moving and fultons > 0 else null
 	if not g or not NoFulton.open_sky(get_tree(), g.global_position):
 		_fultoning = null
 		return
@@ -537,17 +542,30 @@ func _fulton(delta: float) -> void:
 		launch_fulton(g)
 
 
-## The balloon goes up: the guard leaves the Area for good, and guards who can see the balloon come to look.
+## The balloon goes up (Guard.fulton): the guard leaves the Area for good but stays on HQ's poll roster. A
+## Target counts as delivered (out of "targets") and feeds no Habit or Lethality.
 func launch_fulton(g: Guard) -> void:
 	_fultoning = null
 	fultons -= 1
-	var at := g.global_position + Vector3.UP * 3.0
 	g.remove_from_group("guards")
+	g.remove_from_group("targets")
+	var radio := get_tree().get_first_node_in_group("radio")
+	if radio:
+		radio.hq.gone[String(g.name)] = g.global_position
 	g.fulton()
-	get_tree().call_group("mission_tally", "event", "fulton")
-	for o: Guard in get_tree().get_nodes_in_group("guards"):
-		if o.sees_point(at, BALLOON_SEEN):
-			o.on_noise(g.global_position, "a balloon")
+	get_tree().call_group("mission_tally", "event", "target_fulton" if g.target else "fulton")
+
+
+## The nearest guard in reach a balloon could take (Guard.can_be_fultoned).
+func _fulton_target() -> Guard:
+	var best: Guard
+	var best_d := TAKEDOWN_REACH
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		var d := _flat_dist(g)
+		if d <= best_d and g.can_be_fultoned():
+			best = g
+			best_d = d
+	return best
 
 
 func _crate_near() -> bool:

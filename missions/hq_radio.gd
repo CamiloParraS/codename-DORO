@@ -1,12 +1,14 @@
 ## HQ's side of the radio for one Mission (the Radio node holds this one): Downs L1 / L3 polls. About
 ## every 45 s HQ radios "<X>, report"; an up guard answers, a Down one is given 10 s, then the nearest
 ## up guard goes to its last position in suspicion. L3 polls the guard no other guard has seen longest.
+## A Fultoned guard stays on the roster (gone) as one who can't answer, so the Operative can Report in for him.
 class_name HqRadio
 extends Node
 
 const SIGHT_EVERY := 1.0   # Downs L3: seconds between the guards' sight checks on each other
 
 var poll := HqPoll.new()
+var gone := {}             # Fultoned guard name -> where he went up; a Checkpoint keeps it, like the Area does
 var _seen := {}            # guard name -> _now when another guard last saw it
 var _sight_clock := 0.0
 var _now := 0.0
@@ -62,9 +64,12 @@ func reset() -> void:
 
 
 func _info(guards: Array) -> Array:
-	return guards.map(func(g: Guard) -> Dictionary: return {
+	var out := guards.map(func(g: Guard) -> Dictionary: return {
 		name = String(g.name), pos = g.global_position, can_answer = g.can_radio(), dead = g.dead,
 		unseen = _now - _seen.get(String(g.name), 0.0), node = g})
+	for n: String in gone:
+		out.append({name = n, pos = gone[n], can_answer = false, dead = false, unseen = _now - _seen.get(n, 0.0), node = null})
+	return out
 
 
 func _by_name(info: Array, guard_name: String) -> Dictionary:

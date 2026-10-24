@@ -77,7 +77,7 @@ The mercenary team hired to investigate Palladion. The player is one of its memb
 _Avoid_: Squad, unit
 
 **Fulton**:
-A balloon the Operative clips to a Neutralized guard, in the open only, to lift him out of the Area for Metis. Guards who see it rising grow suspicious.
+A balloon the Operative clips to a Neutralized or held-up guard (never the dead), holding G for 3 s, in the open only, to lift him out of the Area for Metis. Three per Mission. Guards within 20 m who see it rising in its first 6 s grow suspicious. A Fultoned Target counts as delivered.
 _Avoid_: Extraction (that is the Extraction point), airlift, balloon
 
 **Recruit**:
