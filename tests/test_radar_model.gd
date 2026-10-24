@@ -1,0 +1,45 @@
+@tool
+extends McpTestSuite
+
+## Radar rules: north-up blip placement, range pinning, jamming, placement clear of the life bar.
+
+
+func suite_name() -> String:
+	return "radar_model"
+
+
+func test_north_up_world_minus_z_is_up() -> void:
+	assert_eq(RadarModel.unit(Vector2(0, -15)), Vector2(0, -0.5))
+	assert_eq(RadarModel.unit(Vector2(30, 0)), Vector2(1, 0))
+
+
+func test_beyond_range_pins_to_the_edge_keeping_direction() -> void:
+	assert_eq(RadarModel.unit(Vector2(60, -30)), Vector2(1, -0.5))
+	assert_eq(RadarModel.unit(Vector2(0, 300)), Vector2(0, 1))
+
+
+func test_a_far_blip_sits_inside_the_border_on_the_edge() -> void:
+	assert_eq(RadarModel.blip(Vector2(500, 0), 2.0), Vector2(RadarModel.HALF - 2.0, 0))
+	assert_eq(RadarModel.blip(Vector2(0, -15), 4.0), Vector2(0, -0.5 * (RadarModel.HALF - 4.0)))
+
+
+func test_flat_and_facing_drop_height() -> void:
+	assert_eq(RadarModel.flat(Vector3(3, 9, -4)), Vector2(3, -4))
+	assert_eq(RadarModel.facing(Basis.IDENTITY), Vector2(0, -1), "-Z is north, up the screen")
+	assert_eq(RadarModel.facing(Basis(Vector3.UP, PI / 2)).snapped(Vector2(0.01, 0.01)), Vector2(-1, 0))
+
+
+func test_alert_and_evasion_jam_the_radar() -> void:
+	assert_true(RadarModel.jammed("ALERT"))
+	assert_true(RadarModel.jammed("EVASION"))
+	assert_false(RadarModel.jammed(""))
+
+
+func test_radar_clear_of_life_bar_and_its_label() -> void:
+	var canvas := Vector2(640, 360)
+	var r := RadarModel.rect(canvas)
+	var life_bar := Rect2(10, canvas.y - 104, 7, 86)
+	var label := Rect2(20, canvas.y - 104, 14, 86)  # OPERATIVE, rotated, from the bar's foot
+	assert_false(r.intersects(life_bar))
+	assert_false(r.intersects(label))
+	assert_true(Rect2(Vector2.ZERO, canvas).encloses(r))

@@ -46,6 +46,40 @@ func test_a_guard_that_sees_from_beyond_10_m_holds_and_closer_it_pushes() -> voi
 	assert_false(Engage.holds(0, true, Health.RANGE + 5.0, squad), "too far to shoot: close in")
 
 
+func test_a_fresh_reinforcement_does_not_stop_the_squad_pushing() -> void:
+	var squad := [
+		{pos = Vector3(30, 0, 0), unseen = 9.0, last_known = Vector3.ZERO},
+		{pos = Vector3(5, 0, 0), unseen = 9.0, last_known = Vector3.ZERO},
+		{pos = Vector3(60, 0, 0), unseen = 0.0, last_known = Vector3.ZERO, fresh = true},
+	]
+	assert_false(Engage.holds(1, false, 0.0, squad), "the nearest still pushes")
+	assert_true(Engage.holds(0, false, 0.0, squad))
+	squad[2].fresh = false
+	assert_false(Engage.holds(0, false, 0.0, squad), "one that really saw it recently: everyone closes")
+
+
+func test_a_new_alert_marks_a_guard_as_not_having_seen() -> void:
+	var a := GuardAlert.new()
+	a.radio(Vector3.ZERO, "x")
+	assert_false(a.saw)
+	a.tick(0.1, 1.0, Vector3.ZERO, "t", false)
+	assert_true(a.saw)
+
+
+func test_a_reinforcement_leaves_at_the_entry_or_once_the_alert_has_long_passed() -> void:
+	var r := Reinforcements.new()
+	_run(r, 0.1, true)
+	assert_false(r.leaves(false, true), "still searching")
+	assert_true(r.leaves(true, true), "home on patrol")
+	assert_false(r.leaves(true, false))
+	_run(r, Reinforcements.LEAVE_AFTER - 1.0, false)
+	assert_false(r.leaves(false, false))
+	_run(r, 2.0, false)
+	assert_true(r.leaves(false, false), "never made it back to patrol")
+	_run(r, 0.1, true)
+	assert_false(r.leaves(false, false), "a new Alert resets the wait")
+
+
 func test_with_nobody_in_sight_for_5_s_only_the_nearest_pushes() -> void:
 	var squad := [
 		{pos = Vector3(30, 0, 0), unseen = 6.0, last_known = Vector3.ZERO},

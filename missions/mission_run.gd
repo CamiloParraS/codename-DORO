@@ -16,6 +16,8 @@ signal finished(new_record: Dictionary)
 
 const SCREEN := preload("res://ui/post_mission/post_mission.gd")
 
+const LOG_PATH := "user://session_log.txt"  # rewritten at each Mission's end; the observer opens it
+
 var tally := MissionTally.new()
 var record := Aigis.new_record()
 var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
@@ -25,6 +27,8 @@ var telegraphs_seen := {}          # Telegraph kinds Metis has already called th
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var step := 0                      # objective steps done
 var ended := false
+var hints := HintTracker.new()     # Metis's Hints for the current step
+var _opened := false              # the opening call has been made
 var _down := {}
 var _known := {}
 var _checkpoint := {}
@@ -41,6 +45,7 @@ func _ready() -> void:
 	for i in get_tree().get_nodes_in_group("intel"):
 		i.reached.connect(_on_intel.bind(i))
 	_show_intel.call_deferred()  # once the Extraction point has added its beacon
+	SessionLog.current.start_mission(record.mission)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
@@ -49,6 +54,7 @@ func _ready() -> void:
 ## dead and where they lie, and which cameras are destroyed.
 ## The Operative's snapshot keeps its Scanner charges and Magazines.
 func take_checkpoint() -> void:
+	SessionLog.current.progress()
 	var dead := {}
 	for g in get_tree().get_nodes_in_group("guards"):
 		if g.dead:  # a body on the shoulder is kept as dropped where the Operative stands
@@ -73,6 +79,7 @@ func restore_checkpoint() -> void:
 		return
 	tally = copy(_checkpoint.tally)
 	step = _checkpoint.step
+	hints.new_step()
 	_show_intel()
 	var radio := get_tree().get_first_node_in_group("radio")
 	if radio:
@@ -107,6 +114,7 @@ static func copy(o: Object) -> Object:
 
 func event(name_: String) -> void:
 	if not ended:
+		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
 		tally.add(name_)
 
 
@@ -130,7 +138,43 @@ func _physics_process(delta: float) -> void:
 			tally.add("down_found")
 		_known[g] = g.known_down
 	tally.set_alert(alert)
+	if not get_tree().paused:
+		var alerting: bool = alert or get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.EVASION)
+		SessionLog.current.tick(delta, alerting)
+		_guide(delta, alerting)
 	_teach(delta)
+
+
+## Metis's live calls: the opening call once the Operative spawns unseen, then a Hint when it is idle or wandering.
+func _guide(delta: float, alerting: bool) -> void:
+	var op: Node3D = get_tree().get_first_node_in_group("operative")
+	if not op:
+		return
+	if not _opened:
+		if not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
+			_opened = true
+			get_tree().call_group("codec_live", "live_call", Campaign.MISSIONS[record.mission].open)
+		return
+	if step >= _steps().size():
+		return
+	var intel := _step_intel()
+	var dist := _flat(op, intel) if intel else INF
+	_hint(hints.update(delta, SessionLog.current.idle_seconds(), dist, alerting))
+
+
+## "Request hint" in the radio menu: the next tier now, or Metis says there is no more.
+func request_hint() -> void:
+	if ended or step >= _steps().size():
+		return
+	var tier := hints.request()
+	if tier == 0:
+		get_tree().call_group("radio_log", "say", "METIS", tr("hint.none"))
+	_hint(tier)
+
+
+func _hint(tier: int) -> void:
+	if tier > 0:
+		get_tree().call_group("codec_live", "live_call", [["analyst", _steps()[step].hint[tier - 1]]])
 
 
 ## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time each verb matters.
@@ -159,8 +203,25 @@ static func _flat(a: Node3D, b: Node3D) -> float:
 ## What to do now, for the pause screen: the steps, then the Targets, then Extraction.
 func objective() -> String:
 	if step >= _steps().size() and not _targets_left().is_empty():
-		return "KILL OR CARRY OUT: " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
+		return tr("objective.targets") + ": " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
 	return Campaign.objective(record.mission, step)
+
+
+## Where the Radar points now, as {pos: Vector3, target: bool}: the current step's intel, then each Target
+## still to kill or carry, then Extraction.
+func radar_blips() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if step < _steps().size():
+		var intel := _step_intel()
+		if intel:
+			out.append({pos = intel.global_position, target = false})
+	elif not _targets_left().is_empty():
+		for t: Guard in _targets_left():
+			out.append({pos = t.global_position, target = true})
+	else:
+		for e: Node3D in get_tree().get_nodes_in_group("extraction"):
+			out.append({pos = e.global_position, target = false})
+	return out
 
 
 ## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count,
@@ -176,6 +237,14 @@ func _at_extraction(t: Guard) -> bool:
 
 func _say_objective() -> void:
 	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
+
+
+## The current step's intel pickup in the Area, or null.
+func _step_intel() -> Node3D:
+	for i: Node3D in get_tree().get_nodes_in_group("intel"):
+		if i.name == _steps()[step].intel:
+			return i
+	return null
 
 
 func _steps() -> Array:
@@ -199,6 +268,7 @@ func _on_intel(intel: Node) -> void:
 		return
 	get_tree().call_group("codec_live", "live_call", _steps()[step].call)
 	step += 1
+	hints.new_step()
 	_show_intel()
 	_say_objective()
 	take_checkpoint()
@@ -207,10 +277,11 @@ func _on_intel(intel: Node) -> void:
 func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
-	ended = true
+	_finish()
 	var after := Aigis.complete_mission(record, tally.counts)
 	var screen := SCREEN.new()
 	screen.strip = MissionTally.strip(record, after)
+	screen.seconds = SessionLog.current.seconds()
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -241,5 +312,18 @@ func save_slot() -> void:
 
 ## Quit or abort: nothing is applied.
 func abort() -> void:
-	ended = true
+	_finish()
 	tally = MissionTally.new()
+
+
+## The Mission is over: no more play, and the session log is on disk.
+func _finish() -> void:
+	ended = true
+	SessionLog.current.finish_mission()
+	SessionLog.current.write(LOG_PATH)
+
+
+## Quitting (or leaving the scene) mid-Mission still writes the log.
+func _exit_tree() -> void:
+	if not ended:
+		_finish()

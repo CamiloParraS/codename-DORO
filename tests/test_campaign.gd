@@ -37,6 +37,7 @@ func test_every_intel_step_is_in_its_area() -> void:
 
 
 func test_objective_is_the_current_step_then_extraction() -> void:
+	TranslationServer.set_locale("en")
 	assert_eq(Campaign.objective(0, 0), "LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE")
 	assert_eq(Campaign.objective(0, 1), "HOLD UP THE YARD FOREMAN FOR THE LIFT CODE")
 	assert_eq(Campaign.objective(0, 2), "ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING")

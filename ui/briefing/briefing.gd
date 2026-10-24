@@ -67,7 +67,7 @@ func _build_lines() -> Array:
 	lines = [m.title, "", "BRIEFING"]
 	lines.append_array(plan.briefing_keys)
 	lines.append_array(["", "OBJECTIVES"])
-	lines.append_array(m.steps.map(func(s: Dictionary) -> String: return "- " + s.objective))
+	lines.append_array(m.steps.map(func(s: Dictionary) -> String: return "- " + tr(s.objective)))
 	lines.append("- " + Campaign.objective(record.mission, m.steps.size()))
 	return lines
 

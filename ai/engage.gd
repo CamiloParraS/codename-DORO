@@ -9,7 +9,8 @@ const PUSH_AFTER := 5.0
 
 
 ## Does the guard `me` (an index into `squad`) hold its ground. squad: one {pos, unseen, last_known} per
-## alerted guard, unseen being its seconds without sight (0 while it sees). dist: flat metres to the
+## alerted guard, unseen being its seconds without sight (0 while it sees); `fresh` (optional) marks one that
+## has not seen the Operative yet (a new reinforcement), which says nothing about who has sight. dist: flat metres to the
 ## Operative, used only when `sees`.
 static func holds(me: int, sees: bool, dist: float, squad: Array) -> bool:
 	if sees:
@@ -17,7 +18,7 @@ static func holds(me: int, sees: bool, dist: float, squad: Array) -> bool:
 	var gap := INF
 	var ref := Vector3.ZERO
 	for s: Dictionary in squad:
-		if s.unseen < gap:
+		if not s.get("fresh", false) and s.unseen < gap:
 			gap = s.unseen
 			ref = s.last_known
 	if gap < PUSH_AFTER:
