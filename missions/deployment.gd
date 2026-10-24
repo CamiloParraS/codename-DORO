@@ -80,9 +80,9 @@ static func pairs(deployed: Dictionary) -> bool:
 	return int(deployed.get("takedowns", 0)) >= 2
 
 
-## Takedowns L3: the choke takes 3 s and is heard within 6 m (the kill stays 0.5 s).
+## Takedowns L3: the choke takes 1.8 s (1.2 s before) and is heard within 6 m (the kill stays 0.5 s).
 static func choke_time(deployed: Dictionary) -> float:
-	return 3.0 if int(deployed.get("takedowns", 0)) >= 3 else 2.0
+	return 1.8 if int(deployed.get("takedowns", 0)) >= 3 else 1.2
 
 
 static func choke_noise(deployed: Dictionary) -> float:

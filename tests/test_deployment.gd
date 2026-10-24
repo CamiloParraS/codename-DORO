@@ -33,7 +33,7 @@ func test_custom_reaches_the_steps_no_preset_deploys() -> void:
 	var r := Aigis.custom_record({"takedowns": 3, "downs": 3}, NAN, CORE)
 	assert_true(is_nan(Aigis.lethality_ratio(r)))
 	var d: Dictionary = Aigis.plan_mission(r.points, Aigis.lethality_ratio(r), CORE).deployed
-	assert_eq(Deployment.choke_time(d), 3.0, "Takedowns L3")
+	assert_eq(Deployment.choke_time(d), 1.8, "Takedowns L3")
 	assert_true(Deployment.instant_alert_on_down(d), "Downs L2")
 	assert_eq(Deployment.hq_poll(d), "targeted", "Downs L3")
 
@@ -113,9 +113,9 @@ func test_takedown_ladder_steps() -> void:
 	assert_true(Deployment.turn_around_every({"takedowns": 1}) > 0.0)
 	assert_false(Deployment.pairs({"takedowns": 1}))
 	assert_true(Deployment.pairs({"takedowns": 2}))
-	assert_eq(Deployment.choke_time({"takedowns": 2}), 2.0)
+	assert_eq(Deployment.choke_time({"takedowns": 2}), 1.2)
 	assert_eq(Deployment.choke_noise({"takedowns": 2}), 0.0)
-	assert_eq(Deployment.choke_time({"takedowns": 3}), 3.0)
+	assert_eq(Deployment.choke_time({"takedowns": 3}), 1.8)
 	assert_eq(Deployment.choke_noise({"takedowns": 3}), 6.0)
 
 
