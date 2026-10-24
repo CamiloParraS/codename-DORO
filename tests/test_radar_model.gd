@@ -35,6 +35,33 @@ func test_alert_and_evasion_jam_the_radar() -> void:
 	assert_false(RadarModel.jammed(""))
 
 
+func test_only_alert_and_evasion_jam_by_the_chain_phase() -> void:
+	var chain := AlertChain.new()
+	assert_false(RadarModel.jammed(HudModel.phase(chain)[0]))
+	chain.start_call("g", Vector3.ZERO)
+	assert_false(RadarModel.jammed(HudModel.phase(chain)[0]), "a pending Radio call leaves it on")
+	chain.stop_call("g")
+	chain.caution()
+	assert_false(RadarModel.jammed(HudModel.phase(chain)[0]), "Caution leaves it on")
+	chain.start_call("g", Vector3.ZERO)
+	chain.tick(AlertChain.CALL_TIME + 0.1, false)
+	assert_true(RadarModel.jammed(HudModel.phase(chain)[0]), "ALERT")
+	chain.tick(AlertChain.ALERT_TIME + 0.1, false)
+	assert_true(RadarModel.jammed(HudModel.phase(chain)[0]), "EVASION")
+	chain.tick(AlertChain.EVASION_TIME + 0.1, false)
+	assert_false(RadarModel.jammed(HudModel.phase(chain)[0]), "Caution after Evasion")
+
+
+func test_a_pending_call_flashes_the_blip_and_stops_with_the_call() -> void:
+	var chain := AlertChain.new()
+	chain.start_call("g", Vector3.ZERO)
+	assert_true(RadarModel.call_flash(chain.calling("g"), 0))
+	assert_false(RadarModel.call_flash(chain.calling("g"), 150), "off half of the cycle")
+	chain.stop_call("g")
+	assert_false(RadarModel.call_flash(chain.calling("g"), 0), "no flash once stopped")
+	assert_false(RadarModel.call_flash(chain.calling("camera"), 0), "only callers flash")
+
+
 func test_radar_clear_of_life_bar_and_its_label() -> void:
 	var canvas := Vector2(640, 360)
 	var r := RadarModel.rect(canvas)

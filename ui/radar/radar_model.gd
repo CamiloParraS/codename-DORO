@@ -33,6 +33,11 @@ static func jammed(phase: String) -> bool:
 	return phase == "ALERT" or phase == "EVASION"
 
 
+## A guard with a pending Radio call flashes red on the Radar (150 ms on/off); cameras have no blip.
+static func call_flash(calling: bool, ticks_msec: int) -> bool:
+	return calling and (ticks_msec / 150) % 2 == 0
+
+
 ## Bottom-left, right of the life bar and its label.
 static func rect(canvas: Vector2) -> Rect2:
 	return Rect2(MARGIN, canvas.y - 18 - HALF * 2, HALF * 2, HALF * 2)
