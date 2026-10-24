@@ -4,6 +4,13 @@ class_name Locomotion
 const RUN := 4.8
 const WALK := 1.9
 const CROUCH := 1.3
+## Speed while gripping a guard in a choke: half a walk, about 1 m/s.
+const CHOKE_SPEED := WALK * 0.5
+## Hitscan sway in degrees (the crosshair doesn't move) and the seconds to settle after stopping.
+const SWAY_MOVING := 0.6
+const SWAY_STILL := 0.25
+const SWAY_CROUCHED := 0.1
+const SWAY_SETTLE := 0.8
 const PITCH_MIN := -1.1
 const PITCH_MAX := 0.5
 ## Velocity easing, in 1/s: a run takes ~0.25 s to reach full speed; the sharper
@@ -14,8 +21,17 @@ const SLOW_DOWN := 20.0
 const TURN_RATE := 8.0
 
 
-static func speed(crouching: bool, walking: bool) -> float:
-	return CROUCH if crouching else (WALK if walking else RUN)
+## Aiming slows a standing Operative to walk speed; crouched keeps CROUCH.
+static func speed(crouching: bool, walking: bool, aiming := false) -> float:
+	return CROUCH if crouching else (WALK if walking or aiming else RUN)
+
+
+## Gun sway in degrees: full while moving, settling linearly over SWAY_SETTLE to the still value.
+static func sway(current: float, moving: bool, crouching: bool, delta: float) -> float:
+	if moving:
+		return SWAY_MOVING
+	var target := SWAY_CROUCHED if crouching else SWAY_STILL
+	return move_toward(current, target, (SWAY_MOVING - target) / SWAY_SETTLE * delta)
 
 
 ## Returns the new (yaw, pitch) after a mouse delta. `sens` is radians per pixel.

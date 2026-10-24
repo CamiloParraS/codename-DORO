@@ -64,3 +64,35 @@ func test_move_converges_on_the_target() -> void:
 	for i in 60:  # one second: no drift, no overshoot
 		v = Locomotion.move(v, Vector2.DOWN * Locomotion.CROUCH, 1.0 / 60.0)
 	assert_true(v.distance_to(Vector2.DOWN * Locomotion.CROUCH) < 0.01)
+
+
+func test_aiming_caps_standing_at_walk_and_crouched_keeps_crouch() -> void:
+	assert_eq(Locomotion.speed(false, false, true), 1.9)
+	assert_eq(Locomotion.speed(true, false, true), 1.3)
+	assert_eq(Locomotion.speed(false, false, false), Locomotion.RUN, "releasing RMB restores the run")
+
+
+func test_choke_moves_at_half_walk() -> void:
+	assert_true(is_equal_approx(Locomotion.CHOKE_SPEED, 0.95))
+
+
+func test_sway_targets_by_stance() -> void:
+	assert_eq(Locomotion.sway(0.0, true, false, 0.016), 0.6, "moving resets to full")
+	assert_eq(Locomotion.sway(0.0, true, true, 0.016), 0.6)
+	var s := 0.6
+	for i in 100:  # 1 s of standing still
+		s = Locomotion.sway(s, false, false, 0.01)
+	assert_true(is_equal_approx(s, 0.25))
+	for i in 100:
+		s = Locomotion.sway(s, false, true, 0.01)
+	assert_true(is_equal_approx(s, 0.1), "crouched still")
+
+
+func test_sway_settles_over_point_eight_seconds() -> void:
+	var s := 0.6
+	for i in 40:  # 0.4 s: about halfway
+		s = Locomotion.sway(s, false, false, 0.01)
+	assert_true(s > 0.25 and s < 0.6)
+	for i in 40:  # 0.8 s total
+		s = Locomotion.sway(s, false, false, 0.01)
+	assert_true(is_equal_approx(s, 0.25))
