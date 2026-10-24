@@ -310,7 +310,7 @@ func _radar() -> void:
 			continue
 		var p := c + RadarModel.blip(RadarModel.flat(g.global_position) - origin, 2)
 		var face := RadarModel.facing(g.global_basis)
-		var mid_call := AlertChain.area.calling(g) and int(Time.get_ticks_msec() / 150) % 2 == 0  # flashes red mid-call
+		var mid_call := RadarModel.call_flash(AlertChain.area.calling(g), Time.get_ticks_msec())  # flashes red mid-call
 		draw_circle(p, 2, HudPalette.DANGER if mid_call else HudPalette.CHROME)
 		draw_line(p, p + face * 6, Color(HudPalette.CHROME, 0.8), 1.0)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
