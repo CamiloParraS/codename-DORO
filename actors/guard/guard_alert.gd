@@ -16,6 +16,8 @@ const NOISE_FILL := 0.35
 const CAMERA_LOSE_TIME := 3.0  # a camera drops its alert this quickly: it never searches
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
+const PARTNER_RANGE := 15.0  # a guard seen dropping within this, in the front cone; the name call carries as far
+const PARTNER_DELAY := 3.0   # seconds from a partner's "?" to his "!"
 const FLINCH := 0.35       # seconds of the startle on going "!"; cosmetic, never holds up the response
 const ORDER_REASONS := {all_clear = "%s called all clear", go = "%s sent it to check a place", hold = "%s told it to hold position"}
 
@@ -29,6 +31,8 @@ var saw := false           # has seen the Operative since entering ALERT
 var calling := false       # went "!" to radio it in: SUSPICION, standing still, until the chain decides
 var rushing := false       # a responder to a shout, running to the sighting point (SUSPICION)
 var heard: Variant = null  # the spotter whose shout it answers
+var partner := ""          # the dropped guard it's about to radio in (see_drop), "" = none
+var partner_left := 0.0    # seconds until that "!"
 var _saw_down := false     # see_down() filled the meter since the last tick: no drain
 
 
@@ -45,6 +49,10 @@ func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_tar
 		State.PATROL, State.SUSPICION:
 			if calling:
 				return ""
+			if partner != "":
+				partner_left -= delta
+				if partner_left <= 0.0:
+					return _call("%s is down" % partner)
 			if seen:
 				meter = minf(meter + seen_rate * delta, 1.0)
 				timer = 0.0
@@ -106,6 +114,20 @@ func respond(pos: Vector3, who: Variant, name_: String) -> String:
 	rushing = true
 	heard = who
 	return "%s shouted, running over" % name_
+
+
+## Saw guard `name_` drop (darted, choked, killed) or kneel at gunpoint at pos: "?" there, and "!"
+## PARTNER_DELAY s later (a sighting meanwhile is an ordinary spotting). A later drop doesn't restart it.
+## Guards already calling or hunting ignore it.
+func see_drop(pos: Vector3, name_: String) -> String:
+	if calling or state >= State.ALERT or partner != "":
+		return ""
+	_go(State.SUSPICION, "")
+	meter = maxf(meter, SUSPECT_AT)
+	last_known = pos
+	partner = name_
+	partner_left = PARTNER_DELAY
+	return "saw %s drop" % name_
 
 
 ## A noise reached this guard: suspicion at the source, never an alert by itself. A suspicious guard
@@ -220,6 +242,7 @@ func _go(to: State, reason: String) -> String:
 	calling = false
 	rushing = false
 	heard = null
+	partner = ""
 	if to == State.ALERT:
 		meter = 1.0
 	elif to == State.PATROL:
