@@ -48,6 +48,7 @@ func _all_calls() -> Array:
 	var calls := []
 	for m: Dictionary in Campaign.MISSIONS:
 		calls.append(m.codec)
+		calls.append(m.open)
 		for s: Dictionary in m.steps:
 			calls.append(s.call)
 	return calls
@@ -74,6 +75,17 @@ func test_every_intel_pickup_triggers_a_live_call() -> void:
 	for m: Dictionary in Campaign.MISSIONS:
 		for s: Dictionary in m.steps:
 			assert_gt(s.call.size(), 0, s.intel)
+
+
+func test_every_step_has_two_authored_hints() -> void:
+	var t := _table()
+	for m: Dictionary in Campaign.MISSIONS:
+		for s: Dictionary in m.steps:
+			assert_eq(s.hint.size(), 2, s.intel)
+			for k: String in s.hint:
+				assert_has_key(t, k)
+	assert_has_key(t, "hint.none")
+	assert_has_key(t, "radio.request_hint")
 
 
 func test_tr_follows_the_language() -> void:

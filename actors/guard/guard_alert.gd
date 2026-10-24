@@ -22,6 +22,7 @@ var meter := 0.0           # 0..1 detection meter; only fills in PATROL / SUSPIC
 var last_known := Vector3.ZERO
 var timer := 0.0           # time spent at the spot in SUSPICION / EVASION
 var unseen := 0.0          # time without sight in ALERT
+var saw := false           # has seen the Operative since entering ALERT
 var _saw_down := false     # see_down() filled the meter since the last tick: no drain
 
 
@@ -50,6 +51,7 @@ func tick(delta: float, seen_rate: float, seen_pos: Vector3, why: String, at_tar
 					return _go(State.PATROL, "found nothing, back to patrol")
 		State.ALERT:
 			unseen = 0.0 if seen else unseen + delta
+			saw = saw or seen
 			if unseen >= LOSE_TIME:
 				return _go(State.EVASION, "lost sight of you, searching")
 		State.EVASION:
@@ -170,6 +172,7 @@ func _go(to: State, reason: String) -> String:
 	state = to
 	timer = 0.0
 	unseen = 0.0
+	saw = false
 	if to == State.ALERT:
 		meter = 1.0
 	elif to == State.PATROL:

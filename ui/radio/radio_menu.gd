@@ -9,6 +9,7 @@ const REPORT_IN := [["Report in", "report_in"]]  # the only order to HQ, offered
 
 var step := "speaker"   # speaker / to / order / place / confirm
 var pick := {}          # speaker, recipients, all_units, order, place
+var hint_label := ""   # set: the speaker step also offers "Request hint" (needs no Voiceprint)
 var _speakers: Array    # held Voiceprints
 var _guards: Array      # guards who can take an order (up)
 var _places: Array
@@ -26,7 +27,10 @@ func _init(speakers: Array, guards: Array, places: Array, polled := "") -> void:
 func options() -> Array:
 	match step:
 		"speaker":
-			return _speakers.map(func(s): return [s, s])
+			var out: Array = _speakers.map(func(s): return [s, s])
+			if hint_label != "":
+				out.append([hint_label, "hint"])
+			return out
 		"to":
 			var out: Array = _guards.map(func(g): return [g, [g]])
 			out.append(["All units", _guards.filter(func(g): return g != pick.speaker)])
@@ -48,6 +52,9 @@ func choose(i: int) -> bool:
 	var v = opts[i][1]
 	match step:
 		"speaker":
+			if v is String and v == "hint" and hint_label != "" and i == opts.size() - 1:
+				pick.hint = true
+				return true
 			pick.speaker = v
 			step = "to"
 		"to":

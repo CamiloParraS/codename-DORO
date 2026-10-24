@@ -155,3 +155,44 @@ finale.epi.gorgo.3,"Every body is a line in an invoice. Metis has never been so 
 finale.epi.gorgo.4,"War is the only market that never closes, Operative.","[Analyst] Linea del epilogo 4, final gorgo."
 holdup.lift_code,"Don't shoot! The lift code is four-one-seven-seven. The panel's in operations.","No dispares! El codigo es cuatro-uno-siete-siete. El panel esta en operaciones."
 holdup.voiceprint,"Don't shoot! I'm only on watch, I swear!","No dispares! Solo estoy de guardia, lo juro!"
+live.m1.open.01,"The smoke break is at the freighter's stern, behind the bridge. Listen in.","La pausa para fumar es en la popa del carguero, detras del puente. Escucha."
+live.m2.open.01,First the garage. We need the encryption keys.,Primero el garaje. Necesitamos las llaves de cifrado.
+live.m3.open.01,The office first. Download the access logs.,Primero la oficina. Descarga los registros de acceso.
+live.m4.open.01,"The operations building, by the west cliff. The lift is inside.","El edificio de operaciones, junto al acantilado oeste. El montacargas esta dentro."
+hint.m1.s1.1,"The two deck hands smoke behind the bridge, at the freighter's stern.","Los dos marineros fuman detras del puente, en la popa del carguero."
+hint.m1.s1.2,"Move aft along the deck while the look-out faces away. Stand at the bridge corner and record them.","Avanza hacia popa por la cubierta mientras el vigia mira a otro lado. Ponte en la esquina del puente y grabalos."
+hint.m1.s2.1,"The foreman walks a loop through the container lanes, west of the gangway.","El capataz da vueltas entre los contenedores, al oeste de la pasarela."
+hint.m1.s2.2,"Go down the gangway when the guard at its head looks up the deck. Mind the watcher on Warehouse B's roof, wait at a lane corner and hold the foreman up from behind.","Baja por la pasarela cuando el guardia de arriba mire hacia la cubierta. Cuidado con el vigia del techo del Almacen B, espera en una esquina y encanona al capataz por la espalda."
+hint.m1.s3.1,"The lift controls are in the operations building, by the west cliff.","Los controles del montacargas estan en el edificio de operaciones, junto al acantilado oeste."
+hint.m1.s3.2,"Three doors, three guards. A Spoof can pull the door guard away to the forecourt, or wait for the alley guard to turn his back.","Tres puertas, tres guardias. Un Spoof puede llevar al guardia de la puerta a la explanada, o espera a que el del callejon te de la espalda."
+hint.m2.s1.1,The garage is in the south of the station.,El garaje esta en el sur de la estacion.
+hint.m2.s1.2,"Keep to the fence line and wait for the patrol to pass. The keys are inside, on the desk.","Sigue la linea de la valla y espera a que pase la patrulla. Las llaves estan dentro, sobre el escritorio."
+hint.m2.s2.1,The relay console is up on the summit.,"La consola de la estacion esta arriba, en la cima."
+hint.m2.s2.2,"Take the path up the scree. Sabotage takes five seconds, so make sure nobody can see you.","Sube por el pedregal. El sabotaje tarda cinco segundos, asegurate de que nadie te vea."
+hint.m2.s3.1,The mess hut is in the middle of the station.,El comedor esta en el centro de la estacion.
+hint.m2.s3.2,"The chief's escort sees the door. A Spoof can send the escort away, or you can go in through the back.","La escolta del jefe ve la puerta. Un Spoof puede alejar a la escolta, o puedes entrar por detras."
+hint.m3.s1.1,The office is in the middle of the annex.,La oficina esta en el centro del anexo.
+hint.m3.s1.2,Use the side door from the yard and keep out of the corridor's line of sight.,Usa la puerta lateral del patio y evita la linea de vision del pasillo.
+hint.m3.s2.1,The vault is at the east end of the corridor.,La boveda esta en el extremo este del pasillo.
+hint.m3.s2.2,"Time your steps to the guard's turn. The corridor is long, but he only looks away for a few seconds.","Calcula tus pasos con el giro del guardia. El pasillo es largo, pero solo mira a otro lado unos segundos."
+hint.m3.s3.1,"The research files are in the Archive, past the lobby.","Los archivos de investigacion estan en el Archivo, pasado el vestibulo."
+hint.m3.s3.2,"The lobby guard blocks the way. Record the pair chatting, then Spoof him out. Or go around by the crawlspace.",El guardia del vestibulo bloquea el paso. Graba a la pareja que charla y luego mandalo lejos con un Spoof. O rodea por el conducto.
+hint.m4.s1.1,"The operations building is on the west side of the yard, by the cliff.","El edificio de operaciones esta al oeste del patio, junto al acantilado."
+hint.m4.s1.2,"The guards are on alert for you and the north door is sealed. Keep to cover and come in by the south door.","Los guardias estan alerta por ti y la puerta norte esta sellada. Usa las coberturas y entra por la puerta sur."
+hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the cliff.","El montacargas esta al fondo de la sala, contra el acantilado."
+hint.m4.s2.2,"A guard stands in the lift hall. Spoof him away, or wait until his back is turned.","Hay un guardia en la sala del montacargas. Alejalo con un Spoof, o espera a que te de la espalda."
+hint.none,"That is all I have, Operative. You know the way.","Es todo lo que tengo, Operativo. Ya sabes el camino."
+radio.request_hint,Request hint,Pedir pista
+objective.m1.s1,"LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE","ESCUCHA LA PAUSA PARA FUMAR DETRAS DEL PUENTE"
+objective.m1.s2,"HOLD UP THE YARD FOREMAN FOR THE LIFT CODE","ENCANONA AL CAPATAZ DEL PATIO PARA SACARLE EL CODIGO DEL MONTACARGAS"
+objective.m1.s3,"ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING","INTRODUCE EL CODIGO EN LOS CONTROLES DEL MONTACARGAS DEL EDIFICIO DE OPERACIONES"
+objective.m2.s1,"RECOVER THE ENCRYPTION KEYS FROM THE GARAGE","RECUPERA LAS CLAVES DE CIFRADO DEL GARAJE"
+objective.m2.s2,"SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS","SABOTEA LA CONSOLA DE RETRANSMISION: MANTEN E 5 SEGUNDOS"
+objective.m2.s3,"SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS","BUSCA LAS ORDENES DEL JEFE EN EL COMEDOR"
+objective.m3.s1,"DOWNLOAD THE ACCESS LOGS FROM THE OFFICE","DESCARGA LOS REGISTROS DE ACCESO DE LA OFICINA"
+objective.m3.s2,"OPEN THE VAULT AT THE END OF THE CORRIDOR","ABRE LA BOVEDA AL FINAL DEL PASILLO"
+objective.m3.s3,"EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE","EXTRAE LOS ARCHIVOS DE INVESTIGACION QUE REVELAN EL NUCLEO"
+objective.m4.s1,"REACH THE OPERATIONS BUILDING","LLEGA AL EDIFICIO DE OPERACIONES"
+objective.m4.s2,"TAKE THE FREIGHT LIFT DOWN","BAJA EN EL MONTACARGAS"
+objective.extract,"REACH THE EXTRACTION POINT","VE AL PUNTO DE EXTRACCION"
+objective.targets,"KILL OR CARRY OUT","ELIMINA O SACA A CUESTAS"

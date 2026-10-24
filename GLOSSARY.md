@@ -115,7 +115,7 @@ A radio conversation between the Operative and Metis, either full-screen with th
 _Avoid_: Cutscene, dialogue, transmission
 
 **Hint**:
-A live Codec call in which Metis points a lost player at the current objective, fired when the player idles or wanders, or on request.
+A live Codec call in which Metis points a lost player at the current objective step, in two tiers (a direction, then the route), fired when the player idles or wanders, or on request from the radio menu.
 _Avoid_: Tip, tutorial prompt
 
 **Final debate**:
@@ -199,6 +199,16 @@ _Avoid_: Stick-up, arrest, freeze
 **Head icon**:
 The ? or ! shown above a guard's head: ? while suspicious, ! once alerted.
 _Avoid_: Mark (that is not a Target), indicator, bubble
+
+### Playtest
+
+**Session log**:
+The playtest's own record of each Mission played: time, darts, rifle shots, Spoofed transmissions and every idle. Written to `user://session_log.txt` when a Mission ends, is aborted, or the game quits.
+_Avoid_: Telemetry, analytics
+
+**Idle**:
+Seconds since the last progress (a step done, a Checkpoint, an Alert ending). Alert and Evasion time never counts. Idles over a minute go in the Session log, and the Hint tracker reads it.
+_Avoid_: AFK, stall
 
 ### Equipment
 

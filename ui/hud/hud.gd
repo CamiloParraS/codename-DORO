@@ -94,6 +94,7 @@ func _draw() -> void:
 		var tex := _crosshair(_operative.gun().crosshair)
 		draw_texture(tex, (size / 2 - tex.get_size() / 2).round())
 	_left()
+	_radar()
 	_right()
 	_phase()
 	_aigis_layer()
@@ -281,3 +282,43 @@ func _vt(pos: Vector2, s: String, col: Color) -> void:
 	draw_set_transform(pos, -PI / 2)
 	_t(Vector2.ZERO, s, col)
 	draw_set_transform(Vector2.ZERO, 0.0)
+
+
+## Bottom-left square, north-up: faint grid, guards in chrome with a facing tick, the objective (white diamond)
+## or Target (white ring), the Operative's triangle. Dark with static and a blinking "JAMMED" in ALERT/EVASION.
+## No vision cones: the Scanner owns those.
+func _radar() -> void:
+	var r := RadarModel.rect(size)
+	var c := r.get_center()
+	var half := RadarModel.HALF
+	draw_rect(r, HudPalette.SHADE)
+	draw_rect(r, HudPalette.CHROME_DIM, false)
+	var origin := RadarModel.flat(_operative.global_position)
+	if RadarModel.jammed(_phase_name):
+		for i in 60:
+			var p := r.position + Vector2(randf_range(0, r.size.x - 8), randf_range(0, r.size.y))
+			draw_rect(Rect2(p, Vector2(randi_range(2, 8), 1)), Color(HudPalette.CHROME, randf() * 0.5))
+		if int(Time.get_ticks_msec() / 250) % 2 == 0:
+			draw_string(_font, c + Vector2(-24, 4), "JAMMED", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, HudPalette.DANGER)
+		return
+	for i in range(-3, 4):
+		var o := i * half / 3.5
+		draw_line(c + Vector2(o, -half), c + Vector2(o, half), Color(HudPalette.CHROME, 0.12))
+		draw_line(c + Vector2(-half, o), c + Vector2(half, o), Color(HudPalette.CHROME, 0.12))
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		if g.is_down():
+			continue
+		var p := c + RadarModel.blip(RadarModel.flat(g.global_position) - origin, 2)
+		var face := RadarModel.facing(g.global_basis)
+		draw_circle(p, 2, HudPalette.CHROME)
+		draw_line(p, p + face * 6, Color(HudPalette.CHROME, 0.8), 1.0)
+	var run: Node = get_tree().get_first_node_in_group("mission_plan")
+	for b: Dictionary in (run.radar_blips() if run else []):
+		var p := c + RadarModel.blip(RadarModel.flat(b.pos) - origin, 4)
+		if b.target:
+			draw_arc(p, 4, 0, TAU, 12, HudPalette.WHITE, 1.0)
+			draw_circle(p, 1.5, HudPalette.WHITE)
+		else:
+			draw_colored_polygon(PackedVector2Array([p + Vector2(0, -4), p + Vector2(4, 0), p + Vector2(0, 4), p + Vector2(-4, 0)]), HudPalette.WHITE)
+	var f := RadarModel.facing(_operative.global_basis)
+	draw_colored_polygon(PackedVector2Array([c + f * 4, c + f.rotated(2.5) * 3, c + f.rotated(-2.5) * 3]), HudPalette.WHITE)

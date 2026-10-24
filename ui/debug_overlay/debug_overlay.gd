@@ -75,6 +75,9 @@ func _field(tally: MissionTally) -> String:
 		return ""
 	var counts := PackedStringArray(tally.counts.keys().map(func(k: String) -> String: return "%s %d" % [k, tally.counts[k]]))
 	var s := "TALLY  %s\n" % (", ".join(counts) if counts else "nothing yet")
+	var session := SessionLog.current
+	if not session.missions.is_empty():
+		s += "TIME  %d s  idle %d s\n" % [session.seconds(), session.idle_seconds()]
 	s += "GUARDS\n"
 	for g in get_tree().get_nodes_in_group("guards") + get_tree().get_nodes_in_group("cameras"):
 		var state: String = "DESTROYED" if g.get("destroyed") else "DOWN" if g.has_method("is_down") and g.is_down() else GuardAlert.State.keys()[g.alert.state]

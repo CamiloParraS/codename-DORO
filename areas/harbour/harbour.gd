@@ -114,7 +114,8 @@ func _entry_for(pos: Vector3) -> Marker3D:
 func _dismiss_returned() -> void:
 	for g: Guard in get_tree().get_nodes_in_group("reinforcements"):
 		var entry := g.post.origin
-		if g.alert.state == GuardAlert.State.PATROL and not g.is_down() and Vector2(g.global_position.x - entry.x, g.global_position.z - entry.z).length() < Guard.REACHED * 2.0:
+		var at_entry := Vector2(g.global_position.x - entry.x, g.global_position.z - entry.z).length() < Guard.REACHED * 2.0
+		if not g.is_down() and _waves.leaves(g.alert.state == GuardAlert.State.PATROL, at_entry):
 			g.remove_from_group("guards")
 			g.queue_free()
 
