@@ -8,19 +8,10 @@ func suite_name() -> String:
 	return "mission_tally"
 
 
-func test_alert_counts_once_per_rise() -> void:
-	var t := MissionTally.new()
-	t.set_alert(true)
-	t.set_alert(true)
-	t.set_alert(false)
-	t.set_alert(true)
-	assert_eq(t.counts.alert, 2)
-
-
 func test_down_is_quiet_only_without_alert() -> void:
 	var t := MissionTally.new()
 	t.guard_down()
-	t.set_alert(true)
+	t.alert_active = true
 	t.guard_down()
 	assert_eq(t.counts.quiet_down, 1)
 

@@ -11,10 +11,10 @@ const BASE_RATE := 1.2
 
 
 ## Meter fill per second; 0 when the Operative is outside both cones.
-## offset: guard eye → Operative chest. facing: the guard's forward.
-static func fill_rate(offset: Vector3, facing: Vector3, crouching: bool, moving: bool, walking: bool) -> float:
+## offset: guard eye → Operative chest. facing: the guard's forward. scale: both cones' reach (Caution).
+static func fill_rate(offset: Vector3, facing: Vector3, crouching: bool, moving: bool, walking: bool, scale := 1.0) -> float:
 	var dist := Vector2(offset.x, offset.z).length()
-	var reach := _reach(offset, facing)
+	var reach := _reach(offset, facing, scale)
 	if reach == 0.0:
 		return 0.0
 	var rate := BASE_RATE * clampf(1.2 - dist / reach, 0.15, 1.0)  # faster the closer
@@ -23,7 +23,7 @@ static func fill_rate(offset: Vector3, facing: Vector3, crouching: bool, moving:
 		rate *= 0.6
 	elif not (crouching or walking):
 		rate *= 1.5  # running
-	if reach == SIDE_RANGE:
+	if reach == SIDE_RANGE * scale:
 		rate *= 0.5
 	if dist < CLOSE:
 		rate *= 4.0
@@ -48,13 +48,13 @@ static func describe(offset: Vector3, facing: Vector3, crouching: bool, moving: 
 	return "%s, %d m, %s" % [how, roundi(Vector2(offset.x, offset.z).length()), cone]
 
 
-## The range of the cone the offset falls in (FRONT_RANGE, SIDE_RANGE), or 0.
-static func _reach(offset: Vector3, facing: Vector3) -> float:
+## The range of the cone the offset falls in (FRONT_RANGE, SIDE_RANGE, times scale), or 0.
+static func _reach(offset: Vector3, facing: Vector3, scale := 1.0) -> float:
 	var flat := Vector2(offset.x, offset.z)
 	var dist := flat.length()
 	var ang := absf(Vector2(facing.x, facing.z).angle_to(flat)) if dist > 0.01 else 0.0
-	if ang <= FRONT_HALF and dist <= FRONT_RANGE:
-		return FRONT_RANGE
-	if ang <= SIDE_HALF and dist <= SIDE_RANGE:
-		return SIDE_RANGE
+	if ang <= FRONT_HALF and dist <= FRONT_RANGE * scale:
+		return FRONT_RANGE * scale
+	if ang <= SIDE_HALF and dist <= SIDE_RANGE * scale:
+		return SIDE_RANGE * scale
 	return 0.0

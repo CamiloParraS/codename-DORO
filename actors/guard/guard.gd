@@ -1,5 +1,6 @@
-## A guard: senses the Operative, feeds its GuardAlert, radios alerts, and exposes the moves its
-## behaviour tree (guard_tree.tres) calls. Spawned by the Area at a guard post.
+## A guard: senses the Operative, feeds its GuardAlert, makes its Radio calls to the Area's AlertChain
+## (shouting to the guards in earshot), and exposes the moves its behaviour tree (guard_tree.tres)
+## calls. Spawned by the Area at a guard post.
 extends CharacterBody3D
 class_name Guard
 
@@ -7,7 +8,8 @@ const CHATTER_EVERY := 20.0  # seconds between a guard muttering about the Opera
 const BODY_HITS_TO_KILL := 2  # rifle body hits that kill; a headshot kills outright
 const EYE := 1.6
 const PATROL_SPEED := 1.8
-const CHASE_SPEED := 4.5
+const CAUTION_SPEED := 2.2
+const CHASE_SPEED := 5.0  # the Operative runs 4.8
 const PAUSE := 1.5        # seconds at each patrol point
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
 const REACHED := 1.0      # flat distance that counts as being at a point
@@ -60,6 +62,8 @@ var radio_check_level := 0       # Spoofing Countermeasure: how often it stops t
 var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
+var encounter := 0               # the Encounter its post belongs to (0 = none)
+var detours: Array[Vector3] = [] # spots in its Encounter, one visited per patrol loop in Caution (the Area sets them)
 
 var _wp := 0
 var _stop := {}          # the stop being held
@@ -76,6 +80,10 @@ var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
 var _tele_icon := ""
 var _looked := false    # did the look-around at this search spot already
 var _prev_state := GuardAlert.State.PATROL
+var _prev_calling := false
+var _detour: Variant = null  # the Caution detour it walks now
+var _next_detour := 0
+var _spot_for: Variant = null  # the last known point its reserved search spot is for
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
@@ -95,15 +103,18 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_clock += delta
 	_tele_left -= delta
-	if GuardAlert.flinches(_prev_state, alert.state):
+	if GuardAlert.flinches(_prev_state, alert.state) and not _prev_calling:  # a spotter flinched at his "!"
 		model.react("startle", GuardAlert.FLINCH, 2.2)  # a pose only: the tree and shooting never wait on it
 	_prev_state = alert.state
+	_prev_calling = alert.calling
 	var flat := Vector2(velocity.x, velocity.z).length()
 	model.play(CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	if is_down():
 		_down_tick(delta)
 		return
+	if held or held_up or stumble_left > 0.0:
+		AlertChain.area.stop_call(self)  # a choke, a Hold-up or a dart stops the call
 	if held or held_up:
 		return
 	if stumble_left > 0.0:
@@ -113,9 +124,12 @@ func _physics_process(delta: float) -> void:
 			return
 	if operative:
 		var down := _sense_down()  # before tick: a Down guard in sight holds off the drain
-		_react(alert.see_down(delta, down[0], down[1], instant_down))
+		_changed(alert.see_down(delta, down[0], down[1], instant_down))
 		var rate := _sense()
-		_react(alert.tick(delta, rate, operative.global_position, _saw, arrived()))
+		var responding := alert.rushing
+		_changed(alert.tick(delta, rate, operative.global_position, _saw, arrived()))
+		if responding and alert.state == GuardAlert.State.PATROL:
+			AlertChain.area.caution()  # a stopped call's local search ended
 		_shoot_back(delta)
 		if alert.state in [GuardAlert.State.SUSPICION, GuardAlert.State.EVASION] and arrived():
 			var down_guard := _down_within(CHECK_REACH)
@@ -123,11 +137,15 @@ func _physics_process(delta: float) -> void:
 				var why := alert.check_down(down_guard.dead)
 				if not down_guard.dead:
 					get_tree().call_group("mission_tally", "event", "woken")
-					down_guard.wake(global_position)
-				_react(why)
+					down_guard.wake(global_position)  # a Caution trigger
+				_changed(why)
 	if stumble_left > 0.0:
 		return  # stumbling: stands still
+	_radio_call()
 	_check_in(delta)
+	if AlertChain.area.calling(self):
+		face(alert.last_known, delta)  # hand to ear, standing still, not shooting
+		return
 	# Manual update: the tree must set the velocity before the NavAgent (a later child) submits it.
 	_bt.update(delta)
 
@@ -208,8 +226,10 @@ func _refresh_mark() -> void:
 		_mark.text = _tele_icon
 		_mark.modulate = HudPalette.AIGIS
 		return
-	_mark.text = "((·))" if talk else MARKS[alert.state]
-	_mark.modulate = Color.WHITE if talk else MARK_COLORS[alert.state]
+	var bang := alert.calling or alert.rushing  # "!" before the Alert: a spotter calling, a responder running
+	var state := GuardAlert.State.ALERT if bang else alert.state
+	_mark.text = "((·))" if talk else MARKS[state]
+	_mark.modulate = Color.WHITE if talk else MARK_COLORS[state]
 
 
 func is_down() -> bool:
@@ -223,6 +243,8 @@ func can_radio() -> bool:
 
 ## Put out of action (a choke); choking a Neutralized guard again restarts the clock.
 func neutralize() -> void:
+	AlertChain.area.stop_call(self)
+	AlertChain.area.release(self)
 	neutral_left = NEUTRALIZED_TIME
 	stumble_left = 0.0
 	held = false
@@ -294,8 +316,9 @@ func wear_vest() -> void:
 	model.wear("Vest")
 
 
-## Back on its feet, suspicious and remembering nothing. from: where it looks first.
+## Back on its feet, suspicious and remembering nothing (a Caution trigger). from: where it looks first.
 func wake(from: Vector3) -> void:
+	AlertChain.area.caution()  # a Checkpoint restore makes a fresh chain after return_to_post()
 	neutral_left = 0.0
 	known_down = false
 	hits = 0
@@ -327,6 +350,8 @@ func return_to_post() -> void:
 	_pause = 0.0
 	_glance = 0.0
 	_looked = false
+	_detour = null
+	_next_detour = 0
 	_fire_left = FIRE_INTERVAL
 	_agent.target_position = post.origin
 	_refresh_mark()
@@ -456,20 +481,44 @@ static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String
 			g.on_shot(pos) if alarming else g.on_noise(pos, what)
 
 
-## Applies a state change, and radios everyone when it raised an alert by sight.
-func _react(why: String) -> void:
-	_changed(why)
-	if why != "" and alert.state == GuardAlert.State.ALERT and stumble_left <= 0.0:
-		for g in get_tree().get_nodes_in_group("guards"):
-			if g != self:
-				g.on_radio(alert.last_known, name)
+## A guard that went "!" (alert.calling) and isn't on the radio yet starts its Radio call and shouts to
+## the guards within SHOUT_RANGE. In Alert or Evasion there is no call: it joins the hunt. A responder
+## whose spotter still calls waits: it never duplicates his call.
+func _radio_call() -> void:
+	var chain := AlertChain.area
+	if not alert.calling or chain.calling(self):
+		return
+	if chain.phase == AlertChain.Phase.ALERT or chain.phase == AlertChain.Phase.EVASION:
+		_changed(alert.radio(alert.last_known, name))
+		if chain.phase == AlertChain.Phase.EVASION:
+			_changed(alert.evade())
+		return
+	if not chain.start_call(self, alert.last_known, AlertChain.CALL_TIME, alert.heard):
+		return
+	model.react("startle", GuardAlert.FLINCH, 2.2)
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		if g != self and GuardAlert.in_earshot(g.global_position, global_position, AlertChain.SHOUT_RANGE):
+			g.on_shout(alert.last_known, self)
 
 
-## Another guard radioed an alert.
+## A spotter's "!" within earshot: run to his sighting point.
+func on_shout(pos: Vector3, who: Guard) -> void:
+	if can_radio():
+		_changed(alert.respond(pos, who, who.name))
+
+
+## The Area is in Alert (the AlertChain): hunt from pos.
 func on_radio(pos: Vector3, who: String) -> void:
 	if is_down():
 		return
 	_changed(alert.radio(pos, who))
+
+
+## The AlertChain's Alert drained (to Evasion), or Evasion ended (to patrol, in Caution).
+func on_phase(to: AlertChain.Phase) -> void:
+	if is_down():
+		return
+	_changed(alert.evade() if to == AlertChain.Phase.EVASION else alert.give_up())
 
 
 ## A noise reached this guard.
@@ -493,7 +542,9 @@ func _sense() -> float:
 	var chest: Vector3 = operative.global_position + Vector3.UP * operative.chest_height()
 	var offset := chest - eye
 	var facing := -global_basis.z
-	var rate := GuardVision.fill_rate(offset, facing, operative.looks_crouched(), operative.moving, operative.looks_walking())
+	var caution := AlertChain.area.phase == AlertChain.Phase.CAUTION
+	var rate := GuardVision.fill_rate(offset, facing, operative.looks_crouched(), operative.moving, operative.looks_walking(),
+		AlertChain.CAUTION_REACH if caution else 1.0) * (AlertChain.CAUTION_FILL if caution else 1.0)
 	if rate == 0.0:
 		return 0.0
 	var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid()])
@@ -510,6 +561,8 @@ func _changed(why: String) -> void:
 		return
 	last_reason = why
 	order = {}  # whatever it was told, it now has its own reason to act
+	AlertChain.area.release(self)  # a new state: any search spot it held is free
+	_spot_for = null
 	_refresh_mark()
 	_bt.restart()  # the tree picks the branch for the new state
 
@@ -530,11 +583,22 @@ static func flees(is_target: bool, state: int) -> bool:
 	return is_target and state >= GuardAlert.State.ALERT
 
 
-## Where alert.last_known is reached from: the foot of the Ladder when it's up on that Ladder's roof
+## Where the spot it searches is reached from: the foot of the Ladder when it's up on that Ladder's roof
 ## (guards never climb, they watch the base), otherwise the spot itself. A `walkable` Ladder lands on
 ## ground guards walk to (the Relay station's), so they go to the spot.
 func goal() -> Vector3:
-	return ladder_foot(alert.last_known, get_tree().get_nodes_in_group("ladders"))
+	return ladder_foot(search_spot(), get_tree().get_nodes_in_group("ladders"))
+
+
+## What it searches: in Evasion or a responder's local search, the spot it reserved near the last known
+## point (AlertChain.reserve); otherwise the last known point.
+func search_spot() -> Vector3:
+	if alert.state != GuardAlert.State.EVASION and not alert.rushing:
+		return alert.last_known
+	if _spot_for != alert.last_known:  # the search moved (a noise): give up the old spot
+		AlertChain.area.release(self)
+		_spot_for = alert.last_known
+	return AlertChain.area.reserve(self, alert.last_known)
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:
@@ -608,6 +672,13 @@ func patrol(delta: float) -> void:
 		_pause -= delta
 		_face_stop(_stop, delta)
 		return
+	var speed := CAUTION_SPEED if AlertChain.area.phase == AlertChain.Phase.CAUTION else PATROL_SPEED
+	if _detour != null:
+		_walk_to(_detour, speed, delta)
+		if _flat_dist(_detour) < REACHED:
+			_detour = null
+			_pause = PAUSE
+		return
 	if radio_check_level > 0:
 		_radio_clock += delta  # ticks only while walking: not at a stop, not mid-glance
 		if _radio_clock >= Telegraph.RADIO_CHECK_EVERY and _glance <= 0.0:
@@ -617,10 +688,13 @@ func patrol(delta: float) -> void:
 				_glance_yaw = rotation.y
 				telegraph("radio_check", "((?))", "look", "HQ, confirm that last transmission.")
 				return
-	_walk_to(route[_wp], PATROL_SPEED, delta)
+	_walk_to(route[_wp], speed, delta)
 	if _flat_dist(route[_wp]) < REACHED:
 		_stop = stops[_wp] if _wp < stops.size() else {}
 		_wp = (_wp + 1) % route.size()
+		if _wp == 0 and not detours.is_empty() and AlertChain.area.phase == AlertChain.Phase.CAUTION:
+			_detour = detours[_next_detour % detours.size()]  # one per loop, each in turn
+			_next_detour += 1
 		_pause = _stop.get("hold", PAUSE)
 		if route.size() > 1 and Telegraph.head_check(head_check_level, rng):  # Stealth: looks back before it turns
 			_glance = Telegraph.DURATION
@@ -676,9 +750,9 @@ func search(delta: float, speed: float, sweep: float) -> void:
 		_flee(delta)
 	elif not arrived():
 		_looked = false
-		_walk_to(goal(), speed, delta)
-	elif goal() != alert.last_known:
-		face(alert.last_known, delta)  # at a Ladder's foot, watching the roof
+		_walk_to(goal(), CHASE_SPEED if alert.rushing else speed, delta)  # a responder runs
+	elif goal() != search_spot():
+		face(search_spot(), delta)  # at a Ladder's foot, watching the roof
 	else:
 		if not _looked and alert.state == GuardAlert.State.EVASION:
 			model.react("look", LOOK_CLIP, 1.0)

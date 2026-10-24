@@ -173,7 +173,7 @@ A guard who is either Neutralized or dead, as seen by someone who hasn't checked
 _Avoid_: Body (when it might be alive)
 
 **Reinforcements**:
-Guards sent into the Area in waves while an Alert holds, to hunt the Operative down. They leave once the search is over, or at once when a believed all clear reaches every guard. Every Alert sends some; the Combat Countermeasure sends more.
+Guards sent into the Area once per completed Radio call, to hunt the Operative down. They stay through Evasion and Caution and leave when Caution ends, or at once when a believed all clear reaches every guard. Caution sends none; the Combat Countermeasure sends more.
 _Avoid_: Backup, squad, wave
 
 **Radio call**:
@@ -189,7 +189,7 @@ The phase after an Alert, when guards have lost the Operative and search around 
 _Avoid_: Search mode, lost
 
 **Caution**:
-The phase after Evasion, or after a guard finds a Neutralized partner or wakes up: guards are back on patrol but more watchful and more numerous. It is not an Alert.
+The 60 s phase after Evasion, after a stopped Radio call's local search, or after a guard finds a Neutralized partner or wakes up: guards are back on patrol, faster, more watchful and more numerous. A new trigger restarts the 60 s. It is not an Alert.
 _Avoid_: Wary, aftermath, yellow alert
 
 **Hold-up**:

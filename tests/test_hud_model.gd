@@ -10,26 +10,24 @@ func suite_name() -> String:
 	return "hud_model"
 
 
-func test_phase_none_when_patrolling() -> void:
-	assert_eq(HudModel.phase([GuardAlert.new()])[0], "")
+func test_phase_none_in_normal_and_during_a_call() -> void:
+	var c := AlertChain.new()
+	assert_eq(HudModel.phase(c)[0], "")
+	c.start_call("Kostas", Vector3.ZERO)
+	assert_eq(HudModel.phase(c)[0], "", "a Radio call isn't an Alert yet")
 
 
-func test_alert_wins_over_evasion_and_counts_down() -> void:
-	var alerted := GuardAlert.new()
-	alerted.state = S.ALERT
-	alerted.unseen = 1.0
-	var searching := GuardAlert.new()
-	searching.state = S.EVASION
-	var ph := HudModel.phase([searching, alerted])
-	assert_eq(ph[0], "ALERT")
-	assert_eq(ph[1], GuardAlert.LOSE_TIME - 1.0)
-
-
-func test_evasion_counts_down_search_time() -> void:
-	var a := GuardAlert.new()
-	a.state = S.EVASION
-	a.timer = 4.0
-	assert_eq(HudModel.phase([a]), ["EVASION", GuardAlert.SEARCH_TIME - 4.0])
+func test_alert_evasion_and_caution_count_down() -> void:
+	var c := AlertChain.new()
+	c.start_call("Kostas", Vector3.ZERO)
+	c.tick(2.0, false)
+	c.tick(1.0, false)
+	assert_eq(HudModel.phase(c), ["ALERT", 19.0, 0.95])
+	c.tick(19.0, false)
+	c.tick(15.0, false)
+	assert_eq(HudModel.phase(c), ["EVASION", 15.0, 0.5])
+	c.tick(15.0, false)
+	assert_eq(HudModel.phase(c), ["CAUTION", 60.0, 1.0])
 
 
 func test_arc_fill() -> void:

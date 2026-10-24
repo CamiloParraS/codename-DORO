@@ -116,3 +116,13 @@ func test_a_scanning_stop_sweeps_half_its_arc_each_side() -> void:
 	assert_true(is_equal_approx(Guard.stop_yaw(s, Guard.SCAN_PERIOD / 4), 1.0 + deg_to_rad(45.0)))
 	assert_true(is_equal_approx(Guard.stop_yaw(s, Guard.SCAN_PERIOD * 3 / 4), 1.0 - deg_to_rad(45.0)))
 	assert_true(is_equal_approx(Guard.stop_yaw({yaw = 1.0}, 2.0), 1.0), "a facing stop holds still")
+
+
+func test_caution_reach_scales_both_cones() -> void:
+	var fwd := Vector3(0, 0, -1)
+	var far := Vector3(0, 0, -18.0)  # beyond 16 m, inside 16 x 1.25 = 20 m
+	assert_eq(GuardVision.fill_rate(far, fwd, false, true, true), 0.0)
+	assert_gt(GuardVision.fill_rate(far, fwd, false, true, true, AlertChain.CAUTION_REACH), 0.0)
+	var side := Vector3(5.0, 0, -5.0)  # 45° off: 7.07 m, beyond 6 m, inside 7.5 m
+	assert_eq(GuardVision.fill_rate(side, fwd, false, true, true), 0.0)
+	assert_gt(GuardVision.fill_rate(side, fwd, false, true, true, AlertChain.CAUTION_REACH), 0.0)

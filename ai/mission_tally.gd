@@ -1,23 +1,17 @@
 ## One Mission's live event counts, the flat dictionary Aigis.complete_mission reads. Node-free.
-## Edges are the caller's job: set_alert(active) every frame, guard_down() once per guard put Down.
+## Edges are the caller's job: add("alert") once per completed Radio call, alert_active every frame,
+## guard_down() once per guard put Down.
 ## Lethality events: the Area adds spawned (guards actually spawned); kill, target_kill and targets
 ## join with the kill and Targets tickets.
 class_name MissionTally
 extends RefCounted
 
 var counts := {}
-var alert_active := false
+var alert_active := false  # the Area is in Alert
 
 
 func add(event: String, n := 1) -> void:
 	counts[event] = int(counts.get(event, 0)) + n
-
-
-## Call with "is any alert active now"; a rise counts as one alert raised.
-func set_alert(active: bool) -> void:
-	if active and not alert_active:
-		add("alert")
-	alert_active = active
 
 
 ## A guard put Down: quiet (Stealth) only while no alert is active.
