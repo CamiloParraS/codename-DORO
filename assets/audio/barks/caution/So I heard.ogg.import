@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://kr37chc3dj50"
+path="res://.godot/imported/So I heard.ogg-6fa4edca621efbf20f166594647808f4.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/caution/So I heard.ogg"
+dest_files=["res://.godot/imported/So I heard.ogg-6fa4edca621efbf20f166594647808f4.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

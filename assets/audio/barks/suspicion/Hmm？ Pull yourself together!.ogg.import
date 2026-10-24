@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ceb5bcbrf0il2"
+path="res://.godot/imported/Hmm？ Pull yourself together!.ogg-35e014bac1f0106e534903ee7ad9eefe.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/Hmm？ Pull yourself together!.ogg"
+dest_files=["res://.godot/imported/Hmm？ Pull yourself together!.ogg-35e014bac1f0106e534903ee7ad9eefe.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

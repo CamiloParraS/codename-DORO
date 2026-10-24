@@ -4,9 +4,11 @@
 
 Issues and specs are local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
 
-Build tickets: `.scratch/ghost-layer-build/issues/` (`/implement 01` means `ghost-layer-build/issues/01-*`). Each ticket is self-contained; its `**Spec:**` line leads to a spec index, so open one section file only when the ticket leaves a question open.
+Build tickets: `.scratch/pw-feel-build/issues/` (`/implement 01` means `pw-feel-build/issues/01-*`); `.scratch/mgs-feel-build/issues/` holds the older ones (tickets 11–14 are superseded; 01, 04, 09, 10 still stand per ticket 09 of the pw-feel map). Each ticket is self-contained; its `**Spec:**` line leads to the decision ticket in `.scratch/pw-feel/issues/`, so open it only when the build ticket leaves a question open.
 
-`.scratch/ghost-layer/` (map, decision tickets, research) is finished design history; read it only when asked. `.scratch/area-redesign/` supersedes build tickets 25, 26, 30, 31 for Area layout; read its map before touching them.
+`.scratch/pw-feel/map.md` is the active map (Peace Walker feel); it overrides `.scratch/mgs-feel/` and `.scratch/area-redesign/` where they disagree.
+
+`.scratch/ghost-layer/`, `.scratch/ghost-layer-build/`, `.scratch/polish/` and `.scratch/polish-build/` are finished history; read them only when asked. `.scratch/area-redesign/` supersedes build tickets 25, 26, 30, 31 for Area layout; read its map before touching them.
 
 ### Triage labels
 

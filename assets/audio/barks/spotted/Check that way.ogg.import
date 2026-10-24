@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://0g7v6bbh5b5p"
+path="res://.godot/imported/Check that way.ogg-6d85e2a1ae9d00454341aef55ced7977.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/Check that way.ogg"
+dest_files=["res://.godot/imported/Check that way.ogg-6d85e2a1ae9d00454341aef55ced7977.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

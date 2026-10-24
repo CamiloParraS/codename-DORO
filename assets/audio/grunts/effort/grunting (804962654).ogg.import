@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dbstqylk2ns0t"
+path="res://.godot/imported/grunting (804962654).ogg-8e563051e92e5301535e0fc01e31341b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/effort/grunting (804962654).ogg"
+dest_files=["res://.godot/imported/grunting (804962654).ogg-8e563051e92e5301535e0fc01e31341b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

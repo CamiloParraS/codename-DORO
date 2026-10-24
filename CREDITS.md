@@ -62,6 +62,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - `twoTone1` (`assets/audio/sting_alert.ogg`, provisional), Digital Audio by Kenney, https://kenney.nl/assets/digital-audio, CC0 1.0
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
 - Freesound sounds (one line per sound: "<title>" by <author>, https://freesound.org/s/<id>/, <CC0 | CC BY 4.0>)
+- Guard barks and grunts (`assets/audio/barks/`, `assets/audio/grunts/`, sorted into role folders), source: public archive. Custom licence: included in the game, not to be redistributed as standalone or reusable files.
 
 ## Shaders
 

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cc8s4svgqusqv"
+path="res://.godot/imported/grunt (805026449).ogg-29d3b98c78a75e8c91d2b24e355a7972.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/effort/grunt (805026449).ogg"
+dest_files=["res://.godot/imported/grunt (805026449).ogg-29d3b98c78a75e8c91d2b24e355a7972.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

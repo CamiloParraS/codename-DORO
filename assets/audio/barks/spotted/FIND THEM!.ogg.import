@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://33t4xrwp7b5k"
+path="res://.godot/imported/FIND THEM!.ogg-d47d7663bc355e0a81d1b44c4bd37a29.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/FIND THEM!.ogg"
+dest_files=["res://.godot/imported/FIND THEM!.ogg-d47d7663bc355e0a81d1b44c4bd37a29.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://yc804x2ihjjk"
+path="res://.godot/imported/groaning (804953221).ogg-aca0303ad1f209904cdd8827d434f860.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/pain/groaning (804953221).ogg"
+dest_files=["res://.godot/imported/groaning (804953221).ogg-aca0303ad1f209904cdd8827d434f860.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

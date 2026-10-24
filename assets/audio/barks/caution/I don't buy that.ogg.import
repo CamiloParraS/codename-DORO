@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://csffic65shte6"
+path="res://.godot/imported/I don't buy that.ogg-e31a48658ba6280df01db866a2ce834a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/caution/I don't buy that.ogg"
+dest_files=["res://.godot/imported/I don't buy that.ogg-e31a48658ba6280df01db866a2ce834a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://mqhc1udytltd"
+path="res://.godot/imported/Hey, you see that？.ogg-0f4a9a48c4f3893287752a36d4a9746a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/Hey, you see that？.ogg"
+dest_files=["res://.godot/imported/Hey, you see that？.ogg-0f4a9a48c4f3893287752a36d4a9746a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

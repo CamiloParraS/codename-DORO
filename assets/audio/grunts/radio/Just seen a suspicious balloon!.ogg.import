@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cuut4f8ckprsu"
+path="res://.godot/imported/Just seen a suspicious balloon!.ogg-9b8d15665349e731c6165b4851e49f43.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/radio/Just seen a suspicious balloon!.ogg"
+dest_files=["res://.godot/imported/Just seen a suspicious balloon!.ogg-9b8d15665349e731c6165b4851e49f43.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

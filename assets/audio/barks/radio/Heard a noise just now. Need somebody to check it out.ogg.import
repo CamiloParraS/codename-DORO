@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://wvix4q1138v7"
+path="res://.godot/imported/Heard a noise just now. Need somebody to check it out.ogg-1dd75a19c2e933a243975a4bd68da1ee.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/radio/Heard a noise just now. Need somebody to check it out.ogg"
+dest_files=["res://.godot/imported/Heard a noise just now. Need somebody to check it out.ogg-1dd75a19c2e933a243975a4bd68da1ee.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

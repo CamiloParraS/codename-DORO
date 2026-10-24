@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cx5gk6x6kx53d"
+path="res://.godot/imported/HOSTILE! (804952971).ogg-f2760dd88c553bc1c37a130de60e3648.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/HOSTILE! (804952971).ogg"
+dest_files=["res://.godot/imported/HOSTILE! (804952971).ogg-f2760dd88c553bc1c37a130de60e3648.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

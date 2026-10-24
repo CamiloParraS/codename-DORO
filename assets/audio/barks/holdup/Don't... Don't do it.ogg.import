@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://byldv3h7gbjky"
+path="res://.godot/imported/Don't... Don't do it.ogg-c76c65757630af786442c708b3d21267.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/holdup/Don't... Don't do it.ogg"
+dest_files=["res://.godot/imported/Don't... Don't do it.ogg-c76c65757630af786442c708b3d21267.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

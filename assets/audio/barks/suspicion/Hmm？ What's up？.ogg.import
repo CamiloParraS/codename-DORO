@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bwa2uwvhqldap"
+path="res://.godot/imported/Hmm？ What's up？.ogg-d01f72d72ab75c2f6f91228188444573.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/Hmm？ What's up？.ogg"
+dest_files=["res://.godot/imported/Hmm？ What's up？.ogg-d01f72d72ab75c2f6f91228188444573.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

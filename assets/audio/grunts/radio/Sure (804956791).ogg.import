@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bh6ucklsxn8s4"
+path="res://.godot/imported/Sure (804956791).ogg-779354528d14d0f06a4ac6c9f0b4243e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/radio/Sure (804956791).ogg"
+dest_files=["res://.godot/imported/Sure (804956791).ogg-779354528d14d0f06a4ac6c9f0b4243e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

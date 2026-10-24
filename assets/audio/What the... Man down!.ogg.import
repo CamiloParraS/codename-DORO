@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d1pot177qv3c5"
+path="res://.godot/imported/What the... Man down!.ogg-d43fabeb7823a415255cdb9bd4422749.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/What the... Man down!.ogg"
+dest_files=["res://.godot/imported/What the... Man down!.ogg-d43fabeb7823a415255cdb9bd4422749.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b8x66qyxqeur8"
+path="res://.godot/imported/There's something in there.ogg-d6c9d0fc23560420d504131aaca58e41.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/There's something in there.ogg"
+dest_files=["res://.godot/imported/There's something in there.ogg-d6c9d0fc23560420d504131aaca58e41.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

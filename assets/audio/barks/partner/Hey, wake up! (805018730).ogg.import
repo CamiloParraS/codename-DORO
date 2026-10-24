@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://df0cysd3j7g4d"
+path="res://.godot/imported/Hey, wake up! (805018730).ogg-d5565e24471d990bf4d0e6429f199d96.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/partner/Hey, wake up! (805018730).ogg"
+dest_files=["res://.godot/imported/Hey, wake up! (805018730).ogg-d5565e24471d990bf4d0e6429f199d96.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

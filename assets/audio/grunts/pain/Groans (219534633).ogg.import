@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dkrlsquwa8jd5"
+path="res://.godot/imported/Groans (219534633).ogg-99c8a7e6c14eaddad00c9414524b45ad.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/pain/Groans (219534633).ogg"
+dest_files=["res://.godot/imported/Groans (219534633).ogg-99c8a7e6c14eaddad00c9414524b45ad.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

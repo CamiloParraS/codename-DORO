@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ca64nsi7up3ys"
+path="res://.godot/imported/Heard a strange noise just now. Gonna go check it out.ogg-ec27ae8ef4a03c716cec856f567d45f1.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/radio/Heard a strange noise just now. Gonna go check it out.ogg"
+dest_files=["res://.godot/imported/Heard a strange noise just now. Gonna go check it out.ogg-ec27ae8ef4a03c716cec856f567d45f1.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

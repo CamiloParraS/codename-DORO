@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://btqays3vhtp1l"
+path="res://.godot/imported/Situation resolved. Heading back to posts.ogg-fe5cc301bfd93be1bae725b1f1d3b34c.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/radio/Situation resolved. Heading back to posts.ogg"
+dest_files=["res://.godot/imported/Situation resolved. Heading back to posts.ogg-fe5cc301bfd93be1bae725b1f1d3b34c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

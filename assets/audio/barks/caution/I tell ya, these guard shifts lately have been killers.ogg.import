@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://burs3l37atv2m"
+path="res://.godot/imported/I tell ya, these guard shifts lately have been killers.ogg-255a20fef0504fb03c8c9a4ce0a48e40.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/caution/I tell ya, these guard shifts lately have been killers.ogg"
+dest_files=["res://.godot/imported/I tell ya, these guard shifts lately have been killers.ogg-255a20fef0504fb03c8c9a4ce0a48e40.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

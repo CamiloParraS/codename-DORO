@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://brut1opvqj3m0"
+path="res://.godot/imported/Hm？ (804955397).ogg-fa757b6a6b1143d64dfeaf9c879f20f5.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/Hm？ (804955397).ogg"
+dest_files=["res://.godot/imported/Hm？ (804955397).ogg-fa757b6a6b1143d64dfeaf9c879f20f5.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

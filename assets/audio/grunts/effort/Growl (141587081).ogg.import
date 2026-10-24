@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://wrt06jrk2hd8"
+path="res://.godot/imported/Growl (141587081).ogg-86f14b276f0b09cf18dfc5d371692ee2.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/effort/Growl (141587081).ogg"
+dest_files=["res://.godot/imported/Growl (141587081).ogg-86f14b276f0b09cf18dfc5d371692ee2.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

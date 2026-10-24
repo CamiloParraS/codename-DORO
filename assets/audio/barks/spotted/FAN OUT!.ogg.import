@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dtlww35by5r61"
+path="res://.godot/imported/FAN OUT!.ogg-5e3a5634a632cd01912e7eb36318a5cd.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/FAN OUT!.ogg"
+dest_files=["res://.godot/imported/FAN OUT!.ogg-5e3a5634a632cd01912e7eb36318a5cd.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c3xpf0g0n6b7e"
+path="res://.godot/imported/Hey, look over there!.ogg-2947eefbaa04d33e82d67184cebb2d79.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/Hey, look over there!.ogg"
+dest_files=["res://.godot/imported/Hey, look over there!.ogg-2947eefbaa04d33e82d67184cebb2d79.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

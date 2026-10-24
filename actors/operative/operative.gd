@@ -567,6 +567,6 @@ func _process(delta: float) -> void:
 	_pivot.global_position = _pivot.global_position.lerp(global_position + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
-	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()))
+	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()), Vector2(velocity.x, velocity.z).length())
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW

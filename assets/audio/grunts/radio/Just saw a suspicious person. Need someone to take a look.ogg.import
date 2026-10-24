@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dl1synboen61j"
+path="res://.godot/imported/Just saw a suspicious person. Need someone to take a look.ogg-28e90d4f33efca2e1dce53acf6ebe5de.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/radio/Just saw a suspicious person. Need someone to take a look.ogg"
+dest_files=["res://.godot/imported/Just saw a suspicious person. Need someone to take a look.ogg-28e90d4f33efca2e1dce53acf6ebe5de.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

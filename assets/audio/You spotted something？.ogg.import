@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://6yp4x6yk6ndi"
+path="res://.godot/imported/You spotted something？.ogg-c1f7f7e91a2d4a1a1c85f463732eede3.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/You spotted something？.ogg"
+dest_files=["res://.godot/imported/You spotted something？.ogg-c1f7f7e91a2d4a1a1c85f463732eede3.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

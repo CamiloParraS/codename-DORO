@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://85d1nna2n0j5"
+path="res://.godot/imported/FREEZE! (804955741).ogg-ccbcaa38045a4e0d6a4b9f7aa21e6027.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/FREEZE! (804955741).ogg"
+dest_files=["res://.godot/imported/FREEZE! (804955741).ogg-ccbcaa38045a4e0d6a4b9f7aa21e6027.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

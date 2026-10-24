@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhjgmo7d58s1b"
-path="res://.godot/imported/guard_22.png-7ee9dc5b1564c66a779cf4d6166c634b.ctex"
+uid="uid://br2k1b4ocdt2p"
+path="res://.godot/imported/guard_doctor.png-e88edb83add16df9f6ba3345f18ebc74.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/models/characters/guard/guard_22.png"
-dest_files=["res://.godot/imported/guard_22.png-7ee9dc5b1564c66a779cf4d6166c634b.ctex"]
+source_file="res://assets/models/characters/guard/guard_doctor.png"
+dest_files=["res://.godot/imported/guard_doctor.png-e88edb83add16df9f6ba3345f18ebc74.ctex"]
 
 [params]
 

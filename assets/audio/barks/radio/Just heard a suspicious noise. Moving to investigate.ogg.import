@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bvpacsjsiybae"
+path="res://.godot/imported/Just heard a suspicious noise. Moving to investigate.ogg-039e35f45e416c349dee017b909caa2a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/radio/Just heard a suspicious noise. Moving to investigate.ogg"
+dest_files=["res://.godot/imported/Just heard a suspicious noise. Moving to investigate.ogg-039e35f45e416c349dee017b909caa2a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

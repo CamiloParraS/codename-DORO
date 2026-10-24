@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bmgrxsxejylq2"
+path="res://.godot/imported/Contact! (804958308).ogg-5c852e486306ebd81325ae6d4f618683.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/radio/Contact! (804958308).ogg"
+dest_files=["res://.godot/imported/Contact! (804958308).ogg-5c852e486306ebd81325ae6d4f618683.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

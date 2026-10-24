@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b0wwu8v8ftq5h"
+path="res://.godot/imported/Eyes open!.ogg-3c86ecbf4b899e838b250752df4849fa.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/Eyes open!.ogg"
+dest_files=["res://.godot/imported/Eyes open!.ogg-3c86ecbf4b899e838b250752df4849fa.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

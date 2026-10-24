@@ -1,11 +1,11 @@
 [gd_resource type="BehaviorTree" format=3 uid="uid://cmum4s6d12reh"]
 
-[ext_resource type="Script" path="res://actors/guard/bt/bt_in_state.gd" id="1_state"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_chase.gd" id="2_chase"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_search_spot.gd" id="3_search"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
+[ext_resource type="Script" uid="uid://cilvw0hhmpujm" path="res://actors/guard/bt/bt_in_state.gd" id="1_state"]
+[ext_resource type="Script" uid="uid://cnkmi5ktveoeo" path="res://actors/guard/bt/bt_chase.gd" id="2_chase"]
+[ext_resource type="Script" uid="uid://b0qg2ltdvbvp0" path="res://actors/guard/bt/bt_search_spot.gd" id="3_search"]
+[ext_resource type="Script" uid="uid://b27bjsr6t8vqr" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
+[ext_resource type="Script" uid="uid://duqt6b7x6v62t" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
+[ext_resource type="Script" uid="uid://b3duoomqwyy1w" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
 
 [sub_resource type="BTCondition" id="in_alert"]
 script = ExtResource("1_state")

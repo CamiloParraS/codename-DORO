@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://0fci4rld0e20"
+path="res://.godot/imported/KILL HIM! NOW!.ogg-5894eda39b6069413d92e643802e3bb3.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/KILL HIM! NOW!.ogg"
+dest_files=["res://.godot/imported/KILL HIM! NOW!.ogg-5894eda39b6069413d92e643802e3bb3.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://brsfjprcmth0g"
+path="res://.godot/imported/Hey, nap time's over (805018444).ogg-b45d5fcdc57316f9d3990d01a89825a5.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/partner/Hey, nap time's over (805018444).ogg"
+dest_files=["res://.godot/imported/Hey, nap time's over (805018444).ogg-b45d5fcdc57316f9d3990d01a89825a5.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

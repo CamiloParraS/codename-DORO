@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://nt8dj5ascgnd"
+path="res://.godot/imported/Just heard gunfire. Have pinpointed the location. How should.ogg-537efdfbfa4eda00d582da0341c3a9a8.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/grunts/radio/Just heard gunfire. Have pinpointed the location. How should.ogg"
+dest_files=["res://.godot/imported/Just heard gunfire. Have pinpointed the location. How should.ogg-537efdfbfa4eda00d582da0341c3a9a8.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

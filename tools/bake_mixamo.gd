@@ -4,13 +4,20 @@
 ##   godot --headless --path . --script tools/bake_mixamo.gd
 ## Both rigs rest in a T-pose facing +Z, so each mapped bone just copies the world-space rotation its Mixamo twin
 ## made since rest. Fingers are skipped (Nikita has mitts); the hips translation is scaled to Nikita's leg length.
+## A looping clip keeps the ground speed it was made at as the "speed" meta (m/s), so playback can match the feet to
+## how fast the body really moves.
 extends SceneTree
 
-const SRC := ["_raw/Models_Animations/animations/mixamo/", "_raw/Models_Animations/animations/mixamo/carry anims/"]
+## Folder -> prefix for its clip names. The packs are unzipped from mixamo/*.zip; their prefixes keep them apart from
+## the loose downloads of the same name.
+const SRC := {
+	"_raw/Models_Animations/animations/mixamo/": "", "_raw/Models_Animations/animations/mixamo/carry anims/": "",
+	"_raw/work/mx_packs/Pro Rifle Pack/": "pro_", "_raw/work/mx_packs/Pistol_Handgun Locomotion Pack/": "hg_",
+}
 const OUT := "res://assets/models/animations/mixamo_clips.res"
 const BODY := "res://assets/models/characters/Nikita_Rigged.glb"
 const KEY_FPS := 30.0
-const LOOPS := ["idle", "walk", "strafe", "aim", "carrying", "pistol_run", "rifle_run"]  # clips whose name contains one of these loop
+const LOOPS := ["idle", "walk", "strafe", "aim", "carrying", "pistol_run", "rifle_run", "pro_run", "pro_sprint"]  # clips whose name contains one of these loop
 const BONES := {
 	"Hips": "pelvis", "Spine": "spine_01", "Spine1": "spine_02", "Spine2": "spine_03", "Neck": "neck_01",
 	"Head": "Head", "LeftShoulder": "clavicle_l", "LeftArm": "upperarm_l", "LeftForeArm": "lowerarm_l",
@@ -28,13 +35,13 @@ func _run() -> void:
 	var tgt: Skeleton3D = (load(BODY) as PackedScene).instantiate().find_children("*", "Skeleton3D", true, false)[0]
 	var lib := AnimationLibrary.new()
 	for rel in SRC:
-		_bake_dir(ProjectSettings.globalize_path("res://") + rel, lib, tgt)
+		_bake_dir(ProjectSettings.globalize_path("res://") + rel, SRC[rel], lib, tgt)
 	print("baked ", lib.get_animation_list())
 	ResourceSaver.save(lib, OUT)
 	quit()
 
 
-func _bake_dir(dir: String, lib: AnimationLibrary, tgt: Skeleton3D) -> void:
+func _bake_dir(dir: String, prefix: String, lib: AnimationLibrary, tgt: Skeleton3D) -> void:
 	for file in DirAccess.get_files_at(dir):
 		if file.get_extension() != "fbx":
 			continue
@@ -46,7 +53,10 @@ func _bake_dir(dir: String, lib: AnimationLibrary, tgt: Skeleton3D) -> void:
 		var scene := doc.generate_scene(state)
 		var src: Skeleton3D = scene.find_children("*", "Skeleton3D", true, false)[0]
 		var player: AnimationPlayer = scene.find_children("*", "AnimationPlayer", true, false)[0]
-		var name := file.get_basename().to_lower().replace(" (", "_").replace(")", "").replace(" ", "_")
+		if not player.has_animation("mixamo_com"):  # the packs' Remy.fbx is the mesh alone
+			scene.free()
+			continue
+		var name := prefix + file.get_basename().to_lower().replace(" (", "_").replace(")", "").replace(" ", "_")
 		var a := _retarget(src, player.get_animation("mixamo_com"), tgt, LOOPS.any(func(l): return name.contains(l)))
 		a.loop_mode = Animation.LOOP_LINEAR if LOOPS.any(func(l): return name.contains(l)) else Animation.LOOP_NONE
 		lib.add_animation(name, a)
@@ -106,6 +116,9 @@ func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -
 			out.rotation_track_insert_key(pr[2], t, (up.inverse() * world[pr[1]]).get_rotation_quaternion())
 		var moved := (posed[0].origin - rest_hips) * k
 		moves.append(moved)
+	var pace := Vector2(moves[-1].x - moves[0].x, moves[-1].z - moves[0].z).length() / from.length
+	if loops and pace > 0.3:  # slower is an idle's sway, not a stride
+		out.set_meta("speed", pace)
 	for n in times.size():
 		var m: Vector3 = moves[n]
 		if loops:  # the clip's forward travel goes, or the model glides ahead and snaps back at each loop

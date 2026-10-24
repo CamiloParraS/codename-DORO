@@ -98,7 +98,8 @@ func _physics_process(delta: float) -> void:
 	if GuardAlert.flinches(_prev_state, alert.state):
 		model.react("startle", GuardAlert.FLINCH, 2.2)  # a pose only: the tree and shooting never wait on it
 	_prev_state = alert.state
-	model.play(CharacterModel.guard_clip(is_down(), Vector2(velocity.x, velocity.z).length()))
+	var flat := Vector2(velocity.x, velocity.z).length()
+	model.play(CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	if is_down():
 		_down_tick(delta)

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bte1gmh1n6w36"
+path="res://.godot/imported/You're breaking up. Repeat transmission.ogg-60a3d5db328a3f75675e434ac6549d6f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/radio/You're breaking up. Repeat transmission.ogg"
+dest_files=["res://.godot/imported/You're breaking up. Repeat transmission.ogg-60a3d5db328a3f75675e434ac6549d6f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

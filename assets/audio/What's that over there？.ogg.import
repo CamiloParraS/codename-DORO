@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://2b40t7fbkodg"
+path="res://.godot/imported/What's that over there？.ogg-53bd4fb44fd4eeee5698b5809e5b7d3b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/What's that over there？.ogg"
+dest_files=["res://.godot/imported/What's that over there？.ogg-53bd4fb44fd4eeee5698b5809e5b7d3b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

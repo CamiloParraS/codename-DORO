@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c0itpseed300x"
+path="res://.godot/imported/Hey, who's that？.ogg-26d1d42d3252cbf048318224dc6abbe1.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/Hey, who's that？.ogg"
+dest_files=["res://.godot/imported/Hey, who's that？.ogg-26d1d42d3252cbf048318224dc6abbe1.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

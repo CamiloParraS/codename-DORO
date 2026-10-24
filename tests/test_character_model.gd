@@ -12,7 +12,7 @@ func test_operative_clip_priority() -> void:
 	var clip := CharacterModel.operative_clip
 	assert_eq(clip.call(true, true, true, true, true, false), "takedown", "a choke beats everything")
 	assert_eq(clip.call(false, true, true, true, true, true), "carry", "carrying beats aim and crouch")
-	assert_eq(clip.call(false, true, false, false, false, false), "idle", "carrying but standing still")
+	assert_eq(clip.call(false, true, false, false, false, false), "carry_idle", "carrying but standing still")
 	assert_eq(clip.call(false, false, true, true, true, false), "aim")
 	assert_eq(clip.call(false, false, false, true, true, false), "crouch_walk")
 	assert_eq(clip.call(false, false, false, true, false, false), "crouch_idle")
@@ -118,7 +118,24 @@ func test_the_pistol_plays_its_own_clips() -> void:
 	m.play("idle")
 	assert_eq(anim.current_animation, "pistol_idle", "the pistol idle, not the rifle's")
 	m.play("run")
-	assert_eq(anim.current_animation, "pistol_run", "the pistol has its own run take")
+	assert_eq(anim.current_animation, "hg_pistol_run", "the pistol has its own run take")
 	m.play("crouch_walk")
 	assert_eq(anim.current_animation, "crouch_walk", "no pistol crouch-walk take: the shared one covers")
+	m.free()
+
+
+func test_walk_is_paced_to_ground_speed() -> void:
+	if not ResourceLoader.exists(CharacterModel.MIXAMO):
+		return
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	m.hold("rifle")
+	var natural: float = anim.get_animation("walk").get_meta("speed")
+	m.play("walk", natural * 1.2)
+	assert_true(is_equal_approx(anim.speed_scale, 1.2), "feet keep up with the body")
+	m.play("walk", natural * 10.0)
+	assert_true(is_equal_approx(anim.speed_scale, 1.5), "clamped")
+	m.play("idle", 3.0)
+	assert_true(is_equal_approx(anim.speed_scale, 1.0), "in-place clips play as made")
 	m.free()

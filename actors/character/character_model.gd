@@ -21,22 +21,22 @@ const OPERATIVE_SKIN := preload("res://assets/models/characters/operative.png")
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
-## Game clip -> Mixamo clip that replaces it (idle has no Mixamo match and stays as it is).
-## hit, fire and reload are new one-shots for react().
+## Game clip -> Mixamo clip that replaces it. Locomotion is the Pro Rifle pack (rifle at low ready, paced near the
+## game's speeds); hit, fire and reload are one-shots for react(); carry_idle is the fireman hold standing still.
 const MIXAMO_CLIPS := {
-	"aim": "rifle_aiming_idle", "crouch_idle": "pistol_kneeling_idle",
-	"crouch_walk": "rifle_crouch_walk", "takedown": "elbow_punching",
+	"idle": "pro_idle", "walk": "pro_walk_forward", "run": "pro_run_forward",
+	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching",
+	"crouch_walk": "pro_walk_crouching_forward", "takedown": "elbow_punching",
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
-	"walk": "walk_with_rifle", "run": "rifle_run",
-	"carry": "carrying", "down": "sleeping_idle",
+	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
 	"startle": "surprised", "look": "look_around",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
-## crouch-walk takes, so those keep the rifle's (or the Quaternius ones) for now.
+## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
+## loops as the aim (the loose "Pistol Aim" holsters halfway through).
 const PISTOL_CLIPS := {
-	"idle": "pistol_idle",
-	"walk": "pistol_walk_arc", "run": "pistol_run",
-	"aim": "pistol_aim",
+	"idle": "pistol_idle", "walk": "hg_pistol_walk", "run": "hg_pistol_run",
+	"aim": "hg_pistol_idle", "crouch_idle": "pistol_kneeling_idle",
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
@@ -47,6 +47,10 @@ const DRESS := {
 }
 const CARRY_BONE := "spine_03"
 const HAND_BONE := "hand_r"
+const OFF_HAND := "hand_l"
+## The rifle swings to point at the off hand while it is this far (m) from the gun hand, so it sits in both hands
+## whatever the clip; past that (reload, takedown) the hand has let go and the rifle keeps its fixed grip.
+const BRACE_REACH := Vector2(0.15, 0.75)
 ## The hand bone's local frame in the Mixamo aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X,
 ## up +Y) to point level along the way the hand does.
 const HAND_TO_GUN := Basis(Vector3(0.04, 0.995, -0.095), Vector3(-0.1, 0.095, 0.99), Vector3(0.994, -0.04, 0.105))
@@ -77,7 +81,7 @@ static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouchin
 	if choking:
 		return "takedown"
 	if carrying:
-		return "carry" if moving else "idle"
+		return "carry" if moving else "carry_idle"
 	if aiming:
 		return "aim"
 	if crouching:
@@ -124,6 +128,24 @@ func _process(delta: float) -> void:
 	if _since_step >= STEP:
 		_anim.advance(_since_step)
 		_since_step = 0.0
+		if _weapon == "rifle":
+			_brace()
+
+
+## Aims the rifle from the gun hand at the off hand, keeping its grip in the gun hand.
+func _brace() -> void:
+	var r := skeleton.get_bone_global_pose(skeleton.find_bone(HAND_BONE))
+	var l := skeleton.get_bone_global_pose(skeleton.find_bone(OFF_HAND))
+	var hand := r.basis.orthonormalized()
+	var grip: Vector3 = GUNS.rifle.grip
+	var reach := r.origin.distance_to(l.origin)
+	if reach < BRACE_REACH.x or reach > BRACE_REACH.y:
+		_gun.transform = Transform3D(HAND_TO_GUN, HAND_TO_GUN * -grip)
+		return
+	var x := (l.origin - r.origin) / reach  # the muzzle
+	var z := x.cross(hand * HAND_TO_GUN.y).normalized()
+	var aim := hand.inverse() * Basis(x, z.cross(x), z)
+	_gun.transform = Transform3D(aim, aim * -grip)
 
 
 func _rest_pose() -> Animation:
@@ -161,15 +183,23 @@ func react(clip: String, seconds := 0.0, speed := 0.0) -> void:
 	var length := _anim.get_animation(clip).length
 	_busy = seconds if seconds > 0.0 else length
 	_clip = clip
+	_anim.speed_scale = 1.0
 	_anim.play(clip, 0.1, speed if speed > 0.0 else length / _busy)
 
 
-func play(clip: String) -> void:
+## Plays a looping clip. ground_speed (m/s) paces a clip baked with a "speed" meta so the feet keep up with the body.
+func play(clip: String, ground_speed := 0.0) -> void:
 	clip = _swapped(clip)
-	if clip == _clip or _busy > 0.0:
+	if _busy > 0.0:
 		return
-	_clip = clip
-	_anim.play(clip, 0.2)
+	if not _anim.has_animation(clip):  # carry_idle is Mixamo only
+		clip = "idle"
+	if clip != _clip:
+		_clip = clip
+		_anim.play(clip, 0.2)
+	var natural: float = _anim.get_animation(clip).get_meta("speed", 0.0)
+	# ponytail: clamped so a mismatched clip (carry walk at full walk speed) skates a little instead of flailing
+	_anim.speed_scale = clampf(ground_speed / natural, 0.6, 1.5) if natural > 0.0 and ground_speed > 0.0 else 1.0
 
 
 ## The clip to actually play: with the pistol out, its takes replace the shared ones where they exist.
