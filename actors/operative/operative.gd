@@ -5,7 +5,7 @@ extends CharacterBody3D
 const KNOCK_COOLDOWN := 1.0
 const STEP_EVERY := 0.35  # seconds between loud footstep sounds
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
-const CHOKE_TIME := 2.0
+const CHOKE_TIME := 1.2
 const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
 const RECOIL_MAX := 0.15      # radians the kick can stack up to while holding fire
 const RECOIL_RECOVERY := 0.3 # radians per second it settles back
@@ -54,6 +54,7 @@ var _victim_down := false  # it was already Down when the kill began
 var _yaw := 0.0
 var _pitch := -0.25
 var _recoil := 0.0
+var _sway := Locomotion.SWAY_MOVING  # degrees of hitscan sway, see Locomotion.sway
 var _pivot: Node3D
 var _pitch_node: Node3D
 var _shoulder_arm: SpringArm3D
@@ -206,9 +207,8 @@ func _physics_process(delta: float) -> void:
 		_fire()
 	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
-		v = Vector2.ZERO  # a choke needs both hands
 		_choke_left -= delta
-		if not _grip_holds():  # it turned round or raised the alert
+		if not _grip_holds() or (not _killing and not Input.is_action_pressed("interact")):  # turned round, alerted, or E released
 			_choking.held = false
 			_choking = null
 			_choke_left = 0.0
@@ -228,8 +228,9 @@ func _physics_process(delta: float) -> void:
 	_fulton(delta)
 	_update_prompt()
 	moving = v != Vector2.ZERO
+	_sway = Locomotion.sway(_sway, moving, crouching, delta)
 	_knock_left -= delta
-	if moving and not looks_walking() and not crouching:  # running is loud
+	if moving and not looks_walking() and not crouching and not _choking:  # running is loud
 		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 		_step_left -= delta
 		if _step_left <= 0.0:
@@ -240,7 +241,7 @@ func _physics_process(delta: float) -> void:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
 	elif aiming:
 		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
-	var speed := Locomotion.speed(crouching, looks_walking())
+	var speed := Locomotion.CHOKE_SPEED if _choking else Locomotion.speed(crouching, looks_walking(), aiming)
 	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * speed, delta)
 	velocity.x = eased.x
 	velocity.z = eased.y
@@ -340,6 +341,7 @@ func _fire() -> void:
 	_yaw += randf_range(-0.3, 0.3) * arm.kick
 	var sp := arm.spread(carrying != null)
 	var dir := -camera.global_basis.z
+	sp += deg_to_rad(_sway)
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	var from := camera.global_position
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
