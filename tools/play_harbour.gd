@@ -168,7 +168,7 @@ func mission_1() -> void:
 		if obs._flat_dist(fm.global_position) > GuardAlert.PARTNER_RANGE:
 			break
 		await get_tree().physics_frame
-	await place(op,fm.global_position + fm.global_basis.z * 4.0)
+	await place(op, fm.global_position + fm.global_basis.z * 4.0)
 	Input.action_press("aim")
 	for i in 20:
 		aim_at(op, fm)
