@@ -115,6 +115,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if held or held_up or stumble_left > 0.0:
 		AlertChain.area.stop_call(self)  # a choke, a Hold-up or a dart stops the call
+	if held_up and _partners_see():  # seen kneeling: freed, turning on the Operative
+		release(operative.global_position if operative else global_position)
 	if held or held_up:
 		return
 	if stumble_left > 0.0:
@@ -241,8 +243,10 @@ func can_radio() -> bool:
 	return not is_down() and not held and not held_up and stumble_left <= 0.0
 
 
-## Put out of action (a choke); choking a Neutralized guard again restarts the clock.
+## Put out of action (a choke); choking a Neutralized guard again restarts the clock. A guard that
+## drops (up until now) is seen by its partners.
 func neutralize() -> void:
+	var dropped := not is_down()
 	AlertChain.area.stop_call(self)
 	AlertChain.area.release(self)
 	neutral_left = NEUTRALIZED_TIME
@@ -255,6 +259,8 @@ func neutralize() -> void:
 	_mark.text = ""
 	collision_layer = 0
 	_lie(true)
+	if dropped:
+		_partners_see()
 
 
 ## Killed (a rifle shot): Down for good. Counts for Lethality and Combat; a kill while any guard is
@@ -473,6 +479,37 @@ func _sense_down() -> Array:
 	return best
 
 
+## Every guard up that sees this one drop or kneel (its front cone, within PARTNER_RANGE, a clear
+## line) reacts to it. True when any did.
+func _partners_see() -> bool:
+	var any := false
+	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		if g != self and g.can_radio() and g.sees_drop(self):
+			g.on_drop(self)
+			any = true
+	return any
+
+
+## Could it see `other` drop: in its front cone within PARTNER_RANGE, with a clear line to the chest.
+func sees_drop(other: Node3D) -> bool:
+	var eye := global_position + Vector3.UP * EYE
+	var chest := other.global_position + Vector3.UP * 1.3
+	if _flat_dist(other.global_position) > GuardAlert.PARTNER_RANGE or not GuardVision.in_front(chest - eye, -global_basis.z):
+		return false
+	return _clear(eye, chest, other)
+
+
+## A partner dropped (or knelt) in sight: "?" and his name called out to the guards within
+## PARTNER_RANGE, who go "?" at the caller; GuardAlert makes it a Radio call PARTNER_DELAY s later.
+func on_drop(who: Guard) -> void:
+	var why := alert.see_drop(who.global_position, who.name)
+	if why == "":
+		return
+	_changed(why)
+	radio_say("%s!" % who.name)
+	broadcast(get_tree(), global_position, GuardAlert.PARTNER_RANGE, "%s call out" % name, self)
+
+
 ## Every guard within radius of pos hears it (GuardAlert.in_earshot: through walls).
 ## alarming (a loud shot): they go straight to ALERT instead of suspicion.
 static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String, except: Guard = null, alarming := false) -> void:
@@ -645,8 +682,10 @@ func stand_down(who: String) -> void:
 func can_see(other: Node3D) -> bool:
 	var eye := global_position + Vector3.UP * EYE
 	var chest := other.global_position + Vector3.UP * 1.3
-	if GuardVision.fill_rate(chest - eye, -global_basis.z, false, false, false) <= 0.0:
-		return false
+	return GuardVision.fill_rate(chest - eye, -global_basis.z, false, false, false) > 0.0 and _clear(eye, chest, other)
+
+
+func _clear(eye: Vector3, chest: Vector3, other: Node3D) -> bool:
 	var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), other.get_rid()])
 	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
