@@ -23,14 +23,14 @@ const CLIPS := preload("res://assets/models/animations/clips.res")
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
 ## Game clip -> Mixamo clip that replaces it. Locomotion is the Pro Rifle pack (rifle at low ready, paced near the
 ## game's speeds); hit, fire and reload are one-shots for react(); carry_idle is the fireman hold standing still;
-## kneel is a held-up guard.
+## kneel is a held-up guard with its hands up (it raises them, then holds); takedown is the choke grip, looped.
 const MIXAMO_CLIPS := {
 	"idle": "pro_idle", "walk": "pro_walk_forward", "run": "pro_run_forward",
 	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching",
-	"crouch_walk": "pro_walk_crouching_forward", "takedown": "elbow_punching",
+	"crouch_walk": "pro_walk_crouching_forward", "takedown": "hostage_situation_idle_-_villain",
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
 	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
-	"startle": "surprised", "look": "look_around", "kneel": "pistol_kneeling_idle",
+	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
 ## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
