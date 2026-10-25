@@ -50,6 +50,8 @@ static var slot := -1
 ## The slot's cleared Missions, by str(Mission index): {pre: the record before its first clear (replays play
 ## against it), best: its Mission Record (Rank.best)}. Saved with the slot.
 static var missions := {}
+## The slot's Recruit points, upgrades and S-rank items. Saved with the slot.
+static var gear := Requisition.new()
 
 
 ## New game.
@@ -57,6 +59,7 @@ static func start() -> void:
 	record = Aigis.new_record()
 	slot = -1
 	missions = {}
+	gear = Requisition.new()
 
 
 ## A post-Mission screen committed Mission k (first clear or replay): its pre-Mission record is kept from
@@ -67,6 +70,17 @@ static func commit_record(k: int, pre: Dictionary, run: Dictionary) -> bool:
 	m.best = Rank.best(m.best, run)
 	missions[str(k)] = m
 	return first_s
+
+
+## The kit a Mission is played with: the slot's gear on a first clear, the base kit for replays and Free mode.
+static func kit(g: Requisition, first_clear: bool) -> Dictionary:
+	return g.kit() if first_clear else Requisition.BASE
+
+
+## Autosave the campaign to its slot, if it has one.
+static func save() -> void:
+	if slot >= 0:
+		SaveSlots.write(slot, record, int(Time.get_unix_time_from_system()), SaveSlots.USER, missions, gear.to_dict())
 
 
 ## Past the Core.
@@ -82,7 +96,7 @@ static func objective(mission_index: int, step: int) -> String:
 
 ## Start the Mission record.mission names in its Area. Committing its post-Mission screen goes to
 ## return_to, and moves Campaign.record on only when campaign is set (Free mode passes its own record). A
-## replay passes the Mission's pre-Mission record and writes only its Mission Record.
+## replay passes the Mission's pre-Mission record and writes only its Mission Record. Only campaign wears the gear.
 static func play(tree: SceneTree, mission_record: Dictionary, return_to: String, campaign := false, replay := false) -> void:
 	var area: Node = load(MISSIONS[mission_record.mission].area).instantiate()
 	var run: MissionRun = area.get_node("MissionRun")
@@ -90,4 +104,5 @@ static func play(tree: SceneTree, mission_record: Dictionary, return_to: String,
 	run.return_to = return_to
 	run.campaign = campaign
 	run.replay = replay
+	area.get_node("Operative").equip(kit(gear, campaign))
 	tree.change_scene_to_node(area)

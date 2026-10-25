@@ -15,7 +15,7 @@ const CLIMB_SPEED := 1.8
 const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative carrying a body
 const NoFulton := preload("res://areas/no_fulton.gd")
 const FULTON_TIME := 3.0      # seconds of the Fulton key held, standing still, beside a Neutralized guard (pw-feel 05)
-const FULTONS := 3            # balloons per Mission, refilled at its start (the one place 07b's upgrade raises)
+const FULTONS := 3            # balloons per Mission, refilled at its start; Requisition raises it (equip)
 
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
@@ -37,6 +37,7 @@ var health := Health.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var held_up: Guard       # the guard at gunpoint
 var fultons := FULTONS   # balloons left; a Continue returns to the Checkpoint's count
+var fulton_time := FULTON_TIME  # Quick Hold shortens it
 var camera: Camera3D
 
 var _knock_left := 0.0
@@ -96,6 +97,20 @@ func _ready() -> void:
 	_apply_shoulder()
 	add_child(_view)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+## The Mission's kit (Requisition.kit or BASE), set before the Area enters the tree.
+func equip(kit: Dictionary) -> void:
+	items.max_charges = kit.scanner
+	items.max_magazines = kit.magazines
+	items.scan_time = kit.scan_time
+	items.refill()
+	tranq.total = kit.darts
+	tranq.refill()
+	rifle.suppressor_max = kit.suppressor
+	rifle.suppressor = kit.suppressor
+	fultons = kit.fultons
+	fulton_time = kit.fulton_time
 
 
 ## Where guards aim their line-of-sight ray.
@@ -527,7 +542,7 @@ func _aimed_guard() -> Guard:
 	return hit["collider"] if not hit.is_empty() and hit["collider"] is Guard else null
 
 
-## Fulton: hold the key FULTON_TIME s, standing still, beside a Neutralized or kneeling (not dead) guard under
+## Fulton: hold the key fulton_time s, standing still, beside a Neutralized or kneeling (not dead) guard under
 ## open sky. Releasing, moving or the guard waking cancels and spends nothing.
 func _fulton(delta: float) -> void:
 	var g := _fulton_target() if Input.is_action_pressed("fulton") and not carrying and not moving and fultons > 0 else null
@@ -536,7 +551,7 @@ func _fulton(delta: float) -> void:
 		return
 	if g != _fultoning:
 		_fultoning = g
-		_fulton_left = FULTON_TIME
+		_fulton_left = fulton_time
 	_fulton_left -= delta
 	if _fulton_left <= 0.0:
 		launch_fulton(g)

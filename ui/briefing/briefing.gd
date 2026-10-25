@@ -1,8 +1,11 @@
 ## Placeholder Briefing: the next campaign Mission, its objectives and the Voices' briefing keys as
 ## plain text; any key opens the Mission's Codec call, which starts it. Past the Core it shows the ending's band, and any key goes back to
-## the main scene. Group "mission_plan": F3 shows the plan table.
+## the main scene. Group "mission_plan": F3 shows the plan table. After a first clear with something to buy the
+## Requisition screen opens over it first; R reopens it.
 ## ponytail: the Codec player and the written Briefings replace the text, the finale the ending.
 extends Control
+
+const REQUISITION := preload("res://ui/requisition/requisition.gd")
 
 var record: Dictionary
 var plan: Dictionary
@@ -21,9 +24,21 @@ func _ready() -> void:
 	for l: String in _lines:
 		# objectives and headings have no Voice: shown at once
 		_blips.append(VoiceBlip.new(tr(l), VoiceBlip.voice_of(l)))
+	if Campaign.gear.due:
+		Campaign.gear.due = false
+		if Campaign.gear.worth_opening() and not Campaign.done():
+			open_requisition()
+
+
+func open_requisition() -> void:
+	var r := REQUISITION.new()
+	r.name = "Requisition"
+	add_child(r)
 
 
 func _process(delta: float) -> void:
+	if has_node("Requisition"):
+		return  # the briefing types out once Requisition closes
 	for b in _blips:
 		if not b.done():
 			var p := b.advance(delta)
@@ -44,6 +59,8 @@ func _unhandled_input(e: InputEvent) -> void:
 			_blips.map(func(b: VoiceBlip) -> void: b.skip())
 			Mixer.stop_blips()
 			queue_redraw()
+		elif e is InputEventKey and e.keycode == KEY_R and not Campaign.done():
+			open_requisition()
 		elif Campaign.done():
 			Campaign.start()
 			get_tree().change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
@@ -76,4 +93,4 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 	for i in _lines.size():
 		draw_string(_font, Vector2(24, 40 + i * 14), _blips[i].shown(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
-	draw_string(_font, Vector2(24, size.y - 24), "PRESS ANY KEY", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, 0.5))
+	draw_string(_font, Vector2(24, size.y - 24), "PRESS ANY KEY" if Campaign.done() else "PRESS ANY KEY   R: REQUISITION", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, 0.5))
