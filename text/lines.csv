@@ -38,6 +38,12 @@ tutorial.scanner.prompt,[F] SCANNER: SHOWS GUARD VISION CONES FOR 10 SECONDS,[F]
 tutorial.scanner.line,"Use the Scanner. You'll see where they're looking before they see you.","Usa el escaner. Veras hacia donde miran antes de que te vean."
 tutorial.magazine.prompt,[F] MAGAZINE: HOLD TO AIM  RELEASE TO THROW AS A DISTRACTION,[F] CARGADOR: MANTEN PARA APUNTAR  SUELTA PARA LANZAR COMO DISTRACCION
 tutorial.magazine.line,"Throw a magazine and the noise pulls him away from his post.","Lanza un cargador y el ruido lo aparta de su puesto."
+tutorial.holdup.prompt,[RMB] AIM FROM BEHIND  [E] HOLD UP  HOLD [E] TO QUESTION HIM,[RMB] APUNTA POR LA ESPALDA  [E] MANOS ARRIBA  MANTEN [E] PARA INTERROGARLO
+tutorial.holdup.line,"That's the Foreman. Get behind him, aim, and he'll talk. Keep the gun on him.","Ese es el capataz. Ponte a su espalda, apuntale y hablara. No dejes de apuntarle."
+tutorial.fulton.prompt,[G] HOLD BESIDE HIM: FULTON HIM OUT  NOT INDOORS,[G] MANTEN A SU LADO: SACALO CON EL FULTON  NO BAJO TECHO
+tutorial.fulton.line,"Out in the open you can send him up on a balloon. He won't be found, and he's ours.","Al aire libre puedes mandarlo arriba en un globo. No lo encontraran, y es nuestro."
+tutorial.caution.prompt,CAUTION: THEY'RE SEARCHING AND SEE FARTHER  STAY OUT OF SIGHT UNTIL IT ENDS,PRECAUCION: ESTAN BUSCANDO Y VEN MAS LEJOS  NO TE DEJES VER HASTA QUE TERMINE
+tutorial.caution.line,"They know something's wrong. Lie low a minute and they'll settle down.","Saben que algo va mal. Escondete un minuto y se calmaran."
 live.m2.s1.01,"Keys recovered. Now the console on the summit.","Llaves recuperadas. Ahora la consola de la cima."
 live.m2.s2.01,"Relay is down. Every guard on the island will be looking for the cause.","La estacion esta caida. Todos los guardias buscaran la causa."
 live.m2.s2.02,"Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.","Sus emisiones eran noticias generadas por maquina. Aigis fabrica las crisis que lo contratan para resolver."

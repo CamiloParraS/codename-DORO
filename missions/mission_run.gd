@@ -275,11 +275,14 @@ func _teach(delta: float) -> void:
 	if not op:
 		return
 	var world := {guard = INF, down = INF, spot = INF, prints = op.voiceprints.held.size(),
-		scanner = op.items.charges, magazines = op.items.magazines, tranq = op.gun() == op.tranq}
+		scanner = op.items.charges, magazines = op.items.magazines, tranq = op.gun() == op.tranq,
+		holdup = INF, fulton = op.fulton_ready(), caution = AlertChain.area.phase == AlertChain.Phase.CAUTION}
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
 		if key != "":
 			world[key] = minf(world[key], _flat(op, g))
+		if key == "guard" and g.holdup_answer != "":
+			world.holdup = minf(world.holdup, _flat(op, g))
 	for s: Node3D in get_tree().get_nodes_in_group("eavesdrop_spot"):
 		world.spot = minf(world.spot, _flat(op, s))
 	var verb := tutorial.update(delta, record.mission, campaign, Tutorial.relevant(world))

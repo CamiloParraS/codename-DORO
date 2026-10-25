@@ -12,7 +12,8 @@ func suite_name() -> String:
 
 
 func _world(over := {}) -> Dictionary:
-	var w := {guard = INF, down = INF, spot = INF, prints = 0, scanner = 3, magazines = 4, tranq = false}
+	var w := {guard = INF, down = INF, spot = INF, prints = 0, scanner = 3, magazines = 4, tranq = false,
+		holdup = INF, fulton = false, caution = false}
 	w.merge(over, true)
 	return w
 
@@ -46,11 +47,17 @@ func test_every_verb_has_a_trigger() -> void:
 	var cases := {
 		crouch = {guard = 10.0}, takedown = {guard = 3.0}, carry = {down = 1.5}, tranq = {guard = 10.0, tranq = true},
 		eavesdrop = {spot = 4.0}, radio = {prints = 1}, scanner = {guard = 20.0}, magazine = {guard = 8.0},
+		holdup = {holdup = 10.0}, fulton = {fulton = true}, caution = {caution = true},
 	}
 	assert_eq(cases.keys().map(str), Tutorial.VERBS)
 	for verb: String in cases:
 		assert_true(Tutorial.relevant(_world(cases[verb]))[verb], verb)
 		assert_false(Tutorial.relevant(_world())[verb], verb + " with nothing around")
+
+
+func test_the_hold_up_tip_waits_for_the_guard_it_matters_for() -> void:
+	assert_false(Tutorial.relevant(_world({guard = 3.0})).holdup, "an ordinary guard close by")
+	assert_true(Tutorial.relevant(_world({holdup = 10.0})).holdup, "the Foreman (a scripted answer) in sight range")
 
 
 func test_no_scanner_charges_no_scanner_tip() -> void:
