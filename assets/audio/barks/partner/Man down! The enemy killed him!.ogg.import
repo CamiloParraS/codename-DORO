@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ya0obpapnaep"
+path="res://.godot/imported/Man down! The enemy killed him!.ogg-18e06915a2404c9a34568d1fa036c95c.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/partner/Man down! The enemy killed him!.ogg"
+dest_files=["res://.godot/imported/Man down! The enemy killed him!.ogg-18e06915a2404c9a34568d1fa036c95c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

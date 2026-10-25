@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c533ea6l3j225"
+path="res://.godot/imported/You see somebody there？.ogg-50e1a838955d6059044d7b01d4b7115e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/You see somebody there？.ogg"
+dest_files=["res://.godot/imported/You see somebody there？.ogg-50e1a838955d6059044d7b01d4b7115e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

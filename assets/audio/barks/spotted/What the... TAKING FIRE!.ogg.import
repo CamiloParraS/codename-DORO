@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d3qnd6towkwrh"
+path="res://.godot/imported/What the... TAKING FIRE!.ogg-650e11499a869bde6af0425d4f2e4a77.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/spotted/What the... TAKING FIRE!.ogg"
+dest_files=["res://.godot/imported/What the... TAKING FIRE!.ogg-650e11499a869bde6af0425d4f2e4a77.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
