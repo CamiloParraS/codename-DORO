@@ -84,6 +84,12 @@ var _tele_icon := ""
 var _looked := false    # did the look-around at this search spot already
 var _prev_state := GuardAlert.State.PATROL
 var _prev_calling := false
+var voice := GuardVoice.new()  # its one voice player: barks and radio lines
+var _was_calling := false      # on the radio last frame
+var _vstate := GuardAlert.State.PATROL  # the state last frame, for state barks
+var _vphase := AlertChain.Phase.NORMAL
+var _vheld := false
+var _vsearched := false        # said "search" on reaching this suspicion's spot
 var _detour: Variant = null  # the Caution detour it walks now
 var _next_detour := 0
 var _spot_for: Variant = null  # the last known point its reserved search spot is for
@@ -108,6 +114,7 @@ func _ready() -> void:
 		add_to_group("targets")
 	else:
 		model.hold("rifle")
+	add_child(voice)
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
@@ -121,6 +128,7 @@ func _physics_process(delta: float) -> void:
 	var flat := Vector2(velocity.x, velocity.z).length()
 	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
+	_voice_tick(delta)
 	if _balloon:
 		_balloon_tick(delta)
 		return
@@ -129,6 +137,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if held or held_up or stumble_left > 0.0:
 		AlertChain.area.stop_call(self)  # a choke, a Hold-up or a dart stops the call
+		_cut_call()
 	if held_up and _partners_see():  # seen kneeling: freed, turning on the Operative
 		release(operative.global_position if operative else global_position)
 	if held or held_up:
@@ -151,6 +160,7 @@ func _physics_process(delta: float) -> void:
 			var down_guard := _down_within(CHECK_REACH)
 			if down_guard:
 				var why := alert.check_down(down_guard.dead)
+				voice.say(&"partner")
 				if not down_guard.dead:
 					get_tree().call_group("mission_tally", "event", "woken")
 					down_guard.wake(global_position)  # a Caution trigger
@@ -226,6 +236,50 @@ func _chatter(delta: float) -> void:
 		radio_say(tr(VoiceLines.pick(chatter_sets, rng)))
 
 
+## Barks off what changed this frame: a choke, the Radio call ending (squelch off), Caution ending, the
+## guard's state. Silent when it is Down or rising on a balloon.
+func _voice_tick(delta: float) -> void:
+	var calling := AlertChain.area.calling(self)
+	if _was_calling and not calling:
+		Mixer.play(&"radio_off", Mix.RADIO)  # a cut call never gets here: _cut_call cleared _was_calling
+	_was_calling = calling
+	var phase := AlertChain.area.phase
+	if _vphase == AlertChain.Phase.CAUTION and phase == AlertChain.Phase.NORMAL and not is_down() and not _balloon:
+		voice.radio_line(&"resolved", "*")  # one guard of the lot says it
+	_vphase = phase
+	if held and not _vheld:
+		voice.say(&"choke")
+	_vheld = held
+	if is_down() or _balloon or held or held_up:
+		return
+	var s := alert.state
+	if s != _vstate:
+		var from := _vstate
+		_vstate = s
+		_vsearched = false
+		match s:
+			GuardAlert.State.SUSPICION:
+				if from == GuardAlert.State.PATROL and not alert.calling:
+					voice.say(&"suspicion")
+			GuardAlert.State.ALERT:
+				voice.say(&"chase")
+			GuardAlert.State.EVASION:
+				voice.say(&"search")
+			GuardAlert.State.PATROL:
+				voice.say(&"giveup")
+	elif s == GuardAlert.State.SUSPICION and not alert.calling and not _vsearched and arrived():
+		_vsearched = true
+		voice.say(&"search")  # a local search
+	elif s == GuardAlert.State.PATROL and phase == AlertChain.Phase.CAUTION and rng.randf() < delta / 10.0:
+		voice.say(&"caution")
+
+
+## A choke, Hold-up, dart or Down stops the Radio call: the line is cut and no off squelch plays.
+func _cut_call() -> void:
+	_was_calling = false
+	voice.cut_call()
+
+
 ## Talking where a Voiceprint can be recorded: a check-in on patrol, or its turn in a chat.
 func on_air() -> bool:
 	return checkin.on_air(alert.state) or chatting()
@@ -262,6 +316,8 @@ func can_radio() -> bool:
 func neutralize() -> void:
 	var dropped := not is_down()
 	AlertChain.area.stop_call(self)
+	_cut_call()
+	_vstate = GuardAlert.State.PATROL
 	AlertChain.area.release(self)
 	neutral_left = NEUTRALIZED_TIME
 	stumble_left = 0.0
@@ -301,6 +357,7 @@ func shoot(head: bool, from: Vector3) -> void:
 		kill()
 	else:
 		model.react("hit", HIT_TIME)
+		voice.say(&"pain")
 		_changed(alert.hear(from, "a bullet"))
 
 
@@ -323,6 +380,7 @@ func tranquilize(head: bool, from: Vector3) -> void:
 	if not vest:  # a vest stops the dart: the guard only hears it hit
 		stumble_left = Tranq.BODY_DELAY
 		model.react("hit", HIT_TIME)
+		voice.say(&"pain")
 	_changed(alert.hear(from, "a dart"))
 
 
@@ -397,6 +455,7 @@ func can_be_held_up(from: Vector3) -> bool:
 func hold_up() -> void:
 	held_up = true
 	velocity = Vector3.ZERO
+	voice.say(&"holdup")
 	model.react("startle", GuardAlert.FLINCH)
 	_mark.text = "hands up"
 	_mark.modulate = MARK_COLORS[GuardAlert.State.SUSPICION]
@@ -477,6 +536,7 @@ func _balloon_tick(delta: float) -> void:
 		if o not in _balloon_seen and o._flat_dist(_balloon_spot) <= BALLOON_SEEN and o.sees_point(at):
 			_balloon_seen.append(o)
 			o.on_noise(_balloon_spot, "a balloon")
+			o.voice.say(&"balloon")
 
 
 ## Does it have a clear line of sight to point p (a Fulton balloon: seen whichever way it faces).
@@ -559,6 +619,7 @@ func on_drop(who: Guard) -> void:
 		return
 	_changed(why)
 	radio_say("%s!" % who.name)
+	voice.say(&"partner")
 	broadcast(get_tree(), global_position, GuardAlert.PARTNER_RANGE, "%s call out" % name, self)
 
 
@@ -585,6 +646,8 @@ func _radio_call() -> void:
 	if not chain.start_call(self, alert.last_known, AlertChain.CALL_TIME, alert.heard):
 		return
 	model.react("startle", GuardAlert.FLINCH, 2.2)
+	_was_calling = true
+	voice.call_in(func() -> bool: return AlertChain.area.calling(self))
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		if g != self and GuardAlert.in_earshot(g.global_position, global_position, AlertChain.SHOUT_RANGE):
 			g.on_shout(alert.last_known, self)

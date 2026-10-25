@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cb6loojkvrwlt"
+path="res://.godot/imported/heard a noise.ogg-36f5adb4fa35d24cf69f9480a19d01b8.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/barks/suspicion/heard a noise.ogg"
+dest_files=["res://.godot/imported/heard a noise.ogg-36f5adb4fa35d24cf69f9480a19d01b8.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
