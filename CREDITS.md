@@ -53,15 +53,27 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 ## Audio
 
 - `spaceEngineLow_000` (`assets/audio/ambience_hum.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
-- `engineCircular_000` (`assets/audio/music_alert.ogg`, placeholder), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
-- `computerNoise_000` (`assets/audio/music_evasion.ogg`, placeholder), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
 - `impactMetal_000` (`assets/audio/sfx_knock.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
-- `drop_002` (`assets/audio/sfx_footstep.ogg`), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
 - `question_002` (`assets/audio/sting_question.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
 - `confirmation_002` (`assets/audio/sting_relief.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
-- `twoTone1` (`assets/audio/sting_alert.ogg`, provisional), Digital Audio by Kenney, https://kenney.nl/assets/digital-audio, CC0 1.0
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
-- Freesound sounds (one line per sound: "<title>" by <author>, https://freesound.org/s/<id>/, <CC0 | CC BY 4.0>)
+- "airy_0", "urgent_0", "sector_0" (`assets/audio/music_patrol.ogg`, `music_alert.ogg`, `music_evasion.ogg`) from Dark Sci-Fi Audio Pack by SRG774, https://opengameart.org/content/dark-sci-fi-audio-pack, CC0 1.0
+- Impact Sounds by Kenney, https://kenney.nl/assets/impact-sounds, CC0 1.0: `footstep_concrete_000..004` (`sfx_step_*`), `impactPunch_medium_000` (`sfx_takedown`), `impactSoft_heavy_000` (`sfx_body_fall`), `impactSoft_medium_000` (`sfx_dart_hit`), `impactPlate_light_000` (`sfx_dart_vest`), `impactMetal_light_000..001` (`sfx_mag_land_*`)
+- `cloth1` (layered into `sfx_choke.ogg`), RPG Audio by Kenney, https://kenney.nl/assets/rpg-audio, CC0 1.0
+- `click3` (`sfx_ui_click.ogg`), UI Audio by Kenney, https://kenney.nl/assets/ui-audio, CC0 1.0
+- "A silenced/suppressed handgun being shot once w/ phaser sounding trail // pretty metallic sounding" by serøutōnin--deprivəd, https://freesound.org/s/855656/, CC0 (`sfx_shot_quiet.ogg`)
+- "Silenced Sniper Rifle.flac" by qubodup, https://freesound.org/s/182815/, CC0 (`sfx_shot_quiet_rifle.ogg`, trimmed)
+- "M4A1 Shot" by qubodup, https://freesound.org/s/854207/, CC0 (`sfx_shot_loud.ogg`)
+- "Male Choking_1" by Drkvixn91, https://freesound.org/s/318080/, CC0 (`sfx_choke.ogg`, first 1.6 s)
+- "Climbing Metal Ladder hands and feet" by DeqstersLab, https://freesound.org/s/767343/, CC0 (`sfx_ladder_*.ogg`, three slices)
+- "Walkie Talkie - Transmission Start" by bruce965, https://freesound.org/s/321905/, CC0 (`sfx_radio_on.ogg`)
+- "Radio receiver on/off" by LukaCafuka, https://freesound.org/s/753402/, CC0 (`sfx_radio_off.ogg`, the off click)
+- "Shock Stab 12" by nomiqbomi, https://freesound.org/s/578382/, CC0 (`sting_alert.ogg`, first 0.4 s)
+- "9_inch_inflate" by tix99, https://freesound.org/s/732685/, CC0 (`sfx_fulton_launch.ogg`)
+- "Steam.wav" by SukritSen, https://freesound.org/s/398077/, CC0 (layered into `sfx_fulton_launch.ogg`)
+- "rope leathery creaking.wav" by vestibule-door, https://freesound.org/s/664929/, CC0 (layered into `sfx_fulton_launch.ogg`)
+- "magical rising wind or sea .wav" by martian, https://freesound.org/s/403003/, CC0 (`sfx_fulton_lift.ogg`, first 8 s)
+- "Night time crickets, distant dogs and traffic ambience.WAV" by SukritSen, https://freesound.org/s/482687/, CC0 (`ambience_outdoor.ogg`)
 - Guard barks and grunts (`assets/audio/barks/`, `assets/audio/grunts/`, sorted into role folders), source: public archive. Custom licence: included in the game, not to be redistributed as standalone or reusable files.
 
 ## Shaders

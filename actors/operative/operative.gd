@@ -3,6 +3,7 @@
 extends CharacterBody3D
 
 const KNOCK_COOLDOWN := 1.0
+const RUNG_SPACING := 0.5  # metres climbed between rung sounds
 const STEP_EVERY := 0.35  # seconds between loud footstep sounds
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 1.2
@@ -63,6 +64,7 @@ var _holdup := Holdup.new()  # the clock on held_up
 var _ask := 0.0          # seconds of E held on held_up
 var _fultoning: Guard
 var _fulton_left := 0.0
+var _rung_left := 0.0   # metres of ladder until the next rung sound
 
 
 func _ready() -> void:
@@ -347,7 +349,7 @@ func _fire() -> void:
 	get_tree().call_group("mission_tally", "event", "rifle" if arm.lethal else "dart")
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot", null, true)
-	Mix.sfx_at(self, Mix.shot_sound(quiet))
+	Mix.sfx_at(self, Mix.shot_sound(quiet, arm.lethal))
 	model.react("fire", 0.3)
 	_recoil = minf(_recoil + arm.kick, RECOIL_MAX)
 	_yaw += randf_range(-0.3, 0.3) * arm.kick
@@ -398,6 +400,7 @@ func _interact() -> void:
 		_choke_left = choke_time
 		_killing = false
 		g.held = true
+		Mix.sfx_at(self, &"choke")
 		if choke_noise > 0.0:
 			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
@@ -434,6 +437,10 @@ func _climb(dir: float, delta: float) -> void:
 		ladder = null
 	else:
 		global_position = Vector3(bottom.x, y, bottom.z)
+		_rung_left -= absf(dir) * CLIMB_SPEED * delta
+		if _rung_left <= 0.0:
+			_rung_left = RUNG_SPACING
+			Mix.sfx_at(self, &"ladder")
 
 
 func _ladder_near() -> Node3D:
@@ -462,6 +469,7 @@ func _begin_kill() -> void:
 		_choke_left = KILL_TIME
 		_killing = true
 		g.held = true
+		Mix.sfx_at(self, &"choke")
 
 
 ## Is the grip still good: a standing victim can still be choked, a Down one is still on the floor.
