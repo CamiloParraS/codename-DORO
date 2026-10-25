@@ -83,9 +83,12 @@ func _open() -> void:
 	_pointer = Vector2.ZERO
 	Engine.time_scale = SLOW
 	_operative.radio_open = true
+	Mixer.play(&"radio_on", Mix.RADIO)
 
 
 func close() -> void:
+	if menu:
+		Mixer.play(&"radio_off", Mix.RADIO)
 	menu = null
 	Engine.time_scale = 1.0
 	if is_instance_valid(_operative):

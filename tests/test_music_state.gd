@@ -13,12 +13,13 @@ func suite_name() -> String:
 	return "music_state"
 
 
-func test_patrol_is_ambience_only() -> void:
-	assert_eq(MusicState.new().update(1.0, [P, P]), &"")
+func test_patrol_plays_the_quiet_loop() -> void:
+	assert_eq(MusicState.new().update(1.0, [P, P]), &"patrol")
+	assert_eq(MusicState.new().update(1.0, []), &"patrol")  # every guard down
 
 
-func test_suspicion_changes_no_music() -> void:
-	assert_eq(MusicState.new().update(1.0, [S, P]), &"")
+func test_suspicion_keeps_the_patrol_loop() -> void:
+	assert_eq(MusicState.new().update(1.0, [S, P]), &"patrol")
 	var m := MusicState.new()
 	m.update(1.0, [A])
 	m.update(3.0, [A])
@@ -35,7 +36,12 @@ func test_change_holds_two_seconds() -> void:
 	m.update(0.1, [A])
 	assert_eq(m.update(1.0, [P]), &"alert")
 	assert_eq(m.update(0.5, [P]), &"alert")
-	assert_eq(m.update(0.5, [P]), &"")  # 2.0 s since the change
+	assert_eq(m.update(0.5, [P]), &"patrol")  # 2.0 s since the change
+
+
+func test_patrol_ceiling_is_quieter_than_the_other_tracks() -> void:
+	assert_eq(MusicState.ceiling_db(&"patrol"), -14.0)
+	assert_eq(MusicState.ceiling_db(&"alert"), 0.0)
 
 
 func test_held_change_lands_when_hold_ends() -> void:

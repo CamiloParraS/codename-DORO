@@ -274,6 +274,7 @@ func neutralize() -> void:
 	collision_layer = 0
 	_lie(true)
 	if dropped:
+		Mix.sfx_at(self, &"body_fall")
 		_partners_see()
 
 
@@ -316,6 +317,7 @@ func tranquilize(head: bool, from: Vector3) -> void:
 	if head and not helmet:
 		neutralize()
 		return
+	Mix.sfx_at(self, &"dart_vest" if vest else &"dart_hit")
 	if stumble_left > 0.0:
 		return
 	if not vest:  # a vest stops the dart: the guard only hears it hit
@@ -444,6 +446,10 @@ func fulton() -> void:
 	held_up = false
 	_mark.text = ""
 	_balloon_left = BALLOON_TIME
+	Mix.sfx_at(self, &"fulton_launch")
+	var lift := Mix.sfx_at(self, &"fulton_lift")
+	lift.pitch_scale = 1.0
+	create_tween().tween_property(lift, "pitch_scale", 1.6, RISE_TIME)  # pitched up as it rises
 	_balloon_spot = global_position
 	_balloon = MeshInstance3D.new()
 	var ball := SphereMesh.new()

@@ -71,6 +71,19 @@ func test_blips_share_one_ui_player() -> void:
 	m.free()
 
 
+func test_voice_and_radio_buses_send_to_sfx_and_radio_is_filtered() -> void:
+	_mix()
+	for b in [Mix.VOICE, Mix.RADIO]:
+		assert_eq(AudioServer.get_bus_send(AudioServer.get_bus_index(b)), Mix.SFX)
+	assert_eq(AudioServer.get_bus_effect_count(AudioServer.get_bus_index(Mix.RADIO)), 3)
+	assert_eq(AudioServer.get_bus_effect_count(AudioServer.get_bus_index(Mix.VOICE)), 0)
+
+
+func test_pick_returns_a_variant_of_the_sound() -> void:
+	assert_true(Mix.pick(&"footstep") in Mix.STREAMS[&"footstep"])
+	assert_eq(Mix.pick(&"takedown"), Mix.STREAMS[&"takedown"])
+
+
 func test_master_has_a_volume_setter_like_the_others() -> void:
 	var m := _mix()
 	m.set_volume(Mix.MASTER, 0.5)
@@ -92,16 +105,20 @@ func test_time_scale_is_left_alone_unless_a_hit_stop_is_on_or_ending() -> void:
 
 func test_every_stream_loads() -> void:
 	for k in Mix.STREAMS:
-		assert_true(load(Mix.STREAMS[k]) is AudioStream, "%s loads" % k)
+		var v: Variant = Mix.STREAMS[k]
+		for path in ([v] if v is String else v):
+			assert_true(load(path) is AudioStream, "%s loads" % k)
 
 
 func test_each_wanted_sound_has_a_stream() -> void:
-	for k in [&"shot_quiet", &"shot_loud", &"takedown", &"mag_land", &"ui_click"]:
+	for k in [&"shot_quiet", &"shot_quiet_rifle", &"shot_loud", &"takedown", &"body_fall", &"dart_hit", &"dart_vest", &"choke",
+			&"mag_land", &"footstep", &"ladder", &"fulton_launch", &"fulton_lift", &"radio_on", &"radio_off", &"patrol", &"ui_click"]:
 		assert_true(Mix.STREAMS.has(k), "%s mapped" % k)
 
 
 func test_shot_sound_follows_the_suppressor() -> void:
 	assert_eq(Mix.shot_sound(true), &"shot_quiet")
+	assert_eq(Mix.shot_sound(true, true), &"shot_quiet_rifle")
 	assert_eq(Mix.shot_sound(false), &"shot_loud")
 
 
