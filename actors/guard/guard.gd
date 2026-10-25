@@ -34,6 +34,7 @@ var stops: Array[Dictionary] = []  # per route point (a sentry: its one spot): {
 var chat: Chat                   # a chatting pair's shared turns (seat 0 ticks them)
 var chat_seat := 0
 var chat_partner: Guard
+var target_chat: TargetChatter   # a Target's lines with his escort (chat_partner), once per Mission
 var post: Transform3D            # where it was spawned: a Checkpoint restore puts it back here
 var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
@@ -218,9 +219,21 @@ func _check_in(delta: float) -> void:
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
 			get_tree().call_group("radio_log", "say", who.name, tr(line))
+	if target_chat:
+		_target_chat(delta)
 	if operative:
 		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), on_air())
 	_refresh_mark()
+
+
+## The Target and his escort talk while both are up and on patrol and the Operative is within earshot.
+func _target_chat(delta: float) -> void:
+	var calm := alert.state == GuardAlert.State.PATROL and not is_down() and not chat_partner.is_down() \
+			and chat_partner.alert.state == GuardAlert.State.PATROL
+	var line := target_chat.tick(delta, calm and operative != null and _flat_dist(operative.global_position) <= Chat.HEARD)
+	if not line.is_empty():
+		var who: Guard = self if line.seat == 0 else chat_partner
+		get_tree().call_group("radio_log", "say", who.name, tr(line.key))
 
 
 ## Every CHATTER_EVERY s on patrol, a warning or confirmation about a Habit, as a subtitle, only when

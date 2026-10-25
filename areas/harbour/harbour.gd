@@ -66,6 +66,8 @@ func _spawn_targets(guards: Array) -> void:
 		escort.global_position += escort.global_basis.x * 1.5
 		escort.post = escort.global_transform
 		guards.append(escort)
+		t.chat_partner = escort
+		t.target_chat = TargetChatter.new($MissionRun.record.mission)
 	$MissionRun.tally.add("targets", names.size())
 
 
