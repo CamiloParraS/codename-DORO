@@ -35,8 +35,12 @@ func _physics_process(delta: float) -> void:
 	if not _operative or done:
 		held = 0.0
 		return
-	_operative.prompt = prompt
 	tick(delta, Input.is_action_pressed("interact") and not _operative.moving)
+
+
+## The line it adds to the Operative op's prompt (Operative._update_prompt), "" when he isn't at it.
+func prompt_for(op: Node3D) -> String:
+	return prompt if op == _operative and not done else ""
 
 
 ## One frame of holding (or not): the progress resets when released.

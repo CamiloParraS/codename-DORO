@@ -471,6 +471,15 @@ func _posts(container: String, posts: Array, group: String) -> void:
 			_marker(post, "Route%d" % (i + 1), [wp[0], wp[1], p[1][2]], wp[2].get("f", 0), wp[2])
 
 
+## No-Fulton rooms (areas/no_fulton.gd) under $NoFulton: [name, rect, h0, h1] each.
+func _rooms(rooms: Array) -> void:
+	var g := _group(_root, "NoFulton")
+	for r in rooms:
+		var rect: Array = r[1]
+		_area(g, r[0], [rect[0] + rect[2] / 2.0, rect[1] + rect[3] / 2.0, (r[2] + r[3]) / 2.0],
+			Vector3(rect[2], r[3] - r[2], rect[3]), "res://areas/no_fulton.gd")
+
+
 func _area(parent: Node, name: String, at: Array, size: Vector3, script: String) -> Area3D:
 	var a := Area3D.new()
 	a.name = name

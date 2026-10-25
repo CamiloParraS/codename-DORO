@@ -74,6 +74,8 @@ const BUILDINGS := [
 	["Lab", [6, 32, 48, 22], 4.0, [["S", 14.0], ["S", 32.0], ["N", 24.0], ["N", 38.0], ["E", 43.0], ["E", 50.0]],
 		Color(0.85, 0.85, 0.8), 0.0],
 ]
+## No Fulton under a roof: [name, rect, h0, h1]: the lab and under the pump house.
+const ROOMS := [["Lab", [6, 32, 48, 22], 0, 4], ["PumpCrawl", [28, 56, 8, 10], 0, 3.5]]
 ## The stilted pump house: a 10 m Crawlspace under it, from the yard north to the Archive's back door.
 const CRAWLSPACES := [
 	{name = "PumpCrawl", rect = [28, 56, 8, 10], h = 3.5, mat = "wood", tint = Color(0.8, 0.7, 0.55), axis_x = 32.0},
@@ -234,6 +236,7 @@ func _build() -> void:
 	for n in SPOOFS:
 		_marker(spoofs, n, SPOOFS[n], 0, {}, "spoof_place")
 
+	_rooms(ROOMS)
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y += 1.5

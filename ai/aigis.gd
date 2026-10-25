@@ -40,6 +40,7 @@ const TRIGGERS := {
 	"takedown": ["takedowns", 20],      # choke or kill from behind
 	"down_found": ["downs", 25],        # a guard found a Down guard
 	"woken": ["downs", 15],             # a Neutralized guard woken by another
+	"fulton": ["downs", 15],            # a guard Fultoned: gone missing, no body (a Target's is target_fulton: nothing)
 	"spoof": ["spoofing", 20],          # a Spoofed transmission sent
 	"spoof_exposed": ["spoofing", 20],  # extra weight when it was exposed
 	"interrogated_voiceprint": ["spoofing", 10],  # a held-up guard gave up his Voiceprint

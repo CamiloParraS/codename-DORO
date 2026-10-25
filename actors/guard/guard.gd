@@ -23,6 +23,9 @@ const HOLD_TIME := 30.0         # seconds a guard told to hold its position stay
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
+const RISE_TIME := 4.0          # seconds a Fultoned guard takes to rise out of sight
+const BALLOON_TIME := 6.0       # seconds after launch that guards can see the balloon
+const BALLOON_SEEN := 20.0      # flat metres from the spot within which a guard who sees it comes to look
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
 
@@ -84,6 +87,10 @@ var _prev_calling := false
 var _detour: Variant = null  # the Caution detour it walks now
 var _next_detour := 0
 var _spot_for: Variant = null  # the last known point its reserved search spot is for
+var _balloon: Node3D           # Fultoned: the balloon on its way up
+var _balloon_left := 0.0
+var _balloon_spot := Vector3.ZERO
+var _balloon_seen: Array[Guard] = []
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
@@ -114,6 +121,9 @@ func _physics_process(delta: float) -> void:
 	var flat := Vector2(velocity.x, velocity.z).length()
 	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
+	if _balloon:
+		_balloon_tick(delta)
+		return
 	if is_down():
 		_down_tick(delta)
 		return
@@ -422,31 +432,52 @@ func answer(op: Node3D) -> void:
 	radio_say(tr("holdup." + what))
 
 
+## Can a Fulton take it: Neutralized (darted, choked) or kneeling at gunpoint; never the dead.
+func can_be_fultoned() -> bool:
+	return (is_down() and not dead) or held_up
+
+
 ## Fultoned: a balloon lifts it out of the Area for good (the Operative already took it out of "guards").
+## It rises over RISE_TIME s; for BALLOON_TIME s every guard within BALLOON_SEEN m of the spot with a line
+## of sight to the balloon comes to look (_balloon_tick). Silent.
 func fulton() -> void:
 	held_up = false
-	var balloon := MeshInstance3D.new()
+	_mark.text = ""
+	_balloon_left = BALLOON_TIME
+	_balloon_spot = global_position
+	_balloon = MeshInstance3D.new()
 	var ball := SphereMesh.new()
 	ball.radius = 0.8
 	ball.height = 1.6
 	var m := StandardMaterial3D.new()
 	m.albedo_color = Color(0.9, 0.85, 0.75)
 	ball.material = m
-	balloon.mesh = ball
-	balloon.position.y = 3.0
-	add_child(balloon)
+	_balloon.mesh = ball
+	_balloon.position.y = 3.0
+	add_child(_balloon)
 	var t := create_tween()
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 1.5, 1.0)
-	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, 2.0)
-	t.tween_callback(queue_free)
+	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, RISE_TIME - 1.0)
+	t.tween_callback(hide)
 
 
-## Does it have a line of sight to point p within reach (a Fulton balloon: seen whichever way it faces).
-func sees_point(p: Vector3, reach: float) -> bool:
-	var eye := global_position + Vector3.UP * EYE
-	if is_down() or eye.distance_to(p) > reach:
+func _balloon_tick(delta: float) -> void:
+	_balloon_left -= delta
+	if _balloon_left <= 0.0:
+		queue_free()
+		return
+	var at := _balloon.global_position
+	for o: Guard in get_tree().get_nodes_in_group("guards"):
+		if o not in _balloon_seen and o._flat_dist(_balloon_spot) <= BALLOON_SEEN and o.sees_point(at):
+			_balloon_seen.append(o)
+			o.on_noise(_balloon_spot, "a balloon")
+
+
+## Does it have a clear line of sight to point p (a Fulton balloon: seen whichever way it faces).
+func sees_point(p: Vector3) -> bool:
+	if is_down():
 		return false
-	var q := PhysicsRayQueryParameters3D.create(eye, p, 1, [get_rid()])
+	var q := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * EYE, p, 1, [get_rid()])
 	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 

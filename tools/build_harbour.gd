@@ -334,7 +334,7 @@ func _build() -> void:
 	var eavesdrops := _group(_root, "EavesdropSpots")
 	for n in EAVESDROP:
 		_marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
-	_rooms()
+	_rooms(ROOMS)
 
 	_actors()
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
@@ -348,15 +348,6 @@ func _build() -> void:
 
 
 # --- Harbour-only builders ---------------------------------------------------------------------
-
-## The ROOMS as no-Fulton boxes (areas/no_fulton.gd) under $NoFulton.
-func _rooms() -> void:
-	var g := _group(_root, "NoFulton")
-	for r in ROOMS:
-		var rect: Array = r[1]
-		_area(g, r[0], [rect[0] + rect[2] / 2.0, rect[1] + rect[3] / 2.0, (r[2] + r[3]) / 2.0],
-			Vector3(rect[2], r[3] - r[2], rect[3]), "res://areas/no_fulton.gd")
-
 
 ## Mission 1's OBJECTIVES under $Intel, where MissionRun finds every step.
 func _objectives() -> void:

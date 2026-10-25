@@ -19,6 +19,8 @@ const CORE_SOLID := [
 	["CorridorRoof", [-14, 30.7, 16, 2.6], 4, 4.3, "metal", Color(0.6, 0.6, 0.6)],
 	["ConsoleDesk", [-33.7, 30.5, 1.2, 3], 0, 1, "metal", Color.WHITE],  # the Core terminal's desk
 ]
+## No Fulton anywhere below the Harbour: the corridor and the Core room (on top of the Harbour's ROOMS).
+const CORE_ROOMS := [["Corridor", [-14, 30.7, 16, 2.6], 0, 4], ["CoreRoom", ROOM, 0, 4]]
 const CORE_BUILDING := ["CoreRoom", ROOM, 4.0, [["E", 32.0]], Color(0.7, 0.75, 0.8)]  # one door, east, onto the corridor
 ## What the Core changes on the Harbour surface (pw-feel issue 07): the smoke break is over and the code is
 ## known, so the pair and the Foreman are gone; a stern Patroller closes the deck's way round the bridge and
@@ -112,7 +114,7 @@ func _build() -> void:
 	for n in SPOOFS:
 		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
 
-	_rooms()
+	_rooms(ROOMS + CORE_ROOMS)
 	_actors()
 	# the lift's door: outside the NavRegion, so the navmesh is open and only bodies are held back
 	var door := _box(_root, "LiftDoor", [0.5, 31, 0.5, 2], 0, 3, "metal", Color(0.9, 0.5, 0.2))
