@@ -29,6 +29,9 @@ const STREAMS := {
 	&"sting_relief": "res://assets/audio/sting_relief.ogg",
 	&"footstep": ["res://assets/audio/sfx_step_0.ogg", "res://assets/audio/sfx_step_1.ogg", "res://assets/audio/sfx_step_2.ogg",
 		"res://assets/audio/sfx_step_3.ogg", "res://assets/audio/sfx_step_4.ogg"],
+	&"footstep_metal": ["res://assets/audio/sfx_step_metal_0.ogg", "res://assets/audio/sfx_step_metal_1.ogg", "res://assets/audio/sfx_step_metal_2.ogg",
+		"res://assets/audio/sfx_step_metal_3.ogg", "res://assets/audio/sfx_step_metal_4.ogg", "res://assets/audio/sfx_step_metal_5.ogg",
+		"res://assets/audio/sfx_step_metal_6.ogg", "res://assets/audio/sfx_step_metal_7.ogg"],
 	&"shot_quiet": "res://assets/audio/sfx_shot_quiet.ogg",
 	&"shot_quiet_rifle": "res://assets/audio/sfx_shot_quiet_rifle.ogg",
 	&"shot_loud": "res://assets/audio/sfx_shot_loud.ogg",
@@ -45,7 +48,9 @@ const STREAMS := {
 	&"radio_off": "res://assets/audio/sfx_radio_off.ogg",
 	&"ui_click": "res://assets/audio/sfx_ui_click.ogg",
 }
-const OUTDOOR_DB := -16.0  # crickets bed under open sky
+const CROUCH_STEP_DB := -9.0  # a crouched footstep, under a run's
+
+const OUTDOOR_DB := -24.0  # crickets bed under open sky
 
 var _vol := {}             # bus -> linear 0..1
 var _duck := 0.0           # current music duck, dB (0 or MusicState.DUCK_DB)
@@ -207,12 +212,22 @@ static func shot_sound(quiet: bool, lethal := false) -> StringName:
 	return &"shot_quiet_rifle" if lethal else &"shot_quiet"
 
 
+## The footstep sound for a floor `surface` tag ("metal" from the Area generators; anything else is concrete).
+static func step_sound(surface: StringName) -> StringName:
+	return &"footstep_metal" if surface == &"metal" else &"footstep"
+
+
+static func step_db(crouching: bool) -> float:
+	return CROUCH_STEP_DB if crouching else 0.0
+
+
 ## A one-shot on the SFX bus, 3D at `at`'s position (or at `pos` when given, e.g. where a Magazine lands).
 ## Returns the player (a Fulton lift bends its pitch).
-static func sfx_at(at: Node3D, sound: StringName, pos := Vector3.INF) -> AudioStreamPlayer3D:
+static func sfx_at(at: Node3D, sound: StringName, pos := Vector3.INF, db := 0.0) -> AudioStreamPlayer3D:
 	var p := AudioStreamPlayer3D.new()
 	p.stream = load(pick(sound))
 	p.bus = SFX
+	p.volume_db = db
 	p.pitch_scale = randf_range(0.9, 1.1)
 	p.finished.connect(p.queue_free)
 	at.add_child(p)

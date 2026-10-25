@@ -23,6 +23,15 @@ func test_marker_counts() -> void:
 	h.free()
 
 
+func test_metal_decks_are_tagged_and_concrete_is_not() -> void:
+	var h: Node = load(SCENE).instantiate()
+	for n in ["Bow", "Bridge", "Crane", "Gangway"]:
+		assert_eq(h.get_node("NavRegion/Solid/" + n).get_meta("surface", ""), "metal", n)
+	assert_eq(h.get_node("NavRegion/Solid/Hull").get_meta("surface", ""), "metal")
+	assert_eq(h.get_node("NavRegion/Land/Land0").get_meta("surface", ""), "")
+	h.free()
+
+
 func test_navmesh_baked_with_margin() -> void:
 	var h: Node = load(SCENE).instantiate()
 	var nm: NavigationMesh = (h.get_node("NavRegion") as NavigationRegion3D).navigation_mesh

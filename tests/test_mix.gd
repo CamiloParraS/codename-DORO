@@ -116,6 +116,23 @@ func test_each_wanted_sound_has_a_stream() -> void:
 		assert_true(Mix.STREAMS.has(k), "%s mapped" % k)
 
 
+func test_step_sound_follows_the_floor_and_crouching_is_quieter() -> void:
+	assert_eq(Mix.step_sound(&"metal"), &"footstep_metal")
+	assert_eq(Mix.step_sound(&""), &"footstep")
+	assert_true(Mix.step_db(true) < Mix.step_db(false))
+	assert_true(Mix.STREAMS.has(&"footstep_metal"))
+
+
+func test_crickets_sit_well_under_the_music() -> void:
+	assert_true(Mix.OUTDOOR_DB <= -24.0)
+
+
+func test_guard_voice_is_louder_than_unity() -> void:
+	var v := GuardVoice.new()
+	assert_true(v.volume_db > 0.0)
+	v.free()
+
+
 func test_shot_sound_follows_the_suppressor() -> void:
 	assert_eq(Mix.shot_sound(true), &"shot_quiet")
 	assert_eq(Mix.shot_sound(true, true), &"shot_quiet_rifle")
