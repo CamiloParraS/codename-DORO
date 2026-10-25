@@ -217,7 +217,7 @@ func _check_in(delta: float) -> void:
 		var line := chat.tick(delta)
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
-		if line != "" and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
+		if line != "" and is_instance_valid(who) and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
 			get_tree().call_group("radio_log", "say", who.name, tr(line))
 	if target_chat:
 		_target_chat(delta)
@@ -228,8 +228,7 @@ func _check_in(delta: float) -> void:
 
 ## The Target and his escort talk while both are up and on patrol and the Operative is within earshot.
 func _target_chat(delta: float) -> void:
-	var calm := alert.state == GuardAlert.State.PATROL and not is_down() and not chat_partner.is_down() \
-			and chat_partner.alert.state == GuardAlert.State.PATROL
+	var calm := alert.state == GuardAlert.State.PATROL and not is_down() and partner_calm()
 	var line := target_chat.tick(delta, calm and operative != null and _flat_dist(operative.global_position) <= Chat.HEARD)
 	if not line.is_empty():
 		var who: Guard = self if line.seat == 0 else chat_partner
@@ -300,7 +299,12 @@ func on_air() -> bool:
 
 ## Its turn in the chat, with both of the pair up and on patrol.
 func chatting() -> bool:
-	return chat != null and chat.speaker() == chat_seat and alert.state == GuardAlert.State.PATROL 		and not chat_partner.is_down() and chat_partner.alert.state == GuardAlert.State.PATROL
+	return chat != null and chat.speaker() == chat_seat and alert.state == GuardAlert.State.PATROL and partner_calm()
+
+
+## Its partner (chat or escort) is still in the Area (a Fultoned one is freed), up and on patrol.
+func partner_calm() -> bool:
+	return is_instance_valid(chat_partner) and not chat_partner.is_down() and chat_partner.alert.state == GuardAlert.State.PATROL
 
 
 func _refresh_mark() -> void:
