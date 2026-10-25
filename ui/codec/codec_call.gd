@@ -6,7 +6,7 @@ extends RefCounted
 
 const HOLD := 2.0  # seconds a finished line stays up in a live call
 
-var lines: Array     # [[speaker, key], ...]
+var lines: Array     # [[speaker, key], ...]; a third entry names the portrait to show instead
 var index := 0
 var _blip: VoiceBlip
 var _held := 0.0
@@ -23,6 +23,11 @@ func done() -> bool:
 
 func speaker() -> String:
 	return lines[index][0]
+
+
+## Whose face the far portrait shows: a line's optional third entry (a Target's dossier), else the speaker.
+func portrait() -> String:
+	return lines[index][2] if lines[index].size() > 2 else speaker()
 
 
 func speaker_name() -> String:
