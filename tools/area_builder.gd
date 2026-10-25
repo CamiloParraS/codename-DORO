@@ -52,6 +52,9 @@ const DRESS_LIGHTS := {
 	ceiling_lamp = [Vector3(0, -0.4, 0), 9.0, Color(1, 0.95, 0.85)],
 }
 
+## Materials that sound like a metal deck underfoot: their boxes get the meta `surface = "metal"`.
+const METAL_FLOORS := ["deck", "deck_plate", "metal", "hatch", "hatch_cover", "superstructure"]
+
 var _root: Node3D
 var _mats := {}
 
@@ -253,6 +256,8 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	if PROPS.has(name):
 		b.set_script(PropSkin)
 		b.model = load("res://assets/models/props/%s.glb" % PROPS[name])
+	if mat in METAL_FLOORS:
+		b.set_meta("surface", "metal")
 	parent.add_child(b)
 	if name == "ResupplyCrate":
 		b.add_to_group("resupply_crate", true)
@@ -402,6 +407,8 @@ func _ramp(parent: Node3D, r: Dictionary) -> void:
 	prism.material = _mat(r.mat, r.tint)
 	m.mesh = prism
 	b.add_child(m)
+	if r.mat in METAL_FLOORS:
+		b.set_meta("surface", "metal")
 	parent.add_child(b)
 
 

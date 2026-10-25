@@ -6,7 +6,8 @@ extends RefCounted
 
 const HOLD := 2.0
 const DUCK_DB := -6.0  # music level while a Codec call plays
-const PATROL_DB := -14.0  # the patrol loop's ceiling; the other tracks play at 0
+const PATROL_DB := -16.0  # the patrol loop's ceiling
+const LOUD_DB := -3.0     # the alert and evasion tracks', kept under the guards' voices
 
 var track := &"patrol"  # current track: &"patrol", &"alert" or &"evasion"
 var _since := HOLD   # seconds since the last change
@@ -27,7 +28,7 @@ func update(delta: float, states: Array) -> StringName:
 
 
 static func ceiling_db(t: StringName) -> float:
-	return PATROL_DB if t == &"patrol" else 0.0
+	return PATROL_DB if t == &"patrol" else LOUD_DB
 
 
 static func duck_db(call_playing: bool) -> float:
