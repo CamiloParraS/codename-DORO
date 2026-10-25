@@ -81,6 +81,7 @@ func _missions(slot: int, s: Dictionary) -> void:
 			func() -> void:
 				Campaign.record = s.record
 				Campaign.missions = s.missions
+				Campaign.gear = s.gear
 				Campaign.slot = slot
 				Campaign.play(get_tree(), m.pre.duplicate(true), scene_file_path, false, true))
 	_button("BACK", _select_slot)
@@ -90,7 +91,7 @@ func _missions(slot: int, s: Dictionary) -> void:
 func _new_game(slot: int) -> void:
 	Campaign.start()
 	Campaign.slot = slot
-	SaveSlots.write(slot, Campaign.record, int(Time.get_unix_time_from_system()))
+	Campaign.save()
 	get_tree().change_scene_to_file(BRIEFING)
 
 
@@ -98,6 +99,7 @@ func _play_slot(slot: int) -> void:
 	var s := SaveSlots.read(slot)
 	Campaign.record = s.record
 	Campaign.missions = s.missions
+	Campaign.gear = s.gear
 	Campaign.slot = slot
 	get_tree().change_scene_to_file(BRIEFING)
 

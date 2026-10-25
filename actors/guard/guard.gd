@@ -428,7 +428,7 @@ func answer(op: Node3D) -> void:
 		"objective":  # where, on the INTEL line (MissionRun._say_objective's)
 			get_tree().call_group("radio_log", "say", "INTEL", intel)
 		"scan":
-			op.items.scan_left = Items.SCANNER_TIME
+			op.items.scan_left = op.items.scan_time
 	radio_say(tr("holdup." + what))
 
 

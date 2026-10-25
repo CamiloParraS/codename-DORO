@@ -59,10 +59,12 @@ static func ending(dominant: String) -> Array:
 	return out
 
 
+## The ending's lines, then the one on the Recruits (Metis's contractors in the next war), whatever the ending.
 static func epilogue(dominant: String) -> Array:
 	var out := []
 	for i in EPILOGUE.size():
 		out.append([EPILOGUE[i], "finale.epi.%s.%d" % [dominant, i + 1]])
+	out.append(["handler", "finale.epi.recruits"])
 	return out
 
 

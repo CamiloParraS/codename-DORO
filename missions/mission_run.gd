@@ -12,7 +12,8 @@
 ## (`rank`: kills, Alerts, found, Continues, time) run on: each restore is one Continue. Death opens the
 ## Game Over screen (game_over()), whose CONTINUE restores.
 ## replay: a Mission select replay, played against the record before its first clear; committing writes
-## only its Mission Record (Campaign.missions), never the slot's record.
+## only its Mission Record (Campaign.missions) and a first S's item, never the slot's record or Recruits.
+## A campaign commit banks the Recruits (Campaign.gear.settle); abort or quit banks nothing.
 class_name MissionRun
 extends Node
 
@@ -162,7 +163,7 @@ func _overlay(screen: Control) -> void:
 	add_child(layer)
 
 
-## Guards (not Targets) Fultoned this run, as of the last Checkpoint restore: 07b's Recruits.
+## Guards (not Targets) Fultoned this run, as of the last Checkpoint restore: the Recruits a commit banks.
 func fultoned() -> int:
 	return int(tally.counts.get("fulton", 0))
 
@@ -389,6 +390,7 @@ func _on_extraction() -> void:
 	screen.committed.connect(func() -> void:
 		if campaign or replay:
 			first_s = Campaign.commit_record(record.mission, record, rank.stats(par))
+			Campaign.gear.settle(record.mission, fultoned(), first_s, campaign)
 		if replay:
 			save_slot()  # the Mission Record only: Campaign.record is untouched
 		record = after
@@ -408,8 +410,8 @@ static func saves_on_commit(after: Dictionary) -> bool:
 
 
 func save_slot() -> void:
-	if (campaign or replay) and Campaign.slot >= 0:
-		SaveSlots.write(Campaign.slot, Campaign.record, int(Time.get_unix_time_from_system()), SaveSlots.USER, Campaign.missions)
+	if campaign or replay:
+		Campaign.save()
 
 
 ## Quit or abort: nothing is applied.

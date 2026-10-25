@@ -14,6 +14,9 @@ const THROW_ANGLE := deg_to_rad(40.0)
 const GRAVITY := 9.8
 
 var selected := Kind.SCANNER
+var max_charges := SCANNER_CHARGES  # Requisition raises these on a first clear (Operative.equip)
+var max_magazines := MAGAZINES
+var scan_time := SCANNER_TIME
 var charges := SCANNER_CHARGES
 var magazines := MAGAZINES
 var scan_left := 0.0
@@ -42,7 +45,7 @@ func use_scanner() -> bool:
 	if charges == 0:
 		return false
 	charges -= 1
-	scan_left = SCANNER_TIME
+	scan_left = scan_time
 	return true
 
 
@@ -75,8 +78,8 @@ func resupply(guns: Array) -> bool:
 
 
 func refill() -> void:
-	charges = SCANNER_CHARGES
-	magazines = MAGAZINES
+	charges = max_charges
+	magazines = max_magazines
 
 
 ## Points of a thrown Magazine's flight from `from` along the flat `heading`, one every `step` seconds:

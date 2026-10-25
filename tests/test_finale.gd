@@ -138,3 +138,8 @@ func test_every_band_has_a_credited_still() -> void:
 		for s: Dictionary in Finale.stills(band):
 			assert_true(ResourceLoader.exists(s.path), s.path)
 			assert_ne(s.credit, "")
+
+
+func test_the_epilogue_ends_on_the_recruits() -> void:
+	for band: String in BANDS:
+		assert_eq(Finale.epilogue(band).back(), ["handler", "finale.epi.recruits"], band)

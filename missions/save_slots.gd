@@ -1,6 +1,7 @@
 ## Three autosave campaign slots (user://slot_N.json): next Mission index, Habit points, Lethality,
 ## denominator, a complete flag, the save time and the cleared Missions (Campaign.missions: pre-Mission
-## record and Mission Record each; a file without them reads as none). Written after the post-Mission screen commits; an
+## record and Mission Record each; a file without them reads as none) and the Requisition gear (none if
+## missing). Written after the post-Mission screen commits; an
 ## unreadable or malformed file is an empty slot. Node-free: `dir` is injectable for tests.
 class_name SaveSlots
 extends RefCounted
@@ -13,13 +14,13 @@ static func path(slot: int, dir := USER) -> String:
 	return dir.path_join("slot_%d.json" % slot)
 
 
-static func write(slot: int, record: Dictionary, now: int, dir := USER, missions := {}) -> void:
+static func write(slot: int, record: Dictionary, now: int, dir := USER, missions := {}, gear := {}) -> void:
 	var f := FileAccess.open(path(slot, dir), FileAccess.WRITE)
 	if f:
-		f.store_string(JSON.stringify({record = record, saved = now, complete = record.mission >= Campaign.MISSIONS.size(), missions = missions}))
+		f.store_string(JSON.stringify({record = record, saved = now, complete = record.mission >= Campaign.MISSIONS.size(), missions = missions, gear = gear}))
 
 
-## {record, saved, complete, missions}, or {} for a missing or unreadable slot. A malformed cleared
+## {record, saved, complete, missions, gear: a Requisition}, or {} for a missing or unreadable slot. A malformed cleared
 ## Mission is dropped, not the slot.
 static func read(slot: int, dir := USER) -> Dictionary:
 	var f := FileAccess.open(path(slot, dir), FileAccess.READ)
@@ -39,7 +40,8 @@ static func read(slot: int, dir := USER) -> Dictionary:
 		var best := _best(m.get("best")) if m is Dictionary else {}
 		if k.is_valid_int() and not pre.is_empty() and not best.is_empty():
 			missions[k] = {pre = pre, best = best}
-	return {record = out, saved = int(d.saved), complete = out.mission >= Campaign.MISSIONS.size(), missions = missions}
+	return {record = out, saved = int(d.saved), complete = out.mission >= Campaign.MISSIONS.size(), missions = missions,
+		gear = Requisition.from_dict(d.get("gear"))}
 
 
 static func _record(r: Variant) -> Dictionary:
