@@ -217,7 +217,7 @@ func _check_in(delta: float) -> void:
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
-			get_tree().call_group("radio_log", "say", who.name, line)
+			get_tree().call_group("radio_log", "say", who.name, tr(line))
 	if operative:
 		operative.voiceprints.tick(delta, name, _flat_dist(operative.global_position), on_air())
 	_refresh_mark()

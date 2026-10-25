@@ -144,7 +144,7 @@ const GUARD_POSTS := [
 	# E1 Perimeter: learn the rhythm. O2 keeps aft of y 42, out of sight of a Hold-up behind O1.
 	["PostO1", [70, 25, DECK], 90, {hold = 5.0, role = "observer", enc = 1}, []],                          # look-out across the starboard hatches
 	["PostO2", [70.5, 42, DECK], 180, {role = "patroller", enc = 1}, [[72, 47, {hold = 6.0, f = 180}]]],  # paces aft; chats 6 s at the bridge door
-	["PostP", [73, 58, DECK], 0, {chat = true, role = "investigator", enc = 1}, []],                         # smoke break behind the bridge: step 1
+	["PostP", [73, 58, DECK], 0, {chat = "smoke", role = "investigator", enc = 1}, []],                         # smoke break behind the bridge: step 1
 	["PostO5", [66.5, 45, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                      # gangway head, sweeps up the deck
 	# E2 Loading yard: overlapping threats
 	["PostY1", [58, 24, 0], 180, {role = "patroller", enc = 2}, [[58, 48, {hold = 4.0, f = 90}], [57, 59, {}]]],  # quay; holds facing the gangway foot

@@ -12,34 +12,38 @@ const CORE := "res://areas/core/core.tscn"
 ## {intel: the node in group "intel" whose `reached` completes it (a pickup, a console, an objective watch),
 ## objective: what the pause screen shows, call: the live Codec call it triggers, hint: Metis's two Hints, a
 ## direction then the route}. open: the live call that states step 1 as the Mission starts. codec: the full-screen
-## Codec call before the Mission. A call is [[speaker, key], ...].
+## Codec call before the Mission. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, encounters = 3, targets = [],
 		open = [["analyst", "live.m1.open.01"]],
-		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["handler", "codec.m1.05"]], steps = [
+		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["operative", "codec.m1.05"],
+			["handler", "codec.m1.06"], ["analyst", "codec.m1.07"], ["handler", "codec.m1.08"]], steps = [
 		{intel = "IntelSmokeBreak", objective = "objective.m1.s1", call = [["analyst", "live.m1.s1.01"]], hint = ["hint.m1.s1.1", "hint.m1.s1.2"]},
 		{intel = "IntelForeman", objective = "objective.m1.s2", call = [["analyst", "live.m1.s2.01"]], hint = ["hint.m1.s2.1", "hint.m1.s2.2"]},
-		{intel = "IntelLiftPanel", objective = "objective.m1.s3", call = [["analyst", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
+		{intel = "IntelLiftPanel", objective = "objective.m1.s3", call = [["analyst", "intel.m1.manifest"], ["handler", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, encounters = 3, targets = ["RELAY CHIEF"],
 		open = [["analyst", "live.m2.open.01"]],
-		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["analyst", "codec.m2.03"], ["handler", "codec.m2.04"]], steps = [
-		{intel = "IntelGarage", objective = "objective.m2.s1", call = [["analyst", "live.m2.s1.01"]], hint = ["hint.m2.s1.1", "hint.m2.s1.2"]},
-		{intel = "RelayConsole", objective = "objective.m2.s2", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"]], hint = ["hint.m2.s2.1", "hint.m2.s2.2"]},
+		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["handler", "codec.m2.03"], ["handler", "codec.m2.04"],
+			["analyst", "codec.m2.05", "chief"], ["analyst", "codec.m2.06", "chief"], ["operative", "codec.m2.07"], ["handler", "codec.m2.08"]], steps = [
+		{intel = "IntelGarage", objective = "objective.m2.s1", call = [["analyst", "live.m2.s1.01"], ["analyst", "intel.m2.keys"]], hint = ["hint.m2.s1.1", "hint.m2.s1.2"]},
+		{intel = "RelayConsole", objective = "objective.m2.s2", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"], ["analyst", "intel.m2.inflation"]], hint = ["hint.m2.s2.1", "hint.m2.s2.2"]},
 		{intel = "IntelMess", objective = "objective.m2.s3", call = [["analyst", "live.m2.s3.01"]], hint = ["hint.m2.s3.1", "hint.m2.s3.2"]},
 	]},
 	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, encounters = 3, targets = ["LEAD RESEARCHER"],
 		open = [["analyst", "live.m3.open.01"]],
-		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03"], ["analyst", "codec.m3.04"]], steps = [
-		{intel = "IntelOffice", objective = "objective.m3.s1", call = [["analyst", "live.m3.s1.01"]], hint = ["hint.m3.s1.1", "hint.m3.s1.2"]},
+		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03", "researcher"], ["analyst", "codec.m3.04", "researcher"],
+			["handler", "codec.m3.05"], ["handler", "codec.m3.06"], ["analyst", "codec.m3.07"]], steps = [
+		{intel = "IntelOffice", objective = "objective.m3.s1", call = [["analyst", "live.m3.s1.01"], ["analyst", "intel.m3.authority"]], hint = ["hint.m3.s1.1", "hint.m3.s1.2"]},
 		{intel = "IntelVault", objective = "objective.m3.s2", call = [["analyst", "live.m3.s2.01"]], hint = ["hint.m3.s2.1", "hint.m3.s2.2"]},
 		{intel = "ResearchFiles", objective = "objective.m3.s3", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]], hint = ["hint.m3.s3.1", "hint.m3.s3.2"]},
 	]},
 	{title = "CORE", area = CORE, encounters = 3, targets = ["SECURITY DIRECTOR"],
 		open = [["analyst", "live.m4.open.01"]],
-		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["analyst", "codec.m4.03"], ["analyst", "codec.m4.04"]], steps = [
+		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["handler", "codec.m4.03"], ["analyst", "codec.m4.04", "director"],
+			["analyst", "codec.m4.05", "director"], ["handler", "codec.m4.06"], ["analyst", "codec.m4.07"]], steps = [
 		{intel = "IntelOps", objective = "objective.m4.s1", call = [["analyst", "live.m4.s1.01"]], hint = ["hint.m4.s1.1", "hint.m4.s1.2"]},
-		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
+		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"], ["analyst", "intel.m4.plan"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
 	]},
 ]
 

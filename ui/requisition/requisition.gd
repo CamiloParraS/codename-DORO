@@ -44,7 +44,7 @@ func close() -> void:
 
 func lines() -> Array:
 	var g := Campaign.gear
-	var out := ["REQUISITION", "", "RECRUITS SIGNED: %d" % g.signed, "POINTS: %d" % g.points, ""]
+	var out := ["REQUISITION", "", tr("requisition.signed").format({n = g.signed}), "POINTS: %d" % g.points, ""]
 	var ids: Array = Requisition.UPGRADES.keys()
 	for i in ids.size():
 		var u: Dictionary = Requisition.UPGRADES[ids[i]]
