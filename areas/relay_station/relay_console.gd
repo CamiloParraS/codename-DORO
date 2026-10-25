@@ -8,7 +8,7 @@ signal reached
 
 const HOLD_TIME := 5.0
 const SWEEP_DELAY := 30.0
-const LINE := "Relay's offline. All units, sweep the station."
+const LINE := "hq.relay_offline"
 
 @export var hold_time := HOLD_TIME
 @export var prompt := "hold E to sabotage"
@@ -57,6 +57,6 @@ func tick(delta: float, holding: bool) -> void:
 
 ## HQ orders the sweep.
 func sweep() -> void:
-	get_tree().call_group("radio_log", "say", "HQ", LINE)
+	get_tree().call_group("radio_log", "say", "HQ", tr(LINE))
 	for g in get_tree().get_nodes_in_group("guards"):
 		g.on_noise(g.global_position, "HQ's sweep order")

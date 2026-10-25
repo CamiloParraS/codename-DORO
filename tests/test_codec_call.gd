@@ -77,3 +77,14 @@ func test_speaker_names_follow_the_language() -> void:
 	assert_eq(c.speaker_name(), "METIS ANALYST")
 	TranslationServer.set_locale("es")
 	assert_eq(c.speaker_name(), "METIS ANALISTA")
+
+
+func test_a_dossier_line_shows_its_targets_face() -> void:
+	var c := CodecCall.new([["analyst", "codec.m2.03", "chief"], ["handler", "codec.m2.01"]])
+	assert_eq(c.portrait(), "chief")
+	assert_eq(c.speaker(), "analyst")
+	c.press()
+	c.press()
+	assert_eq(c.portrait(), "handler", "no third entry: the speaker's own face")
+	for id in ["operative", "handler", "analyst", "chief", "researcher", "director"]:
+		assert_true(ResourceLoader.exists(CodecScreen.PORTRAITS % id), id + " has a portrait")

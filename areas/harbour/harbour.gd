@@ -160,7 +160,7 @@ func _pair_up(patrols: Array) -> void:
 
 ## A chatting pair on a `chat` post: 2 m apart along its X axis, facing each other, each staying on its spot.
 func _spawn_chat(post: Marker3D) -> Array:
-	var chat := Chat.new()
+	var chat := Chat.new(Chat.SETS.get(post.get_meta("chat"), Chat.LINES))
 	var pair := []
 	for seat in 2:
 		var g := spawn_guard(post)
