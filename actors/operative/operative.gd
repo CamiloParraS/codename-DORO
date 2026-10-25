@@ -509,7 +509,13 @@ func _fulton_hint() -> String:
 	var g := _fulton_target()
 	if not g or fultons <= 0:
 		return ""
-	return " · hold G Fulton" if NoFulton.open_sky(get_tree(), g.global_position) else " · no Fulton indoors"
+	return " · hold G Fulton" if fulton_ready() else " · no Fulton indoors"
+
+
+## Could a balloon go up now: a guard it can take in reach, a balloon left, open sky over him.
+func fulton_ready() -> bool:
+	var g := _fulton_target()
+	return g != null and fultons > 0 and NoFulton.open_sky(get_tree(), g.global_position)
 
 
 ## Hold-up: E with the gun aimed (Holdup.RANGE, Guard.can_be_held_up) freezes the guard; Holdup.tick frees him.

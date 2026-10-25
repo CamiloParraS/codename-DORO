@@ -1,6 +1,9 @@
 ## Headless playthrough of the Harbour's three Encounters and the Core revisit (pw-feel 07): spawns, the
 ## navmesh route, patrol routes, designed sight lines, every Mission 1 step by its verb (eavesdrop, Hold-up,
-## lift panel), Fulton outdoors and refused indoors, Extraction, and what the Core changes. Prints PASS/FAIL.
+## lift panel), Fulton outdoors and refused indoors, Extraction and the Rank page, the Alert chain (a stopped
+## call; a completed one through Alert, Evasion and Caution, with Reinforcements from the bridge), every way a
+## Hold-up ends (Alert, 6 m, a partner's sight, a choke), a guard looking at a balloon, a Game Over and
+## Continue, and what the Core changes. Prints PASS/FAIL.
 ##   godot --headless --fixed-fps 60 --path . tools/play_harbour.tscn
 ## (a scene, not --script, so the autoloads exist). Guards' alert meters are reset every frame while the
 ## Operative is teleported about, so a check reads what a guard sees without the whole Area going to Alert.
@@ -14,6 +17,8 @@ var _area: Node
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	await mission_1()
+	await chain()
+	await holdups()
 	await continues()
 	await core()
 	print("play_harbour: %d failed" % fails)
@@ -98,6 +103,66 @@ func aim_at(op: Node3D, g: Guard) -> void:
 	op._pitch = asin(dir.y)
 
 
+## Aim (RMB held) at g from 4 m behind and tap E. between: runs after 20 frames of aim, before the tap.
+func hold_up(op: Node3D, g: Guard, between := Callable()) -> void:
+	await place(op, g.global_position + g.global_basis.z * 4.0)
+	Input.action_press("aim")
+	for i in 20:
+		aim_at(op, g)
+		await get_tree().physics_frame
+	if between.is_valid():
+		between.call()
+	for down in [true, false]:
+		await key(op, g, &"interact", down)
+
+
+## Press or release an action as an event (what _unhandled_input wants), keeping the aim on g.
+func key(op: Node3D, g: Guard, action: StringName, down: bool) -> void:
+	var e := InputEventAction.new()
+	e.action = action
+	e.pressed = down
+	Input.parse_input_event(e)
+	aim_at(op, g)
+	await get_tree().physics_frame
+
+
+## Keep the aim on g for s seconds.
+func aim_for(op: Node3D, g: Guard, s: float) -> void:
+	for i in int(s * 60):
+		aim_at(op, g)
+		await get_tree().physics_frame
+
+
+## Wait up to s seconds for cond; true once it holds.
+func until(cond: Callable, s: float) -> bool:
+	for i in int(s * 60):
+		if cond.call():
+			return true
+		await get_tree().physics_frame
+	return cond.call()
+
+
+## Put g d m from `of` on the navmesh, facing it with a clear line (the first of 16 bearings that gives one).
+func in_view(g: Guard, of: Node3D, d: float) -> bool:
+	var map := (_area as Node3D).get_world_3d().navigation_map
+	for i in 16:
+		var p: Vector3 = of.global_position + Vector3.FORWARD.rotated(Vector3.UP, i * TAU / 16) * d
+		var eye := p + Vector3.UP * Guard.EYE
+		var on := NavigationServer3D.map_get_closest_point(map, p)
+		if Vector2(on.x - p.x, on.z - p.z).length() < 0.3 and g._clear(eye, of.global_position + Vector3.UP * 1.3, of):
+			g.global_position = p
+			g.look_at(Vector3(of.global_position.x, p.y, of.global_position.z), Vector3.UP)
+			return true
+	return false
+
+
+## Out of every guard's sight: the Operative frozen far off the map.
+func away(op: Node3D) -> void:
+	op.global_position = Vector3(400, 50, 400)
+	op.process_mode = Node.PROCESS_MODE_DISABLED
+	await frames(2)
+
+
 var harbour_north_door := 0.0
 
 
@@ -169,19 +234,7 @@ func mission_1() -> void:
 		if obs._flat_dist(fm.global_position) > GuardAlert.PARTNER_RANGE:
 			break
 		await get_tree().physics_frame
-	await place(op, fm.global_position + fm.global_basis.z * 4.0)
-	Input.action_press("aim")
-	for i in 20:
-		aim_at(op, fm)
-		await get_tree().physics_frame
-	check(not fm.held_up, "aiming alone holds nobody up")
-	for down in [true, false]:  # tap E: an event, as _unhandled_input wants
-		var e := InputEventAction.new()
-		e.action = &"interact"
-		e.pressed = down
-		Input.parse_input_event(e)
-		aim_at(op, fm)
-		await get_tree().physics_frame
+	await hold_up(op, fm, func() -> void: check(not fm.held_up, "aiming alone holds nobody up"))
 	check(fm.held_up, "the Foreman is held up at 4 m from behind")
 	var froze := fm.global_position
 	for i in 60:
@@ -246,7 +299,125 @@ func mission_1() -> void:
 	await place(op, at(11, 74))
 	await frames(10)
 	check(run.ended, "the slipway's Extraction point ends the Mission")
+	var page := run.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("committed"))
+	check(page.size() == 1 and page[0].rank_only and page[0].stats()[2] == ["ALERTS", str(run.rank.alerts)] and page[0].rank.grade(page[0].par) != "",
+		"the Rank page shows: grade %s, %s" % [page[0].rank.grade(page[0].par) if page.size() else "-", page[0].stats() if page.size() else []])
+	if page.size():
+		page[0].advance()  # any key: a replay's single page commits
+		await frames(2)
+		check(not get_tree().paused and not is_instance_valid(page[0]), "a key on the Rank page commits and closes it")
 	get_tree().paused = false
+	area.queue_free()
+	await frames(5)
+
+
+## The Alert chain (pw-feel 03): a dart stops a Radio call (no Alert; Caution once the search ends); a call
+## that completes is an Alert (Rank counts it, a squad comes out of the bridge for an Operative on the deck),
+## drains to Evasion unseen, then Caution, then Normal, and the squad leaves.
+func chain() -> void:
+	print("--- The Alert chain")
+	calm = false
+	var area := await load_area("res://areas/harbour/harbour.tscn", 0)
+	var run: MissionRun = area.get_node("MissionRun")
+	var op: Node3D = area.get_node("Operative")
+	var ch := AlertChain.area
+	var o5 := guard("GuardO5")
+	await place(op, at(66, 38, 2))
+	check(await until(func() -> bool: return ch.calling(o5), 8.0), "O5 sees the Operative on the port rail and radios it in")
+	o5.tranquilize(true, op.global_position)  # a dart to the head
+	await away(op)
+	await secs(AlertChain.CALL_TIME + 1.0)
+	check(ch.alerts == 0 and ch.phase != AlertChain.Phase.ALERT and run.rank.alerts == 0, "a dart stops the call: no Alert, nothing on the Rank")
+	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.CAUTION, 60.0), "the stopped call's local search ends in Caution (%s)" % AlertChain.Phase.keys()[ch.phase])
+	area.queue_free()
+	await frames(5)
+
+	area = await load_area("res://areas/harbour/harbour.tscn", 0)
+	run = area.get_node("MissionRun")
+	op = area.get_node("Operative")
+	ch = AlertChain.area
+	await place(op, at(66, 38, 2))
+	check(await until(func() -> bool: return ch.alerts == 1, 10.0), "left alone, O5's call completes")
+	check(ch.phase == AlertChain.Phase.ALERT and run.rank.alerts == 1, "a completed call is an Alert, counted for Rank")
+	await frames(5)
+	var squad := get_tree().get_nodes_in_group("reinforcements")
+	var deck: Vector3 = area.get_node("Spots/DeckEntry").global_position
+	check(squad.size() == Reinforcements.SQUAD and squad.all(func(g: Guard) -> bool: return g.global_position.distance_to(deck) < 4.0),
+		"%d Reinforcements come out of the bridge (DeckEntry) for an Operative on the deck" % squad.size())
+	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.is_down() or g.alert.state == GuardAlert.State.ALERT), "every guard hunts")
+	await away(op)
+	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.EVASION, AlertChain.ALERT_TIME + 5.0), "unseen, the Alert drains to Evasion")
+	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.CAUTION, AlertChain.EVASION_TIME + 5.0), "Evasion ends in Caution")
+	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.alert.state < GuardAlert.State.ALERT), "in Caution the guards are back on patrol")
+	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.NORMAL, AlertChain.CAUTION_TIME + 5.0), "Caution ends in Normal")
+	await frames(5)
+	check(get_tree().get_nodes_in_group("reinforcements").is_empty(), "the Reinforcements leave once Caution ends")
+	check(ch.alerts == 1 and run.rank.alerts == 1, "one Alert in all")
+	area.queue_free()
+	await frames(5)
+	calm = true
+
+
+## How a Hold-up ends besides the aim (pw-feel 06): an Alert, leaving 6 m, a partner's sight, a choke; and a
+## guard in view of the Fulton balloon comes to look.
+func holdups() -> void:
+	print("--- Hold-ups and the balloon")
+	var area := await load_area("res://areas/harbour/harbour.tscn", 0)
+	var op: Node3D = area.get_node("Operative")
+	var fm := guard("GuardForeman")
+	var y1 := guard("GuardY1")
+	var obs := guard("GuardObserver")
+	await until(func() -> bool: return obs._flat_dist(fm.global_position) > GuardAlert.PARTNER_RANGE + 3.0, 60.0)
+
+	await hold_up(op, fm)
+	check(fm.held_up, "held up")
+	calm = false
+	AlertChain.area.start_call(guard("GuardGate"), op.global_position)  # someone else's call completes
+	await aim_for(op, fm, AlertChain.CALL_TIME + 0.5)
+	check(AlertChain.area.phase == AlertChain.Phase.ALERT and not fm.held_up, "an Alert frees a held-up guard")
+	Input.action_release("aim")
+	AlertChain.area.stand_down()
+	calm = true
+	await frames(2)
+
+	await hold_up(op, fm)
+	check(fm.held_up, "held up again")
+	op.global_position = fm.global_position + fm.global_basis.z * (Holdup.RANGE + 1.0)
+	await aim_for(op, fm, 0.2)
+	check(not fm.held_up, "stepping back past %d m frees him, gun still on him" % Holdup.RANGE)
+	Input.action_release("aim")
+	AlertChain.area.stand_down()  # his own call on being freed
+	await frames(2)
+
+	await hold_up(op, fm)
+	check(fm.held_up, "held up a third time")
+	check(in_view(y1, fm, 8.0), "Y1 placed 8 m off, facing the kneeling Foreman")
+	await aim_for(op, fm, 0.1)
+	check(not fm.held_up, "Y1 sees him kneeling: he is freed")
+	Input.action_release("aim")
+	y1.global_position = at(58, 24)  # back to his post, out of the way
+	AlertChain.area.stand_down()
+	await frames(2)
+
+	await hold_up(op, fm)
+	Input.action_press("interact")
+	await aim_for(op, fm, Holdup.ASK_TIME + 0.3)
+	Input.action_release("interact")
+	check(fm.held_up and fm.answered, "questioned")
+	await place(op, fm.global_position + fm.global_basis.z * 1.0)
+	await key(op, fm, &"interact", true)
+	await aim_for(op, fm, op.choke_time + 0.3)
+	await key(op, fm, &"interact", false)
+	Input.action_release("aim")
+	check(fm.is_down() and not fm.dead and not fm.held_up and op.held_up == null, "E after his answer chokes him out")
+
+	calm = false
+	await away(op)
+	check(in_view(y1, fm, 10.0), "Y1 placed 10 m off, facing the downed Foreman")
+	op.launch_fulton(fm)
+	check(await until(func() -> bool: return y1.alert.state == GuardAlert.State.SUSPICION and y1.alert.last_known.distance_to(fm._balloon_spot) < 0.5, 3.0),
+		"Y1, 10 m off, sees the balloon go up and comes to look")
+	calm = true
 	area.queue_free()
 	await frames(5)
 
