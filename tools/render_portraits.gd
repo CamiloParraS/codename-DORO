@@ -35,12 +35,13 @@ func _render() -> void:
 		env.background_mode = Environment.BG_COLOR
 		env.background_color = Color(0.1, 0.14, 0.12)
 		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-		env.ambient_light_color = Color(0.6, 0.62, 0.65)
-		env.ambient_light_energy = 0.5
+		env.ambient_light_color = Color(0.75, 0.77, 0.8)
+		env.ambient_light_energy = 1.1  # bright enough to read the face at 2x in the Codec
 		var we := WorldEnvironment.new()
 		we.environment = env
 		vp.add_child(we)
 		var sun := DirectionalLight3D.new()
+		sun.light_energy = 1.4  # the key light
 		vp.add_child(sun)
 		sun.look_at_from_position(Vector3(1, 2, -2), Vector3.ZERO)
 		var holder := Node3D.new()
