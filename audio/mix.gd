@@ -159,7 +159,7 @@ func _exit_tree() -> void:
 func blip(pitch: float) -> void:
 	if not _blip:
 		_blip = AudioStreamPlayer.new()
-		_blip.stream = _blip_tone()
+		_blip.stream = blip_tone()
 		_blip.bus = UI
 		_blip.volume_db = -10.0
 		add_child(_blip)
@@ -172,8 +172,8 @@ func stop_blips() -> void:
 		_blip.stop()
 
 
-## A generated 40 ms square-ish tone at 440 Hz with a linear decay; blip() pitch-shifts it.
-static func _blip_tone() -> AudioStreamWAV:
+## A generated 40 ms square-ish tone at 440 Hz with a linear decay; blip() and GuardVoice.speak pitch-shift it.
+static func blip_tone() -> AudioStreamWAV:
 	var rate := 22050
 	var n := rate / 25
 	var data := PackedByteArray()

@@ -78,7 +78,7 @@ chat.smoke.1.a,Lift's locked again. Who has the code?,El montacargas está cerra
 chat.smoke.1.b,"The yard foreman. Only him, and he walks the container lanes all night.","El capataz del patio. Solo él, y se pasa la noche entre los contenedores."
 chat.smoke.2.a,Got a light?,¿Tienes fuego?
 chat.smoke.2.b,Thought you quit.,Creí que lo habías dejado.
-chat.smoke.3.a,Another double shift.,Otro doble turno.
+chat.smoke.3.a,"I tell ya, these guard shifts lately have been killers.","Te lo digo, estos turnos de guardia últimamente me están matando."
 chat.smoke.3.b,Same as everyone.,Como todos.
 chat.smoke.4.a,Who's on the gangway?,¿Quién está en la pasarela?
 chat.smoke.4.b,The new guy. Again.,El nuevo. Otra vez.
@@ -86,10 +86,16 @@ chat.idle.1.a,Anything on the radio?,¿Algo en la radio?
 chat.idle.1.b,Static. Same as last night.,Estática. Como anoche.
 chat.idle.2.a,Got a light?,¿Tienes fuego?
 chat.idle.2.b,Thought you quit.,Creí que lo habías dejado.
-chat.idle.3.a,Another double shift.,Otro doble turno.
+chat.idle.3.a,"I tell ya, these guard shifts lately have been killers.","Te lo digo, estos turnos de guardia últimamente me están matando."
 chat.idle.3.b,Same as everyone.,Como todos.
 chat.idle.4.a,Who relieves us?,¿Quién nos releva?
 chat.idle.4.b,Nobody. Again.,Nadie. Otra vez.
+chat.idle.5.a,They say there's a ghost on this island.,Dicen que hay un fantasma en esta isla.
+chat.idle.5.b,I don't buy that.,No me lo creo.
+chat.idle.6.a,"Quiet night. Too quiet.","Noche tranquila. Demasiado."
+chat.idle.6.b,Eyes open!,¡Ojo avizor!
+chat.smoke.5.a,"Word is the foreman walks late tonight.","Dicen que el capataz anda hasta tarde esta noche."
+chat.smoke.5.b,So I heard.,Eso he oído.
 target.m2.1,Tonight's bulletin is queued. Don't touch the console; it writes itself.,El boletín de esta noche está en cola. No toques la consola; se escribe sola.
 target.m2.2,"Writes itself, sir?","¿Sola, jefe?"
 target.m2.3,"Aigis drafts, I sign. Keep walking.","Aigis redacta, yo firmo. Sigue andando."

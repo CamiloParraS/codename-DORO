@@ -8,12 +8,12 @@ const TURN := 3.0
 const QUIET := 4.0
 const HEARD := 10.0  # metres from the Operative within which a chat line shows as a subtitle
 const LINES := [
-	["chat.idle.1.a", "chat.idle.2.a", "chat.idle.3.a", "chat.idle.4.a"],
-	["chat.idle.1.b", "chat.idle.2.b", "chat.idle.3.b", "chat.idle.4.b"],
+	["chat.idle.1.a", "chat.idle.2.a", "chat.idle.3.a", "chat.idle.4.a", "chat.idle.5.a", "chat.idle.6.a"],
+	["chat.idle.1.b", "chat.idle.2.b", "chat.idle.3.b", "chat.idle.4.b", "chat.idle.5.b", "chat.idle.6.b"],
 ]
 const SMOKE := [
-	["chat.smoke.1.a", "chat.smoke.2.a", "chat.smoke.3.a", "chat.smoke.4.a"],
-	["chat.smoke.1.b", "chat.smoke.2.b", "chat.smoke.3.b", "chat.smoke.4.b"],
+	["chat.smoke.1.a", "chat.smoke.2.a", "chat.smoke.3.a", "chat.smoke.4.a", "chat.smoke.5.a"],
+	["chat.smoke.1.b", "chat.smoke.2.b", "chat.smoke.3.b", "chat.smoke.4.b", "chat.smoke.5.b"],
 ]
 ## A chat post's meta value -> its lines; anything else (true) gets LINES.
 const SETS := {"smoke": SMOKE}

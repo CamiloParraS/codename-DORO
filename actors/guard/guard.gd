@@ -228,7 +228,7 @@ func _check_in(delta: float) -> void:
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and is_instance_valid(who) and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
-			get_tree().call_group("radio_log", "say", who.name, tr(line))
+			who.say_line(line)
 		if line != "" and is_instance_valid(who):
 			who.speak_gesture(Chat.TURN)
 	if target_chat:
@@ -244,7 +244,7 @@ func _target_chat(delta: float) -> void:
 	var line := target_chat.tick(delta, calm and operative != null and _flat_dist(operative.global_position) <= Chat.HEARD)
 	if not line.is_empty():
 		var who: Guard = self if line.seat == 0 else chat_partner
-		get_tree().call_group("radio_log", "say", who.name, tr(line.key))
+		who.say_line(line.key)
 		who.speak_gesture(TargetChatter.TURN)
 
 
@@ -264,7 +264,7 @@ func _chatter(delta: float) -> void:
 		return
 	_chatter_clock = CHATTER_EVERY * rng.randf_range(0.75, 1.25)
 	if operative and VoiceLines.heard(_flat_dist(operative.global_position)):
-		radio_say(tr(VoiceLines.pick(chatter_sets, rng)))
+		say_line(VoiceLines.pick(chatter_sets, rng))
 
 
 ## Barks off what changed this frame: a choke, the Radio call ending (squelch off), Caution ending, the
@@ -811,6 +811,12 @@ func _at(t: Vector3) -> bool:
 
 
 # --- Radio -------------------------------------------------------------------------------------
+
+## A spoken conversation line (chat, escort, field chatter): subtitle plus its clip or mumble, from this guard.
+func say_line(key: String) -> void:
+	get_tree().call_group("radio_log", "say", name, tr(key))
+	voice.speak(key, tr(key))
+
 
 ## A line on the radio (an ack, an exposure line): a subtitle only. It isn't a check-in, so no ((·))
 ## and no Voiceprint capture.
