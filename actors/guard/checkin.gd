@@ -5,7 +5,7 @@ extends RefCounted
 const MIN_WAIT := 20.0
 const MAX_WAIT := 30.0
 const TALK_TIME := 3.0
-const LINES := ["Post clear.", "All quiet here.", "Nothing to report.", "Still on my rounds.", "Checking in. Quiet."]
+const LINES := ["radio.checkin.1", "radio.checkin.2", "radio.checkin.3", "radio.checkin.4", "radio.checkin.5"]  # text keys
 
 var wait := randf_range(MIN_WAIT, MAX_WAIT)
 var talking_left := 0.0

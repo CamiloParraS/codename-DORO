@@ -210,8 +210,7 @@ func _muzzle_flash() -> void:
 func _check_in(delta: float) -> void:
 	_chatter(delta)
 	if checkin.tick(delta):
-		var line: String = Checkin.LINES.pick_random()
-		get_tree().call_group("radio_log", "say", name, line)
+		get_tree().call_group("radio_log", "say", name, tr(Checkin.LINES.pick_random()))
 	if chat and chat_seat == 0:
 		var line := chat.tick(delta)
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
@@ -853,7 +852,7 @@ func patrol(delta: float) -> void:
 		if route.size() > 1 and Telegraph.head_check(head_check_level, rng):  # Stealth: looks back before it turns
 			_glance = Telegraph.DURATION
 			_glance_yaw = rotation.y
-			telegraph("head_check", "?", "look", "Hm?")
+			telegraph("head_check", "?", "look", tr("radio.hm"))
 
 
 ## The shared Aigis telegraph: a cyan icon over the head and a pose for Telegraph.DURATION, so the
@@ -870,7 +869,7 @@ func telegraph(kind: String, icon: String, clip: String, mutter := "") -> void:
 		radio_say(mutter)
 	var run := get_tree().get_first_node_in_group("mission_plan")
 	if run and Telegraph.METIS.has(kind) and Telegraph.first_sighting(run.telegraphs_seen, kind):
-		get_tree().call_group("radio_log", "say", "METIS", Telegraph.METIS[kind])
+		get_tree().call_group("radio_log", "say", "METIS", tr(Telegraph.METIS[kind]))
 
 
 ## At a stop with a facing, turns to it (sweeping when it scans); a plain stop leaves the guard as it is.
