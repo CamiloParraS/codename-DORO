@@ -131,6 +131,6 @@ func test_a_carry_only_target_is_never_fultoned_but_still_a_valid_state() -> voi
 	_free([g])
 
 
-func test_only_the_relay_chief_mission_is_carry_only() -> void:
+func test_only_the_relay_chief_and_researcher_missions_are_carry_only() -> void:
 	var flags := Campaign.MISSIONS.map(func(m: Dictionary) -> bool: return m.get("carry_only", false))
-	assert_eq(flags, [false, true, false, false])
+	assert_eq(flags, [false, true, true, false])
