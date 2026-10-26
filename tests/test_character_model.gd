@@ -139,3 +139,19 @@ func test_walk_is_paced_to_ground_speed() -> void:
 	m.play("idle", 3.0)
 	assert_true(is_equal_approx(anim.speed_scale, 1.0), "in-place clips play as made")
 	m.free()
+
+
+func test_a_radio_call_puts_the_hand_at_the_ear_without_a_spasm() -> void:
+	if not ResourceLoader.exists(CharacterModel.MIXAMO):
+		return
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	var call_time := AlertChain.CALL_TIME - GuardAlert.FLINCH
+	m.react("hand_to_ear", call_time, CharacterModel.EAR_SPEED)
+	var head := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("Head")).origin
+	for i in int(call_time * 60):  # frame by frame, as the game advances it
+		anim.advance(1.0 / 60)
+	var hand := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("hand_r")).origin
+	assert_true(hand.distance_to(head) < 0.3, "right hand at the ear when the call ends (%.2f m)" % hand.distance_to(head))
+	m.free()

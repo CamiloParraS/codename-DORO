@@ -48,6 +48,9 @@ const DRESS := {
 	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
 	Kind.GUARD: ["Chest_rig", "Holster", "Knee_pads", "Shemag"],
 }
+## hand_to_ear is a 39 s phone call: played from its start at this speed, the hand is at the ear within a second
+## (squeezed whole into a Radio call it would spasm at 20x).
+const EAR_SPEED := 3.0
 const CARRY_BONE := "spine_03"
 const HAND_BONE := "hand_r"
 const OFF_HAND := "hand_l"
