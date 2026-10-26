@@ -367,11 +367,13 @@ func _fire() -> void:
 	sp += deg_to_rad(_sway)
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	var from := camera.global_position
+	Fx.flash(get_parent(), from + dir * 0.9 + camera.global_basis.x * 0.25 - camera.global_basis.y * 0.2, quiet)
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
 	if hit.is_empty():
 		return
 	var c: Node3D = hit["collider"]
+	_impact(hit["position"], c.is_in_group("guards"), arm.lethal)
 	if arm.lethal and c.is_in_group("cameras"):
 		c.destroy()
 	elif c.is_in_group("guards") and not c.is_down():
@@ -380,6 +382,18 @@ func _fire() -> void:
 			c.shoot(head, global_position)
 		else:
 			c.tranquilize(head, global_position)
+
+
+## What a shot leaves where it lands: a dart puffs pale on a guard, a bullet throws sparks and dust off a wall.
+func _impact(at: Vector3, on_guard: bool, lethal: bool) -> void:
+	var w := get_parent()
+	if on_guard:
+		Fx.puff(w, at, Color(0.6, 0.95, 0.9) if not lethal else Color(0.7, 0.1, 0.1), 6, 1.5)
+	elif lethal:
+		Fx.puff(w, at, Color(1, 0.75, 0.25), 6, 4.0, 0.3)  # sparks
+		Fx.puff(w, at, Color(0.6, 0.58, 0.55), 5, 1.2, 0.6)  # dust
+	else:
+		Fx.puff(w, at, Color(0.7, 0.7, 0.65), 4, 1.0, 0.5)
 
 
 func _interact() -> void:

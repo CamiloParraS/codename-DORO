@@ -249,6 +249,9 @@ const DRESS := [
 	["ceiling_lamp", [20, 38, 3.8], 0], ["ceiling_lamp", [15.5, 31, 3.8], 0],
 	# a parked van in the north-west corner
 	["van", [10, 8, 0], 90],
+	# the slipway to the Extraction point: bollards down both edges, stacked kit by the wall
+	["bollard", [7.5, 72, 0], 0], ["bollard", [7.5, 76, 0], 0], ["bollard", [14.5, 72, 0], 0], ["bollard", [14.5, 76, 0], 0],
+	["sandbags", [8.2, 70.8, 0], 0], ["drum", [14.2, 70.9, 0], 0], ["drum", [13.5, 70.8, 0], 25],
 	# deck: mast lights over the bow (the start) and the starboard walk
 	["lamp_post", [68.2, 8, DECK], 90], ["lamp_post", [76.2, 41, DECK], 270],
 ]

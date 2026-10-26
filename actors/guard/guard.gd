@@ -98,6 +98,8 @@ var _balloon: Node3D           # Fultoned: the balloon on its way up
 var _balloon_left := 0.0
 var _balloon_spot := Vector3.ZERO
 var _balloon_seen: Array[Guard] = []
+var _glint: Node3D             # a red radio glint at the head while on the Radio call
+var _vest: Node3D              # an amber vest light while the Area is in Caution
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
@@ -116,6 +118,13 @@ func _ready() -> void:
 	else:
 		model.hold("rifle")
 	add_child(voice)
+	_glint = Fx.lamp(Color(1, 0.1, 0.08), 0.1)
+	_glint.position = Vector3(0.18, 1.78, -0.05)  # at the ear
+	_vest = Fx.lamp(Color(1, 0.7, 0.1), 0.12)
+	_vest.position = Vector3(0, 1.35, -0.22)
+	for l: Node3D in [_glint, _vest]:
+		l.visible = false
+		add_child(l)
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
@@ -255,6 +264,9 @@ func _voice_tick(delta: float) -> void:
 		Mixer.play(&"radio_off", Mix.RADIO)  # a cut call never gets here: _cut_call cleared _was_calling
 	_was_calling = calling
 	var phase := AlertChain.area.phase
+	var live := not is_down() and not _balloon
+	_glint.visible = calling and live
+	_vest.visible = phase == AlertChain.Phase.CAUTION and live
 	if _vphase == AlertChain.Phase.CAUTION and phase == AlertChain.Phase.NORMAL and not is_down() and not _balloon:
 		voice.radio_line(&"resolved", "*")  # one guard of the lot says it
 	_vphase = phase
@@ -526,16 +538,10 @@ func fulton() -> void:
 	lift.pitch_scale = 1.0
 	create_tween().tween_property(lift, "pitch_scale", 1.6, RISE_TIME)  # pitched up as it rises
 	_balloon_spot = global_position
-	_balloon = MeshInstance3D.new()
-	var ball := SphereMesh.new()
-	ball.radius = 0.8
-	ball.height = 1.6
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(0.9, 0.85, 0.75)
-	ball.material = m
-	_balloon.mesh = ball
+	_balloon = Fx.balloon()
 	_balloon.position.y = 3.0
 	add_child(_balloon)
+	create_tween().tween_property(_balloon, "scale", Vector3.ONE, Fx.INFLATE)
 	var t := create_tween()
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 1.5, 1.0)
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, RISE_TIME - 1.0)
