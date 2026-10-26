@@ -48,7 +48,11 @@ const STREAMS := {
 	&"radio_off": "res://assets/audio/sfx_radio_off.ogg",
 	&"ui_click": "res://assets/audio/sfx_ui_click.ogg",
 }
-const CROUCH_STEP_DB := -9.0  # a crouched footstep, under a run's
+const STEP_DB := -2.0           # a standing (run) footstep
+const CROUCH_STEP_DB := -14.0   # a crouched footstep: much quieter than STEP_DB...
+const CARRY_STEP_DB := -5.0     # a Fireman's-carry footstep
+const CROUCH_STEP_CUTOFF_HZ := 1500.0  # ...and muffled by a lowpass
+const CARRY_STEP_PITCH := 0.8   # heavier
 
 const OUTDOOR_DB := -24.0  # crickets bed under open sky
 
@@ -217,8 +221,10 @@ static func step_sound(surface: StringName) -> StringName:
 	return &"footstep_metal" if surface == &"metal" else &"footstep"
 
 
-static func step_db(crouching: bool) -> float:
-	return CROUCH_STEP_DB if crouching else 0.0
+static func step_db(crouching: bool, carrying := false) -> float:
+	if carrying:
+		return CARRY_STEP_DB
+	return CROUCH_STEP_DB if crouching else STEP_DB
 
 
 ## A one-shot on the SFX bus, 3D at `at`'s position (or at `pos` when given, e.g. where a Magazine lands).
