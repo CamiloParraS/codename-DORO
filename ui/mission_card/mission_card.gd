@@ -7,11 +7,22 @@ extends Control
 signal done
 
 var intro := true
+var clears := true              # an intro clears to the Area; before the Codec call it stays black
 var lines: Array[String] = []   # translated; the first is the big one
 var _t := 0.0
 var _box := VBoxContainer.new()
 var _bg := ColorRect.new()
 var _over := false
+
+
+## A card with its lines translated.
+static func build(keys: Array, is_intro: bool, clears_to_area := true) -> MissionCard:
+	var card := MissionCard.new()
+	card.intro = is_intro
+	card.clears = clears_to_area
+	for k: String in keys:
+		card.lines.append(TranslationServer.translate(k))
+	return card
 
 
 func _ready() -> void:
@@ -58,8 +69,15 @@ func _process(delta: float) -> void:
 
 func _apply() -> void:
 	_box.modulate.a = StoryMotion.card(_t)
+	_bg.modulate.a = backdrop(_t)
+
+
+## The black's opacity at time t.
+func backdrop(t: float) -> float:
+	if intro and not clears:
+		return 1.0
 	var total := StoryMotion.CARD_FADE * 2.0 + StoryMotion.CARD_HOLD
-	_bg.modulate.a = clampf((total - _t) / StoryMotion.CARD_FADE, 0.0, 1.0) if intro else clampf(_t / StoryMotion.CARD_FADE, 0.0, 1.0)
+	return clampf((total - t) / StoryMotion.CARD_FADE, 0.0, 1.0) if intro else clampf(t / StoryMotion.CARD_FADE, 0.0, 1.0)
 
 
 func _unhandled_input(e: InputEvent) -> void:
