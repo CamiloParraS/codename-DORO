@@ -31,6 +31,8 @@ const MIXAMO_CLIPS := {
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
 	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
 	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
+	"talk": "talking", "talk_b": "talking_1",  # gestures for react() while a guard speaks
+	"hand_to_ear": "talking_on_phone",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
 ## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
