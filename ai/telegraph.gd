@@ -11,9 +11,9 @@ const MAX_SHARE := 0.75
 const RADIO_CHECK_EVERY := 12.0
 ## Metis's one-line radio call the first time the Operative sees each kind in a Mission.
 const METIS := {
-	"radio_check": "A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.",
-	"head_check": "Guards are glancing back before they turn. Aigis is watching your exits.",
-	"flank": "Reinforcements through the road entry, and they are coming round your side.",
+	"radio_check": "telegraph.radio_check",  # text keys
+	"head_check": "telegraph.head_check",
+	"flank": "telegraph.flank",
 }
 ## Combat: how far beside the Operative's spot a flanking reinforcement aims, in metres.
 const FLANK_OFFSET := 8.0

@@ -8,6 +8,10 @@ func suite_name() -> String:
 	return "radio_menu"
 
 
+func setup() -> void:
+	TranslationServer.set_locale("en")  # line() is translated
+
+
 func _menu() -> RadioMenu:
 	return RadioMenu.new(["Kostas"], ["Kostas", "Dimos", "Eleni"], ["Dock", "Gatehouse"])
 

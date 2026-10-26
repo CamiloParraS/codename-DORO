@@ -33,6 +33,7 @@ var route: Array[Vector3] = []   # patrol points, walked in a loop
 var stops: Array[Dictionary] = []  # per route point (a sentry: its one spot): {yaw, scan[, hold]} from the Area; {} = a plain pause
 var chat: Chat                   # a chatting pair's shared turns (seat 0 ticks them)
 var chat_seat := 0
+var gesture := Gesture.new()    # which talking clip its next line plays
 var chat_partner: Guard
 var target_chat: TargetChatter   # a Target's lines with his escort (chat_partner), once per Mission
 var post: Transform3D            # where it was spawned: a Checkpoint restore puts it back here
@@ -98,6 +99,8 @@ var _balloon: Node3D           # Fultoned: the balloon on its way up
 var _balloon_left := 0.0
 var _balloon_spot := Vector3.ZERO
 var _balloon_seen: Array[Guard] = []
+var _glint: Node3D             # a red radio glint at the head while on the Radio call
+var _vest: Node3D              # an amber vest light while the Area is in Caution
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
 @onready var _bt: BTPlayer = $BTPlayer
@@ -116,6 +119,13 @@ func _ready() -> void:
 	else:
 		model.hold("rifle")
 	add_child(voice)
+	_glint = Fx.lamp(Color(1, 0.1, 0.08), 0.1)
+	_glint.position = Vector3(0.18, 1.78, -0.05)  # at the ear
+	_vest = Fx.lamp(Color(1, 0.7, 0.1), 0.12)
+	_vest.position = Vector3(0, 1.35, -0.22)
+	for l: Node3D in [_glint, _vest]:
+		l.visible = false
+		add_child(l)
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
@@ -211,14 +221,15 @@ func _muzzle_flash() -> void:
 func _check_in(delta: float) -> void:
 	_chatter(delta)
 	if checkin.tick(delta):
-		var line: String = Checkin.LINES.pick_random()
-		get_tree().call_group("radio_log", "say", name, line)
+		get_tree().call_group("radio_log", "say", name, tr(Checkin.LINES.pick_random()))
 	if chat and chat_seat == 0:
 		var line := chat.tick(delta)
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and is_instance_valid(who) and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
 			get_tree().call_group("radio_log", "say", who.name, tr(line))
+		if line != "" and is_instance_valid(who):
+			who.speak_gesture(Chat.TURN)
 	if target_chat:
 		_target_chat(delta)
 	if operative:
@@ -233,6 +244,13 @@ func _target_chat(delta: float) -> void:
 	if not line.is_empty():
 		var who: Guard = self if line.seat == 0 else chat_partner
 		get_tree().call_group("radio_log", "say", who.name, tr(line.key))
+		who.speak_gesture(TargetChatter.TURN)
+
+
+## Talks with its hands for one line of `seconds`; react() leaves it standing in idle after.
+func speak_gesture(seconds: float) -> void:
+	if not is_down() and not held_up:
+		model.react(gesture.next(), seconds)
 
 
 ## Every CHATTER_EVERY s on patrol, a warning or confirmation about a Habit, as a subtitle, only when
@@ -256,6 +274,9 @@ func _voice_tick(delta: float) -> void:
 		Mixer.play(&"radio_off", Mix.RADIO)  # a cut call never gets here: _cut_call cleared _was_calling
 	_was_calling = calling
 	var phase := AlertChain.area.phase
+	var live := not is_down() and not _balloon
+	_glint.visible = calling and live
+	_vest.visible = phase == AlertChain.Phase.CAUTION and live
 	if _vphase == AlertChain.Phase.CAUTION and phase == AlertChain.Phase.NORMAL and not is_down() and not _balloon:
 		voice.radio_line(&"resolved", "*")  # one guard of the lot says it
 	_vphase = phase
@@ -527,16 +548,10 @@ func fulton() -> void:
 	lift.pitch_scale = 1.0
 	create_tween().tween_property(lift, "pitch_scale", 1.6, RISE_TIME)  # pitched up as it rises
 	_balloon_spot = global_position
-	_balloon = MeshInstance3D.new()
-	var ball := SphereMesh.new()
-	ball.radius = 0.8
-	ball.height = 1.6
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(0.9, 0.85, 0.75)
-	ball.material = m
-	_balloon.mesh = ball
+	_balloon = Fx.balloon()
 	_balloon.position.y = 3.0
 	add_child(_balloon)
+	create_tween().tween_property(_balloon, "scale", Vector3.ONE, Fx.INFLATE)
 	var t := create_tween()
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 1.5, 1.0)
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, RISE_TIME - 1.0)
@@ -663,6 +678,9 @@ func _radio_call() -> void:
 	if not chain.start_call(self, alert.last_known, AlertChain.CALL_TIME, alert.heard):
 		return
 	model.react("startle", GuardAlert.FLINCH, 2.2)
+	get_tree().create_timer(GuardAlert.FLINCH).timeout.connect(func() -> void:  # then a hand to the ear for the rest of the call
+		if is_instance_valid(self) and not is_down() and AlertChain.area.calling(self):
+			model.react("hand_to_ear", AlertChain.CALL_TIME - GuardAlert.FLINCH, CharacterModel.EAR_SPEED))
 	_was_calling = true
 	voice.call_in(func() -> bool: return AlertChain.area.calling(self))
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
@@ -870,7 +888,7 @@ func patrol(delta: float) -> void:
 		if route.size() > 1 and Telegraph.head_check(head_check_level, rng):  # Stealth: looks back before it turns
 			_glance = Telegraph.DURATION
 			_glance_yaw = rotation.y
-			telegraph("head_check", "?", "look", "Hm?")
+			telegraph("head_check", "?", "look", tr("radio.hm"))
 
 
 ## The shared Aigis telegraph: a cyan icon over the head and a pose for Telegraph.DURATION, so the
@@ -887,7 +905,7 @@ func telegraph(kind: String, icon: String, clip: String, mutter := "") -> void:
 		radio_say(mutter)
 	var run := get_tree().get_first_node_in_group("mission_plan")
 	if run and Telegraph.METIS.has(kind) and Telegraph.first_sighting(run.telegraphs_seen, kind):
-		get_tree().call_group("radio_log", "say", "METIS", Telegraph.METIS[kind])
+		get_tree().call_group("radio_log", "say", "METIS", tr(Telegraph.METIS[kind]))
 
 
 ## At a stop with a facing, turns to it (sweeping when it scans); a plain stop leaves the guard as it is.

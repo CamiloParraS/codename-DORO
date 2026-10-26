@@ -187,7 +187,7 @@ const EAVESDROP := {EavesdropSpot = [75.9, 53, DECK]}
 const OBJECTIVES := {
 	IntelSmokeBreak = {at = [75.9, 53, DECK], watch = "voiceprint", guards = ["GuardPA", "GuardPB"]},
 	IntelForeman = {at = [48.5, 50, 0], watch = "answer", guards = ["GuardForeman"]},
-	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "hold E to enter the code"},
+	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "ui.prompt.enter_code"},
 }
 ## Safe → exposed → safe crossings, as drawn and timed in the prototype: [id, Encounter, [[x, y, h]...]]. The build
 ## checks both ends are on the navmesh; the prototype's vision sim times them (.scratch/pw-feel/research/harbour-generator-data.md).
@@ -249,6 +249,9 @@ const DRESS := [
 	["ceiling_lamp", [20, 38, 3.8], 0], ["ceiling_lamp", [15.5, 31, 3.8], 0],
 	# a parked van in the north-west corner
 	["van", [10, 8, 0], 90],
+	# the slipway to the Extraction point: bollards down both edges, stacked kit by the wall
+	["bollard", [7.5, 72, 0], 0], ["bollard", [7.5, 76, 0], 0], ["bollard", [14.5, 72, 0], 0], ["bollard", [14.5, 76, 0], 0],
+	["sandbags", [8.2, 70.8, 0], 0], ["drum", [14.2, 70.9, 0], 0], ["drum", [13.5, 70.8, 0], 25],
 	# deck: mast lights over the bow (the start) and the starboard walk
 	["lamp_post", [68.2, 8, DECK], 90], ["lamp_post", [76.2, 41, DECK], 270],
 ]

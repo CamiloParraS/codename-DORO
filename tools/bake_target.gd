@@ -12,6 +12,7 @@ const CLIPS := {
 	"walk": [SRC + "Walking.fbx", true],
 	"run": ["_raw/work/aap/running.fbx", true],
 	"down": [SRC + "Sleeping Idle.fbx", false],
+	"talk": [SRC + "Talking.fbx", false], "talk_b": [SRC + "Talking (1).fbx", false],  # gestures for react()
 }
 
 

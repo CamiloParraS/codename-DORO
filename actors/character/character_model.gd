@@ -31,6 +31,8 @@ const MIXAMO_CLIPS := {
 	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
 	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
 	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
+	"talk": "talking", "talk_b": "talking_1",  # gestures for react() while a guard speaks
+	"hand_to_ear": "talking_on_phone",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
 ## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
@@ -46,6 +48,9 @@ const DRESS := {
 	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
 	Kind.GUARD: ["Chest_rig", "Holster", "Knee_pads", "Shemag"],
 }
+## hand_to_ear is a 39 s phone call: played from its start at this speed, the hand is at the ear within a second
+## (squeezed whole into a Radio call it would spasm at 20x).
+const EAR_SPEED := 3.0
 const CARRY_BONE := "spine_03"
 const HAND_BONE := "hand_r"
 const OFF_HAND := "hand_l"

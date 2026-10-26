@@ -367,11 +367,13 @@ func _fire() -> void:
 	sp += deg_to_rad(_sway)
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	var from := camera.global_position
+	Fx.flash(get_parent(), from + dir * 0.9 + camera.global_basis.x * 0.25 - camera.global_basis.y * 0.2, quiet)
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
 	if hit.is_empty():
 		return
 	var c: Node3D = hit["collider"]
+	_impact(hit["position"], c.is_in_group("guards"), arm.lethal)
 	if arm.lethal and c.is_in_group("cameras"):
 		c.destroy()
 	elif c.is_in_group("guards") and not c.is_down():
@@ -380,6 +382,18 @@ func _fire() -> void:
 			c.shoot(head, global_position)
 		else:
 			c.tranquilize(head, global_position)
+
+
+## What a shot leaves where it lands: a dart puffs pale on a guard, a bullet throws sparks and dust off a wall.
+func _impact(at: Vector3, on_guard: bool, lethal: bool) -> void:
+	var w := get_parent()
+	if on_guard:
+		Fx.puff(w, at, Color(0.6, 0.95, 0.9) if not lethal else Color(0.7, 0.1, 0.1), 6, 1.5)
+	elif lethal:
+		Fx.puff(w, at, Color(1, 0.75, 0.25), 6, 4.0, 0.3)  # sparks
+		Fx.puff(w, at, Color(0.6, 0.58, 0.55), 5, 1.2, 0.6)  # dust
+	else:
+		Fx.puff(w, at, Color(0.7, 0.7, 0.65), 4, 1.0, 0.5)
 
 
 func _interact() -> void:
@@ -434,7 +448,7 @@ func _mount(l: Node3D) -> void:
 func _climb(dir: float, delta: float) -> void:
 	moving = dir != 0.0
 	velocity = Vector3.ZERO
-	prompt = "C drop off"
+	prompt = Prompts.verb("crouch", "ui.prompt.drop_off")
 	var bottom: Vector3 = ladder.get_node("Bottom").global_position
 	var top: Vector3 = ladder.get_node("Top").global_position
 	var y := global_position.y + dir * CLIMB_SPEED * delta
@@ -486,31 +500,37 @@ func _grip_holds() -> bool:
 	return _choking.is_down() if _victim_down else _choking.can_be_choked(global_position)
 
 
+## The HUD's action prompt, "[E] CARRY  [X] KILL": keys from the InputMap, verbs translated.
 func _update_prompt() -> void:
+	var kill := Prompts.verb("kill_takedown", "ui.prompt.kill")
 	if carrying:
-		prompt = "E drop"
+		prompt = Prompts.verb("interact", "ui.prompt.drop")
 	elif _choking:
-		prompt = "killing..." if _killing else "choking..."
+		prompt = tr("ui.prompt.killing" if _killing else "ui.prompt.choking")
 	elif _fultoning:
-		prompt = "Fulton..."
+		prompt = tr("ui.prompt.fultoning")
 	elif held_up and not held_up.answered:
-		prompt = ("questioning..." if _ask > 0.0 else "hold E question") + _fulton_hint()
+		prompt = _join(tr("ui.prompt.questioning") if _ask > 0.0 else Prompts.hold("interact", "ui.prompt.question"), _fulton_hint())
 	elif not held_up and _holdup_target():
-		prompt = "E hold up"
+		prompt = Prompts.verb("interact", "ui.prompt.hold_up")
 	elif _nearest(true):
-		prompt = ("E carry · X kill" if _nearest(true, true) else "E carry") + _fulton_hint()
+		prompt = _join(Prompts.verb("interact", "ui.prompt.carry"), kill if _nearest(true, true) else "", _fulton_hint())
 	elif _nearest(false):
-		prompt = "E choke · X kill" + _fulton_hint()
+		prompt = _join(Prompts.verb("interact", "ui.prompt.choke"), kill, _fulton_hint())
 	elif _crate_near() and not items.crate_used:
-		prompt = "E resupply"
+		prompt = Prompts.verb("interact", "ui.prompt.resupply")
 	elif _ladder_near():
-		prompt = "E climb"
+		prompt = Prompts.verb("interact", "ui.prompt.climb")
 	else:
 		prompt = ""
 	for c in get_tree().get_nodes_in_group("intel"):  # a hold-E console: its line beside the carry and Fulton ones
 		var line: String = c.prompt_for(self) if c.has_method("prompt_for") else ""
-		if line != "":
-			prompt = line if prompt == "" else prompt + " · " + line
+		prompt = _join(prompt, line)
+
+
+## Prompt parts two spaces apart, skipping empty ones.
+static func _join(a: String, b: String, c := "") -> String:
+	return "  ".join(PackedStringArray([a, b, c].filter(func(s: String) -> bool: return s != "")))
 
 
 ## What the Fulton key would do beside a Neutralized or kneeling guard.
@@ -518,7 +538,7 @@ func _fulton_hint() -> String:
 	var g := _fulton_target()
 	if not g or fultons <= 0:
 		return ""
-	return " · hold G Fulton" if fulton_ready() else " · no Fulton indoors"
+	return Prompts.hold("fulton", "ui.prompt.fulton") if fulton_ready() else tr("ui.prompt.no_fulton")
 
 
 ## Could a balloon go up now: a guard it can take in reach, a balloon left, open sky over him.

@@ -15,7 +15,8 @@ var _lines: Array = []
 var _i := 0
 var _blip: VoiceBlip
 var _t := 0.0
-var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
+var _line_t := 0.0  # since the current line began: its glyph's pulse
+var _font := HudPalette.HEADING
 
 
 func _ready() -> void:
@@ -36,6 +37,7 @@ func start(record: Dictionary, then: String) -> void:
 	model = Finale.from_record(record)
 	leave_to = then
 	visible = true
+	HudPalette.fade(self)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().paused = true
 	Engine.time_scale = SLOW
@@ -46,6 +48,8 @@ func _process(delta: float) -> void:
 	if model == null:
 		return
 	_t += delta / maxf(Engine.time_scale, 0.01)  # stills pan in real time, not slowed time
+	if not StoryMotion.still(self):
+		_line_t += delta / maxf(Engine.time_scale, 0.01)
 	if _blip:
 		var p := _blip.advance(delta / maxf(Engine.time_scale, 0.01))
 		if not p.is_empty():
@@ -65,6 +69,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		"debate", "ending":
 			if not _blip.done():
 				_blip.skip()
+				_line_t = StoryMotion.PULSE
 				Mixer.stop_blips()
 			elif _i + 1 < _lines.size():
 				_show(_i + 1)
@@ -103,19 +108,20 @@ func _play(lines: Array) -> void:
 
 func _show(i: int) -> void:
 	_i = i
+	_line_t = 0.0
 	_blip = VoiceBlip.new(tr(_lines[i][1]), _lines[i][0])
 
 
 func _draw() -> void:
 	if model == null:
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
+	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.INK)
 	var c := size / 2
 	match model.stage:
 		"order":
-			draw_arc(c, 60.0, 0, TAU, 48, Color(1, 1, 1, 0.8), 28.0)
-			_text(c + Vector2(-Finale.ORDER.length() * 4, 4), Finale.ORDER, Color.WHITE)
-			_text(Vector2(c.x - 52, size.y - 24), "LMB / SPACE: SEND", Color(1, 1, 1, 0.5))
+			draw_arc(c, 60.0, 0, TAU, 48, Color(HudPalette.CHROME, 0.8), 28.0)
+			HudPalette.centered(self, c.x, c.y + 4, tr("ui.finale.order").to_upper(), HudPalette.WHITE)
+			HudPalette.centered(self, c.x, size.y - 24, Prompts.verb("fire", "ui.finale.send"), HudPalette.HINT)
 		"debate":
 			_voice_line(Vector2(40, 60))
 		"ending":
@@ -125,9 +131,15 @@ func _draw() -> void:
 
 func _voice_line(at: Vector2) -> void:
 	var who: String = _lines[_i][0]
-	_text(at, "%s  %s" % [GLYPHS[who], who.to_upper()], Color(1, 1, 1, 0.6))
-	draw_multiline_string(_font, at + Vector2(0, 24), _blip.shown(), HORIZONTAL_ALIGNMENT_LEFT, size.x - 80, 8, -1, Color.WHITE)
-	_text(Vector2(size.x - 40 - 14 * 8, size.y - 24), "LMB / SPACE >>", Color(1, 1, 1, 0.5))
+	var w := StoryMotion.draw_glyph(self, _font, at, GLYPHS[who], _line_t, HudPalette.AIGIS)
+	_text(at + Vector2(w + 16, 0), tr("ui.voice." + who), HudPalette.AIGIS)
+	var full := HudPalette.wrap(tr(_lines[_i][1]), size.x - 80)
+	var left := _blip.shown().length()
+	for i in full.size():
+		HudPalette.text(self, at + Vector2(0, 24 + i * 16), full[i].left(maxi(left, 0)), HudPalette.WHITE, HudPalette.BODY, HudPalette.BODY_SIZE)
+		left -= full[i].length() + 1
+	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
+	_text(Vector2(size.x - 40 - _font.get_string_size(next, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x, size.y - 24), next, HudPalette.HINT)
 
 
 ## The band's still, slowly zooming from 1.0x to 1.15x and drifting while the ending plays.
@@ -136,8 +148,8 @@ func _still() -> void:
 	var tex: Texture2D = load(s.path)
 	var k := clampf(_t / STILL_SECONDS, 0.0, 1.0)
 	var r := Rect2(Vector2(-20.0, -10.0) * k, size * (1.0 + 0.15 * k))
-	draw_texture_rect(tex, r, true, Color(0.55, 0.55, 0.6))
-	_text(Vector2(8, size.y - 8), s.credit, Color(1, 1, 1, 0.25))
+	draw_texture_rect(tex, r, true, HudPalette.STILL)
+	_text(Vector2(8, size.y - 8), s.credit, HudPalette.EMPTY)
 
 
 func _text(pos: Vector2, s: String, col: Color) -> void:

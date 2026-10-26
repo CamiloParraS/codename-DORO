@@ -23,10 +23,16 @@ const SHOTS := {
 		stern = [Vector3(30, 4, 14), Vector3(22, 0.5, 27)],
 		shelves = [Vector3(-24, 1.8, 17), Vector3(-24, 1, 24)],
 		bridge = [Vector3(20, 6, 5), Vector3(31, 4, 12)],
+		ops_control = [Vector3(-18.5, 2.2, -11.8), Vector3(-21, 1.2, -19)],
+		ops_lobby = [Vector3(-18, 2.2, -18), Vector3(-21.5, 1.2, -8)],
+		ops_locker = [Vector3(-22, 2.2, -4.5), Vector3(-19, 1.0, 0)],
+		alley = [Vector3(-15.5, 2.0, 3), Vector3(-15.5, 1.2, -16)],
+		liftmouth = [Vector3(-25.5, 2.0, -16), Vector3(-25.5, 1.5, -4)],
+		slipway = [Vector3(-29, 3, 26), Vector3(-29, 0.5, 37)],
 	}],
 	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
 	research_annex = ["res://areas/research_annex/research_annex.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
-	core = ["res://areas/core/core.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
+	core = ["res://areas/core/core.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)], yard = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)]}],
 }
 
 

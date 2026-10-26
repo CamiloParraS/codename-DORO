@@ -17,7 +17,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if _operative and _done():
-		_operative.prompt = "E: access the Core"
+		_operative.prompt = Prompts.verb("interact", "ui.prompt.access_core")
 		if Input.is_action_just_pressed("interact"):
 			use()
 

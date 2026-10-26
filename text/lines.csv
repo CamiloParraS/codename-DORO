@@ -1,165 +1,165 @@
 keys,en,es
 codec.speaker.handler,METIS,METIS
-codec.speaker.analyst,METIS ANALYST,METIS ANALISTA
+codec.speaker.analyst,METIS ANALYST,ANALISTA DE METIS
 codec.speaker.operative,OPERATIVE,OPERATIVO
-codec.m1.01,"Operative, this is Metis. You're at the Harbour. Palladion's compound sits on this island.","Operativo, aqui Metis. Estas en el Puerto. El complejo de Palladion esta en esta isla."
-codec.m1.02,"Understood. What do I need?","Entendido. Que necesito?"
-codec.m1.03,"Two deck hands take their smoke break behind the bridge. Listen in: they'll say who holds the freight lift's code.","Dos marineros fuman detras del puente. Escuchalos: diran quien tiene el codigo del montacargas."
-codec.m1.04,"Our client is a Palladion whistleblower. Whatever rides that lift is what they need us to see.","Nuestra cliente es una informante de Palladion. Lo que baja por ese montacargas es lo que necesita que veamos."
-codec.m1.05,"And the lift?","Y el montacargas?"
-codec.m1.06,"Its controls are in the operations building, by the west cliff. Enter the code and we'll see where it goes.","Sus controles estan en el edificio de operaciones, junto al acantilado oeste. Introduce el codigo y veremos adonde va."
-codec.m1.07,"Palladion calls its defence system Aigis. Nobody outside knows what it is. That's what we're paid to find out.","Palladion llama Aigis a su sistema de defensa. Nadie de fuera sabe que es. Para eso nos pagan."
-codec.m1.08,"Stay quiet and get out through the Extraction point. Metis out.","Mantente en silencio y sal por el punto de Extraccion. Metis fuera."
-codec.m2.01,"Next is the Radio Relay Station. Everything the island says to the world goes through it.","Ahora la Estacion de Radio. Todo lo que la isla dice al mundo pasa por ella."
-codec.m2.02,"What am I looking for?","Que busco?"
-codec.m2.03,"Encryption keys in the garage first. Then sabotage the relay console on the summit.","Primero las claves de cifrado del garaje. Luego sabotea la consola de la cima."
-codec.m2.04,"Careful. The sabotage takes five seconds of standing still beside the console.","Cuidado. El sabotaje exige cinco segundos quieto junto a la consola."
-codec.m2.05,"Your Target is the relay chief. Two decades in Palladion signals, and he signs off every broadcast that leaves this island.","Tu objetivo es el jefe de la estacion. Dos decadas en las comunicaciones de Palladion, y firma cada emision que sale de esta isla."
-codec.m2.06,"He signs them, but nobody on his staff writes them. Find out who does.","Las firma, pero nadie de su equipo las escribe. Averigua quien lo hace."
-codec.m2.07,"And the chief?","Y el jefe?"
-codec.m2.08,"Kill him or carry him out. Your call. Metis out.","Eliminalo o sacalo de alli. Tu decides. Metis fuera."
-codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigacion. Aigis no se construyo en un dia, y aqui se hizo."
-codec.m3.02,"Is the lead researcher a threat?","La investigadora jefa es una amenaza?"
-codec.m3.03,"She is the key. She built Aigis's memory, and she hasn't left the annex in twelve months.","Ella es la clave. Construyo la memoria de Aigis y no ha salido del Anexo en doce meses."
+codec.m1.01,"Operative, this is Metis. You're at the Harbour. Palladion's compound sits on this island.","Operativo, aquí Metis. Estás en el Puerto. El complejo de Palladion está en esta isla."
+codec.m1.02,Understood. What do I need?,Entendido. ¿Qué necesito?
+codec.m1.03,Two deck hands take their smoke break behind the bridge. Listen in: they'll say who holds the freight lift's code.,Dos marineros fuman detrás del puente. Escúchalos: dirán quién tiene el código del montacargas.
+codec.m1.04,Our client is a Palladion whistleblower. Whatever rides that lift is what they need us to see.,Nuestra cliente es una informante de Palladion. Lo que baja por ese montacargas es lo que necesita que veamos.
+codec.m1.05,And the lift?,¿Y el montacargas?
+codec.m1.06,"Its controls are in the operations building, by the west cliff. Enter the code and we'll see where it goes.","Sus controles están en el edificio de operaciones, junto al acantilado oeste. Introduce el código y veremos adónde va."
+codec.m1.07,Palladion calls its defence system Aigis. Nobody outside knows what it is. That's what we're paid to find out.,Palladion llama Aigis a su sistema de defensa. Nadie de fuera sabe qué es. Para eso nos pagan.
+codec.m1.08,Stay quiet and get out through the Extraction point. Metis out.,Mantente en silencio y sal por el punto de Extracción. Metis fuera.
+codec.m2.01,Next is the Radio Relay Station. Everything the island says to the world goes through it.,Ahora la Estación de Radio. Todo lo que la isla dice al mundo pasa por ella.
+codec.m2.02,What am I looking for?,¿Qué busco?
+codec.m2.03,Encryption keys in the garage first. Then sabotage the relay console on the summit.,Primero las claves de cifrado del garaje. Luego sabotea la consola de la cima.
+codec.m2.04,Careful. The sabotage takes five seconds of standing still beside the console.,Cuidado. El sabotaje exige cinco segundos quieto junto a la consola.
+codec.m2.05,"Your Target is the relay chief. Two decades in Palladion signals, and he signs off every broadcast that leaves this island.","Tu objetivo es el jefe de la estación. Dos décadas en las comunicaciones de Palladion, y firma cada emisión que sale de esta isla."
+codec.m2.06,"He signs them, but nobody on his staff writes them. Find out who does.","Las firma, pero nadie de su equipo las escribe. Averigua quién lo hace."
+codec.m2.07,And the chief?,¿Y el jefe?
+codec.m2.08,Kill him or carry him out. Your call. Metis out.,Elimínalo o sácalo de allí. Tú decides. Metis fuera.
+codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigación. Aigis no se construyó en un día, y aquí se hizo."
+codec.m3.02,Is the lead researcher a threat?,¿La investigadora jefa es una amenaza?
+codec.m3.03,"She is the key. She built Aigis's memory, and she hasn't left the annex in twelve months.",Ella es la clave. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
 codec.m3.04,"Palladion keeps her close. Whatever Aigis is, she made it.","Palladion la tiene vigilada. Sea lo que sea Aigis, ella lo hizo."
-codec.m3.05,"Access logs from the office first. They open the vault; the research files are past it, in the Archive.","Primero los registros de acceso de la oficina. Abren la boveda; los archivos estan detras, en el Archivo."
-codec.m3.06,"Kill her or carry her out, and take the files.","Eliminala o sacala de alli, y toma los archivos."
-codec.m3.07,"Those files should explain what Aigis really is.","Esos archivos deberian explicar que es Aigis en realidad."
-codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about to give Aigis full authority.","Es aqui. El Nucleo esta bajo el Puerto, y Palladion va a darle a Aigis plena autoridad."
-codec.m4.02,"What is the plan?","Cual es el plan?"
-codec.m4.03,"Back into the operations building. The lift code still works.","De vuelta al edificio de operaciones. El codigo del montacargas sigue funcionando."
-codec.m4.04,"Your Target is Palladion's security director. He answers to the board alone, and he'll be at Aigis's side.","Tu objetivo es el director de seguridad de Palladion. Solo responde ante la junta, y estara junto a Aigis."
-codec.m4.05,"If the board's vote stands, every network Palladion defends, on every coast, answers to Aigis by morning.","Si la votacion de la junta sigue adelante, todas las redes que defiende Palladion, en todas las costas, responderan a Aigis al amanecer."
-codec.m4.06,"Deal with the director. Then we feed Aigis memories it can't verify.","Ocupate del director. Luego le damos a Aigis recuerdos que no puede verificar."
+codec.m3.05,"Access logs from the office first. They open the vault; the research files are past it, in the Archive.","Primero los registros de acceso de la oficina. Abren la bóveda; los archivos están detrás, en el Archivo."
+codec.m3.06,"Kill her or carry her out, and take the files.","Elimínala o sácala de allí, y llévate los archivos."
+codec.m3.07,Those files should explain what Aigis really is.,Esos archivos deberían explicar qué es Aigis en realidad.
+codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about to give Aigis full authority.","Es aquí. El Núcleo está bajo el Puerto, y Palladion va a darle a Aigis plena autoridad."
+codec.m4.02,What is the plan?,¿Cuál es el plan?
+codec.m4.03,Back into the operations building. The lift code still works.,De vuelta al edificio de operaciones. El código del montacargas sigue funcionando.
+codec.m4.04,"Your Target is Palladion's security director. He answers to the board alone, and he'll be at Aigis's side.","Tu objetivo es el director de seguridad de Palladion. Solo responde ante la junta, y estará junto a Aigis."
+codec.m4.05,"If the board's vote stands, every network Palladion defends, on every coast, answers to Aigis by morning.","Si la votación de la junta sigue adelante, todas las redes que defiende Palladion, en todas las costas, responderán a Aigis al amanecer."
+codec.m4.06,Deal with the director. Then we feed Aigis memories it can't verify.,Ocúpate del director. Luego le damos a Aigis recuerdos que no puede verificar.
 codec.m4.07,"The same trick it uses on the world. Good luck, Operative.","El mismo truco que usa con el mundo. Suerte, Operativo."
-live.m1.s1.01,"The yard foreman carries the lift code. Find him in the container lanes and make him talk.","El capataz del patio lleva el codigo. Encuentralo entre los contenedores y hazlo hablar."
-live.m1.s2.01,"That's the code. The lift controls are in the operations building by the cliff.","Ese es el codigo. Los controles del montacargas estan en el edificio de operaciones, junto al acantilado."
-live.m1.s3.01,"Code accepted. Get out by the slipway before they check that panel.","Codigo aceptado. Sal por la rampa antes de que revisen ese panel."
-intel.m1.manifest,"The panel logs the lift's manifests. Every load that goes down is cleared by the radio relay station.","El panel registra los manifiestos del montacargas. Cada carga que baja la autoriza la estacion de radio."
-tutorial.crouch.prompt,[C] CROUCH: SLOWER BUT QUIETER,[C] AGACHARSE: MAS LENTO PERO MAS SILENCIOSO
-tutorial.crouch.line,"Guard ahead. Crouch and he'll hear you less.","Guardia al frente. Agachate y te oira menos."
+live.m1.s1.01,The yard foreman carries the lift code. Find him in the container lanes and make him talk.,El capataz del patio lleva el código. Encuéntralo entre los contenedores y hazlo hablar.
+live.m1.s2.01,That's the code. The lift controls are in the operations building by the cliff.,"Ese es el código. Los controles del montacargas están en el edificio de operaciones, junto al acantilado."
+live.m1.s3.01,Code accepted. Get out by the slipway before they check that panel.,Código aceptado. Sal por la rampa antes de que revisen ese panel.
+intel.m1.manifest,The panel logs the lift's manifests. Every load that goes down is cleared by the radio relay station.,El panel registra los manifiestos del montacargas. Cada carga que baja la autoriza la estación de radio.
+tutorial.crouch.prompt,[C] CROUCH: SLOWER BUT QUIETER,[C] AGACHARSE: MÁS LENTO PERO MÁS SILENCIOSO
+tutorial.crouch.line,Guard ahead. Crouch and he'll hear you less.,Guardia al frente. Agáchate y te oirá menos.
 tutorial.takedown.prompt,[E] CHOKE FROM BEHIND: HE GOES DOWN QUIETLY,[E] ESTRANGULAR POR LA ESPALDA: CAE EN SILENCIO
-tutorial.takedown.line,"Get behind him and choke him out. No noise, no alarm.","Ponte a su espalda y duermelo. Sin ruido, sin alarma."
-tutorial.carry.prompt,[E] CARRY THE BODY: HIDE IT BEFORE ANYONE FINDS IT,[E] CARGAR EL CUERPO: ESCONDELO ANTES DE QUE LO ENCUENTREN
-tutorial.carry.line,"A body left in the open gets found. Pick him up and hide him.","Un cuerpo a la vista se encuentra. Cargalo y escondelo."
+tutorial.takedown.line,"Get behind him and choke him out. No noise, no alarm.","Ponte a su espalda y duérmelo. Sin ruido, sin alarma."
+tutorial.carry.prompt,[E] CARRY THE BODY: HIDE IT BEFORE ANYONE FINDS IT,[E] CARGAR EL CUERPO: ESCÓNDELO ANTES DE QUE LO ENCUENTREN
+tutorial.carry.line,A body left in the open gets found. Pick him up and hide him.,Un cuerpo a la vista se encuentra. Cárgalo y escóndelo.
 tutorial.tranq.prompt,[1] TRANQ PISTOL: [RMB] AIM  [LMB] FIRE,[1] PISTOLA TRANQUILIZANTE: [RMB] APUNTAR  [LMB] DISPARAR
-tutorial.tranq.line,"The tranq pistol is silent. Aim for the head and he's out cold.","La pistola tranquilizante es silenciosa. Apunta a la cabeza y cae dormido."
-tutorial.eavesdrop.prompt,STAY CLOSE WHILE HE CALLS IN: YOUR RADIO RECORDS HIS VOICE,QUEDATE CERCA MIENTRAS REPORTA: TU RADIO GRABA SU VOZ
-tutorial.eavesdrop.line,"Guards check in by radio. Stay near one while he talks and we'll get his Voiceprint.","Los guardias reportan por radio. Quedate cerca mientras habla y tendremos su huella de voz."
-tutorial.radio.prompt,[Q] RADIO MENU: SPOOF A TRANSMISSION WITH A VOICEPRINT,[Q] MENU DE RADIO: FALSIFICA UNA TRANSMISION CON UNA HUELLA DE VOZ
-tutorial.radio.line,"Got a Voiceprint. Open the radio and I can send a call in his voice.","Tenemos una huella de voz. Abre la radio y puedo enviar una llamada con su voz."
-tutorial.scanner.prompt,[F] SCANNER: SHOWS GUARD VISION CONES FOR 10 SECONDS,[F] ESCANER: MUESTRA LOS CONOS DE VISION DE LOS GUARDIAS 10 SEGUNDOS
-tutorial.scanner.line,"Use the Scanner. You'll see where they're looking before they see you.","Usa el escaner. Veras hacia donde miran antes de que te vean."
-tutorial.magazine.prompt,[F] MAGAZINE: HOLD TO AIM  RELEASE TO THROW AS A DISTRACTION,[F] CARGADOR: MANTEN PARA APUNTAR  SUELTA PARA LANZAR COMO DISTRACCION
-tutorial.magazine.line,"Throw a magazine and the noise pulls him away from his post.","Lanza un cargador y el ruido lo aparta de su puesto."
-tutorial.holdup.prompt,[RMB] AIM FROM BEHIND  [E] HOLD UP  HOLD [E] TO QUESTION HIM,[RMB] APUNTA POR LA ESPALDA  [E] MANOS ARRIBA  MANTEN [E] PARA INTERROGARLO
-tutorial.holdup.line,"That's the Foreman. Get behind him, aim, and he'll talk. Keep the gun on him.","Ese es el capataz. Ponte a su espalda, apuntale y hablara. No dejes de apuntarle."
-tutorial.fulton.prompt,[G] HOLD BESIDE HIM: FULTON HIM OUT  NOT INDOORS,[G] MANTEN A SU LADO: SACALO CON EL FULTON  NO BAJO TECHO
-tutorial.fulton.line,"Out in the open you can send him up on a balloon. He won't be found, and he's ours.","Al aire libre puedes mandarlo arriba en un globo. No lo encontraran, y es nuestro."
-tutorial.caution.prompt,CAUTION: THEY'RE SEARCHING AND SEE FARTHER  STAY OUT OF SIGHT UNTIL IT ENDS,PRECAUCION: ESTAN BUSCANDO Y VEN MAS LEJOS  NO TE DEJES VER HASTA QUE TERMINE
-tutorial.caution.line,"They know something's wrong. Lie low a minute and they'll settle down.","Saben que algo va mal. Escondete un minuto y se calmaran."
-live.m2.s1.01,"Keys recovered. Now the console on the summit.","Claves recuperadas. Ahora la consola de la cima."
-intel.m2.keys,"These keys sign the relay's broadcasts. Not one of them belongs to a person.","Estas claves firman las emisiones de la estacion. Ninguna pertenece a una persona."
-live.m2.s2.01,"Relay is down. Every guard on the island will be looking for the cause.","La estacion esta caida. Todos los guardias buscaran la causa."
-live.m2.s2.02,"Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.","Sus emisiones eran noticias generadas por maquina. Aigis fabrica las crisis que lo contratan para resolver."
-intel.m2.inflation,"Synthetic Content Inflation: flood the news until a crisis is real enough to sell.","Inflacion de Contenido Sintetico: inundar las noticias hasta que una crisis sea lo bastante real para venderla."
-live.m2.s3.01,"The chief's orders are signed by Aigis. Find the chief and finish it.","Las ordenes del jefe estan firmadas por Aigis. Encuentra al jefe y termina esto."
-live.m3.s1.01,"Access logs copied. The vault is at the end of the corridor.","Registros de acceso copiados. La boveda esta al final del pasillo."
-intel.m3.authority,"The logs show a board vote next week. Palladion is giving Aigis full authority over its defence networks.","Los registros muestran una votacion de la junta la semana que viene. Palladion va a darle a Aigis plena autoridad sobre sus redes de defensa."
-live.m3.s2.01,"The vault is open. The files are back in the Archive.","La boveda esta abierta. Los archivos estan de vuelta en el Archivo."
-live.m3.s3.01,"Files secured. Aigis was built from the memories of dead commanders.","Archivos asegurados. Aigis se construyo con los recuerdos de comandantes muertos."
-live.m3.s3.02,"And the Core is under the Harbour. That's where we finish this.","Y el Nucleo esta bajo el Puerto. Ahi terminamos esto."
-live.m4.s1.01,"You're inside. The lift is through the hall.","Estas dentro. El montacargas esta al fondo del pasillo."
-live.m4.s2.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas esta abierto. Hagas lo que hagas, Aigis lo recordara."
-intel.m4.plan,"The terminal down there takes memories as input. We write ours to look like its own.","El terminal de abajo acepta recuerdos. Escribimos los nuestros para que parezcan suyos."
-core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Nucleo. Sella el montacargas y bloquea la sala."
-hq.relay_offline,"Relay's offline. All units, sweep the station.","El repetidor esta caido. Todas las unidades, registren la estacion."
-chat.smoke.1.a,"Lift's locked again. Who has the code?","El montacargas esta cerrado otra vez. Quien tiene el codigo?"
-chat.smoke.1.b,"The yard foreman. Only him, and he walks the container lanes all night.","El capataz del patio. Solo el, y se pasa la noche entre los contenedores."
-chat.smoke.2.a,"Got a light?","Tienes fuego?"
-chat.smoke.2.b,"Thought you quit.","Crei que lo habias dejado."
-chat.smoke.3.a,"Another double shift.","Otro doble turno."
-chat.smoke.3.b,"Same as everyone.","Como todos."
-chat.smoke.4.a,"Who's on the gangway?","Quien esta en la pasarela?"
-chat.smoke.4.b,"The new guy. Again.","El nuevo. Otra vez."
-chat.idle.1.a,"Anything on the radio?","Algo en la radio?"
-chat.idle.1.b,"Static. Same as last night.","Estatica. Como anoche."
-chat.idle.2.a,"Got a light?","Tienes fuego?"
-chat.idle.2.b,"Thought you quit.","Crei que lo habias dejado."
-chat.idle.3.a,"Another double shift.","Otro doble turno."
-chat.idle.3.b,"Same as everyone.","Como todos."
-chat.idle.4.a,"Who relieves us?","Quien nos releva?"
-chat.idle.4.b,"Nobody. Again.","Nadie. Otra vez."
-target.m2.1,"Tonight's bulletin is queued. Don't touch the console; it writes itself.","El boletin de esta noche esta en cola. No toques la consola; se escribe sola."
-target.m2.2,"Writes itself, sir?","Sola, jefe?"
+tutorial.tranq.line,The tranq pistol is silent. Aim for the head and he's out cold.,La pistola tranquilizante es silenciosa. Apunta a la cabeza y cae dormido.
+tutorial.eavesdrop.prompt,STAY CLOSE WHILE HE CALLS IN: YOUR RADIO RECORDS HIS VOICE,QUÉDATE CERCA MIENTRAS REPORTA: TU RADIO GRABA SU VOZ
+tutorial.eavesdrop.line,Guards check in by radio. Stay near one while he talks and we'll get his Voiceprint.,Los guardias reportan por radio. Quédate cerca mientras habla y tendremos su huella de voz.
+tutorial.radio.prompt,[Q] RADIO MENU: SPOOF A TRANSMISSION WITH A VOICEPRINT,[Q] MENÚ DE RADIO: FALSIFICA UNA TRANSMISIÓN CON UNA HUELLA DE VOZ
+tutorial.radio.line,Got a Voiceprint. Open the radio and I can send a call in his voice.,Tenemos una huella de voz. Abre la radio y puedo enviar una llamada con su voz.
+tutorial.scanner.prompt,[F] SCANNER: SHOWS GUARD VISION CONES FOR 10 SECONDS,[F] ESCÁNER: MUESTRA LOS CONOS DE VISIÓN DE LOS GUARDIAS 10 SEGUNDOS
+tutorial.scanner.line,Use the Scanner. You'll see where they're looking before they see you.,Usa el escáner. Verás hacia dónde miran antes de que te vean.
+tutorial.magazine.prompt,[F] MAGAZINE: HOLD TO AIM  RELEASE TO THROW AS A DISTRACTION,[F] CARGADOR: MANTÉN PARA APUNTAR  SUELTA PARA LANZARLO COMO DISTRACCIÓN
+tutorial.magazine.line,Throw a magazine and the noise pulls him away from his post.,Lanza un cargador y el ruido lo aparta de su puesto.
+tutorial.holdup.prompt,[RMB] AIM FROM BEHIND  [E] HOLD UP  HOLD [E] TO QUESTION HIM,[RMB] APUNTA POR LA ESPALDA  [E] MANOS ARRIBA  MANTÉN [E] PARA INTERROGARLO
+tutorial.holdup.line,"That's the Foreman. Get behind him, aim, and he'll talk. Keep the gun on him.","Ese es el capataz. Ponte a su espalda, apúntale y hablará. No dejes de apuntarle."
+tutorial.fulton.prompt,[G] HOLD BESIDE HIM: FULTON HIM OUT  NOT INDOORS,[G] MANTÉN A SU LADO: SÁCALO CON EL FULTON  NO BAJO TECHO
+tutorial.fulton.line,"Out in the open you can send him up on a balloon. He won't be found, and he's ours.","Al aire libre puedes mandarlo arriba en un globo. No lo encontrarán, y es nuestro."
+tutorial.caution.prompt,CAUTION: THEY'RE SEARCHING AND SEE FARTHER  STAY OUT OF SIGHT UNTIL IT ENDS,PRECAUCIÓN: ESTÁN BUSCANDO Y VEN MÁS LEJOS  NO TE DEJES VER HASTA QUE TERMINE
+tutorial.caution.line,They know something's wrong. Lie low a minute and they'll settle down.,Saben que algo va mal. Escóndete un minuto y se calmarán.
+live.m2.s1.01,Keys recovered. Now the console on the summit.,Claves recuperadas. Ahora la consola de la cima.
+intel.m2.keys,These keys sign the relay's broadcasts. Not one of them belongs to a person.,Estas claves firman las emisiones de la estación. Ninguna pertenece a una persona.
+live.m2.s2.01,Relay is down. Every guard on the island will be looking for the cause.,La estación está caída. Todos los guardias buscarán la causa.
+live.m2.s2.02,Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.,Sus emisiones eran noticias generadas por máquina. Aigis fabrica las crisis que lo contratan para resolver.
+intel.m2.inflation,Synthetic Content Inflation: flood the news until a crisis is real enough to sell.,Inflación de Contenido Sintético: inundar las noticias hasta que una crisis sea lo bastante real para venderla.
+live.m2.s3.01,The chief's orders are signed by Aigis. Find the chief and finish it.,Las órdenes del jefe están firmadas por Aigis. Encuentra al jefe y termina esto.
+live.m3.s1.01,Access logs copied. The vault is at the end of the corridor.,Registros de acceso copiados. La bóveda está al final del pasillo.
+intel.m3.authority,The logs show a board vote next week. Palladion is giving Aigis full authority over its defence networks.,Los registros muestran una votación de la junta la semana que viene. Palladion va a darle a Aigis plena autoridad sobre sus redes de defensa.
+live.m3.s2.01,The vault is open. The files are back in the Archive.,"La bóveda está abierta. Los archivos están más adentro, en el Archivo."
+live.m3.s3.01,Files secured. Aigis was built from the memories of dead commanders.,Archivos asegurados. Aigis se construyó con los recuerdos de comandantes muertos.
+live.m3.s3.02,And the Core is under the Harbour. That's where we finish this.,Y el Núcleo está bajo el Puerto. Ahí terminamos esto.
+live.m4.s1.01,You're inside. The lift is through the hall.,Estás dentro. El montacargas está al fondo del pasillo.
+live.m4.s2.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas está abierto. Hagas lo que hagas, Aigis lo recordará."
+intel.m4.plan,The terminal down there takes memories as input. We write ours to look like its own.,El terminal de abajo acepta recuerdos. Escribimos los nuestros para que parezcan suyos.
+core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Núcleo. Sella el montacargas y bloquea la sala."
+hq.relay_offline,"Relay's offline. All units, sweep the station.","El repetidor está caído. Todas las unidades, registren la estación."
+chat.smoke.1.a,Lift's locked again. Who has the code?,El montacargas está cerrado otra vez. ¿Quién tiene el código?
+chat.smoke.1.b,"The yard foreman. Only him, and he walks the container lanes all night.","El capataz del patio. Solo él, y se pasa la noche entre los contenedores."
+chat.smoke.2.a,Got a light?,¿Tienes fuego?
+chat.smoke.2.b,Thought you quit.,Creí que lo habías dejado.
+chat.smoke.3.a,Another double shift.,Otro doble turno.
+chat.smoke.3.b,Same as everyone.,Como todos.
+chat.smoke.4.a,Who's on the gangway?,¿Quién está en la pasarela?
+chat.smoke.4.b,The new guy. Again.,El nuevo. Otra vez.
+chat.idle.1.a,Anything on the radio?,¿Algo en la radio?
+chat.idle.1.b,Static. Same as last night.,Estática. Como anoche.
+chat.idle.2.a,Got a light?,¿Tienes fuego?
+chat.idle.2.b,Thought you quit.,Creí que lo habías dejado.
+chat.idle.3.a,Another double shift.,Otro doble turno.
+chat.idle.3.b,Same as everyone.,Como todos.
+chat.idle.4.a,Who relieves us?,¿Quién nos releva?
+chat.idle.4.b,Nobody. Again.,Nadie. Otra vez.
+target.m2.1,Tonight's bulletin is queued. Don't touch the console; it writes itself.,El boletín de esta noche está en cola. No toques la consola; se escribe sola.
+target.m2.2,"Writes itself, sir?","¿Sola, jefe?"
 target.m2.3,"Aigis drafts, I sign. Keep walking.","Aigis redacta, yo firmo. Sigue andando."
 target.m3.1,"Doctor, the board wants the transfer done by Friday.","Doctora, la junta quiere la transferencia hecha para el viernes."
-target.m3.2,"They wanted a general who never dies. I gave them forty.","Querian un general que nunca muriera. Les di cuarenta."
-target.m3.3,"Forty dead commanders, one machine. Mind the door.","Cuarenta comandantes muertos, una maquina. Cuidado con la puerta."
-target.m4.1,"Once the board signs, Aigis holds every network we defend.","En cuanto firme la junta, Aigis controlara cada red que defendemos."
-target.m4.2,"And us, sir?","Y nosotros, jefe?"
-target.m4.3,"We hold the door. That's all anyone will need from us.","Nosotros guardamos la puerta. Es todo lo que necesitaran de nosotros."
-brief.pallas.habit.stealth,You favour the quiet approach. Aigis noticed.,Prefieres el enfoque de silencio. Aigis lo noto.
-brief.glaukopis.hint.stealth.1,"[glaukopis] Expect an answer to your quiet habit, level 1.","[glaukopis] Espera una respuesta a tu habito de silencio, nivel 1."
-brief.promachos.hint.stealth.2,"[promachos] Expect an answer to your quiet habit, level 2.","[promachos] Espera una respuesta a tu habito de silencio, nivel 2."
-brief.gorgo.hint.stealth.3,"[gorgo] Expect an answer to your quiet habit, level 3.","[gorgo] Espera una respuesta a tu habito de silencio, nivel 3."
-brief.pallas.habit.combat,You favour the loud approach. Aigis noticed.,Prefieres el enfoque de ruido. Aigis lo noto.
-brief.gorgo.hint.combat.1,"[gorgo] Expect an answer to your loud habit, level 1.","[gorgo] Espera una respuesta a tu habito de ruido, nivel 1."
-brief.promachos.hint.combat.2,"[promachos] Expect an answer to your loud habit, level 2.","[promachos] Espera una respuesta a tu habito de ruido, nivel 2."
-brief.promachos.hint.combat.3,"[promachos] Expect an answer to your loud habit, level 3.","[promachos] Espera una respuesta a tu habito de ruido, nivel 3."
-brief.pallas.habit.headshots,You favour the headshot approach. Aigis noticed.,Prefieres el enfoque de tiro a la cabeza. Aigis lo noto.
-brief.gorgo.hint.headshots.1,"[gorgo] Expect an answer to your headshot habit, level 1.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 1."
-brief.gorgo.hint.headshots.2,"[gorgo] Expect an answer to your headshot habit, level 2.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 2."
-brief.gorgo.hint.headshots.3,"[gorgo] Expect an answer to your headshot habit, level 3.","[gorgo] Espera una respuesta a tu habito de tiro a la cabeza, nivel 3."
-brief.pallas.habit.takedowns,You favour the takedown approach. Aigis noticed.,Prefieres el enfoque de derribo. Aigis lo noto.
-brief.pallas.hint.takedowns.1,"[pallas] Expect an answer to your takedown habit, level 1.","[pallas] Espera una respuesta a tu habito de derribo, nivel 1."
-brief.gorgo.hint.takedowns.2,"[gorgo] Expect an answer to your takedown habit, level 2.","[gorgo] Espera una respuesta a tu habito de derribo, nivel 2."
-brief.nike.hint.takedowns.3,"[nike] Expect an answer to your takedown habit, level 3.","[nike] Espera una respuesta a tu habito de derribo, nivel 3."
-brief.pallas.habit.downs,You favour the sleeper approach. Aigis noticed.,Prefieres el enfoque de dormido. Aigis lo noto.
-brief.pallas.hint.downs.1,"[pallas] Expect an answer to your sleeper habit, level 1.","[pallas] Espera una respuesta a tu habito de dormido, nivel 1."
-brief.nike.hint.downs.2,"[nike] Expect an answer to your sleeper habit, level 2.","[nike] Espera una respuesta a tu habito de dormido, nivel 2."
-brief.pallas.hint.downs.3,"[pallas] Expect an answer to your sleeper habit, level 3.","[pallas] Espera una respuesta a tu habito de dormido, nivel 3."
-brief.pallas.habit.spoofing,You favour the spoof approach. Aigis noticed.,Prefieres el enfoque de suplantacion. Aigis lo noto.
-brief.glaukopis.hint.spoofing.1,"[glaukopis] Expect an answer to your spoof habit, level 1.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 1."
-brief.glaukopis.hint.spoofing.2,"[glaukopis] Expect an answer to your spoof habit, level 2.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 2."
-brief.glaukopis.hint.spoofing.3,"[glaukopis] Expect an answer to your spoof habit, level 3.","[glaukopis] Espera una respuesta a tu habito de suplantacion, nivel 3."
-brief.nike.noisy_choke,Chokes will not be quiet this time.,Los estrangulamientos no seran silenciosos esta vez.
-brief.glaukopis.head_check,Guards check behind them before they turn.,Los guardias miran atras antes de girar.
-brief.promachos.flank,Reinforcements will come round your flank.,Los refuerzos te rodearan por el flanco.
-brief.glaukopis.radio_check,Guards will call HQ back to verify the radio.,Los guardias llamaran a la base para verificar la radio.
+target.m3.2,They wanted a general who never dies. I gave them forty.,Querían un general que nunca muriera. Les di cuarenta.
+target.m3.3,"Forty dead commanders, one machine. Mind the door.","Cuarenta comandantes muertos, una máquina. Cuidado con la puerta."
+target.m4.1,"Once the board signs, Aigis holds every network we defend.","En cuanto firme la junta, Aigis controlará cada red que defendemos."
+target.m4.2,"And us, sir?","¿Y nosotros, jefe?"
+target.m4.3,We hold the door. That's all anyone will need from us.,Nosotros guardamos la puerta. Es todo lo que necesitarán de nosotros.
+brief.pallas.habit.stealth,You favour the quiet approach. Aigis noticed.,Prefieres el sigilo. Aigis lo notó.
+brief.glaukopis.hint.stealth.1,Cameras watch the quiet corners now. They see what a guard misses.,Ahora hay cámaras en los rincones tranquilos. Ven lo que un guardia pasa por alto.
+brief.promachos.hint.stealth.2,One more patrol walks your shadows.,Una patrulla más recorre tus sombras.
+brief.gorgo.hint.stealth.3,Sentries on the high ground. No corner stays dark.,Centinelas en lo alto. Ningún rincón queda a oscuras.
+brief.pallas.habit.combat,You favour the loud approach. Aigis noticed.,Prefieres el ruido. Aigis lo notó.
+brief.gorgo.hint.combat.1,Every guard wears a vest. Your bullets will need to be more.,Cada guardia lleva chaleco. Tus balas tendrán que ser más.
+brief.promachos.hint.combat.2,Two more guns on the ground. You wanted a fight.,Dos armas más sobre el terreno. Querías pelea.
+brief.promachos.hint.combat.3,Raise the alarm and five come for you at once.,Da la alarma y vendrán cinco a por ti a la vez.
+brief.pallas.habit.headshots,You favour the headshot approach. Aigis noticed.,Prefieres el tiro a la cabeza. Aigis lo notó.
+brief.gorgo.hint.headshots.1,Some of them wear helmets now. Choose your heads.,Algunos llevan casco ahora. Elige bien tus cabezas.
+brief.gorgo.hint.headshots.2,Most of them wear helmets now. Aim lower.,Casi todos llevan casco ahora. Apunta más abajo.
+brief.gorgo.hint.headshots.3,Every head is covered. Find another way.,Todas las cabezas van cubiertas. Busca otra forma.
+brief.pallas.habit.takedowns,You favour the takedown approach. Aigis noticed.,Prefieres el derribo. Aigis lo notó.
+brief.pallas.hint.takedowns.1,They will look behind them more often.,Mirarán atrás más a menudo.
+brief.gorgo.hint.takedowns.2,They walk in pairs now. Choke one and the other sees.,Ahora patrullan en parejas. Estrangula a uno y el otro lo verá.
+brief.nike.hint.takedowns.3,They have trained against the grip. Every choke will be a struggle.,Han entrenado contra la llave. Cada estrangulamiento será una lucha.
+brief.pallas.habit.downs,You favour the sleeper approach. Aigis noticed.,Prefieres dejarlos dormidos. Aigis lo notó.
+brief.pallas.hint.downs.1,HQ will call them at random. Silence will be noticed.,La base los llamará al azar. El silencio se notará.
+brief.nike.hint.downs.2,"A sleeping guard, once found, is an alarm at once.","Un guardia dormido, en cuanto lo encuentren, es una alarma inmediata."
+brief.pallas.hint.downs.3,HQ will call the guards nearest you first.,La base llamará primero a los guardias más cercanos a ti.
+brief.pallas.habit.spoofing,You favour the spoof approach. Aigis noticed.,Prefieres la suplantación. Aigis lo notó.
+brief.glaukopis.hint.spoofing.1,I listen closer now. A borrowed voice will not fool me so easily.,Ahora escucho con más atención. Una voz prestada no me engañará tan fácilmente.
+brief.glaukopis.hint.spoofing.2,A strange order will be checked with whoever gave it.,Una orden extraña se comprobará con quien la dio.
+brief.glaukopis.hint.spoofing.3,Each voice you steal will work once. Only once.,Cada voz que robes servirá una vez. Solo una.
+brief.nike.noisy_choke,Chokes will not be quiet this time.,Los estrangulamientos no serán silenciosos esta vez.
+brief.glaukopis.head_check,Guards check behind them before they turn.,Los guardias miran atrás antes de girar.
+brief.promachos.flank,Reinforcements will come round your flank.,Los refuerzos te rodearán por el flanco.
+brief.glaukopis.radio_check,Guards will call HQ back to verify the radio.,Los guardias llamarán a la base para verificar la radio.
 brief.pallas.close,Pallas: Walk softly. We are watching.,Palas: Camina con cuidado. Estamos mirando.
 brief.nike.close,"Nike: Make it count, Operative.","Nike: Que cuente, Operativo."
 brief.gorgo.close,Gorgo: We will be ready for you.,Gorgo: Estaremos listos para ti.
 post.pallas.clean,Pallas: Not a soul harmed. We noted it.,Palas: Ni un alma herida. Lo anotamos.
-post.pallas.blood,Pallas: There was blood. We noted that too.,Palas: Hubo sangre. Tambien lo anotamos.
+post.pallas.blood,Pallas: There was blood. We noted that too.,Palas: Hubo sangre. También lo anotamos.
 post.nike.clean,Nike: Clean work. Almost.,Nike: Trabajo limpio. Casi.
 post.nike.blood,Nike: Blood spilled. We will answer.,Nike: Sangre derramada. Responderemos.
 post.gorgo.clean,Gorgo: Spotless. It changes nothing.,Gorgo: Impecable. No cambia nada.
-post.gorgo.blood,Gorgo: Good. Keep it coming.,Gorgo: Bien. Sigue asi.
-chatter.warn.stealth.1,"Funny thing. HQ keeps asking who walks these docks without being seen.",Dicen que la base vigila a los de silencio. (1)
-chatter.confirm.stealth.1,"Cameras are up. HQ finally noticed nobody was watching the quiet corners.",Las nuevas medidas contra silencio estan activas. (1)
-chatter.warn.stealth.2,"Somebody is sneaking round this island, and HQ wants more eyes on every corner.",Dicen que la base vigila a los de silencio. (2)
-chatter.confirm.stealth.2,"New orders: watch the shadows. HQ says our ghost is real.",Las nuevas medidas contra silencio estan activas. (2)
-chatter.warn.combat.1,"HQ is handing out heavier kit. Somebody expects a fight.",Dicen que la base vigila a los de ruido. (1)
-chatter.confirm.combat.1,"Fresh vests and orders to hold the line. HQ is ready for a firefight.",Las nuevas medidas contra ruido estan activas. (1)
-chatter.warn.combat.2,"Word is HQ wants more guns on this island. Fine by me.",Dicen que la base vigila a los de ruido. (2)
-chatter.confirm.combat.2,"We got the extra rifles. Let the shooting start, I'm not worried.",Las nuevas medidas contra ruido estan activas. (2)
-chatter.warn.headshots.1,"HQ is talking about helmets. Somebody keeps aiming at heads.",Dicen que la base vigila a los de tiro a la cabeza. (1)
-chatter.confirm.headshots.1,"Got my helmet. Let's see him try for the head now.",Las nuevas medidas contra tiro a la cabeza estan activas. (1)
-chatter.warn.headshots.2,"They say our people are dropping from head shots. Helmets are coming.",Dicen que la base vigila a los de tiro a la cabeza. (2)
-chatter.confirm.headshots.2,"Helmets issued all round. HQ says that fixes the head shots.",Las nuevas medidas contra tiro a la cabeza estan activas. (2)
-chatter.warn.takedowns.1,"Watch your back. HQ says guards are vanishing from behind.",Dicen que la base vigila a los de derribo. (1)
-chatter.confirm.takedowns.1,"I look over my shoulder every few steps now. HQ's orders.",Las nuevas medidas contra derribo estan activas. (1)
-chatter.warn.takedowns.2,"Orders are to check behind us more often. Somebody is creeping up on guards.",Dicen que la base vigila a los de derribo. (2)
-chatter.confirm.takedowns.2,"They've paired us up on patrol. Nobody walks alone and gets choked.",Las nuevas medidas contra derribo estan activas. (2)
-chatter.warn.downs.1,"HQ is asking about guards found asleep. Somebody is leaving them lying around.",Dicen que la base vigila a los de dormido. (1)
-chatter.confirm.downs.1,"HQ calls at random now. Miss a check-in and they send someone.",Las nuevas medidas contra dormido estan activas. (1)
-chatter.warn.downs.2,"They say bodies keep turning up. HQ will start asking questions.",Dicen que la base vigila a los de dormido. (2)
-chatter.confirm.downs.2,"Find a man asleep and we raise the alarm. HQ's new rule.",Las nuevas medidas contra dormido estan activas. (2)
-chatter.warn.spoofing.1,"HQ thinks someone is faking voices on the radio. Be careful what you answer.",Dicen que la base vigila a los de suplantacion. (1)
-chatter.confirm.spoofing.1,"HQ checks every odd call now. It rings the speaker back to be sure.",Las nuevas medidas contra suplantacion estan activas. (1)
-chatter.warn.spoofing.2,"Heard HQ wants a closer ear on the radio. Something sounded wrong.",Dicen que la base vigila a los de suplantacion. (2)
-chatter.confirm.spoofing.2,"New radio rules. Every voice is checked, and no recording works twice.",Las nuevas medidas contra suplantacion estan activas. (2)
+post.gorgo.blood,Gorgo: Good. Keep it coming.,Gorgo: Bien. Sigue así.
+chatter.warn.stealth.1,Funny thing. HQ keeps asking who walks these docks without being seen.,Qué cosa. La base no para de preguntar quién recorre estos muelles sin que lo vean.
+chatter.confirm.stealth.1,Cameras are up. HQ finally noticed nobody was watching the quiet corners.,Ya hay cámaras. La base por fin vio que nadie vigilaba los rincones tranquilos.
+chatter.warn.stealth.2,"Somebody is sneaking round this island, and HQ wants more eyes on every corner.","Alguien se cuela por esta isla, y la base quiere más ojos en cada esquina."
+chatter.confirm.stealth.2,New orders: watch the shadows. HQ says our ghost is real.,Órdenes nuevas: vigilar las sombras. La base dice que nuestro fantasma es real.
+chatter.warn.combat.1,HQ is handing out heavier kit. Somebody expects a fight.,La base está repartiendo equipo pesado. Alguien espera pelea.
+chatter.confirm.combat.1,Fresh vests and orders to hold the line. HQ is ready for a firefight.,Chalecos nuevos y órdenes de aguantar la línea. La base está lista para un tiroteo.
+chatter.warn.combat.2,Word is HQ wants more guns on this island. Fine by me.,"Dicen que la base quiere más armas en esta isla. Por mí, bien."
+chatter.confirm.combat.2,"We got the extra rifles. Let the shooting start, I'm not worried.","Nos han llegado los fusiles extra. Que empiecen los tiros, no me preocupa."
+chatter.warn.headshots.1,HQ is talking about helmets. Somebody keeps aiming at heads.,La base habla de cascos. Alguien no deja de apuntar a la cabeza.
+chatter.confirm.headshots.1,Got my helmet. Let's see him try for the head now.,Ya tengo mi casco. A ver si ahora acierta en la cabeza.
+chatter.warn.headshots.2,They say our people are dropping from head shots. Helmets are coming.,Dicen que los nuestros caen de un tiro en la cabeza. Vienen cascos.
+chatter.confirm.headshots.2,Helmets issued all round. HQ says that fixes the head shots.,Cascos para todos. La base dice que eso arregla lo de los tiros a la cabeza.
+chatter.warn.takedowns.1,Watch your back. HQ says guards are vanishing from behind.,Cuida tu espalda. La base dice que hay guardias que desaparecen por detrás.
+chatter.confirm.takedowns.1,I look over my shoulder every few steps now. HQ's orders.,Ahora miro por encima del hombro cada pocos pasos. Órdenes de la base.
+chatter.warn.takedowns.2,Orders are to check behind us more often. Somebody is creeping up on guards.,Hay que mirar atrás más a menudo. Alguien se acerca a los guardias por la espalda.
+chatter.confirm.takedowns.2,They've paired us up on patrol. Nobody walks alone and gets choked.,Nos han puesto en parejas. Nadie patrulla solo para que lo estrangulen.
+chatter.warn.downs.1,HQ is asking about guards found asleep. Somebody is leaving them lying around.,La base pregunta por guardias encontrados dormidos. Alguien los va dejando tirados.
+chatter.confirm.downs.1,HQ calls at random now. Miss a check-in and they send someone.,"La base llama al azar. Si fallas un reporte, mandan a alguien."
+chatter.warn.downs.2,They say bodies keep turning up. HQ will start asking questions.,Dicen que no paran de aparecer cuerpos. La base va a empezar a preguntar.
+chatter.confirm.downs.2,Find a man asleep and we raise the alarm. HQ's new rule.,"Si encuentras a uno dormido, se da la alarma. Norma nueva de la base."
+chatter.warn.spoofing.1,HQ thinks someone is faking voices on the radio. Be careful what you answer.,La base cree que alguien falsifica voces por radio. Cuidado con lo que contestas.
+chatter.confirm.spoofing.1,HQ checks every odd call now. It rings the speaker back to be sure.,La base comprueba cada llamada rara. Vuelve a llamar al que habló para asegurarse.
+chatter.warn.spoofing.2,Heard HQ wants a closer ear on the radio. Something sounded wrong.,He oído que la base quiere escuchar mejor la radio. Algo sonó raro.
+chatter.confirm.spoofing.2,"New radio rules. Every voice is checked, and no recording works twice.","Normas nuevas de radio. Se comprueba cada voz, y ninguna grabación sirve dos veces."
 finale.debate.promachos.pallas,"[promachos] Debate line, ending pallas.","[promachos] Linea del debate, final pallas."
 finale.debate.promachos.nike,"[promachos] Debate line, ending nike.","[promachos] Linea del debate, final nike."
 finale.debate.promachos.gorgo,"[promachos] Debate line, ending gorgo.","[promachos] Linea del debate, final gorgo."
@@ -172,98 +172,300 @@ finale.debate.pallas.gorgo,"[pallas] Debate line, ending gorgo.","[pallas] Linea
 finale.debate.gorgo.pallas,"[gorgo] Debate line, ending pallas.","[gorgo] Linea del debate, final pallas."
 finale.debate.gorgo.nike,"[gorgo] Debate line, ending nike.","[gorgo] Linea del debate, final nike."
 finale.debate.gorgo.gorgo,"[gorgo] Debate line, ending gorgo.","[gorgo] Linea del debate, final gorgo."
-finale.debate.glaukopis.0,[glaukopis] The memories hold up at Spoofing level 0.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 0.
-finale.debate.glaukopis.1,[glaukopis] The memories hold up at Spoofing level 1.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 1.
-finale.debate.glaukopis.2,[glaukopis] The memories hold up at Spoofing level 2.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 2.
-finale.debate.glaukopis.3,[glaukopis] The memories hold up at Spoofing level 3.,[glaukopis] Los recuerdos resisten con Suplantacion nivel 3.
-finale.end.pallas.1,[pallas] Ending line 1.,[pallas] Linea de final 1.
-finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Linea de final 2.
-finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Linea de final 3.
-finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Linea de final 4.
+finale.debate.glaukopis.0,[glaukopis] The memories hold up at Spoofing level 0.,[glaukopis] Los recuerdos resisten con Suplantación nivel 0.
+finale.debate.glaukopis.1,[glaukopis] The memories hold up at Spoofing level 1.,[glaukopis] Los recuerdos resisten con Suplantación nivel 1.
+finale.debate.glaukopis.2,[glaukopis] The memories hold up at Spoofing level 2.,[glaukopis] Los recuerdos resisten con Suplantación nivel 2.
+finale.debate.glaukopis.3,[glaukopis] The memories hold up at Spoofing level 3.,[glaukopis] Los recuerdos resisten con Suplantación nivel 3.
+finale.end.pallas.1,[pallas] Ending line 1.,[pallas] Línea de final 1.
+finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Línea de final 2.
+finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Línea de final 3.
+finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Línea de final 4.
 finale.end.pallas.operative,"[pallas] Operative, this one is for you.","[pallas] Operativo, esto es para ti."
-finale.epi.pallas.1,"Not one alarm on the whole island. Palladion is still asking how you did it.","Ni una alarma en toda la isla. Palladion sigue preguntando como lo hiciste."
-finale.epi.pallas.2,"And Aigis shut itself down. The coast it held is already burning.","Y Aigis se apago solo. La costa que sostenia ya esta ardiendo."
+finale.epi.pallas.1,Not one alarm on the whole island. Palladion is still asking how you did it.,Ni una alarma en toda la isla. Palladion sigue preguntando cómo lo hiciste.
+finale.epi.pallas.2,And Aigis shut itself down. The coast it held is already burning.,Y Aigis se apagó solo. La costa que sostenía ya está ardiendo.
 finale.epi.pallas.3,"Our client got her story, and Palladion got a bigger contract. A clean job sells well.","Nuestra cliente tiene su historia, y Palladion un contrato mayor. Un trabajo limpio se vende bien."
 finale.epi.pallas.4,"I won't complain. Metis sells quiet, and quiet pays best.","No me quejo. Metis vende silencio, y el silencio es lo que mejor se paga."
-finale.end.nike.1,[nike] Ending line 1.,[nike] Linea de final 1.
-finale.end.nike.2,[nike] Ending line 2.,[nike] Linea de final 2.
-finale.end.nike.3,[nike] Ending line 3.,[nike] Linea de final 3.
-finale.end.nike.4,[nike] Ending line 4.,[nike] Linea de final 4.
+finale.end.nike.1,[nike] Ending line 1.,[nike] Línea de final 1.
+finale.end.nike.2,[nike] Ending line 2.,[nike] Línea de final 2.
+finale.end.nike.3,[nike] Ending line 3.,[nike] Línea de final 3.
+finale.end.nike.4,[nike] Ending line 4.,[nike] Línea de final 4.
 finale.end.nike.operative,"[nike] Operative, this one is for you.","[nike] Operativo, esto es para ti."
-finale.epi.nike.1,"The island is a mess, but the Core is yours. Palladion calls it a success.","La isla es un desastre, pero el Nucleo es tuyo. Palladion lo llama un exito."
-finale.epi.nike.2,"Aigis ends up with half its memories and twice the budget.","Aigis se queda con la mitad de sus recuerdos y el doble de presupuesto."
+finale.epi.nike.1,"The island is a mess, but the Core is yours. Palladion calls it a success.","La isla es un desastre, pero el Núcleo es tuyo. Palladion lo llama un éxito."
+finale.epi.nike.2,Aigis ends up with half its memories and twice the budget.,Aigis se queda con la mitad de sus recuerdos y el doble de presupuesto.
 finale.epi.nike.3,"Our client gets her answers, and Palladion buys new defences. Everybody pays.","Nuestra cliente tiene sus respuestas, y Palladion compra defensas nuevas. Todos pagan."
-finale.epi.nike.4,"That's the business. Metis sells the cure and the wound.","Asi es el negocio. Metis vende la cura y la herida."
-finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Linea de final 1.
-finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Linea de final 2.
-finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Linea de final 3.
-finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Linea de final 4.
+finale.epi.nike.4,That's the business. Metis sells the cure and the wound.,Así es el negocio. Metis vende la cura y la herida.
+finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Línea de final 1.
+finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Línea de final 2.
+finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Línea de final 3.
+finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Línea de final 4.
 finale.end.gorgo.operative,"[gorgo] Operative, this one is for you.","[gorgo] Operativo, esto es para ti."
-finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. Palladion is thrilled.","La isla arde, y las noticias lo llaman un ataque terrorista. Palladion esta encantado."
-finale.epi.gorgo.2,"Aigis will learn from this. The next contract will be bigger.","Aigis aprendera de esto. El proximo contrato sera mayor."
-finale.epi.gorgo.3,"Every body is a line in an invoice. Metis has never been so busy.","Cada cuerpo es una linea en una factura. Metis nunca ha tenido tanto trabajo."
-finale.epi.gorgo.4,"War is the only market that never closes, Operative.","La guerra es el unico mercado que nunca cierra, Operativo."
-finale.epi.recruits,"And the guards you sent up? Metis's contractors now. They'll be in the next war, on our payroll.","Y los guardias que mandaste arriba? Ahora son contratistas de Metis. Estaran en la proxima guerra, en nuestra nomina."
-requisition.metis.m1,"Every dock hand you sent up signed with us. Spend them well.","Cada hombre del muelle que mandaste arriba firmo con nosotros. Usalos bien."
-requisition.metis.m2,"The relay crew took our contract. Palladion trained them; we pay them.","La cuadrilla de la estacion acepto nuestro contrato. Palladion los entreno; nosotros les pagamos."
+finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. Palladion is thrilled.","La isla arde, y las noticias lo llaman un ataque terrorista. Palladion está encantado."
+finale.epi.gorgo.2,Aigis will learn from this. The next contract will be bigger.,Aigis aprenderá de esto. El próximo contrato será mayor.
+finale.epi.gorgo.3,Every body is a line in an invoice. Metis has never been so busy.,Cada cuerpo es una línea en una factura. Metis nunca ha tenido tanto trabajo.
+finale.epi.gorgo.4,"War is the only market that never closes, Operative.","La guerra es el único mercado que nunca cierra, Operativo."
+finale.epi.recruits,"And the guards you sent up? Metis's contractors now. They'll be in the next war, on our payroll.","¿Y los guardias que mandaste arriba? Ahora son contratistas de Metis. Estarán en la próxima guerra, en nuestra nómina."
+requisition.metis.m1,Every dock hand you sent up signed with us. Spend them well.,Cada hombre del muelle que mandaste arriba firmó con nosotros. Úsalos bien.
+requisition.metis.m2,The relay crew took our contract. Palladion trained them; we pay them.,La cuadrilla de la estación aceptó nuestro contrato. Palladion los entrenó; nosotros les pagamos.
 requisition.metis.m3,"Annex guards, hired. Metis grows with every balloon.","Guardias del Anexo, contratados. Metis crece con cada globo."
-requisition.signed,"RECRUITS SIGNED: {n}","RECLUTAS FIRMADOS: {n}"
-holdup.lift_code,"Don't shoot! The lift code is four-one-seven-seven. The panel's in operations.","No dispares! El codigo es cuatro-uno-siete-siete. El panel esta en operaciones."
-holdup.objective,"Don't shoot! What you're after? It's that way, I swear!","No dispares! Lo que buscas? Esta por alli, lo juro!"
-holdup.scan,"Don't shoot! The others? They're all around, everywhere!","No dispares! Los otros? Estan por todas partes!"
-holdup.voiceprint,"Don't shoot! I'm only on watch, I swear!","No dispares! Solo estoy de guardia, lo juro!"
-holdup.where.0,"{m} m north","{m} m al norte"
-holdup.where.1,"{m} m north-east","{m} m al noreste"
-holdup.where.2,"{m} m east","{m} m al este"
-holdup.where.3,"{m} m south-east","{m} m al sureste"
-holdup.where.4,"{m} m south","{m} m al sur"
-holdup.where.5,"{m} m south-west","{m} m al suroeste"
-holdup.where.6,"{m} m west","{m} m al oeste"
-holdup.where.7,"{m} m north-west","{m} m al noroeste"
-live.m1.open.01,"The smoke break is at the freighter's stern, behind the bridge. Listen in.","La pausa para fumar es en la popa del carguero, detras del puente. Escucha."
-live.m2.open.01,"First the garage. We need the encryption keys.","Primero el garaje. Necesitamos las claves de cifrado."
+requisition.signed,RECRUITS SIGNED: {n},RECLUTAS FIRMADOS: {n}
+holdup.lift_code,Don't shoot! The lift code is four-one-seven-seven. The panel's in operations.,¡No dispares! El código es cuatro-uno-siete-siete. El panel está en operaciones.
+holdup.objective,"Don't shoot! What you're after? It's that way, I swear!","¡No dispares! ¿Lo que buscas? ¡Está por allí, lo juro!"
+holdup.scan,"Don't shoot! The others? They're all around, everywhere!",¡No dispares! ¿Los otros? ¡Están por todas partes!
+holdup.voiceprint,"Don't shoot! I'm only on watch, I swear!","¡No dispares! ¡Solo estoy de guardia, lo juro!"
+holdup.where.0,{m} m north,{m} m al norte
+holdup.where.1,{m} m north-east,{m} m al noreste
+holdup.where.2,{m} m east,{m} m al este
+holdup.where.3,{m} m south-east,{m} m al sureste
+holdup.where.4,{m} m south,{m} m al sur
+holdup.where.5,{m} m south-west,{m} m al suroeste
+holdup.where.6,{m} m west,{m} m al oeste
+holdup.where.7,{m} m north-west,{m} m al noroeste
+live.m1.open.01,"The smoke break is at the freighter's stern, behind the bridge. Listen in.","La pausa para fumar es en la popa del carguero, detrás del puente. Escucha."
+live.m2.open.01,First the garage. We need the encryption keys.,Primero el garaje. Necesitamos las claves de cifrado.
 live.m3.open.01,The office first. Download the access logs.,Primero la oficina. Descarga los registros de acceso.
-live.m4.open.01,"The operations building, by the west cliff. The lift is inside.","El edificio de operaciones, junto al acantilado oeste. El montacargas esta dentro."
-hint.m1.s1.1,"The two deck hands smoke behind the bridge, at the freighter's stern.","Los dos marineros fuman detras del puente, en la popa del carguero."
-hint.m1.s1.2,"Move aft along the deck while the look-out faces away. Stand at the bridge corner and record them.","Avanza hacia popa por la cubierta mientras el vigia mira a otro lado. Ponte en la esquina del puente y grabalos."
+live.m4.open.01,"The operations building, by the west cliff. The lift is inside.","El edificio de operaciones, junto al acantilado oeste. El montacargas está dentro."
+hint.m1.s1.1,"The two deck hands smoke behind the bridge, at the freighter's stern.","Los dos marineros fuman detrás del puente, en la popa del carguero."
+hint.m1.s1.2,Move aft along the deck while the look-out faces away. Stand at the bridge corner and record them.,Avanza hacia popa por la cubierta mientras el vigía mira a otro lado. Ponte en la esquina del puente y grábalos.
 hint.m1.s2.1,"The foreman walks a loop through the container lanes, west of the gangway.","El capataz da vueltas entre los contenedores, al oeste de la pasarela."
-hint.m1.s2.2,"Go down the gangway when the guard at its head looks up the deck. Mind the watcher on Warehouse B's roof, wait at a lane corner and hold the foreman up from behind.","Baja por la pasarela cuando el guardia de arriba mire hacia la cubierta. Cuidado con el vigia del techo del Almacen B, espera en una esquina y encanona al capataz por la espalda."
-hint.m1.s3.1,"The lift controls are in the operations building, by the west cliff.","Los controles del montacargas estan en el edificio de operaciones, junto al acantilado oeste."
-hint.m1.s3.2,"Three doors, three guards. A Spoof can pull the door guard away to the forecourt, or wait for the alley guard to turn his back.","Tres puertas, tres guardias. Un Spoof puede llevar al guardia de la puerta a la explanada, o espera a que el del callejon te de la espalda."
-hint.m2.s1.1,The garage is in the south of the station.,El garaje esta en el sur de la estacion.
-hint.m2.s1.2,"Keep to the fence line and wait for the patrol to pass. The keys are inside, on the desk.","Sigue la linea de la valla y espera a que pase la patrulla. Las llaves estan dentro, sobre el escritorio."
-hint.m2.s2.1,The relay console is up on the summit.,"La consola de la estacion esta arriba, en la cima."
-hint.m2.s2.2,"Take the path up the scree. Sabotage takes five seconds, so make sure nobody can see you.","Sube por el pedregal. El sabotaje tarda cinco segundos, asegurate de que nadie te vea."
-hint.m2.s3.1,The mess hut is in the middle of the station.,El comedor esta en el centro de la estacion.
-hint.m2.s3.2,"The chief's escort sees the door. A Spoof can send the escort away, or you can go in through the back.","La escolta del jefe ve la puerta. Un Spoof puede alejar a la escolta, o puedes entrar por detras."
-hint.m3.s1.1,The office is in the middle of the annex.,La oficina esta en el centro del anexo.
-hint.m3.s1.2,Use the side door from the yard and keep out of the corridor's line of sight.,Usa la puerta lateral del patio y evita la linea de vision del pasillo.
-hint.m3.s2.1,The vault is at the east end of the corridor.,La boveda esta en el extremo este del pasillo.
+hint.m1.s2.2,"Go down the gangway when the guard at its head looks up the deck. Mind the watcher on Warehouse B's roof, wait at a lane corner and hold the foreman up from behind.","Baja por la pasarela cuando el guardia de arriba mire hacia la cubierta. Cuidado con el vigía del techo del Almacén B, espera en una esquina y encañona al capataz por la espalda."
+hint.m1.s3.1,"The lift controls are in the operations building, by the west cliff.","Los controles del montacargas están en el edificio de operaciones, junto al acantilado oeste."
+hint.m1.s3.2,"Three doors, three guards. A Spoof can pull the door guard away to the forecourt, or wait for the alley guard to turn his back.","Tres puertas, tres guardias. Un Spoof puede llevar al guardia de la puerta a la explanada, o espera a que el del callejón te dé la espalda."
+hint.m2.s1.1,The garage is in the south of the station.,El garaje está en el sur de la estación.
+hint.m2.s1.2,"Keep to the fence line and wait for the patrol to pass. The keys are inside, on the desk.","Sigue la línea de la valla y espera a que pase la patrulla. Las claves están dentro, sobre el escritorio."
+hint.m2.s2.1,The relay console is up on the summit.,"La consola de la estación está arriba, en la cima."
+hint.m2.s2.2,"Take the path up the scree. Sabotage takes five seconds, so make sure nobody can see you.","Sube por el pedregal. El sabotaje tarda cinco segundos, así que asegúrate de que nadie te vea."
+hint.m2.s3.1,The mess hut is in the middle of the station.,El comedor está en el centro de la estación.
+hint.m2.s3.2,"The chief's escort sees the door. A Spoof can send the escort away, or you can go in through the back.","La escolta del jefe ve la puerta. Un Spoof puede alejar a la escolta, o puedes entrar por detrás."
+hint.m3.s1.1,The office is in the middle of the annex.,La oficina está en el centro del anexo.
+hint.m3.s1.2,Use the side door from the yard and keep out of the corridor's line of sight.,Usa la puerta lateral del patio y evita la línea de visión del pasillo.
+hint.m3.s2.1,The vault is at the east end of the corridor.,La bóveda está en el extremo este del pasillo.
 hint.m3.s2.2,"Time your steps to the guard's turn. The corridor is long, but he only looks away for a few seconds.","Calcula tus pasos con el giro del guardia. El pasillo es largo, pero solo mira a otro lado unos segundos."
-hint.m3.s3.1,"The research files are in the Archive, past the lobby.","Los archivos de investigacion estan en el Archivo, pasado el vestibulo."
-hint.m3.s3.2,"The lobby guard blocks the way. Record the pair chatting, then Spoof him out. Or go around by the crawlspace.",El guardia del vestibulo bloquea el paso. Graba a la pareja que charla y luego mandalo lejos con un Spoof. O rodea por el conducto.
-hint.m4.s1.1,"The operations building is on the west side of the yard, by the cliff.","El edificio de operaciones esta al oeste del patio, junto al acantilado."
-hint.m4.s1.2,"The guards are on alert for you and the north door is sealed. Keep to cover and come in by the south door.","Los guardias estan alerta por ti y la puerta norte esta sellada. Usa las coberturas y entra por la puerta sur."
-hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the cliff.","El montacargas esta al fondo de la sala, contra el acantilado."
-hint.m4.s2.2,"A guard stands in the lift hall. Spoof him away, or wait until his back is turned.","Hay un guardia en la sala del montacargas. Alejalo con un Spoof, o espera a que te de la espalda."
+hint.m3.s3.1,"The research files are in the Archive, past the lobby.","Los archivos de investigación están en el Archivo, pasado el vestíbulo."
+hint.m3.s3.2,"The lobby guard blocks the way. Record the pair chatting, then Spoof him out. Or go around by the crawlspace.",El guardia del vestíbulo bloquea el paso. Graba a la pareja que charla y luego mándalo lejos con un Spoof. O rodea por el conducto.
+hint.m4.s1.1,"The operations building is on the west side of the yard, by the cliff.","El edificio de operaciones está al oeste del patio, junto al acantilado."
+hint.m4.s1.2,The guards are on alert for you and the north door is sealed. Keep to cover and come in by the south door.,Los guardias están alerta por ti y la puerta norte está sellada. Usa las coberturas y entra por la puerta sur.
+hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the cliff.","El montacargas está al fondo de la sala, contra el acantilado."
+hint.m4.s2.2,"A guard stands in the lift hall. Spoof him away, or wait until his back is turned.","Hay un guardia en la sala del montacargas. Aléjalo con un Spoof, o espera a que te dé la espalda."
 hint.none,"That is all I have, Operative. You know the way.","Es todo lo que tengo, Operativo. Ya sabes el camino."
 radio.request_hint,Request hint,Pedir pista
-objective.m1.s1,"LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE","ESCUCHA LA PAUSA PARA FUMAR DETRAS DEL PUENTE"
-objective.m1.s2,"HOLD UP THE YARD FOREMAN FOR THE LIFT CODE","ENCANONA AL CAPATAZ DEL PATIO PARA SACARLE EL CODIGO DEL MONTACARGAS"
-objective.m1.s3,"ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING","INTRODUCE EL CODIGO EN LOS CONTROLES DEL MONTACARGAS DEL EDIFICIO DE OPERACIONES"
-objective.m2.s1,"RECOVER THE ENCRYPTION KEYS FROM THE GARAGE","RECUPERA LAS CLAVES DE CIFRADO DEL GARAJE"
-objective.m2.s2,"SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS","SABOTEA LA CONSOLA DE RETRANSMISION: MANTEN E 5 SEGUNDOS"
-objective.m2.s3,"SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS","BUSCA LAS ORDENES DEL JEFE EN EL COMEDOR"
-objective.m3.s1,"DOWNLOAD THE ACCESS LOGS FROM THE OFFICE","DESCARGA LOS REGISTROS DE ACCESO DE LA OFICINA"
-objective.m3.s2,"OPEN THE VAULT AT THE END OF THE CORRIDOR","ABRE LA BOVEDA AL FINAL DEL PASILLO"
-objective.m3.s3,"EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE","EXTRAE LOS ARCHIVOS DE INVESTIGACION QUE REVELAN EL NUCLEO"
-objective.m4.s1,"REACH THE OPERATIONS BUILDING","LLEGA AL EDIFICIO DE OPERACIONES"
-objective.m4.s2,"TAKE THE FREIGHT LIFT DOWN","BAJA EN EL MONTACARGAS"
-objective.extract,"REACH THE EXTRACTION POINT","VE AL PUNTO DE EXTRACCION"
-objective.targets,"KILL OR CARRY OUT","ELIMINA O SACA A CUESTAS"
-gameover.01,"Operative? Operative! Answer me.","Operativo? Operativo! Respondeme."
-gameover.02,"Signal lost. Get back up, we're not done.","Senal perdida. Levantate, no hemos terminado."
-gameover.03,"That's not how this ends. Again.","Asi no termina esto. Otra vez."
-gameover.04,"Aigis will remember that. Make it remember something better.","Aigis recordara eso. Haz que recuerde algo mejor."
-gameover.05,"Your vitals are gone. Talk to me, Operative.","Tus constantes se apagaron. Hablame, Operativo."
-gameover.06,"We go back to the last position. Carefully this time.","Volvemos a la ultima posicion. Con cuidado esta vez."
+objective.m1.s1,LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE,ESCUCHA LA PAUSA PARA FUMAR DETRÁS DEL PUENTE
+objective.m1.s2,HOLD UP THE YARD FOREMAN FOR THE LIFT CODE,ENCAÑONA AL CAPATAZ DEL PATIO PARA SACARLE EL CÓDIGO DEL MONTACARGAS
+objective.m1.s3,ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING,INTRODUCE EL CÓDIGO EN LOS CONTROLES DEL MONTACARGAS DEL EDIFICIO DE OPERACIONES
+objective.m2.s1,RECOVER THE ENCRYPTION KEYS FROM THE GARAGE,RECUPERA LAS CLAVES DE CIFRADO DEL GARAJE
+objective.m2.s2,SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS,SABOTEA LA CONSOLA DE RETRANSMISIÓN: MANTÉN E 5 SEGUNDOS
+objective.m2.s3,SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS,BUSCA LAS ÓRDENES DEL JEFE EN EL COMEDOR
+objective.m3.s1,DOWNLOAD THE ACCESS LOGS FROM THE OFFICE,DESCARGA LOS REGISTROS DE ACCESO DE LA OFICINA
+objective.m3.s2,OPEN THE VAULT AT THE END OF THE CORRIDOR,ABRE LA BÓVEDA AL FINAL DEL PASILLO
+objective.m3.s3,EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE,EXTRAE LOS ARCHIVOS DE INVESTIGACIÓN QUE REVELAN EL NÚCLEO
+objective.m4.s1,REACH THE OPERATIONS BUILDING,LLEGA AL EDIFICIO DE OPERACIONES
+objective.m4.s2,TAKE THE FREIGHT LIFT DOWN,BAJA EN EL MONTACARGAS
+objective.extract,REACH THE EXTRACTION POINT,VE AL PUNTO DE EXTRACCIÓN
+objective.targets,KILL OR CARRY OUT,ELIMINA O EXTRAE
+gameover.01,Operative? Operative! Answer me.,¿Operativo? ¡Operativo! Respóndeme.
+gameover.02,"Signal lost. Get back up, we're not done.","Señal perdida. Levántate, no hemos terminado."
+gameover.03,That's not how this ends. Again.,Así no termina esto. Otra vez.
+gameover.04,Aigis will remember that. Make it remember something better.,Aigis recordará eso. Haz que recuerde algo mejor.
+gameover.05,"Your vitals are gone. Talk to me, Operative.","Tus constantes se apagaron. Háblame, Operativo."
+gameover.06,We go back to the last position. Carefully this time.,Volvemos a la última posición. Con cuidado esta vez.
+ui.prompt.hold,HOLD,MANTÉN
+ui.prompt.carry,CARRY,CARGAR
+ui.prompt.kill,KILL,MATAR
+ui.prompt.drop,DROP,SOLTAR
+ui.prompt.drop_off,DROP OFF,SOLTARSE
+ui.prompt.killing,KILLING...,MATANDO...
+ui.prompt.choking,CHOKING...,ESTRANGULANDO...
+ui.prompt.fultoning,FULTON...,FULTON...
+ui.prompt.questioning,QUESTIONING...,INTERROGANDO...
+ui.prompt.question,QUESTION,INTERROGAR
+ui.prompt.hold_up,HOLD UP,MANOS ARRIBA
+ui.prompt.choke,CHOKE,ESTRANGULAR
+ui.prompt.resupply,RESUPPLY,REABASTECER
+ui.prompt.climb,CLIMB,TREPAR
+ui.prompt.fulton,FULTON,FULTON
+ui.prompt.no_fulton,NO FULTON INDOORS,SIN FULTON BAJO TECHO
+ui.prompt.access_core,ACCESS THE CORE,ACCEDER AL NÚCLEO
+ui.prompt.sabotage,SABOTAGE,SABOTEAR
+ui.prompt.enter_code,ENTER THE CODE,INTRODUCIR EL CÓDIGO
+ui.hud.call,CALL >>,LLAMADA >>
+ui.hud.vp,VP,VOZ
+ui.hud.operative,OPERATIVE,OPERATIVO
+ui.hud.jammed,JAMMED,BLOQUEADO
+ui.phase.alert,ALERT,ALERTA
+ui.phase.evasion,EVASION,EVASIÓN
+ui.phase.caution,CAUTION,PRECAUCIÓN
+ui.who.hq,HQ,BASE
+ui.who.metis,METIS,METIS
+ui.who.intel,INTEL,INFO
+ui.back,BACK,VOLVER
+ui.yes,YES,SÍ
+ui.no,NO,NO
+ui.menu.continue,CONTINUE,CONTINUAR
+ui.menu.new_game,NEW GAME,NUEVA PARTIDA
+ui.menu.load,LOAD,CARGAR
+ui.menu.mission_select,MISSION SELECT,SELECCIÓN DE MISIÓN
+ui.menu.free_mode,FREE MODE,MODO LIBRE
+ui.menu.settings,SETTINGS,AJUSTES
+ui.menu.quit,QUIT,SALIR
+ui.menu.pick_new,NEW GAME: PICK A SLOT,NUEVA PARTIDA: ELIGE RANURA
+ui.menu.pick_select,MISSION SELECT: PICK A SLOT,SELECCIÓN: ELIGE RANURA
+ui.menu.overwrite,OVERWRITE SLOT {n}?,¿SOBRESCRIBIR LA RANURA {n}?
+ui.menu.record,{mission}  {rank}  {time}  KILLS {kills}  ALERTS {alerts},{mission}  {rank}  {time}  MUERTES {kills}  ALERTAS {alerts}
+ui.slot.empty,EMPTY,VACÍA
+ui.slot.complete,COMPLETE,COMPLETADA
+ui.mission.0,MISSION 1: HARBOUR,MISIÓN 1: PUERTO
+ui.mission.1,MISSION 2: RADIO RELAY STATION,MISIÓN 2: ESTACIÓN DE RADIO
+ui.mission.2,MISSION 3: RESEARCH ANNEX,MISIÓN 3: ANEXO DE INVESTIGACIÓN
+ui.mission.3,CORE,NÚCLEO
+ui.mission_short.0,MISSION 1,MISIÓN 1
+ui.mission_short.1,MISSION 2,MISIÓN 2
+ui.mission_short.2,MISSION 3,MISIÓN 3
+ui.mission_short.3,CORE,NÚCLEO
+ui.settings.title,SETTINGS,AJUSTES
+ui.settings.sensitivity,SENSITIVITY,SENSIBILIDAD
+ui.settings.invert_y,INVERT Y,INVERTIR Y
+ui.settings.language,LANGUAGE,IDIOMA
+ui.settings.fullscreen,FULLSCREEN,PANTALLA COMPLETA
+ui.settings.volume,MASTER VOLUME,VOLUMEN GENERAL
+ui.pause.title,PAUSED,PAUSA
+ui.pause.objective,OBJECTIVE,OBJETIVO
+ui.pause.resume,RESUME,REANUDAR
+ui.pause.restart,RESTART FROM CHECKPOINT,REINICIAR DESDE EL PUNTO DE CONTROL
+ui.pause.abort,ABORT MISSION,ABANDONAR MISIÓN
+ui.pause.quit,QUIT TO MENU,SALIR AL MENÚ
+ui.pause.quit_confirm,QUIT TO MENU? THE MISSION IS LOST.,¿SALIR AL MENÚ? SE PIERDE LA MISIÓN.
+ui.pause.controls,CONTROLS,CONTROLES
+ui.ctl.move,MOVE,MOVERSE
+ui.ctl.walk,WALK,CAMINAR
+ui.ctl.crouch,CROUCH,AGACHARSE
+ui.ctl.aim,AIM,APUNTAR
+ui.ctl.fire,FIRE,DISPARAR
+ui.ctl.reload,RELOAD,RECARGAR
+ui.ctl.tranq,TRANQ PISTOL,TRANQUILIZANTE
+ui.ctl.rifle,RIFLE,FUSIL
+ui.ctl.interact,CHOKE / INTERACT,ESTRANGULAR / USAR
+ui.ctl.kill,KILL,MATAR
+ui.ctl.fulton,FULTON,FULTON
+ui.ctl.item_use,USE ITEM,USAR OBJETO
+ui.ctl.item_next,CHANGE ITEM,CAMBIAR OBJETO
+ui.ctl.knock,KNOCK,GOLPEAR
+ui.ctl.radio,RADIO,RADIO
+ui.ctl.shoulder,SWAP SHOULDER,CAMBIAR HOMBRO
+ui.gameover.title,GAME OVER,FIN DE LA PARTIDA
+ui.gameover.continues,CONTINUES {n},CONTINUACIONES {n}
+ui.free.preset,PRESET,PERFIL
+ui.free.mission,MISSION,MISIÓN
+ui.free.ratio,RATIO,LETALIDAD
+ui.free.undefined,UNDEFINED,SIN DEFINIR
+ui.free.play,PLAY,JUGAR
+ui.free.finale,FINALE,FINAL
+ui.free.footer,EACH MISSION PLAYS IN ITS OWN AREA.\n{debug}: DEBUG OVERLAY,CADA MISIÓN SE JUEGA EN SU PROPIA ZONA.\n{debug}: PANEL DE DEPURACIÓN
+ui.free.summary,{preset} ON {mission}: AIGIS DEPLOYS (BUDGET {budget}),{preset} EN {mission}: AIGIS DESPLIEGA (PRESUPUESTO {budget})
+ui.free.nothing,NOTHING,NADA
+ui.preset.clean_slate,CLEAN SLATE,DESDE CERO
+ui.preset.ghost,GHOST,FANTASMA
+ui.preset.trickster,TRICKSTER,EMBAUCADOR
+ui.preset.butcher,BUTCHER,CARNICERO
+ui.preset.custom,CUSTOM,A MEDIDA
+ui.habit.stealth,STEALTH,SIGILO
+ui.habit.combat,COMBAT,COMBATE
+ui.habit.headshots,HEADSHOTS,A LA CABEZA
+ui.habit.takedowns,TAKEDOWNS,DERRIBOS
+ui.habit.downs,DOWNS,DORMIDOS
+ui.habit.spoofing,SPOOFING,SUPLANTACIÓN
+ui.step.stealth.1,SECURITY CAMERAS,CÁMARAS DE SEGURIDAD
+ui.step.stealth.2,ONE EXTRA PATROL,UNA PATRULLA MÁS
+ui.step.stealth.3,OVERWATCH SENTRIES,CENTINELAS EN ALTO
+ui.step.combat.1,VESTS,CHALECOS
+ui.step.combat.2,+2 GUARDS,+2 GUARDIAS
+ui.step.combat.3,SQUADS OF 5 REINFORCEMENTS,ESCUADRAS DE 5 REFUERZOS
+ui.step.headshots.1,HELMETS ON 33%,CASCOS EN EL 33%
+ui.step.headshots.2,HELMETS ON 66%,CASCOS EN EL 66%
+ui.step.headshots.3,HELMETS ON 100%,CASCOS EN EL 100%
+ui.step.takedowns.1,GUARDS TURN AROUND MORE OFTEN,LOS GUARDIAS SE GIRAN MÁS A MENUDO
+ui.step.takedowns.2,PATROLS IN PAIRS,PATRULLAS EN PAREJAS
+ui.step.takedowns.3,"SLOW, NOISY CHOKE",ESTRANGULAMIENTO LENTO Y RUIDOSO
+ui.step.downs.1,RANDOM HQ POLL,LLAMADAS DE LA BASE AL AZAR
+ui.step.downs.2,FOUND DOWN GUARD = INSTANT ALERT,GUARDIA CAÍDO HALLADO = ALERTA INMEDIATA
+ui.step.downs.3,TARGETED HQ POLL,LLAMADAS DE LA BASE DIRIGIDAS
+ui.step.spoofing.1,GLAUKOPIS THRESHOLD 40 -> 25,UMBRAL DE GLAUKOPIS 40 -> 25
+ui.step.spoofing.2,RADIO CALLBACK,DEVOLUCIÓN DE LLAMADA
+ui.step.spoofing.3,SINGLE-USE VOICEPRINTS,HUELLAS DE VOZ DE UN SOLO USO
+ui.req.title,REQUISITION,REQUISICIÓN
+ui.req.points,POINTS: {n},PUNTOS: {n}
+ui.req.price,{n} PTS,{n} PTS
+ui.req.max,MAX,MÁX
+ui.req.items,S-RANK ITEMS,OBJETOS DE RANGO S
+ui.req.unlocked,UNLOCKED,DESBLOQUEADO
+ui.req.s_on,S ON MISSION {n},S EN MISIÓN {n}
+ui.req.footer,UP/DOWN: PICK   ENTER: BUY   ESC: CONTINUE,ARRIBA/ABAJO: ELEGIR   INTRO: COMPRAR   ESC: SEGUIR
+ui.upgrade.scanner,SCANNER CELLS,CELDAS DE ESCÁNER
+ui.upgrade.scanner.effect,SCANNER CHARGES,CARGAS DE ESCÁNER
+ui.upgrade.magazines,MAGAZINE POUCH,PORTACARGADORES
+ui.upgrade.magazines.effect,MAGAZINES,CARGADORES
+ui.upgrade.fultons,SPARE BALLOON,GLOBO DE REPUESTO
+ui.upgrade.fultons.effect,FULTON BALLOONS,GLOBOS FULTON
+ui.upgrade.darts,DART RESERVE,RESERVA DE DARDOS
+ui.upgrade.darts.effect,TRANQ DARTS,DARDOS
+ui.item.long_scan,LONG SCAN,ESCÁNER LARGO
+ui.item.long_scan.effect,SCANNER LASTS 15 S,EL ESCÁNER DURA 15 S
+ui.item.heavy_suppressor,HEAVY SUPPRESSOR,SILENCIADOR PESADO
+ui.item.heavy_suppressor.effect,SUPPRESSOR LASTS 5 SHOTS,SILENCIADOR DE 5 DISPAROS
+ui.item.quick_hold,QUICK HOLD,AGARRE RÁPIDO
+ui.item.quick_hold.effect,FULTON HOLD 2 S,FULTON EN 2 S
+ui.brief.title,BRIEFING,INFORME
+ui.brief.objectives,OBJECTIVES,OBJETIVOS
+ui.brief.complete,CAMPAIGN COMPLETE,CAMPAÑA COMPLETADA
+ui.brief.ending,ENDING,FINAL
+ui.brief.any_key,PRESS ANY KEY,PULSA CUALQUIER TECLA
+ui.brief.requisition,REQUISITION,REQUISICIÓN
+ui.voice.promachos,PROMACHOS,PRÓMACOS
+ui.voice.nike,NIKE,NIKE
+ui.voice.pallas,PALLAS,PALAS
+ui.voice.gorgo,GORGO,GORGO
+ui.voice.glaukopis,GLAUKOPIS,GLAUKOPIS
+ui.codec.next,[{key}] NEXT,[{key}] SIGUIENTE
+ui.post.rank,RANK,RANGO
+ui.post.learned,AIGIS HAS LEARNED,AIGIS HA APRENDIDO
+ui.post.time,CLEAR TIME,TIEMPO
+ui.post.kills,KILLS,MUERTES
+ui.post.alerts,ALERTS,ALERTAS
+ui.post.found,DOWN GUARDS FOUND,GUARDIAS CAÍDOS HALLADOS
+ui.post.continues,CONTINUES,CONTINUACIONES
+ui.bonus.no_traces,NO TRACES,SIN RASTRO
+ui.bonus.no_kills,NO KILLS,SIN MUERTES
+ui.finale.order,Transmit memories,Transmitir recuerdos
+ui.finale.send,SEND,ENVIAR
+radio.step.speaker,SPEAK AS,HABLAR COMO
+radio.step.to,TO,A
+radio.step.order,ORDER,ORDEN
+radio.step.place,PLACE,LUGAR
+radio.step.confirm,SEND,ENVIAR
+radio.ok,OK,OK
+radio.close,CLOSE,CERRAR
+radio.no_voiceprints,NO VOICEPRINTS,SIN HUELLAS DE VOZ
+radio.opt.all_units,All units,Todas las unidades
+radio.opt.go,Go check,Ve a mirar
+radio.opt.hold,Hold position,Mantén la posición
+radio.opt.all_clear,All clear,Todo despejado
+radio.opt.report_in,Report in,Informar
+radio.opt.send,Send,Enviar
+radio.said.go,"{to}, go check the {place}.","{to}, revisar {place}."
+radio.said.hold,"{to}, hold your position.","{to}, mantener la posición."
+radio.said.all_clear,"{to}, all clear, stand down.","{to}, todo despejado, retirada."
+radio.said.report_in,"HQ, {who} here. Nothing to report.","Base, aquí {who}. Sin novedad."
+radio.ack.go,"Copy, checking the {place}.","Recibido, voy a mirar en {place}."
+radio.ack.hold,"Copy, holding.","Recibido, mantengo la posición."
+radio.ack.all_clear,"Copy, standing down.","Recibido, me retiro."
+radio.exposed,{who}? You don't sound right. Who is this?,¿{who}? No suenas bien. ¿Quién eres?
+radio.never_called,{who} says they never called. Who is this?,{who} dice que nunca llamó. ¿Quién eres?
+radio.hq_copy,"Copy, {who}.","Recibido, {who}."
+radio.hq_report,"{who}, report.","{who}, informa."
+radio.checkin.1,Post clear.,Puesto despejado.
+radio.checkin.2,All quiet here.,Todo tranquilo aquí.
+radio.checkin.3,Nothing to report.,Sin novedad.
+radio.checkin.4,Still on my rounds.,Sigo con mi ronda.
+radio.checkin.5,Checking in. Quiet.,Informo. Todo en calma.
+radio.hm,Hm?,¿Mm?
+telegraph.radio_check,A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.,Un guardia acaba de llamar a la base para confirmar. Aigis está verificando las transmisiones.
+telegraph.head_check,Guards are glancing back before they turn. Aigis is watching your exits.,Los guardias miran atrás antes de girar. Aigis vigila tus salidas.
+telegraph.flank,"Reinforcements through the road entry, and they are coming round your side.","Refuerzos por la entrada de la carretera, y te rodean por el flanco."

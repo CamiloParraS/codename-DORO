@@ -11,7 +11,7 @@ const SWEEP_DELAY := 30.0
 const LINE := "hq.relay_offline"
 
 @export var hold_time := HOLD_TIME
-@export var prompt := "hold E to sabotage"
+@export var prompt := "ui.prompt.sabotage"  # a text key, shown as "HOLD [E] <verb>"
 @export var sweeps := true
 var held := 0.0
 var done := false
@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 
 ## The line it adds to the Operative op's prompt (Operative._update_prompt), "" when he isn't at it.
 func prompt_for(op: Node3D) -> String:
-	return prompt if op == _operative and not done else ""
+	return Prompts.hold("interact", prompt) if op == _operative and not done else ""
 
 
 ## One frame of holding (or not): the progress resets when released.
