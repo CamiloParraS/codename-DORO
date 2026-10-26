@@ -10,7 +10,6 @@ const BLINK_EVERY := 3.0
 const BLINK := 0.12
 const PULSE := 0.25
 const PULSE_SWELL := 0.4   # extra scale at the pulse's peak
-const GLYPHS := {promachos = "/\\", nike = ">>", pallas = "[]", gorgo = "XX", glaukopis = "()"}  # a Voice's mark
 
 
 static func tuning(t: float) -> bool:
@@ -46,10 +45,12 @@ static func still(node: Node) -> bool:
 	return node.get_tree().get_first_node_in_group("settings_open") != null
 
 
-## Draws a Voice's glyph at `at` (baseline-left), swelling `t` seconds after its line starts. Call inside _draw.
-static func draw_glyph(ci: CanvasItem, font: Font, at: Vector2, voice: String, t: float, col: Color) -> void:
-	var w: float = GLYPHS[voice].length() * 8.0
+## Draws a Voice's glyph at `at` (baseline-left) at `size`, swelling `t` seconds after its line starts, and returns
+## its width so the name can follow. Call inside _draw.
+static func draw_glyph(ci: CanvasItem, font: Font, at: Vector2, glyph: String, t: float, col: Color, size := 8) -> float:
+	var w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 	var k := pulse(t)
-	ci.draw_set_transform(at + Vector2(w / 2, -4) , 0.0, Vector2(k, k))
-	ci.draw_string(font, Vector2(-w / 2, 4), GLYPHS[voice], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+	ci.draw_set_transform(at + Vector2(w / 2, -size / 2.0), 0.0, Vector2(k, k))
+	ci.draw_string(font, Vector2(-w / 2, size / 2.0), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, size, col)
 	ci.draw_set_transform(Vector2.ZERO)
+	return w

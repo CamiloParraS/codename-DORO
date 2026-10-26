@@ -1,19 +1,23 @@
-## Placeholder Briefing: the next campaign Mission, its objectives and the Voices' briefing keys as
-## plain text; any key opens the Mission's Codec call, which starts it. Past the Core it shows the ending's band, and any key goes back to
-## the main scene. Group "mission_plan": F3 shows the plan table. After a first clear with something to buy the
-## Requisition screen opens over it first; R reopens it.
-## ponytail: the Codec player and the written Briefings replace the text, the finale the ending.
+## The Briefing: the next campaign Mission's title, Aigis's Voices on what it noticed and what it deployed
+## (a transcript: the Voice's glyph and name in Aigis's cyan, then its line in VT323, typed out with its
+## beeps), then the objectives; any key opens the Mission's Codec call, which starts it. Past the Core it
+## shows the ending's band, and any key goes back to the main scene. Group "mission_plan": F3 shows the
+## plan table. After a first clear with something to buy the Requisition screen opens over it first;
+## R reopens it.
 extends Control
 
 const REQUISITION := preload("res://ui/requisition/requisition.gd")
+const GLYPHS: Dictionary = preload("res://ui/finale/finale.gd").GLYPHS
+const TAG := 112  # px from the margin to a Voice line's text: room for "() GLAUKOPIS"
+const MARGIN := 24
 
 var record: Dictionary
 var plan: Dictionary
-var _lines: Array = []
+var _lines: Array = []               # [kind, key or text]: "title", "head", "voice", "band", "objective", "gap"
 var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
-var _typing_i := -1   # the line being typed, and how long ago it began: its Voice's glyph pulse
+var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
 var _line_t := 0.0
-var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
+var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
 func _ready() -> void:
@@ -23,9 +27,11 @@ func _ready() -> void:
 	record = Campaign.record
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	_lines = _build_lines()
-	for l: String in _lines:
+	for l: Array in _lines:
 		# objectives and headings have no Voice: shown at once
-		_blips.append(VoiceBlip.new(tr(l), VoiceBlip.voice_of(l)))
+		var voice := VoiceBlip.voice_of(l[1]) if l[0] == "voice" else ""
+		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
+	HudPalette.fade(self)
 	if Campaign.gear.due:
 		Campaign.gear.due = false
 		if Campaign.gear.worth_opening() and not Campaign.done():
@@ -85,23 +91,51 @@ func _open_codec() -> void:
 
 
 func _build_lines() -> Array:
-	var lines: Array = []
 	if Campaign.done():
-		return ["CAMPAIGN COMPLETE", "", "ENDING: %s" % Aigis.resolve_ending(Aigis.lethality_ratio(record)).to_upper()]
+		var band := Aigis.resolve_ending(Aigis.lethality_ratio(record))
+		return [["title", "ui.brief.complete"], ["gap", ""], ["head", "ui.brief.ending"], ["band", band]]
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
-	lines = [m.title, "", "BRIEFING"]
-	lines.append_array(plan.briefing_keys)
-	lines.append_array(["", "OBJECTIVES"])
-	lines.append_array(m.steps.map(func(s: Dictionary) -> String: return "- " + tr(s.objective)))
-	lines.append("- " + Campaign.objective(record.mission, m.steps.size()))
+	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
+	lines.append_array(plan.briefing_keys.map(func(k: String) -> Array: return ["voice", k]))
+	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
+	lines.append_array(m.steps.map(func(s: Dictionary) -> Array: return ["objective", s.objective]))
+	lines.append(["objective", Campaign.objective(record.mission, m.steps.size())])
 	return lines
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
+	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.INK)
+	var y := 40.0
+	var body_w := size.x - MARGIN * 2 - TAG
 	for i in _lines.size():
-		var v := VoiceBlip.voice_of(_lines[i])
-		if v != "":
-			StoryMotion.draw_glyph(self, _font, Vector2(4, 40 + i * 14), v, _line_t if i == _typing_i and not _blips[i].done() else 99.0, Color(1, 1, 1, 0.6))
-		draw_string(_font, Vector2(24, 40 + i * 14), _blips[i].shown(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
-	draw_string(_font, Vector2(24, size.y - 24), "PRESS ANY KEY" if Campaign.done() else "PRESS ANY KEY   R: REQUISITION", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, 0.5))
+		var kind: String = _lines[i][0]
+		var s := _blips[i].shown()
+		match kind:
+			"title":
+				draw_string(HudPalette.HEADING, Vector2(MARGIN, y), s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.TITLE_SIZE, HudPalette.WHITE)
+				y += 12
+			"gap":
+				y += 10
+			"head":
+				draw_string(HudPalette.HEADING, Vector2(MARGIN, y), s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.CHROME_DIM)
+				y += 16
+			"band":  # the ending: its Voice, large
+				draw_string(HudPalette.HEADING, Vector2(MARGIN, y + 8), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1])],
+					HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.TITLE_SIZE, HudPalette.AIGIS)
+				y += 24
+			"voice":
+				var who := VoiceBlip.voice_of(_lines[i][1])
+				var w := StoryMotion.draw_glyph(self, HudPalette.HEADING, Vector2(MARGIN, y - 2), GLYPHS[who], _line_t if i == _typing_i and not _blips[i].done() else 99.0, HudPalette.AIGIS, HudPalette.HEADING_SIZE)
+				draw_string(HudPalette.HEADING, Vector2(MARGIN + w + 8, y - 2), tr("ui.voice." + who), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.AIGIS)
+				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w)
+				var left := s.length()
+				for l in full:
+					draw_string(HudPalette.BODY, Vector2(MARGIN + TAG, y), l.left(maxi(left, 0)), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.BODY_SIZE, HudPalette.WHITE)
+					left -= l.length() + 1
+					y += 14
+			"objective":
+				for l in HudPalette.wrap("- " + s, size.x - MARGIN * 2, HudPalette.HEADING, HudPalette.HEADING_SIZE):
+					draw_string(HudPalette.HEADING, Vector2(MARGIN, y), l, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.CHROME)
+					y += 12
+	var foot := tr("ui.brief.any_key") if Campaign.done() else "%s   [R] %s" % [tr("ui.brief.any_key"), tr("ui.brief.requisition")]  # R is the briefing's own key
+	draw_string(HudPalette.HEADING, Vector2(MARGIN, size.y - 24), foot, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.HINT)

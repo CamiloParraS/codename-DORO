@@ -187,7 +187,7 @@ const EAVESDROP := {EavesdropSpot = [75.9, 53, DECK]}
 const OBJECTIVES := {
 	IntelSmokeBreak = {at = [75.9, 53, DECK], watch = "voiceprint", guards = ["GuardPA", "GuardPB"]},
 	IntelForeman = {at = [48.5, 50, 0], watch = "answer", guards = ["GuardForeman"]},
-	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "hold E to enter the code"},
+	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "ui.prompt.enter_code"},
 }
 ## Safe → exposed → safe crossings, as drawn and timed in the prototype: [id, Encounter, [[x, y, h]...]]. The build
 ## checks both ends are on the navmesh; the prototype's vision sim times them (.scratch/pw-feel/research/harbour-generator-data.md).
