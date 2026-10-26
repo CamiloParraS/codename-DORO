@@ -4,7 +4,7 @@ class_name RadioMenu
 extends RefCounted
 
 const ORDERS := [["Go check", "go"], ["Hold position", "hold"], ["All clear", "all_clear"]]
-const SAID := {go = "go check the %s", hold = "hold your position", all_clear = "all clear, stand down"}
+const SAID := {go = "radio.said.go", hold = "radio.said.hold", all_clear = "radio.said.all_clear"}  # text keys; {to}, {place}
 const REPORT_IN := [["Report in", "report_in"]]  # the only order to HQ, offered while HQ polls the speaker
 
 var step := "speaker"   # speaker / to / order / place / confirm
@@ -89,13 +89,12 @@ func back() -> bool:
 	return true
 
 
-## What the Operative says as the speaker, e.g. "Guard05, go check the Dock."
+## What the Operative says as the speaker, e.g. "Guard05, go check the Dock." (translated).
 func line() -> String:
 	if pick.order == "report_in":
-		return "HQ, %s here. Nothing to report." % pick.speaker
-	var to: String = "All units" if pick.all_units else pick.recipients[0]
-	var said: String = SAID[pick.order] % pick.place if pick.order == "go" else SAID[pick.order]
-	return "%s, %s." % [to, said]
+		return tr("radio.said.report_in").format({who = pick.speaker})
+	var to: String = tr("radio.opt.all_units") if pick.all_units else pick.recipients[0]
+	return tr(SAID[pick.order]).format({to = to, place = pick.place})
 
 
 ## Slice under a pointer offset from the centre, for `count` slices clockwise from the top;

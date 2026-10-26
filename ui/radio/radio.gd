@@ -10,8 +10,10 @@ const REPLY_DELAY := 1.0     # seconds before the recipient answers
 const R_IN := 26.0
 const R_OUT := 70.0
 const POINTER_MAX := 60.0
-const STEP_TITLES := {speaker = "SPEAK AS", to = "TO", order = "ORDER", place = "PLACE", confirm = "SEND"}
-const ACKS := {go = "Copy, checking the %s.", hold = "Copy, holding.", all_clear = "Copy, standing down."}
+const ACKS := {go = "radio.ack.go", hold = "radio.ack.hold", all_clear = "radio.ack.all_clear"}  # text keys; {place}
+## RadioMenu's fixed option labels -> their text keys (guard and place names show as they are).
+const LABELS := {"All units": "radio.opt.all_units", "Go check": "radio.opt.go", "Hold position": "radio.opt.hold",
+	"All clear": "radio.opt.all_clear", "Report in": "radio.opt.report_in", "Send": "radio.opt.send", "HQ": "ui.who.hq"}
 
 var glaukopis := Glaukopis.new()   # one per Mission: the Area scene holds this node
 var menu: RadioMenu                # null while closed
@@ -21,7 +23,6 @@ var _now := 0.0
 var _last_alert := -INF
 var _places := {}                  # name -> position
 var _operative: Node3D
-var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
 
 
 func _ready() -> void:
@@ -144,11 +145,11 @@ func _report_in(who: String, line: String) -> void:
 			return
 		hq.answer()
 		if j.exposed:
-			hq.say("%s? You don't sound right. Who is this?" % who)
+			hq.say(tr("radio.exposed").format({who = who}))
 			var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
 			hq.send_nearest(spot, who, "a Spoofed transmission", from)
 		else:
-			hq.say("Copy, %s." % who))
+			hq.say(tr("radio.hq_copy").format({who = who})))
 
 
 ## Glaukopis judges a transmission as `who` on the facts on the ground (`extra`: the order, the
@@ -176,7 +177,7 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, 
 	if up.is_empty():
 		return
 	if exposed:
-		_search(up, "%s? You don't sound right. Who is this?" % pick.speaker, from)
+		_search(up, tr("radio.exposed").format({who = pick.speaker}), from)
 		return
 	var acked := false
 	for r in up:
@@ -193,7 +194,7 @@ func _answer(pick: Dictionary, exposed: bool, from: Vector3, recipients: Array, 
 			sent.accepted.append(String(r.name))
 		if ok and not acked:
 			acked = true
-			r.radio_say(ACKS[pick.order] % pick.place if pick.order == "go" else ACKS[pick.order])
+			r.radio_say(tr(ACKS[pick.order]).format({place = pick.place}))
 	if acked and Deployment.radio_callback(_deployed()):
 		get_tree().create_timer(REPLY_DELAY).timeout.connect(_callback.bind(pick.speaker, from, up, sent, judge))
 
@@ -207,7 +208,7 @@ func _callback(speaker: String, from: Vector3, up: Array, sent: Dictionary, judg
 	judge.deny(speaker)
 	sent.accepted = []  # exposed after all: nobody counts as having taken the order
 	get_tree().call_group("mission_tally", "event", "spoof_exposed")
-	_search(up.filter(func(r): return is_instance_valid(r) and not r.is_down()), "%s says they never called. Who is this?" % speaker, from)
+	_search(up.filter(func(r): return is_instance_valid(r) and not r.is_down()), tr("radio.never_called").format({who = speaker}), from)
 
 
 ## An exposed transmission: the first of `up` says so on the radio and they all search near `from`.
@@ -249,15 +250,16 @@ func _guard(guard_name: String) -> Node3D:
 func _draw() -> void:
 	if not menu:
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.35))
+	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.SHADE)
 	var c := size / 2
 	var opts := menu.options()
 	var n := opts.size()
 	_centered(c + Vector2(0, -R_OUT - 30), _crumb(), HudPalette.CHROME)
-	_centered(c + Vector2(0, 4), STEP_TITLES[menu.step], HudPalette.WHITE)
-	_centered(c + Vector2(0, R_OUT + 34), "LMB OK  RMB BACK  Q CLOSE", HudPalette.CHROME_DIM)
+	_centered(c + Vector2(0, 4), tr("radio.step." + menu.step), HudPalette.WHITE)
+	_centered(c + Vector2(0, R_OUT + 34), "  ".join(PackedStringArray([Prompts.verb("fire", "radio.ok"),
+		Prompts.verb("aim", "ui.back"), Prompts.verb("radio", "radio.close")])), HudPalette.CHROME_DIM)
 	if n == 0:
-		_centered(c + Vector2(0, 20), "NO VOICEPRINTS", HudPalette.CHROME_DIM)
+		_centered(c + Vector2(0, 20), tr("radio.no_voiceprints"), HudPalette.CHROME_DIM)
 		return
 	var hover := _hover()
 	var step := TAU / n
@@ -267,36 +269,41 @@ func _draw() -> void:
 		var gap := 0.04 if n > 1 else 0.0
 		draw_arc(c, (R_IN + R_OUT) / 2, mid - step / 2 + gap, mid + step / 2 - gap, 24,
 			Color(HudPalette.CHROME, 0.8) if on else Color(HudPalette.CHROME, 0.25), R_OUT - R_IN)
-		var label: String = ("%d %s" % [i + 1, opts[i][0]]) if i < 9 else opts[i][0]
+		var shown := _label(opts[i][0])
+		var label: String = ("%d %s" % [i + 1, shown]) if i < 9 else shown
 		var dir := Vector2.from_angle(mid)
 		var p := c + dir * (R_OUT + 8) + Vector2(0, 4 + 4 * dir.y)
+		var w := HudPalette.HEADING.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		if dir.x < -0.2:
-			p.x -= label.length() * 8
+			p.x -= w
 		elif dir.x <= 0.2:
-			p.x -= label.length() * 4
+			p.x -= w / 2
 		_t(p, label, HudPalette.WHITE if on else HudPalette.CHROME_DIM)
 	if _pointer.length() > 12.0:
 		draw_circle(c + _pointer.normalized() * (R_IN - 6), 2.5, HudPalette.WHITE)
 
 
+## An option as shown: upper case, the fixed ones translated.
+func _label(s: String) -> String:
+	return (tr(LABELS[s]) if LABELS.has(s) else s).to_upper()
+
+
 func _crumb() -> String:
 	if menu.step == "confirm":
-		return "%s: %s" % [menu.pick.speaker, menu.line()]
+		return "%s: %s" % [menu.pick.speaker.to_upper(), menu.line()]
 	var parts := PackedStringArray()
 	if menu.pick.has("speaker") and menu.step != "speaker":
-		parts.append(menu.pick.speaker)
+		parts.append(_label(menu.pick.speaker))
 	if menu.pick.has("recipients") and menu.step in ["order", "place"]:
-		parts.append("All units" if menu.pick.all_units else menu.pick.recipients[0])
+		parts.append(_label("All units" if menu.pick.all_units else menu.pick.recipients[0]))
 	if menu.step == "place":
-		parts.append("Go check")
+		parts.append(_label("Go check"))
 	return " > ".join(parts)
 
 
 func _centered(pos: Vector2, s: String, col: Color) -> void:
-	_t(pos - Vector2(s.length() * 4, 0), s, col)
+	HudPalette.centered(self, pos.x, pos.y, s, col)
 
 
 func _t(pos: Vector2, s: String, col: Color) -> void:
-	for o in [Vector2(1, 1), Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1)]:  # same 4-way outline as hud.gd
-		draw_string(_font, pos + o, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0, 0, 0, col.a))
-	draw_string(_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+	HudPalette.text(self, pos, s, col)

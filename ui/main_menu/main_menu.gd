@@ -2,10 +2,12 @@
 ## Free mode, Settings, Quit. New game and Load pick one of the three slots; overwriting asks first.
 ## Mission select picks a slot, then one of its cleared Missions (with its Mission Record) to replay.
 ## Loading a complete slot goes to the Briefing, which replays the finale and returns here.
+## Every page fades in over HudPalette.FADE; the menu Theme comes from HudPalette.
 extends Control
 
 const BRIEFING := "res://ui/briefing/briefing.tscn"
 const FREE_MODE := "res://ui/free_mode/free_mode.tscn"
+const TITLE := "GHOST LAYER"
 const SettingsPanel := preload("res://ui/settings/settings_panel.gd")
 
 var _box := VBoxContainer.new()
@@ -13,78 +15,86 @@ var _box := VBoxContainer.new()
 
 func _ready() -> void:
 	GameSettings.apply(GameSettings.load_file())
+	get_window().title = "Ghost Layer"
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	theme = Theme.new()
-	theme.default_font = load("res://assets/fonts/press_start_2p_regular.ttf")
-	theme.default_font_size = 8
+	theme = HudPalette.theme()
 	var bg := ColorRect.new()
-	bg.color = Color.BLACK
+	bg.color = HudPalette.INK
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	_box.position = Vector2(24, 24)
-	_box.add_theme_constant_override("separation", 8)
+	_box.add_theme_constant_override("separation", 4)
 	add_child(_box)
 	_main()
 
 
 func _main() -> void:
-	_clear("CODENAME DORO")
+	_clear(TITLE)
 	var cont := SaveSlots.continue_slot()
 	if cont >= 0:
-		_button("CONTINUE", func() -> void: _play_slot(cont))
-	_button("NEW GAME", func() -> void: _slots(true))
-	_button("LOAD", func() -> void: _slots(false))
-	_button("MISSION SELECT", _select_slot)
-	_button("FREE MODE", func() -> void: get_tree().change_scene_to_file(FREE_MODE))
-	_button("SETTINGS", _settings)
-	_button("QUIT", func() -> void: get_tree().quit())
+		_button("ui.menu.continue", func() -> void: _play_slot(cont))
+	_button("ui.menu.new_game", func() -> void: _slots(true))
+	_button("ui.menu.load", func() -> void: _slots(false))
+	_button("ui.menu.mission_select", _select_slot)
+	_button("ui.menu.free_mode", func() -> void: get_tree().change_scene_to_file(FREE_MODE))
+	_button("ui.menu.settings", _settings)
+	_button("ui.menu.quit", func() -> void: get_tree().quit())
 	_focus_first()
 
 
 func _slots(new_game: bool) -> void:
-	_clear("NEW GAME: PICK A SLOT" if new_game else "LOAD")
+	_clear("ui.menu.pick_new" if new_game else "ui.menu.load")
 	for i in SaveSlots.COUNT:
 		var s := SaveSlots.read(i)
-		var b := _button("%d  %s" % [i + 1, SaveSlots.label(s)], Callable())
+		var b := _button("%d  %s" % [i + 1, slot_label(s)], Callable())
 		if new_game:
 			b.pressed.connect(func() -> void:
 				if s.is_empty():
 					_new_game(i)
 				else:
-					_confirm("OVERWRITE SLOT %d?" % (i + 1), func() -> void: _new_game(i)))
+					_confirm(tr("ui.menu.overwrite").format({n = i + 1}), func() -> void: _new_game(i), _slots.bind(true)))
 		else:
 			b.disabled = s.is_empty()
 			b.pressed.connect(func() -> void: _play_slot(i))
-	_button("BACK", _main)
+	_button("ui.back", _main)
 	_focus_first()
 
 
+## A slot's row: EMPTY, COMPLETE or its next Mission, then when it was saved (SaveSlots.label, translated).
+func slot_label(s: Dictionary) -> String:
+	if s.is_empty():
+		return tr("ui.slot.empty")
+	var what := tr("ui.slot.complete") if s.complete else tr("ui.mission.%d" % s.record.mission)
+	return "%s  %s" % [what, Time.get_datetime_string_from_unix_time(s.saved, true)]
+
+
 func _select_slot() -> void:
-	_clear("MISSION SELECT: PICK A SLOT")
+	_clear("ui.menu.pick_select")
 	for i in SaveSlots.COUNT:
 		var s := SaveSlots.read(i)
-		var b := _button("%d  %s" % [i + 1, SaveSlots.label(s)], func() -> void: _missions(i, s))
+		var b := _button("%d  %s" % [i + 1, slot_label(s)], func() -> void: _missions(i, s))
 		b.disabled = s.is_empty() or s.missions.is_empty()  # a new slot has nothing to select
-	_button("BACK", _main)
+	_button("ui.back", _main)
 	_focus_first()
 
 
 func _missions(slot: int, s: Dictionary) -> void:
-	_clear("MISSION SELECT")
+	_clear("ui.menu.mission_select")
 	for k in Campaign.MISSIONS.size():
 		var m: Dictionary = s.missions.get(str(k), {})
 		if m.is_empty():
 			continue
 		var b: Dictionary = m.best
-		_button("%s  %s  %d:%02d  KILLS %d  ALERTS %d" % [Campaign.MISSIONS[k].title, b.rank, int(b.time) / 60, int(b.time) % 60, b.kills, b.alerts],
-			func() -> void:
+		var row := tr("ui.menu.record").format({mission = tr("ui.mission.%d" % k), rank = b.rank,
+			time = "%d:%02d" % [int(b.time) / 60, int(b.time) % 60], kills = b.kills, alerts = b.alerts})
+		_button(row, func() -> void:
 				Campaign.record = s.record
 				Campaign.missions = s.missions
 				Campaign.gear = s.gear
 				Campaign.slot = slot
 				Campaign.play(get_tree(), m.pre.duplicate(true), scene_file_path, false, true))
-	_button("BACK", _select_slot)
+	_button("ui.back", _select_slot)
 	_focus_first()
 
 
@@ -108,43 +118,39 @@ func _settings() -> void:
 	_box.hide()
 	var p := SettingsPanel.new()
 	p.position = Vector2(24, 24)
-	p.closed.connect(_box.show)
+	p.closed.connect(func() -> void:
+		_box.show()
+		_main())  # rebuilt: the language may have changed
 	add_child(p)
 
 
-func _confirm(text: String, yes: Callable) -> void:
-	var d := ConfirmationDialog.new()
-	d.dialog_text = text
-	d.confirmed.connect(yes)
-	d.canceled.connect(d.queue_free)
-	d.confirmed.connect(d.queue_free)
-	add_child(d)
-	d.popup_centered()
+## The question as the page title, then YES and NO in place of the page.
+func _confirm(text: String, yes: Callable, no: Callable) -> void:
+	_clear(text)
+	_button("ui.yes", yes)
+	_button("ui.no", no)
+	_focus_first.call_deferred(true)
 
 
 func _clear(title: String) -> void:
 	for c in _box.get_children():
 		c.queue_free()
-	var l := Label.new()
-	l.text = title
-	l.add_theme_font_size_override("font_size", 12)
+	var l := HudPalette.label(title, HudPalette.TITLE_SIZE, HudPalette.WHITE)
+	l.custom_minimum_size.y = 28
 	_box.add_child(l)
+	HudPalette.fade(_box)
 
 
 func _button(text: String, on_press: Callable) -> Button:
-	var b := Button.new()
-	b.text = text
-	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	var b := HudPalette.menu_button(text, on_press)
 	b.pressed.connect(Mixer.click)
-	if on_press.is_valid():
-		b.pressed.connect(on_press)
 	_box.add_child(b)
 	return b
 
 
-func _focus_first() -> void:
+## Focus the first enabled row; `last` focuses the last one instead (NO, on a confirm).
+func _focus_first(last := false) -> void:
 	await get_tree().process_frame  # the old buttons are still children until freed
-	for c in _box.get_children():
-		if c is Button and not c.disabled and not c.is_queued_for_deletion():
-			c.grab_focus()
-			return
+	var rows := _box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.disabled and not c.is_queued_for_deletion())
+	if not rows.is_empty():
+		(rows.back() if last else rows[0]).grab_focus()
