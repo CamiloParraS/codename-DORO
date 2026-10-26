@@ -59,7 +59,7 @@ func _ready() -> void:
 	SessionLog.current.start_mission(record.mission)
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
-	if not intro.is_empty():  # a title card holds play (and the clock) for its 2.3 s
+	if not intro.is_empty() and not campaign:  # a title card holds play (and the clock) for its 2.3 s; the campaign's came before the Codec call (Briefing)
 		_card([intro.name, intro.area, intro.stamp], true, func() -> void: get_tree().paused = false)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
@@ -161,10 +161,7 @@ func game_over() -> void:
 
 ## A Mission card over the Area with the tree held; `then` runs when it ends (or the player skips it).
 func _card(keys: Array, intro: bool, then: Callable) -> void:
-	var card := MissionCard.new()
-	card.intro = intro
-	for k: String in keys:
-		card.lines.append(tr(k))
+	var card := MissionCard.build(keys, intro)
 	card.done.connect(then)
 	_overlay(card)
 	get_tree().paused = true

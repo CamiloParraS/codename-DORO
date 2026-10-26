@@ -90,3 +90,15 @@ func tick(delta: float, carrying: bool) -> void:
 			reserve -= n
 	elif loaded == 0:  # emptied while carrying: reload as soon as the hands are free
 		reload(false)
+
+
+## What the crosshair points at: the camera ray's hit, else its far end.
+static func aim_point(from: Vector3, dir: Vector3, hit: Variant, reach: float) -> Vector3:
+	return hit if hit is Vector3 else from + dir * reach
+
+
+## Heading of a shot leaving the muzzle for the aim point (third person: the gun is off the camera axis).
+## A point at or behind the muzzle (a wall against the barrel) keeps the camera's heading.
+static func muzzle_dir(muzzle: Vector3, point: Vector3, camera_dir: Vector3) -> Vector3:
+	var d := point - muzzle
+	return camera_dir if d.length() < 0.1 or d.dot(camera_dir) <= 0.0 else d.normalized()

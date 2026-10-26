@@ -82,9 +82,20 @@ func _unhandled_input(e: InputEvent) -> void:
 			_open_codec()
 
 
-## The Mission's full-screen Codec call, then the Mission itself.
+## The Mission's title card if it has one (black, so the Codec call follows without a flash of this page),
+## then its full-screen Codec call, then the Mission itself.
 func _open_codec() -> void:
 	set_process_unhandled_input(false)
+	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
+	if intro.is_empty():
+		_call()
+		return
+	var card := MissionCard.build([intro.name, intro.area, intro.stamp], true, false)
+	card.done.connect(_call)
+	add_child(card)
+
+
+func _call() -> void:
 	var codec := CodecScreen.new(Campaign.MISSIONS[record.mission].codec)
 	codec.finished.connect(func() -> void: Campaign.play(get_tree(), record, scene_file_path, true))
 	add_child(codec)

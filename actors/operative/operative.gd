@@ -352,7 +352,7 @@ func _throw_magazine() -> void:
 		Mix.sfx_at(self, &"mag_land", land)
 
 
-## Hitscan from the screen centre. Tranq: a hit on a standing guard's head Neutralizes it, on the body
+## Hitscan: the crosshair picks the aim point, the shot leaves the muzzle for it. Tranq: a hit on a standing guard's head Neutralizes it, on the body
 ## starts the stumble. Rifle: kills (see Guard.shoot), destroys cameras, and a broken suppressor makes
 ## the shot heard.
 func _fire() -> void:
@@ -371,10 +371,17 @@ func _fire() -> void:
 	var dir := -camera.global_basis.z
 	sp += deg_to_rad(_sway)
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
-	var from := camera.global_position
-	Fx.flash(get_parent(), from + dir * 0.9 + camera.global_basis.x * 0.25 - camera.global_basis.y * 0.2, quiet)
+	# The crosshair decides where; the shot is seen leaving the muzzle and flying to that point.
+	var cam := camera.global_position
+	var space := get_world_3d().direct_space_state
+	var seen := space.intersect_ray(PhysicsRayQueryParameters3D.create(cam, cam + dir * 60.0, 1 | 2, [get_rid()]))
+	var point := Gun.aim_point(cam, dir, seen.get("position"), 60.0)
+	var from := model.muzzle(cam + dir * 0.9)
+	dir = Gun.muzzle_dir(from, point, dir)
+	Fx.flash(get_parent(), from, quiet)
 	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
-	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	var hit := space.intersect_ray(q)
+	Fx.tracer(get_parent(), from, hit.get("position", from + dir * 60.0))
 	if hit.is_empty():
 		return
 	var c: Node3D = hit["collider"]

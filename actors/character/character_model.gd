@@ -62,8 +62,8 @@ const BRACE_REACH := Vector2(0.15, 0.75)
 const HAND_TO_GUN := Basis(Vector3(0.04, 0.995, -0.095), Vector3(-0.1, 0.095, 0.99), Vector3(0.994, -0.04, 0.105))
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
 const GUNS := {
-	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0)},
-	"rifle": {"scene": preload("res://assets/models/weapons/rifle.glb"), "grip": Vector3(-0.2, -0.06, 0)},
+	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0), "muzzle": 0.35},
+	"rifle": {"scene": preload("res://assets/models/weapons/rifle.glb"), "grip": Vector3(-0.2, -0.06, 0), "muzzle": 0.75},
 }
 const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
 const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
@@ -234,6 +234,13 @@ func hold(weapon: String) -> void:
 		var can := SUPPRESSOR.instantiate()
 		can.position = SUPPRESSOR_AT
 		_gun.add_child(can)
+
+
+## World position of the held gun's muzzle (the gun file points down +X), or `fallback` with nothing in hand.
+func muzzle(fallback: Vector3) -> Vector3:
+	if not _gun:
+		return fallback
+	return _gun.global_position + _gun.global_basis.x.normalized() * GUNS[_weapon].muzzle
 
 
 ## Puts on a Countermeasure piece: "Helmet" or "Vest".

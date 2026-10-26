@@ -79,3 +79,12 @@ func test_only_a_mission_with_an_intro_or_outro_gets_a_card() -> void:
 		assert_false(Campaign.MISSIONS[m].has("intro") or Campaign.MISSIONS[m].has("outro"))
 	for k in Campaign.MISSIONS[0].intro.values() + Campaign.MISSIONS[0].outro.values():
 		assert_ne(TranslationServer.translate(k), k, "%s has text" % k)
+
+
+func test_a_card_built_for_the_briefing_stays_black_when_it_ends() -> void:
+	var c := MissionCard.build(Campaign.MISSIONS[0].intro.values(), true, false)
+	assert_eq(c.lines.size(), 3)
+	assert_eq(c.lines[0], TranslationServer.translate(Campaign.MISSIONS[0].intro.name))
+	assert_eq(c.backdrop(StoryMotion.CARD_FADE * 2.0 + StoryMotion.CARD_HOLD), 1.0, "no clear to the Area")
+	assert_eq(MissionCard.build([], true).backdrop(StoryMotion.CARD_FADE * 2.0 + StoryMotion.CARD_HOLD), 0.0, "an Area card clears")
+	c.free()
