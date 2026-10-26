@@ -51,8 +51,8 @@ const SOLID := [
 	["GeneratorShed", [16, 4, 6, 4], 6, 9, "brick", Color.WHITE],
 	["ConsoleDesk", [39, 17.5, 2, 1], 6, 7.1, "metal", Color(0.4, 0.45, 0.5)],
 	# motor pool
-	["Container1", [26, 62, 3, 8], 0, 2.6, "metal", Color(0.75, 0.3, 0.25)],
-	["Container2", [36, 66, 8, 3], 0, 2.6, "metal", Color(0.3, 0.5, 0.8)],
+	["Container1", [26, 62, 3, 8], 0, 2.6, "metal", Color(0.42, 0.32, 0.27)],
+	["Container2", [36, 66, 8, 3], 0, 2.6, "metal", Color(0.28, 0.34, 0.4)],
 	["ResupplyCrate", [49.5, 63.5, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
 ]
 ## Raised walkable slabs: [name, rect, top h, material]. The catwalk runs from the mast to the office roof.

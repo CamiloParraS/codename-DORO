@@ -256,6 +256,8 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	if PROPS.has(name):
 		b.set_script(PropSkin)
 		b.model = load("res://assets/models/props/%s.glb" % PROPS[name])
+		if PROPS[name].begins_with("container"):
+			b.tint = tint
 	if mat in METAL_FLOORS:
 		b.set_meta("surface", "metal")
 	parent.add_child(b)
