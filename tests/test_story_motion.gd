@@ -58,3 +58,24 @@ func test_a_speaker_alternates_talking_clips_line_by_line() -> void:
 	assert_eq(g.next(), Gesture.CLIPS[0])
 	assert_eq(g.next(), Gesture.CLIPS[1])
 	assert_eq(g.next(), Gesture.CLIPS[0])
+
+
+func test_a_mission_card_fades_in_holds_and_fades_out_inside_three_seconds() -> void:
+	assert_eq(StoryMotion.card(0.0), 0.0)
+	assert_true(StoryMotion.card(StoryMotion.CARD_FADE / 2.0) > 0.0 and StoryMotion.card(StoryMotion.CARD_FADE / 2.0) < 1.0)
+	assert_eq(StoryMotion.card(StoryMotion.CARD_FADE + 0.5), 1.0)
+	assert_false(StoryMotion.card_over(2.0))
+	assert_true(StoryMotion.card_over(2.3))
+	assert_eq(StoryMotion.card(5.0), 0.0)
+	assert_true(StoryMotion.CARD_FADE * 2.0 + StoryMotion.CARD_HOLD <= 3.0)
+	assert_true(StoryMotion.CARD_FADE >= 0.1 and StoryMotion.CARD_FADE <= 0.3)
+
+
+func test_only_a_mission_with_an_intro_or_outro_gets_a_card() -> void:
+	for k in ["name", "area", "stamp"]:
+		assert_true(Campaign.MISSIONS[0].intro.has(k))
+	assert_true(Campaign.MISSIONS[0].outro.has("title") and Campaign.MISSIONS[0].outro.has("line"))
+	for m in range(1, Campaign.MISSIONS.size()):
+		assert_false(Campaign.MISSIONS[m].has("intro") or Campaign.MISSIONS[m].has("outro"))
+	for k in Campaign.MISSIONS[0].intro.values() + Campaign.MISSIONS[0].outro.values():
+		assert_ne(TranslationServer.translate(k), k, "%s has text" % k)

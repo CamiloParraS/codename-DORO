@@ -8,13 +8,16 @@ const RELAY_STATION := "res://areas/relay_station/relay_station.tscn"
 const RESEARCH_ANNEX := "res://areas/research_annex/research_annex.tscn"
 const CORE := "res://areas/core/core.tscn"
 
-## title; area: the Area scene; encounters: how many (par is 2 min each); targets: Target names (each is killed or carried to Extraction); steps, in order:
+## title; area: the Area scene; encounters: how many (par is 2 min each); targets: Target names (each is killed or carried to Extraction); carry_only: the Targets are ill, a Fulton would kill them, so they are carried out on foot (alive pays Requisition.ALIVE_TARGET_BONUS); steps, in order:
 ## {intel: the node in group "intel" whose `reached` completes it (a pickup, a console, an objective watch),
 ## objective: what the pause screen shows, call: the live Codec call it triggers, hint: Metis's two Hints, a
 ## direction then the route}. open: the live call that states step 1 as the Mission starts. codec: the full-screen
-## Codec call before the Mission. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
+## Codec call before the Mission. intro / outro (optional, text keys): the title card on entering the Area
+## {name, area, stamp} and the extraction card {title, line}; a Mission without them plays straight in and straight to the post-Mission screen. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, encounters = 3, targets = [],
+		intro = {name = "intro.m1.name", area = "intro.m1.area", stamp = "intro.m1.stamp"},
+		outro = {title = "outro.m1.title", line = "outro.m1.line"},
 		open = [["analyst", "live.m1.open.01"]],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["operative", "codec.m1.05"],
 			["handler", "codec.m1.06"], ["analyst", "codec.m1.07"], ["handler", "codec.m1.08"]], steps = [
@@ -22,7 +25,7 @@ const MISSIONS := [
 		{intel = "IntelForeman", objective = "objective.m1.s2", call = [["analyst", "live.m1.s2.01"]], hint = ["hint.m1.s2.1", "hint.m1.s2.2"]},
 		{intel = "IntelLiftPanel", objective = "objective.m1.s3", call = [["analyst", "intel.m1.manifest"], ["handler", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
 	]},
-	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, encounters = 3, targets = ["RELAY CHIEF"],
+	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, encounters = 3, targets = ["RELAY CHIEF"], carry_only = true,
 		open = [["analyst", "live.m2.open.01"]],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["handler", "codec.m2.03"], ["handler", "codec.m2.04"],
 			["analyst", "codec.m2.05", "chief"], ["analyst", "codec.m2.06", "chief"], ["operative", "codec.m2.07"], ["handler", "codec.m2.08"]], steps = [

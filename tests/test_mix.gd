@@ -120,6 +120,9 @@ func test_step_sound_follows_the_floor_and_crouching_is_quieter() -> void:
 	assert_eq(Mix.step_sound(&"metal"), &"footstep_metal")
 	assert_eq(Mix.step_sound(&""), &"footstep")
 	assert_true(Mix.step_db(true) < Mix.step_db(false))
+	assert_true(Mix.step_db(false) < 0.0, "standing steps are trimmed")
+	assert_true(Mix.step_db(false) - Mix.step_db(true) >= 10.0, "crouch cut is far bigger than the standing one")
+	assert_eq(Mix.step_db(true, true), Mix.CARRY_STEP_DB)  # carrying wins over crouching
 	assert_true(Mix.STREAMS.has(&"footstep_metal"))
 
 

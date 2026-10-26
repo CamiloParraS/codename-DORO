@@ -58,6 +58,9 @@ func _ready() -> void:
 	_show_intel.call_deferred()  # once the Extraction point has added its beacon
 	SessionLog.current.start_mission(record.mission)
 	_fresh_chain()
+	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
+	if not intro.is_empty():  # a title card holds play (and the clock) for its 2.3 s
+		_card([intro.name, intro.area, intro.stamp], true, func() -> void: get_tree().paused = false)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
@@ -156,6 +159,17 @@ func game_over() -> void:
 	get_tree().paused = true
 
 
+## A Mission card over the Area with the tree held; `then` runs when it ends (or the player skips it).
+func _card(keys: Array, intro: bool, then: Callable) -> void:
+	var card := MissionCard.new()
+	card.intro = intro
+	for k: String in keys:
+		card.lines.append(tr(k))
+	card.done.connect(then)
+	_overlay(card)
+	get_tree().paused = true
+
+
 func _overlay(screen: Control) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -166,6 +180,12 @@ func _overlay(screen: Control) -> void:
 ## Guards (not Targets) Fultoned this run, as of the last Checkpoint restore: the Recruits a commit banks.
 func fultoned() -> int:
 	return int(tally.counts.get("fulton", 0))
+
+
+## Requisition points for a carry_only Target (Campaign) brought out alive: none was killed.
+func alive_target_bonus() -> int:
+	var carry_only: bool = Campaign.MISSIONS[record.mission].get("carry_only", false)
+	return Requisition.ALIVE_TARGET_BONUS if carry_only and int(tally.counts.get("target_kill", 0)) == 0 else 0
 
 
 func event(name_: String) -> void:
@@ -388,12 +408,19 @@ func _on_extraction() -> void:
 	screen.rank_only = not campaign  # replays and Free mode: the Rank page only
 	screen.strip = MissionTally.strip(record, after)
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
-	_overlay(screen)
-	get_tree().paused = true
+	var show := func() -> void:
+		_overlay(screen)
+		get_tree().paused = true
+	var outro: Dictionary = Campaign.MISSIONS[record.mission].get("outro", {})
+	if outro.is_empty():
+		show.call()
+	else:  # fade out on the extraction beat, then the post-Mission screen
+		_card([outro.title, outro.line], false, show)
+		get_tree().paused = true
 	screen.committed.connect(func() -> void:
 		if campaign or replay:
 			first_s = Campaign.commit_record(record.mission, record, rank.stats(par))
-			Campaign.gear.settle(record.mission, fultoned(), first_s, campaign)
+			Campaign.gear.settle(record.mission, fultoned(), first_s, campaign, alive_target_bonus())
 		if replay:
 			save_slot()  # the Mission Record only: Campaign.record is untouched
 		record = after

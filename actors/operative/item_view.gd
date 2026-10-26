@@ -53,11 +53,18 @@ func _cones(n: Node3D, at: Vector3, alerted: bool, with_side: bool) -> void:
 	var o := n.global_position
 	if Vector2(o.x - at.x, o.z - at.z).length() > Items.SCANNER_RANGE:
 		return
-	var floor_y := (o.y if with_side else at.y) + LIFT  # a camera hangs high: draw on the Operative's floor
 	var facing := -n.global_basis.z
+	var floor_y := (o.y if with_side else _floor_under(o + facing * 0.6, at.y)) + LIFT
 	if with_side:
 		_fan(Vector3(o.x, floor_y, o.z), facing, GuardVision.SIDE_HALF, GuardVision.SIDE_RANGE, ALERTED if alerted else SIDE)
 	_fan(Vector3(o.x, floor_y, o.z), facing, GuardVision.FRONT_HALF, GuardVision.FRONT_RANGE, ALERTED if alerted else FRONT)
+
+
+## Height of the floor below p (a camera hangs high, on a pole or a wall); `fallback` if there is none.
+func _floor_under(p: Vector3, fallback: float) -> float:
+	var q := PhysicsRayQueryParameters3D.create(p, p + Vector3.DOWN * 30.0, 1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	return hit.position.y if hit else fallback
 
 
 func _fan(origin: Vector3, facing: Vector3, half: float, reach: float, col: Color) -> void:

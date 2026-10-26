@@ -8,6 +8,8 @@ const CUT := 0.12          # the screen goes dark on a call's close
 const FLAP := 0.15         # seconds per portrait frame while the line types
 const BLINK_EVERY := 3.0
 const BLINK := 0.12
+const CARD_FADE := 0.25    # a Mission intro/outro card fades in and out over this
+const CARD_HOLD := 1.8     # and sits fully lit this long, so a card is 2.3 s end to end
 const PULSE := 0.25
 const PULSE_SWELL := 0.4   # extra scale at the pulse's peak
 
@@ -33,6 +35,15 @@ static func frame(t: float, speaking: bool, typing: bool) -> int:
 	if typing:
 		return int(t / FLAP) % 2
 	return 1 if fmod(t, BLINK_EVERY) < BLINK and t >= BLINK_EVERY else 0
+
+
+## A Mission card's opacity `t` seconds after it begins: fades in, holds, fades out; 0 once over.
+static func card(t: float) -> float:
+	return clampf(minf(t, CARD_FADE * 2.0 + CARD_HOLD - t) / CARD_FADE, 0.0, 1.0)
+
+
+static func card_over(t: float) -> bool:
+	return t >= CARD_FADE * 2.0 + CARD_HOLD
 
 
 ## A glyph's scale `t` seconds after its line starts: swells and settles, then stays 1.

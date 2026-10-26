@@ -6,6 +6,7 @@ const KNOCK_COOLDOWN := 1.0
 const RUNG_SPACING := 0.5  # metres climbed between rung sounds
 const STEP_EVERY := 0.35  # seconds between loud footstep sounds
 const STEP_EVERY_CROUCH := 0.6  # and between a crouched Operative's quiet ones (sound only: guards hear none)
+const STEP_EVERY_CARRY := 0.6  # and between a carrying Operative's heavy ones (sound only: it reads as walking)
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 1.2
 const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
@@ -251,13 +252,17 @@ func _physics_process(delta: float) -> void:
 	moving = v != Vector2.ZERO
 	_sway = Locomotion.sway(_sway, moving, crouching, delta)
 	_knock_left -= delta
-	if moving and not looks_walking() and not _choking:  # running is loud; crouched steps are sound only
-		if not crouching:
+	if moving and (not looks_walking() or carrying) and not _choking and not ladder:  # running is loud; crouched and carry steps are sound only
+		if not crouching and not carrying:
 			Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 		_step_left -= delta
 		if _step_left <= 0.0:
-			_step_left = STEP_EVERY_CROUCH if crouching else STEP_EVERY
-			Mix.sfx_at(self, Mix.step_sound(_floor_surface()), Vector3.INF, Mix.step_db(crouching))
+			_step_left = STEP_EVERY_CARRY if carrying else (STEP_EVERY_CROUCH if crouching else STEP_EVERY)
+			var step := Mix.sfx_at(self, Mix.step_sound(_floor_surface()), Vector3.INF, Mix.step_db(crouching, carrying != null))
+			if carrying:
+				step.pitch_scale *= Mix.CARRY_STEP_PITCH
+			elif crouching:
+				step.attenuation_filter_cutoff_hz = Mix.CROUCH_STEP_CUTOFF_HZ
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
@@ -536,7 +541,11 @@ static func _join(a: String, b: String, c := "") -> String:
 ## What the Fulton key would do beside a Neutralized or kneeling guard.
 func _fulton_hint() -> String:
 	var g := _fulton_target()
-	if not g or fultons <= 0:
+	if not g:
+		var barred := get_tree().get_nodes_in_group("guards").any(func(b: Guard) -> bool:
+			return b.carry_only and b.fulton_state_ok() and _flat_dist(b) <= TAKEDOWN_REACH)
+		return tr("ui.prompt.target_no_fulton") if barred else ""
+	if fultons <= 0:
 		return ""
 	return Prompts.hold("fulton", "ui.prompt.fulton") if fulton_ready() else tr("ui.prompt.no_fulton")
 

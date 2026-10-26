@@ -77,7 +77,7 @@ The mercenary team hired to investigate Palladion. The player is one of its memb
 _Avoid_: Squad, unit
 
 **Fulton**:
-A balloon the Operative clips to a Neutralized or held-up guard (never the dead), holding G for 3 s, in the open only, to lift him out of the Area for Metis. Three per Mission. Guards within 20 m who see it rising in its first 6 s grow suspicious. A Fultoned Target counts as delivered.
+A balloon the Operative clips to a Neutralized or held-up guard (never the dead), holding G for 3 s, in the open only, to lift him out of the Area for Metis. Three per Mission. Guards within 20 m who see it rising in its first 6 s grow suspicious. A Fultoned Target counts as delivered. Except the Relay Chief of Mission 2 (Campaign `carry_only`): he is ill and a Fulton would kill him, so he is carried out on foot, and carrying him out alive pays 2 extra Recruit points on a first clear.
 _Avoid_: Extraction (that is the Extraction point), airlift, balloon
 
 **Recruit**:

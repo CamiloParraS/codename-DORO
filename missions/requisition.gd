@@ -1,5 +1,5 @@
 ## Recruits and Requisition (pw-feel 05), node-free. A first clear pays 1 Recruit point per Fultoned guard
-## (Targets none), x1.5 rounded down on an S; a replay pays none. Points buy four permanent upgrades; the
+## (Targets none), x1.5 rounded down on an S, plus ALIVE_TARGET_BONUS for a carry_only Target carried out alive; a replay pays none. Points buy four permanent upgrades; the
 ## first S on Missions 1-3 unlocks that Mission's item, free, first clear or replay. kit() is what a
 ## first-clear Mission is played with; replays and Free mode get BASE. Saved with the slot (to_dict).
 class_name Requisition
@@ -24,6 +24,7 @@ const BASE := {
 	scan_time = Items.SCANNER_TIME, suppressor = Rifle.SUPPRESSOR_SHOTS, fulton_time = Operative.FULTON_TIME,
 }
 const S_BONUS := 1.5
+const ALIVE_TARGET_BONUS := 2  # points for a carry_only Target carried out alive (a first clear only)
 
 var points := 0
 var bought := {}                       # upgrade id: buys made
@@ -34,12 +35,12 @@ var due := false                       # the Requisition screen opens at the nex
 
 ## A post-Mission screen committed Mission k (MissionRun): banks the Recruits on a first clear, unlocks
 ## the item on its first S, and marks the screen due after a first clear before the Core.
-func settle(k: int, fultoned: int, first_s: bool, first_clear: bool) -> void:
+func settle(k: int, fultoned: int, first_s: bool, first_clear: bool, bonus := 0) -> void:
 	if first_s and k < ITEMS.size() and ITEMS[k].id not in unlocked_items:
 		unlocked_items.append(ITEMS[k].id)
 	if not first_clear:
 		return
-	signed = int(fultoned * S_BONUS) if first_s else fultoned
+	signed = (int(fultoned * S_BONUS) if first_s else fultoned) + bonus
 	points += signed
 	due = k < ITEMS.size()
 

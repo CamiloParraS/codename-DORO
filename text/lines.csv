@@ -17,7 +17,7 @@ codec.m2.04,Careful. The sabotage takes five seconds of standing still beside th
 codec.m2.05,"Your Target is the relay chief. Two decades in Palladion signals, and he signs off every broadcast that leaves this island.","Tu objetivo es el jefe de la estación. Dos décadas en las comunicaciones de Palladion, y firma cada emisión que sale de esta isla."
 codec.m2.06,"He signs them, but nobody on his staff writes them. Find out who does.","Las firma, pero nadie de su equipo las escribe. Averigua quién lo hace."
 codec.m2.07,And the chief?,¿Y el jefe?
-codec.m2.08,Kill him or carry him out. Your call. Metis out.,Elimínalo o sácalo de allí. Tú decides. Metis fuera.
+codec.m2.08,"Kill him or carry him out. He is ill, a Fulton would kill him, so on foot. Alive pays extra. Your call. Metis out.","Elimínalo o sácalo de allí. Está enfermo y el Fulton lo mataría, así que a pie. Vivo paga extra. Tú decides. Metis fuera."
 codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigación. Aigis no se construyó en un día, y aquí se hizo."
 codec.m3.02,Is the lead researcher a threat?,¿La investigadora jefa es una amenaza?
 codec.m3.03,"She is the key. She built Aigis's memory, and she hasn't left the annex in twelve months.",Ella es la clave. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
@@ -283,6 +283,7 @@ ui.prompt.resupply,RESUPPLY,REABASTECER
 ui.prompt.climb,CLIMB,TREPAR
 ui.prompt.fulton,FULTON,FULTON
 ui.prompt.no_fulton,NO FULTON INDOORS,SIN FULTON BAJO TECHO
+ui.prompt.target_no_fulton,TOO ILL FOR A FULTON: CARRY HIM,DEMASIADO ENFERMO PARA EL FULTON: CÁRGALO
 ui.prompt.access_core,ACCESS THE CORE,ACCEDER AL NÚCLEO
 ui.prompt.sabotage,SABOTAGE,SABOTEAR
 ui.prompt.enter_code,ENTER THE CODE,INTRODUCIR EL CÓDIGO
@@ -469,3 +470,8 @@ radio.hm,Hm?,¿Mm?
 telegraph.radio_check,A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.,Un guardia acaba de llamar a la base para confirmar. Aigis está verificando las transmisiones.
 telegraph.head_check,Guards are glancing back before they turn. Aigis is watching your exits.,Los guardias miran atrás antes de girar. Aigis vigila tus salidas.
 telegraph.flank,"Reinforcements through the road entry, and they are coming round your side.","Refuerzos por la entrada de la carretera, y te rodean por el flanco."
+intro.m1.name,MISSION 1,MISIÓN 1
+intro.m1.area,HARBOUR,PUERTO
+intro.m1.stamp,Palladion island · 02:14 · fog off the water,Isla de Palladion · 02:14 · niebla sobre el agua
+outro.m1.title,MISSION COMPLETE,MISIÓN CUMPLIDA
+outro.m1.line,"Extraction confirmed. Nobody will know you were here.","Extracción confirmada. Nadie sabrá que estuviste aquí."
