@@ -7,7 +7,7 @@ extends Control
 const MENU := "res://ui/main_menu/main_menu.tscn"
 const SLOW := 0.3        # time scale while the order is on screen
 const STILL_SECONDS := 20.0
-const GLYPHS := {promachos = "/\\", nike = ">>", pallas = "[]", gorgo = "XX", glaukopis = "()"}
+const GLYPHS := StoryMotion.GLYPHS
 
 var model: Finale
 var leave_to := MENU
@@ -15,6 +15,7 @@ var _lines: Array = []
 var _i := 0
 var _blip: VoiceBlip
 var _t := 0.0
+var _line_t := 0.0  # since the current line began: its glyph's pulse
 var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
 
 
@@ -46,6 +47,8 @@ func _process(delta: float) -> void:
 	if model == null:
 		return
 	_t += delta / maxf(Engine.time_scale, 0.01)  # stills pan in real time, not slowed time
+	if not StoryMotion.still(self):
+		_line_t += delta / maxf(Engine.time_scale, 0.01)
 	if _blip:
 		var p := _blip.advance(delta / maxf(Engine.time_scale, 0.01))
 		if not p.is_empty():
@@ -65,6 +68,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		"debate", "ending":
 			if not _blip.done():
 				_blip.skip()
+				_line_t = StoryMotion.PULSE
 				Mixer.stop_blips()
 			elif _i + 1 < _lines.size():
 				_show(_i + 1)
@@ -103,6 +107,7 @@ func _play(lines: Array) -> void:
 
 func _show(i: int) -> void:
 	_i = i
+	_line_t = 0.0
 	_blip = VoiceBlip.new(tr(_lines[i][1]), _lines[i][0])
 
 
@@ -125,7 +130,8 @@ func _draw() -> void:
 
 func _voice_line(at: Vector2) -> void:
 	var who: String = _lines[_i][0]
-	_text(at, "%s  %s" % [GLYPHS[who], who.to_upper()], Color(1, 1, 1, 0.6))
+	StoryMotion.draw_glyph(self, _font, at, who, _line_t, Color(1, 1, 1, 0.6))
+	_text(at + Vector2(32, 0), who.to_upper(), Color(1, 1, 1, 0.6))
 	draw_multiline_string(_font, at + Vector2(0, 24), _blip.shown(), HORIZONTAL_ALIGNMENT_LEFT, size.x - 80, 8, -1, Color.WHITE)
 	_text(Vector2(size.x - 40 - 14 * 8, size.y - 24), "LMB / SPACE >>", Color(1, 1, 1, 0.5))
 

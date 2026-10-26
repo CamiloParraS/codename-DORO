@@ -11,6 +11,8 @@ var record: Dictionary
 var plan: Dictionary
 var _lines: Array = []
 var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
+var _typing_i := -1   # the line being typed, and how long ago it began: its Voice's glyph pulse
+var _line_t := 0.0
 var _font: Font = load("res://assets/fonts/press_start_2p_regular.ttf")
 
 
@@ -39,8 +41,14 @@ func open_requisition() -> void:
 func _process(delta: float) -> void:
 	if has_node("Requisition"):
 		return  # the briefing types out once Requisition closes
-	for b in _blips:
+	for i in _blips.size():
+		var b := _blips[i]
 		if not b.done():
+			if i != _typing_i:
+				_typing_i = i
+				_line_t = 0.0
+			elif not StoryMotion.still(self):
+				_line_t += delta
 			var p := b.advance(delta)
 			if not p.is_empty():
 				Mixer.blip(p.back())  # one blip per frame: they never stack
@@ -92,5 +100,8 @@ func _build_lines() -> Array:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
 	for i in _lines.size():
+		var v := VoiceBlip.voice_of(_lines[i])
+		if v != "":
+			StoryMotion.draw_glyph(self, _font, Vector2(4, 40 + i * 14), v, _line_t if i == _typing_i and not _blips[i].done() else 99.0, Color(1, 1, 1, 0.6))
 		draw_string(_font, Vector2(24, 40 + i * 14), _blips[i].shown(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 	draw_string(_font, Vector2(24, size.y - 24), "PRESS ANY KEY" if Campaign.done() else "PRESS ANY KEY   R: REQUISITION", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, 0.5))

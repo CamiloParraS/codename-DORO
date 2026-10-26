@@ -8,6 +8,7 @@ var _values: Dictionary = GameSettings.current.duplicate()
 
 
 func _ready() -> void:
+	add_to_group("settings_open")  # story motion holds still (StoryMotion.still)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	var box := VBoxContainer.new()
 	add_child(box)
