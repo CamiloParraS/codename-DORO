@@ -12,14 +12,17 @@ const SPREAD := 0.03
 
 var _text: String
 var _voice: String
+var _base: float
 var _t := 0.0
 var _n := 0
 
 
-func _init(text: String, voice: String) -> void:
+## `base_pitch` > 0 voices a guard (ChatterVoice.pitch) instead of an Aigis/codec Voice.
+func _init(text: String, voice: String, base_pitch := 0.0) -> void:
 	_text = text
 	_voice = voice
-	if base(voice) == 0.0:  # no Voice: shown at once, silent
+	_base = base_pitch if base_pitch > 0.0 else base(voice)
+	if _base == 0.0:  # no Voice: shown at once, silent
 		_n = text.length()
 
 
@@ -28,9 +31,13 @@ static func base(voice: String) -> float:
 
 
 static func pitch(voice: String, ch: String) -> float:
+	return _pitch_of(base(voice), ch)
+
+
+static func _pitch_of(b: float, ch: String) -> float:
 	if ch.strip_edges().is_empty():
 		return 0.0
-	return base(voice) * (1.0 + SPREAD * ((ch.unicode_at(0) % 9) - 4))
+	return b * (1.0 + SPREAD * ((ch.unicode_at(0) % 9) - 4))
 
 
 ## "brief.<voice>.<what>" -> voice; anything else -> "".
@@ -44,7 +51,7 @@ func advance(delta: float) -> Array[float]:
 	_t += delta
 	var want := mini(int(_t * CPS), _text.length())
 	while _n < want:
-		var p := pitch(_voice, _text[_n])
+		var p := _pitch_of(_base, _text[_n])
 		if p > 0.0:
 			out.append(p)
 		_n += 1
