@@ -96,3 +96,29 @@ func test_the_crate_works_once_and_a_checkpoint_copy_remembers() -> void:
 	var after: Items = MissionRun.copy(i)
 	assert_false(after.resupply([t, r]), "a restore to a Checkpoint after use keeps it spent")
 	assert_true(before.resupply([t, r]), "a restore to one before use gives the crate back")
+
+
+## The Scanner draws each cone on the floor under its source, not on the Operative's floor: a camera on a
+## pole over a terrace 6 m up shows its cone at 6 m while the Operative stands on the ground.
+func test_scanner_draws_a_cameras_cone_on_the_floor_under_it() -> void:
+	var root := (Engine.get_main_loop() as SceneTree).root
+	var terrace := StaticBody3D.new()
+	var shape := CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	shape.shape.size = Vector3(20, 1, 20)
+	terrace.add_child(shape)
+	terrace.position = Vector3(0, 5.5, 0)  # top at 6
+	root.add_child(terrace)
+	var cam := SecurityCamera.new()
+	cam.position = Vector3(0, 10.5, 0)
+	root.add_child(cam)
+	var view := ItemView.new()
+	root.add_child(view)
+	view.show_items(Vector3(0, 0, 5), true, PackedVector3Array())
+	var arr := (view.mesh as ImmediateMesh).surface_get_arrays(0)
+	var ys := (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array)
+	assert_true(ys.size() > 0, "a cone was drawn")
+	for v in ys:
+		assert_true(absf(v.y - (6.0 + ItemView.LIFT)) < 0.01, "vertex at %s" % v)
+	for n: Node in [view, cam, terrace]:
+		n.free()

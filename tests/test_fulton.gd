@@ -118,3 +118,19 @@ func test_no_fulton_rooms_in_every_area() -> void:
 
 func _p(v: Array) -> Vector3:
 	return Vector3(v[0] - 40.0, v[2], v[1] - 40.0)
+
+
+## Mission 2's Relay Chief is ill: a Fulton would kill him, so he is carried out on foot (Campaign `carry_only`).
+func test_a_carry_only_target_is_never_fultoned_but_still_a_valid_state() -> void:
+	AlertChain.area = AlertChain.new()
+	var g := _guard("Chief", 0, 0)
+	g.carry_only = true
+	g.neutralize()
+	assert_false(g.can_be_fultoned(), "carry only")
+	assert_true(g.fulton_state_ok(), "he is Neutralized, so the Operative is told why")
+	_free([g])
+
+
+func test_only_the_relay_chief_mission_is_carry_only() -> void:
+	var flags := Campaign.MISSIONS.map(func(m: Dictionary) -> bool: return m.get("carry_only", false))
+	assert_eq(flags, [false, true, false, false])

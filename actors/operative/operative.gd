@@ -541,7 +541,11 @@ static func _join(a: String, b: String, c := "") -> String:
 ## What the Fulton key would do beside a Neutralized or kneeling guard.
 func _fulton_hint() -> String:
 	var g := _fulton_target()
-	if not g or fultons <= 0:
+	if not g:
+		var barred := get_tree().get_nodes_in_group("guards").any(func(b: Guard) -> bool:
+			return b.carry_only and b.fulton_state_ok() and _flat_dist(b) <= TAKEDOWN_REACH)
+		return tr("ui.prompt.target_no_fulton") if barred else ""
+	if fultons <= 0:
 		return ""
 	return Prompts.hold("fulton", "ui.prompt.fulton") if fulton_ready() else tr("ui.prompt.no_fulton")
 

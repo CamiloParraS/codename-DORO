@@ -60,6 +60,7 @@ func _spawn_targets(guards: Array) -> void:
 		var post: Marker3D = $TargetPosts.get_child(i)
 		var t := spawn_guard(post, false, true)
 		t.name = names[i]
+		t.carry_only = Campaign.MISSIONS[$MissionRun.record.mission].get("carry_only", false)
 		t.safe_room = $Spots/SafeRoom.global_position
 		var escort := spawn_guard(post)
 		escort.name = "Escort%d" % (i + 1)

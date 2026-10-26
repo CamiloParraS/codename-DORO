@@ -182,6 +182,12 @@ func fultoned() -> int:
 	return int(tally.counts.get("fulton", 0))
 
 
+## Requisition points for a carry_only Target (Campaign) brought out alive: none was killed.
+func alive_target_bonus() -> int:
+	var carry_only: bool = Campaign.MISSIONS[record.mission].get("carry_only", false)
+	return Requisition.ALIVE_TARGET_BONUS if carry_only and int(tally.counts.get("target_kill", 0)) == 0 else 0
+
+
 func event(name_: String) -> void:
 	if not ended:
 		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
@@ -414,7 +420,7 @@ func _on_extraction() -> void:
 	screen.committed.connect(func() -> void:
 		if campaign or replay:
 			first_s = Campaign.commit_record(record.mission, record, rank.stats(par))
-			Campaign.gear.settle(record.mission, fultoned(), first_s, campaign)
+			Campaign.gear.settle(record.mission, fultoned(), first_s, campaign, alive_target_bonus())
 		if replay:
 			save_slot()  # the Mission Record only: Campaign.record is untouched
 		record = after

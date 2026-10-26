@@ -28,6 +28,15 @@ func test_a_first_clear_pays_a_point_per_fultoned_guard_and_half_again_on_an_s()
 	assert_eq(r.points, 7, "unspent points carry over")
 
 
+func test_a_target_carried_out_alive_adds_the_bonus_on_a_first_clear_only() -> void:
+	var r := Requisition.new()
+	r.settle(1, 2, false, true, Requisition.ALIVE_TARGET_BONUS)
+	assert_eq(r.signed, 2 + Requisition.ALIVE_TARGET_BONUS)
+	assert_eq(r.points, 4)
+	r.settle(1, 2, false, false, Requisition.ALIVE_TARGET_BONUS)
+	assert_eq(r.points, 4, "a replay pays none")
+
+
 func test_a_replay_pays_nothing_but_its_first_s_unlocks_the_item() -> void:
 	var r := Requisition.new()
 	r.settle(1, 5, true, false)
