@@ -14,6 +14,7 @@ var _seq := 0         # bumped by cut_call(): a pending sequence from before it 
 
 func _init() -> void:
 	name = "Voice"
+	volume_db = 4.0  # sits above the music
 	position.y = 1.6
 	max_distance = 30.0
 	attenuation_filter_cutoff_hz = 3500.0

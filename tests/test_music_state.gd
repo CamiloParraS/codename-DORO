@@ -40,8 +40,8 @@ func test_change_holds_two_seconds() -> void:
 
 
 func test_patrol_ceiling_is_quieter_than_the_other_tracks() -> void:
-	assert_eq(MusicState.ceiling_db(&"patrol"), -14.0)
-	assert_eq(MusicState.ceiling_db(&"alert"), 0.0)
+	assert_eq(MusicState.ceiling_db(&"patrol"), -16.0)
+	assert_eq(MusicState.ceiling_db(&"alert"), -3.0)
 
 
 func test_held_change_lands_when_hold_ends() -> void:

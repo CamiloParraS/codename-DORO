@@ -385,6 +385,7 @@ func _gangway(parent: Node3D) -> void:
 	for part in [["Gangway", 0.0, 0.2, GANGWAY.width], ["GangwayRailN", -GANGWAY.width / 2, 2.0, 0.1], ["GangwayRailS", GANGWAY.width / 2, 2.0, 0.1]]:
 		var b := StaticBody3D.new()
 		b.name = part[0]
+		b.set_meta("surface", "metal")
 		var size := Vector3(length, part[2], part[3])
 		b.transform = Transform3D(basis, (top + bottom) / 2 + Vector3(0, part[2] / 2 - 0.1, part[1]))
 		var shape := CollisionShape3D.new()

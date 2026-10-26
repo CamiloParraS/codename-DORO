@@ -72,7 +72,8 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - "9_inch_inflate" by tix99, https://freesound.org/s/732685/, CC0 (`sfx_fulton_launch.ogg`)
 - "Steam.wav" by SukritSen, https://freesound.org/s/398077/, CC0 (layered into `sfx_fulton_launch.ogg`)
 - "rope leathery creaking.wav" by vestibule-door, https://freesound.org/s/664929/, CC0 (layered into `sfx_fulton_launch.ogg`)
-- "magical rising wind or sea .wav" by martian, https://freesound.org/s/403003/, CC0 (`sfx_fulton_lift.ogg`, first 8 s)
+- "magical rising wind or sea .wav" by martian, https://freesound.org/s/403003/, CC0 (`sfx_fulton_lift.ogg`, first 5.5 s, faded out)
+- "Footsteps on metal" by IENBA, https://freesound.org/s/834029/, CC0 (`sfx_step_metal_*.ogg`, eight single steps sliced out)
 - "Night time crickets, distant dogs and traffic ambience.WAV" by SukritSen, https://freesound.org/s/482687/, CC0 (`ambience_outdoor.ogg`)
 - Guard barks and grunts (`assets/audio/barks/`, `assets/audio/grunts/`, sorted into role folders), source: public archive. Custom licence: included in the game, not to be redistributed as standalone or reusable files.
 

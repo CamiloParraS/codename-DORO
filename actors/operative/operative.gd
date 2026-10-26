@@ -5,6 +5,7 @@ extends CharacterBody3D
 const KNOCK_COOLDOWN := 1.0
 const RUNG_SPACING := 0.5  # metres climbed between rung sounds
 const STEP_EVERY := 0.35  # seconds between loud footstep sounds
+const STEP_EVERY_CROUCH := 0.6  # and between a crouched Operative's quiet ones (sound only: guards hear none)
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 1.2
 const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
@@ -113,6 +114,13 @@ func equip(kit: Dictionary) -> void:
 	rifle.suppressor = kit.suppressor
 	fultons = kit.fultons
 	fulton_time = kit.fulton_time
+
+
+## The "surface" tag of the floor under the feet ("" = concrete), set on a box by the Area generators.
+func _floor_surface() -> StringName:
+	var q := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.3, global_position + Vector3.DOWN * 0.5, 1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	return StringName(hit.collider.get_meta("surface", "")) if hit and hit.collider else &""
 
 
 ## Where guards aim their line-of-sight ray.
@@ -243,12 +251,13 @@ func _physics_process(delta: float) -> void:
 	moving = v != Vector2.ZERO
 	_sway = Locomotion.sway(_sway, moving, crouching, delta)
 	_knock_left -= delta
-	if moving and not looks_walking() and not crouching and not _choking:  # running is loud
-		Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
+	if moving and not looks_walking() and not _choking:  # running is loud; crouched steps are sound only
+		if not crouching:
+			Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
 		_step_left -= delta
 		if _step_left <= 0.0:
-			_step_left = STEP_EVERY
-			Mix.sfx_at(self, &"footstep")
+			_step_left = STEP_EVERY_CROUCH if crouching else STEP_EVERY
+			Mix.sfx_at(self, Mix.step_sound(_floor_surface()), Vector3.INF, Mix.step_db(crouching))
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
 	if moving:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
