@@ -58,6 +58,21 @@ static func flash(parent: Node, pos: Vector3, quiet: bool) -> Node3D:
 	return f
 
 
+## A tracer: a thin glowing streak from `from` to `to`, gone in FLASH_TIME.
+static func tracer(parent: Node, from: Vector3, to: Vector3) -> MeshInstance3D:
+	var t := MeshInstance3D.new()
+	var b := BoxMesh.new()
+	b.size = Vector3(0.02, 0.02, from.distance_to(to))
+	b.material = glow(Color(1, 0.9, 0.55))
+	t.mesh = b
+	parent.add_child(t)
+	t.global_position = (from + to) / 2.0
+	if from.distance_squared_to(to) > 0.0001:
+		t.look_at(to, Vector3.UP if absf((to - from).normalized().y) < 0.99 else Vector3.RIGHT)
+	t.get_tree().create_timer(FLASH_TIME).timeout.connect(t.queue_free)
+	return t
+
+
 ## The Fulton balloon: bright and unlit so it reads from 20 m, tied by a cable to the guard 3 m below it.
 ## It inflates from nothing over INFLATE s.
 const INFLATE := 0.6
