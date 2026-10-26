@@ -1,0 +1,7 @@
+#!/bin/sh
+# Every staged .gd carries its .uid (Godot writes it on import; a missing one blocks merges in other worktrees).
+# Enable once per clone: git config core.hooksPath .githooks
+for f in $(git diff --cached --name-only --diff-filter=A -- '*.gd' | grep -v '^addons/'); do
+  git ls-files --cached --error-unmatch "$f.uid" >/dev/null 2>&1 || {
+    echo "pre-commit: stage $f.uid too (run godot --headless --path . --import)" >&2; exit 1; }
+done
