@@ -680,7 +680,7 @@ func _radio_call() -> void:
 	model.react("startle", GuardAlert.FLINCH, 2.2)
 	get_tree().create_timer(GuardAlert.FLINCH).timeout.connect(func() -> void:  # then a hand to the ear for the rest of the call
 		if is_instance_valid(self) and not is_down() and AlertChain.area.calling(self):
-			model.react("hand_to_ear", AlertChain.CALL_TIME - GuardAlert.FLINCH))
+			model.react("hand_to_ear", AlertChain.CALL_TIME - GuardAlert.FLINCH, CharacterModel.EAR_SPEED))
 	_was_calling = true
 	voice.call_in(func() -> bool: return AlertChain.area.calling(self))
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
