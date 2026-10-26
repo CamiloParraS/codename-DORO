@@ -192,7 +192,7 @@ func _post(run: Node) -> void:
 	r.found = 1
 	s.rank = r
 	s.par = Rank.par(1)
-	var after := run.record.duplicate(true)
+	var after: Dictionary = run.record.duplicate(true)
 	after.points.stealth = int(after.points.get("stealth", 0)) + 150
 	after.points.downs = maxi(int(after.points.get("downs", 0)) - 60, 0)
 	s.strip = MissionTally.strip(run.record, after)
