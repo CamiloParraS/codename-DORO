@@ -31,11 +31,11 @@ const SOLID := [
 	# the quarry pit's rim: no jump, so a 1 m rail holds the Operative
 	["RailQN", [62, 29.8, 14, 0.2], 0, 1, "metal", RAIL],
 	["RailQW", [61.8, 30, 0.2, 46], 0, 1, "metal", RAIL],
-	["Container1", [14, 58, 3, 8], 0, 2.6, "metal", Color(0.75, 0.3, 0.25)],
-	["Container2", [44, 56, 8, 3], 0, 2.6, "metal", Color(0.3, 0.5, 0.8)],
+	["Container1", [14, 58, 3, 8], 0, 2.6, "metal", Color(0.42, 0.32, 0.27)],
+	["Container2", [44, 56, 8, 3], 0, 2.6, "metal", Color(0.28, 0.34, 0.4)],
 	["Truck", [28, 16, 7, 3], 0, 3, "metal", Color(0.45, 0.5, 0.4)],
-	["DockCrate1", [58, 36, 3, 4], 0, 2.6, "metal", Color(0.6, 0.55, 0.4)],
-	["DockCrate2", [57, 48, 3, 6], 0, 2.6, "metal", Color(0.6, 0.55, 0.4)],
+	["DockCrate1", [58, 36, 3, 4], 0, 2.6, "metal", Color(0.36, 0.34, 0.3)],
+	["DockCrate2", [57, 48, 3, 6], 0, 2.6, "metal", Color(0.36, 0.34, 0.3)],
 	["ResupplyCrate", [54.5, 63.5, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
 	# tower deck rails, open at the stair tops: off an outer edge the Operative would clear the fence
 	["RailGateN", [30, 5, 6, 0.2], 5, 6, "metal", RAIL],
