@@ -11,6 +11,7 @@ var _values: Dictionary = GameSettings.current.duplicate()
 
 
 func _ready() -> void:
+	add_to_group("settings_open")  # story motion holds still (StoryMotion.still)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_theme_constant_override("separation", 4)
 	var title := HudPalette.label("ui.settings.title", HudPalette.TITLE_SIZE, HudPalette.WHITE)

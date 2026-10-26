@@ -15,6 +15,7 @@ var _lines: Array = []
 var _i := 0
 var _blip: VoiceBlip
 var _t := 0.0
+var _line_t := 0.0  # since the current line began: its glyph's pulse
 var _font := HudPalette.HEADING
 
 
@@ -47,6 +48,8 @@ func _process(delta: float) -> void:
 	if model == null:
 		return
 	_t += delta / maxf(Engine.time_scale, 0.01)  # stills pan in real time, not slowed time
+	if not StoryMotion.still(self):
+		_line_t += delta / maxf(Engine.time_scale, 0.01)
 	if _blip:
 		var p := _blip.advance(delta / maxf(Engine.time_scale, 0.01))
 		if not p.is_empty():
@@ -66,6 +69,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		"debate", "ending":
 			if not _blip.done():
 				_blip.skip()
+				_line_t = StoryMotion.PULSE
 				Mixer.stop_blips()
 			elif _i + 1 < _lines.size():
 				_show(_i + 1)
@@ -104,6 +108,7 @@ func _play(lines: Array) -> void:
 
 func _show(i: int) -> void:
 	_i = i
+	_line_t = 0.0
 	_blip = VoiceBlip.new(tr(_lines[i][1]), _lines[i][0])
 
 
@@ -126,7 +131,8 @@ func _draw() -> void:
 
 func _voice_line(at: Vector2) -> void:
 	var who: String = _lines[_i][0]
-	_text(at, "%s  %s" % [GLYPHS[who], tr("ui.voice." + who)], HudPalette.AIGIS)
+	var w := StoryMotion.draw_glyph(self, _font, at, GLYPHS[who], _line_t, HudPalette.AIGIS)
+	_text(at + Vector2(w + 16, 0), tr("ui.voice." + who), HudPalette.AIGIS)
 	var full := HudPalette.wrap(tr(_lines[_i][1]), size.x - 80)
 	var left := _blip.shown().length()
 	for i in full.size():

@@ -33,6 +33,7 @@ var route: Array[Vector3] = []   # patrol points, walked in a loop
 var stops: Array[Dictionary] = []  # per route point (a sentry: its one spot): {yaw, scan[, hold]} from the Area; {} = a plain pause
 var chat: Chat                   # a chatting pair's shared turns (seat 0 ticks them)
 var chat_seat := 0
+var gesture := Gesture.new()    # which talking clip its next line plays
 var chat_partner: Guard
 var target_chat: TargetChatter   # a Target's lines with his escort (chat_partner), once per Mission
 var post: Transform3D            # where it was spawned: a Checkpoint restore puts it back here
@@ -218,6 +219,8 @@ func _check_in(delta: float) -> void:
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and is_instance_valid(who) and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
 			get_tree().call_group("radio_log", "say", who.name, tr(line))
+		if line != "" and is_instance_valid(who):
+			who.speak_gesture(Chat.TURN)
 	if target_chat:
 		_target_chat(delta)
 	if operative:
@@ -232,6 +235,13 @@ func _target_chat(delta: float) -> void:
 	if not line.is_empty():
 		var who: Guard = self if line.seat == 0 else chat_partner
 		get_tree().call_group("radio_log", "say", who.name, tr(line.key))
+		who.speak_gesture(TargetChatter.TURN)
+
+
+## Talks with its hands for one line of `seconds`; react() leaves it standing in idle after.
+func speak_gesture(seconds: float) -> void:
+	if not is_down() and not held_up:
+		model.react(gesture.next(), seconds)
 
 
 ## Every CHATTER_EVERY s on patrol, a warning or confirmation about a Habit, as a subtitle, only when
@@ -662,6 +672,9 @@ func _radio_call() -> void:
 	if not chain.start_call(self, alert.last_known, AlertChain.CALL_TIME, alert.heard):
 		return
 	model.react("startle", GuardAlert.FLINCH, 2.2)
+	get_tree().create_timer(GuardAlert.FLINCH).timeout.connect(func() -> void:  # then a hand to the ear for the rest of the call
+		if is_instance_valid(self) and not is_down() and AlertChain.area.calling(self):
+			model.react("hand_to_ear", AlertChain.CALL_TIME - GuardAlert.FLINCH))
 	_was_calling = true
 	voice.call_in(func() -> bool: return AlertChain.area.calling(self))
 	for g: Guard in get_tree().get_nodes_in_group("guards"):

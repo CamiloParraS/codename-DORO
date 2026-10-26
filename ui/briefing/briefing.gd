@@ -15,6 +15,8 @@ var record: Dictionary
 var plan: Dictionary
 var _lines: Array = []               # [kind, key or text]: "title", "head", "voice", "band", "objective", "gap"
 var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
+var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
+var _line_t := 0.0
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
@@ -45,8 +47,14 @@ func open_requisition() -> void:
 func _process(delta: float) -> void:
 	if has_node("Requisition"):
 		return  # the briefing types out once Requisition closes
-	for b in _blips:
+	for i in _blips.size():
+		var b := _blips[i]
 		if not b.done():
+			if i != _typing_i:
+				_typing_i = i
+				_line_t = 0.0
+			elif not StoryMotion.still(self):
+				_line_t += delta
 			var p := b.advance(delta)
 			if not p.is_empty():
 				Mixer.blip(p.back())  # one blip per frame: they never stack
@@ -117,8 +125,8 @@ func _draw() -> void:
 				y += 24
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
-				var tag := "%s %s" % [GLYPHS[who], tr("ui.voice." + who)]
-				draw_string(HudPalette.HEADING, Vector2(MARGIN, y - 2), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.AIGIS)
+				var w := StoryMotion.draw_glyph(self, HudPalette.HEADING, Vector2(MARGIN, y - 2), GLYPHS[who], _line_t if i == _typing_i and not _blips[i].done() else 99.0, HudPalette.AIGIS, HudPalette.HEADING_SIZE)
+				draw_string(HudPalette.HEADING, Vector2(MARGIN + w + 8, y - 2), tr("ui.voice." + who), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.AIGIS)
 				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w)
 				var left := s.length()
 				for l in full:
