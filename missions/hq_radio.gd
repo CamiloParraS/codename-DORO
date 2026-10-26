@@ -27,9 +27,9 @@ func _process(delta: float) -> void:
 	var e := poll.tick(delta, info, mode == "targeted", randf())
 	match e.get("event", ""):
 		"poll":
-			say("%s, report." % e.who)
+			say(tr("radio.hq_report").format({who = e.who}))
 			if poll.who == "":
-				_by_name(info, e.who).node.radio_say(Checkin.LINES.pick_random())
+				_by_name(info, e.who).node.radio_say(tr(Checkin.LINES.pick_random()))
 		"silence":
 			send_nearest(e.pos, e.who, "no answer from %s" % e.who)
 

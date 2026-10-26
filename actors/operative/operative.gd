@@ -434,7 +434,7 @@ func _mount(l: Node3D) -> void:
 func _climb(dir: float, delta: float) -> void:
 	moving = dir != 0.0
 	velocity = Vector3.ZERO
-	prompt = "C drop off"
+	prompt = Prompts.verb("crouch", "ui.prompt.drop_off")
 	var bottom: Vector3 = ladder.get_node("Bottom").global_position
 	var top: Vector3 = ladder.get_node("Top").global_position
 	var y := global_position.y + dir * CLIMB_SPEED * delta
@@ -486,31 +486,37 @@ func _grip_holds() -> bool:
 	return _choking.is_down() if _victim_down else _choking.can_be_choked(global_position)
 
 
+## The HUD's action prompt, "[E] CARRY  [X] KILL": keys from the InputMap, verbs translated.
 func _update_prompt() -> void:
+	var kill := Prompts.verb("kill_takedown", "ui.prompt.kill")
 	if carrying:
-		prompt = "E drop"
+		prompt = Prompts.verb("interact", "ui.prompt.drop")
 	elif _choking:
-		prompt = "killing..." if _killing else "choking..."
+		prompt = tr("ui.prompt.killing" if _killing else "ui.prompt.choking")
 	elif _fultoning:
-		prompt = "Fulton..."
+		prompt = tr("ui.prompt.fultoning")
 	elif held_up and not held_up.answered:
-		prompt = ("questioning..." if _ask > 0.0 else "hold E question") + _fulton_hint()
+		prompt = _join(tr("ui.prompt.questioning") if _ask > 0.0 else Prompts.hold("interact", "ui.prompt.question"), _fulton_hint())
 	elif not held_up and _holdup_target():
-		prompt = "E hold up"
+		prompt = Prompts.verb("interact", "ui.prompt.hold_up")
 	elif _nearest(true):
-		prompt = ("E carry · X kill" if _nearest(true, true) else "E carry") + _fulton_hint()
+		prompt = _join(Prompts.verb("interact", "ui.prompt.carry"), kill if _nearest(true, true) else "", _fulton_hint())
 	elif _nearest(false):
-		prompt = "E choke · X kill" + _fulton_hint()
+		prompt = _join(Prompts.verb("interact", "ui.prompt.choke"), kill, _fulton_hint())
 	elif _crate_near() and not items.crate_used:
-		prompt = "E resupply"
+		prompt = Prompts.verb("interact", "ui.prompt.resupply")
 	elif _ladder_near():
-		prompt = "E climb"
+		prompt = Prompts.verb("interact", "ui.prompt.climb")
 	else:
 		prompt = ""
 	for c in get_tree().get_nodes_in_group("intel"):  # a hold-E console: its line beside the carry and Fulton ones
 		var line: String = c.prompt_for(self) if c.has_method("prompt_for") else ""
-		if line != "":
-			prompt = line if prompt == "" else prompt + " · " + line
+		prompt = _join(prompt, line)
+
+
+## Prompt parts two spaces apart, skipping empty ones.
+static func _join(a: String, b: String, c := "") -> String:
+	return "  ".join(PackedStringArray([a, b, c].filter(func(s: String) -> bool: return s != "")))
 
 
 ## What the Fulton key would do beside a Neutralized or kneeling guard.
@@ -518,7 +524,7 @@ func _fulton_hint() -> String:
 	var g := _fulton_target()
 	if not g or fultons <= 0:
 		return ""
-	return " · hold G Fulton" if fulton_ready() else " · no Fulton indoors"
+	return Prompts.hold("fulton", "ui.prompt.fulton") if fulton_ready() else tr("ui.prompt.no_fulton")
 
 
 ## Could a balloon go up now: a guard it can take in reach, a balloon left, open sky over him.

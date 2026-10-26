@@ -76,7 +76,7 @@ func test_speaker_names_follow_the_language() -> void:
 	var c := CodecCall.new([["analyst", "codec.m1.03"]])
 	assert_eq(c.speaker_name(), "METIS ANALYST")
 	TranslationServer.set_locale("es")
-	assert_eq(c.speaker_name(), "METIS ANALISTA")
+	assert_eq(c.speaker_name(), "ANALISTA DE METIS")
 
 
 func test_a_dossier_line_shows_its_targets_face() -> void:
