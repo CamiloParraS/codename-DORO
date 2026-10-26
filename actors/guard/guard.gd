@@ -65,6 +65,7 @@ var head_check_level := 0        # Stealth Countermeasure: how often it glances 
 var rng := RandomNumberGenerator.new()  # seed it for a repeatable run
 var radio_check_level := 0       # Spoofing Countermeasure: how often it stops to call HQ back (Telegraph)
 var instant_down := false        # Downs L2: seeing a Down guard raises the alert, no check
+var carry_only := false          # a Target a Fulton would kill (Campaign `carry_only`): carried out on foot
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 var encounter := 0               # the Encounter its post belongs to (0 = none)
@@ -533,6 +534,11 @@ func answer(op: Node3D) -> void:
 
 ## Can a Fulton take it: Neutralized (darted, choked) or kneeling at gunpoint; never the dead.
 func can_be_fultoned() -> bool:
+	return fulton_state_ok() and not carry_only
+
+
+## Down (not dead) or kneeling: a balloon could take him, whatever the Mission says about it.
+func fulton_state_ok() -> bool:
 	return (is_down() and not dead) or held_up
 
 
