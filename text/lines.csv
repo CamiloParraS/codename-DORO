@@ -470,3 +470,8 @@ radio.hm,Hm?,¿Mm?
 telegraph.radio_check,A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.,Un guardia acaba de llamar a la base para confirmar. Aigis está verificando las transmisiones.
 telegraph.head_check,Guards are glancing back before they turn. Aigis is watching your exits.,Los guardias miran atrás antes de girar. Aigis vigila tus salidas.
 telegraph.flank,"Reinforcements through the road entry, and they are coming round your side.","Refuerzos por la entrada de la carretera, y te rodean por el flanco."
+intro.m1.name,MISSION 1,MISIÓN 1
+intro.m1.area,HARBOUR,PUERTO
+intro.m1.stamp,Palladion island · 02:14 · fog off the water,Isla de Palladion · 02:14 · niebla sobre el agua
+outro.m1.title,MISSION COMPLETE,MISIÓN CUMPLIDA
+outro.m1.line,"Extraction confirmed. Nobody will know you were here.","Extracción confirmada. Nadie sabrá que estuviste aquí."

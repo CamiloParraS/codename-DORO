@@ -58,6 +58,9 @@ func _ready() -> void:
 	_show_intel.call_deferred()  # once the Extraction point has added its beacon
 	SessionLog.current.start_mission(record.mission)
 	_fresh_chain()
+	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
+	if not intro.is_empty():  # a title card holds play (and the clock) for its 2.3 s
+		_card([intro.name, intro.area, intro.stamp], true, func() -> void: get_tree().paused = false)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
 
@@ -153,6 +156,17 @@ func game_over() -> void:
 		get_tree().paused = false
 		get_tree().change_scene_to_file(MENU))
 	_overlay(_game_over)
+	get_tree().paused = true
+
+
+## A Mission card over the Area with the tree held; `then` runs when it ends (or the player skips it).
+func _card(keys: Array, intro: bool, then: Callable) -> void:
+	var card := MissionCard.new()
+	card.intro = intro
+	for k: String in keys:
+		card.lines.append(tr(k))
+	card.done.connect(then)
+	_overlay(card)
 	get_tree().paused = true
 
 
@@ -394,8 +408,15 @@ func _on_extraction() -> void:
 	screen.rank_only = not campaign  # replays and Free mode: the Rank page only
 	screen.strip = MissionTally.strip(record, after)
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
-	_overlay(screen)
-	get_tree().paused = true
+	var show := func() -> void:
+		_overlay(screen)
+		get_tree().paused = true
+	var outro: Dictionary = Campaign.MISSIONS[record.mission].get("outro", {})
+	if outro.is_empty():
+		show.call()
+	else:  # fade out on the extraction beat, then the post-Mission screen
+		_card([outro.title, outro.line], false, show)
+		get_tree().paused = true
 	screen.committed.connect(func() -> void:
 		if campaign or replay:
 			first_s = Campaign.commit_record(record.mission, record, rank.stats(par))
