@@ -19,6 +19,7 @@ const SHADE := Color(0, 0, 0, 0.55)  # card backing
 const SCRIM := Color(0, 0, 0, 0.9)  # a full-screen panel over play
 const INK := Color.BLACK  # outlines and full-screen backgrounds
 const STILL := Color(0.55, 0.55, 0.6)  # a finale still dimmed under running text
+const BACKDROP: Texture2D = preload("res://ui/main_menu/backdrop.png")
 
 const HEADING: FontFile = preload("res://assets/fonts/press_start_2p_regular.ttf")
 const BODY: FontFile = preload("res://assets/fonts/vt323_regular.ttf")
@@ -124,6 +125,36 @@ static func menu_button(caption: String, on_press := Callable()) -> Button:
 	if on_press.is_valid():
 		b.pressed.connect(on_press)
 	return b
+
+
+## The Harbour at dusk (shot by tools/shots.gd, set "menu") behind a full-screen page, dimmed to `dim`,
+## drifting slowly, with a shade down the left so text reads over it. `behind`: drawn under the page's own _draw.
+static func backdrop(page: Control, dim := Color(0.6, 0.6, 0.65), behind := false) -> void:
+	var art := TextureRect.new()
+	art.texture = BACKDROP
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	art.modulate = dim
+	art.pivot_offset = page.get_viewport_rect().size * Vector2(0.7, 0.4)
+	var grad := Gradient.new()
+	grad.set_color(0, Color(INK, 0.9))
+	grad.set_color(1, Color(INK, 0.0))
+	var shade_tex := GradientTexture2D.new()
+	shade_tex.gradient = grad
+	shade_tex.fill_to = Vector2(1, 0)
+	var shade := TextureRect.new()
+	shade.texture = shade_tex
+	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	for r: TextureRect in [art, shade]:
+		r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		r.show_behind_parent = behind
+		page.add_child(r)
+	shade.anchor_right = 0.65
+	var drift := art.create_tween().set_loops().set_trans(Tween.TRANS_SINE)
+	drift.tween_property(art, "scale", Vector2.ONE * 1.08, 30.0)
+	drift.tween_property(art, "scale", Vector2.ONE, 30.0)
 
 
 ## A label in the Theme: `fs` 8 for rows, 16 for a screen's title.

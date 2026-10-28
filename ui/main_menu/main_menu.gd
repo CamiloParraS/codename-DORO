@@ -23,6 +23,7 @@ func _ready() -> void:
 	bg.color = HudPalette.INK
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	HudPalette.backdrop(self)
 	_box.position = Vector2(24, 24)
 	_box.add_theme_constant_override("separation", 4)
 	add_child(_box)

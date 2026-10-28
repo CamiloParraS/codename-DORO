@@ -31,6 +31,7 @@ func _ready() -> void:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] == "voice" else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
+	HudPalette.backdrop(self, Color(0.4, 0.4, 0.45), true)
 	HudPalette.fade(self)
 	if Campaign.gear.due:
 		Campaign.gear.due = false
@@ -115,7 +116,7 @@ func _build_lines() -> Array:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.INK)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(HudPalette.INK, 0.55))  # over the backdrop
 	var y := 40.0
 	var body_w := size.x - MARGIN * 2 - TAG
 	for i in _lines.size():
