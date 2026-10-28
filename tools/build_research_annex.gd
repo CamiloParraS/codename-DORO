@@ -90,20 +90,20 @@ const RAMPS := [
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat.
 ## 9 posts, 10 guards as spawned (A4 is the chatting pair), plus the researcher's escort.
 const GUARD_POSTS := [
-	["PostA1", [16, 67.5, 0], 0, {}, [[44, 67.5, {hold = 4.0, f = 0}]]],                 # south yard walk
-	["PostA2", [10, 50, 0], 90, {scan = 60.0}, []],                                      # lobby
-	["PostA3", [8, 43.5, 0], 90, {}, [[11, 43.5, {hold = 5.0, f = 180}], [52, 43.5, {hold = 4.0, f = 270}]]],  # corridor, end to end; looks into the lobby through its doorway (Spoof spot: the lobby guard is witnessed)
-	["PostA4", [20, 58.5, 0], 0, {chat = true}, []],                                     # the pair by the container: eavesdrop spot
-	["PostA5", [14, 14, 0], 90, {}, [[56, 14, {hold = 4.0, f = 180}], [56, 24, {}]]],    # north strip loop
-	["PostA6", [40, 8, 0], 180, {scan = 60.0}, []],                                      # north gate
-	["PostA7", [12, 36, 0], 180, {scan = 60.0}, []],                                     # N1, facing its doorway
-	["PostA8", [37, 47, 0], 0, {scan = 60.0}, []],                                       # Archive desk, back to the files
-	["PostA9", [58, 66, 0], 340, {scan = 60.0}, []],                                     # dock south, by the crate
+	["PostA1", [16, 67.5, 0], 0, {role = "patroller"}, [[44, 67.5, {hold = 4.0, f = 0}]]],                 # south yard walk
+	["PostA2", [10, 50, 0], 90, {scan = 60.0, role = "gatekeeper"}, []],                                      # lobby
+	["PostA3", [8, 43.5, 0], 90, {role = "patroller"}, [[11, 43.5, {hold = 5.0, f = 180}], [52, 43.5, {hold = 4.0, f = 270}]]],  # corridor, end to end; looks into the lobby through its doorway (Spoof spot: the lobby guard is witnessed)
+	["PostA4", [20, 58.5, 0], 0, {chat = true, role = "investigator"}, []],                                     # the pair by the container: eavesdrop spot
+	["PostA5", [14, 14, 0], 90, {role = "patroller"}, [[56, 14, {hold = 4.0, f = 180}], [56, 24, {}]]],    # north strip loop
+	["PostA6", [40, 8, 0], 180, {scan = 60.0, role = "gatekeeper"}, []],                                      # north gate
+	["PostA7", [12, 36, 0], 180, {scan = 60.0, role = "observer"}, []],                                     # N1, facing its doorway
+	["PostA8", [37, 47, 0], 0, {scan = 60.0, role = "observer"}, []],                                       # Archive desk, back to the files
+	["PostA9", [58, 66, 0], 340, {scan = 60.0, role = "observer"}, []],                                     # dock south, by the crate
 ]
 const EXTRA_POSTS := [
-	["PostExtra1", [38, 68, 0], 270, {}, [[32, 68.5, {hold = 3.0, f = 0}], [44, 70, {}]]],  # Stealth L2: the crawl's south mouth
-	["PostExtra2", [56, 40, 0], 270, {hold = 5.0}, []],   # Combat L2: the dock
-	["PostExtra3", [12.5, 57, 0], 0, {hold = 5.0}, []],   # Combat L2: the front of the lab
+	["PostExtra1", [38, 68, 0], 270, {role = "patroller"}, [[32, 68.5, {hold = 3.0, f = 0}], [44, 70, {}]]],  # Stealth L2: the crawl's south mouth
+	["PostExtra2", [56, 40, 0], 270, {hold = 5.0, role = "interceptor"}, []],   # Combat L2: the dock
+	["PostExtra3", [12.5, 57, 0], 0, {hold = 5.0, role = "interceptor"}, []],   # Combat L2: the front of the lab
 ]
 const TARGET_POSTS := [  # the lead researcher: the lab, then the office, by the corridor
 	["TargetPost1", [36, 36, 0], 90, {hold = 6.0}, [[24, 36, {hold = 6.0, f = 270}]]],

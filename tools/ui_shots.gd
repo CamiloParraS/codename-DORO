@@ -1,14 +1,15 @@
 ## The UI pass's screenshots: every screen at 854x480 and fullscreen, plus the HUD in the three moods
 ## (Harbour, Core, Annex) under Evasion and Alert. Needs a window (not --headless), and runs as a scene so
 ## the autoloads exist:
-##   godot --path . tools/ui_shots.tscn -- <out dir> [es]
-## "es" shoots the Spanish pass at 854x480 only. The driver lives on the root, so it outlives scene changes.
+##   godot --path . tools/ui_shots.tscn -- <out dir> [es|radio]
+## "es" shoots the Spanish pass at 854x480 only; "radio" shoots the radio mode in all four Areas, 854x480. The driver lives on the root, so it outlives scene changes.
 extends Node
 
 const MENU := "res://ui/main_menu/main_menu.tscn"
 
 var out := ""
 var lang := "en"
+var radio_only := false
 var sizes: Array = ["854x480", "full"]
 
 
@@ -17,8 +18,11 @@ func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	out = args[0] if args.size() else ProjectSettings.globalize_path("user://ui_shots")
 	if args.size() > 1:
-		lang = args[1]
 		sizes = ["854x480"]
+		if args[1] == "radio":
+			radio_only = true
+		else:
+			lang = args[1]
 	DirAccess.make_dir_recursive_absolute(out)
 	var stand_in := Node.new()  # the "current scene" scene changes free, so this driver survives them
 	get_tree().root.add_child.call_deferred(stand_in)
@@ -63,6 +67,10 @@ func _record(mission: int) -> Dictionary:
 
 func _run() -> void:
 	DisplayServer.window_set_size(Vector2i(854, 480))
+	if radio_only:
+		await _radio_shots()
+		get_tree().quit()
+		return
 	var all := lang == "en"
 	# --- menus
 	if all:
@@ -162,6 +170,31 @@ func _area(mission: int, as_mission: int) -> void:
 	run.record.mission = as_mission
 	run.plan = Aigis.plan_mission(run.record.points, Aigis.lethality_ratio(run.record), as_mission)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+## The radio mode at the confirm step in each Area: a guard and the farthest Radio point lit, the speaker too.
+func _radio_shots() -> void:
+	for m: Array in [["harbour", 0], ["relay", 1], ["annex", 2], ["core", 3]]:
+		await _area(m[1], maxi(m[1], 2))
+		var op: Node = get_tree().get_first_node_in_group("operative")
+		var radio: Node = get_tree().get_first_node_in_group("radio")
+		var guards: Array = get_tree().get_nodes_in_group("guards")
+		guards.sort_custom(func(a, b) -> bool: return a.global_position.distance_to(op.global_position) < b.global_position.distance_to(op.global_position))
+		op.voiceprints.held.append(String(guards[-1].name))
+		radio._open()
+		var menu: RadioMenu = radio.menu
+		var places: Array = radio._places.keys()
+		places.sort_custom(func(a, b) -> bool: return radio._places[a].distance_to(op.global_position) > radio._places[b].distance_to(op.global_position))
+		menu.choose(0)  # speaker: the farthest guard
+		menu.choose(menu.options().find_custom(func(o) -> bool: return o[0] == String(guards[0].name)))  # nearest guard
+		menu.choose(0)  # Go check
+		menu.choose(menu.options().find_custom(func(o) -> bool: return o[0] == places[0]))
+		await wait(1.0)
+		await shoot("radio_" + m[0])
+		radio._choose(0)  # Send: the beat plays
+		await wait(0.55)
+		await shoot("radio_beat_" + m[0])
+		await wait(1.0)
 
 
 func _phase(which: String) -> void:

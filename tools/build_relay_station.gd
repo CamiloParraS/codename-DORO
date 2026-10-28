@@ -90,20 +90,20 @@ const RAMPS := [
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat.
 ## 9 posts, 10 guards as spawned (B1 is a chatting pair), plus the chief's escort.
 const GUARD_POSTS := [
-	["PostA1", [36, 60, 0], 270, {}, [[24, 60, {hold = 4.0, f = 310}], [36, 73, {}]]],  # motor pool loop
-	["PostA2", [52, 68, 0], 270, {scan = 60.0}, []],                                    # garage, on the crate
-	["PostA3", [73, 63, 0], 260, {scan = 60.0}, []],                                    # foot of the road ramp
-	["PostB1", [67, 44, 3], 0, {chat = true}, []],                                      # the pair by the road: eavesdrop spot
-	["PostB2", [12, 52, 3], 90, {}, [[44, 52, {hold = 5.0, f = 180}]]],                 # barracks terrace walk
-	["PostB3", [32, 37, 3], 270, {scan = 60.0}, []],                                    # barracks north mouth, sweeps the scree line
-	["PostC1", [44, 26, 6], 220, {scan = 60.0}, []],                                    # summit, over the console
-	["PostC2", [66, 15, 6], 300, {scan = 60.0}, []],                                    # office east
-	["PostC3", [16, 20, 6], 90, {}, [[50, 26, {hold = 4.0, f = 90}], [28, 16, {}]]],     # summit loop past the helipad
+	["PostA1", [36, 60, 0], 270, {role = "patroller"}, [[24, 60, {hold = 4.0, f = 310}], [36, 73, {}]]],  # motor pool loop
+	["PostA2", [52, 68, 0], 270, {scan = 60.0, role = "observer"}, []],                                    # garage, on the crate
+	["PostA3", [73, 63, 0], 260, {scan = 60.0, role = "gatekeeper"}, []],                                    # foot of the road ramp
+	["PostB1", [67, 44, 3], 0, {chat = true, role = "investigator"}, []],                                      # the pair by the road: eavesdrop spot
+	["PostB2", [12, 52, 3], 90, {role = "patroller"}, [[44, 52, {hold = 5.0, f = 180}]]],                 # barracks terrace walk
+	["PostB3", [32, 37, 3], 270, {scan = 60.0, role = "gatekeeper"}, []],                                    # barracks north mouth, sweeps the scree line
+	["PostC1", [44, 26, 6], 220, {scan = 60.0, role = "observer"}, []],                                    # summit, over the console
+	["PostC2", [66, 15, 6], 300, {scan = 60.0, role = "observer"}, []],                                    # office east
+	["PostC3", [16, 20, 6], 90, {role = "patroller"}, [[50, 26, {hold = 4.0, f = 90}], [28, 16, {}]]],     # summit loop past the helipad
 ]
 const EXTRA_POSTS := [
-	["PostExtra1", [24, 53, 3], 0, {}, [[27, 51.5, {hold = 3.0, f = 0}], [8, 49, {hold = 3.0, f = 0}]]],  # Stealth L2: barracks mouth, then up the scree
-	["PostExtra2", [70, 29, 6], 180, {hold = 5.0}, []],  # Combat L2: summit ramp top
-	["PostExtra3", [52, 22, 6], 0, {hold = 5.0}, []],    # Combat L2: office south door
+	["PostExtra1", [24, 53, 3], 0, {role = "patroller"}, [[27, 51.5, {hold = 3.0, f = 0}], [8, 49, {hold = 3.0, f = 0}]]],  # Stealth L2: barracks mouth, then up the scree
+	["PostExtra2", [70, 29, 6], 180, {hold = 5.0, role = "interceptor"}, []],  # Combat L2: summit ramp top
+	["PostExtra3", [52, 22, 6], 0, {hold = 5.0, role = "interceptor"}, []],    # Combat L2: office south door
 ]
 const TARGET_POSTS := [  # the relay chief: the mess door, then looking up at the summit
 	["TargetPost1", [50, 41, 3], 90, {hold = 6.0}, [[34, 40, {hold = 6.0, f = 0}]]],

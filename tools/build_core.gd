@@ -35,8 +35,8 @@ const CORE_SEAL := [["OpsNorthPlug", [19, 19.85, 2, 0.3], 0, 4, "panels", Color.
 const CORE_INTEL := {IntelOps = [19.5, 32], IntelLift = [8, 32]}
 ## The room's two guards (the director's escort is the third).
 const CORE_POSTS := [
-	["PostCore1", [-20, 25, 0], 180, {scan = 90.0}, []],
-	["PostCore2", [-20, 39, 0], 0, {scan = 90.0}, []],
+	["PostCore1", [-20, 25, 0], 180, {scan = 90.0, role = "observer"}, []],
+	["PostCore2", [-20, 39, 0], 0, {scan = 90.0, role = "observer"}, []],
 ]
 const CORE_TARGET_POSTS := [  # the security director paces beside the terminal
 	["TargetPost1", [-26, 36, 0], 90, {hold = 5.0}, [[-26, 28, {hold = 5.0, f = 270}]]],
