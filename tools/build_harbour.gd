@@ -10,6 +10,8 @@ const OUT := "res://areas/harbour/harbour.tscn"
 const DECK := 2.0         # the freighter's deck height above the quay
 const CONTAINER_H := 2.6
 const KERB_H := 0.5       # no jump, so a kerb holds the Operative off the sea
+const SEA_H := -1.6       # the water's surface, 1.6 m under the quay; pilings show under the piers
+const PIER_FLOOR := -0.35 # a pier deck's underside
 
 ## The three Encounters, one per objective step, joined safe → exposed → safe: [id, name, problem, rect,
 ## exit spot [x, y, h], next]. Guard posts carry their Encounter as `enc` meta. The north yard (gatehouse,
@@ -138,7 +140,7 @@ const LADDERS := [
 const GANGWAY := {top = [65, 46], bottom = [61, 46], width = 2.4}
 
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat, and
-## role (gatekeeper, observer, patroller, interceptor, investigator), enc (Encounter), holdup (what a
+## role (gatekeeper, observer, patroller, interceptor, investigator, foreman), enc (Encounter), holdup (what a
 ## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 11 spawned: 5 / 3 / 3.
 const GUARD_POSTS := [
 	# E1 Perimeter: learn the rhythm. O2 keeps aft of y 42, out of sight of a Hold-up behind O1.
@@ -148,7 +150,7 @@ const GUARD_POSTS := [
 	["PostO5", [66.5, 45, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                      # gangway head, sweeps up the deck
 	# E2 Loading yard: overlapping threats
 	["PostY1", [58, 24, 0], 180, {role = "patroller", enc = 2}, [[58, 48, {hold = 4.0, f = 90}], [57, 59, {}]]],  # quay; holds facing the gangway foot
-	["PostForeman", [48.5, 24, 0], 180, {role = "patroller", enc = 2, holdup = "lift_code"},                 # the lane loop: step 2
+	["PostForeman", [48.5, 24, 0], 180, {role = "foreman", enc = 2, holdup = "lift_code"},                 # the lane loop: step 2
 		[[48.5, 39, {hold = 3.0, f = 270}], [42.5, 39, {}], [42.5, 54, {hold = 3.0, f = 90}], [48.5, 54, {}]]],
 	["PostObserver", [38.5, 38, 6], 150, {scan = 90.0, role = "observer", enc = 2}, []],                     # Warehouse B roof's south-east edge (from the middle the roof hides the ground)
 	# E3 Operations: three guarded doors
@@ -254,6 +256,11 @@ const DRESS := [
 	["sandbags", [8.2, 70.8, 0], 0], ["drum", [14.2, 70.9, 0], 0], ["drum", [13.5, 70.8, 0], 25],
 	# deck: mast lights over the bow (the start) and the starboard walk
 	["lamp_post", [68.2, 8, DECK], 90], ["lamp_post", [76.2, 41, DECK], 270],
+	# deck: cowl vents at the bow shoulder and on the bridge roof
+	["vent_cowl", [75.6, 9.4, DECK], 270], ["vent_cowl", [68.3, 49.4, DECK + 6], 0], ["vent_cowl", [73.7, 49.4, DECK + 6], 0],
+	# the north-east quay: stock by the fence, cones round the crane's foot
+	["pallet_stack", [59, 4, 0], 10], ["crate_wide", [56.3, 3.3, 0], 0], ["cardboard_box", [56.5, 3.4, 0.67], 20],
+	["cone", [53.3, 17.4, 0], 0], ["cone", [58.7, 17.4, 0], 0], ["cone", [53.3, 22.6, 0], 0], ["cone", [58.7, 22.6, 0], 0],
 ]
 ## Seen over the cliff and across the water: no gameplay, far enough to sit in the fog.
 const BACKDROP_DRESS := [
@@ -266,6 +273,54 @@ const BACKDROP_DRESS := [
 	["block_tall", [130, -10, 1], 270, 1.2], ["block_hall", [-10, 134, 1], 180]
 ]
 
+## Ground under the Backdrop, no collision: [name, rect, h0, h1, material(, tint)]. The north shore carries
+## the road on past the gate (a gap for it, x 26-34); the clifftop is solid down to the sea, so it reads as
+## a cliff all the way north.
+const BACKDROP_LAND := [
+	["Clifftop", [-60, -100, 58, 280], -3, 14, "rock"], ["FarShoreE", [120, -60, 80, 260], -2, 1, "quay"],
+	["FarShoreS", [-60, 120, 180, 80], -2, 1, "quay"],
+	["NorthShoreW", [-2, -90, 28, 91.8], -3, 0, "quay"], ["NorthShoreE", [34, -90, 28, 91.8], -3, 0, "quay"],
+	["RoadNorth", [26, -90, 8, 84], -3, 0, "quay"],
+	["Breakwater", [62, -44, 48, 5], -3, 1.2, "stone", Color(0.62, 0.62, 0.66)],
+	["BreakwaterHead", [106, -46, 9, 9], -3, 1.2, "stone", Color(0.62, 0.62, 0.66)],
+]
+## What lies past the fence, the cliff and the quay: [model, [x, y, h], facing, scale]. No colliders.
+const SURROUNDINGS := [
+	# the north shore: a goods shed and a long warehouse either side of the road, stacked boxes, a water tower
+	["block_hall", [11, -24, 0], 180], ["block_long", [50, -34, 0], 90], ["tank_wide", [45, -7, 0], 0, 0.8],
+	["water_tower", [19, -7, 0], 0, 6.0], ["container_a", [4, -6, 0], 0, 7.4, "cargo", Color(0.75, 0.55, 0.45)],
+	["container_b", [7.2, -6, 0], 0, 7.4, "cargo", Color(0.55, 0.65, 0.75)], ["container_a", [5.6, -6, 2.6], 10, 7.4, "cargo", Color.WHITE],
+	["container_b", [58.5, -8, 0], 0, 7.4, "cargo", Color(0.6, 0.6, 0.6)], ["container_a", [58.5, -15, 0], 0, 7.4, "cargo", Color(0.75, 0.55, 0.45)],
+	["container_b", [58.5, -11.5, 2.6], 90, 7.4, "cargo", Color(0.55, 0.65, 0.75)], ["van", [37.5, -16, 0], 0], ["pallet_stack", [23, -10, 0], 30],
+	["drum", [22.5, -13, 0], 0], ["drum", [23.3, -13.5, 0], 0],
+	["jersey_barrier", [25.2, -20, 0], 90], ["jersey_barrier", [25.2, -23, 0], 90], ["jersey_barrier", [34.8, -40, 0], 90],
+	["lamp_post", [25.4, -14, 0], 90], ["lamp_post", [34.6, -32, 0], 270], ["lamp_post", [25.4, -52, 0], 90],
+	["bollard", [61.4, -6, 0], 0], ["bollard", [61.4, -20, 0], 0], ["bollard", [61.4, -34, 0], 0],
+	# the breakwater's light and the channel buoys past the freighter's bow and stern
+	["lighthouse", [110.5, -41.5, 1.2], 0], ["buoy_red", [92, -2, SEA_H - 0.6], 0], ["buoy_green", [92, 28, SEA_H - 0.6], 0],
+	["buoy_red", [98, 58, SEA_H - 0.6], 0], ["buoy_green", [84, 84, SEA_H - 0.6], 0], ["buoy_red", [36, 92, SEA_H - 0.6], 0],
+	# tyre fenders hung down the quay's sea face, clear of the gangway
+	["tyre_fender", [62.2, 6, -1.9], 90], ["tyre_fender", [62.2, 14, -1.9], 90], ["tyre_fender", [62.2, 22, -1.9], 90],
+	["tyre_fender", [62.2, 30, -1.9], 90], ["tyre_fender", [62.2, 38, -1.9], 90], ["tyre_fender", [62.2, 52, -1.9], 90],
+	["tyre_fender", [62.2, -8, -1.9], 90], ["tyre_fender", [62.2, -24, -1.9], 90], ["tyre_fender", [30, 70.2, -1.9], 180],
+	["tyre_fender", [40, 70.2, -1.9], 180], ["tyre_fender", [20, 70.2, -1.9], 180],
+	# a hill behind the clifftop town
+	["mountain_b", [-75, 40, 12.5], 30, 0.75], ["mountain_a", [-70, -60, 12.5], 0, 0.6],
+]
+## Pilings under the piers, tops at the deck's underside: [x, y] each.
+const PILINGS := [
+	[48.3, 71], [48.3, 73], [48.3, 75], [48.3, 77], [48.3, 78.8], [52, 73], [52, 77], [52, 78.8],
+	[55.7, 71], [55.7, 73], [55.7, 75], [55.7, 77], [55.7, 78.8],
+	[7.3, 71], [7.3, 73.5], [7.3, 76.7], [11, 74], [11, 76.7], [14.7, 71], [14.7, 73.5], [14.7, 76.7],
+	[63.5, 66.7], [65.5, 66.7], [67.5, 66.7], [69.7, 66.7], [69.7, 64.5], [69.7, 62.3], [69.7, 60.3],
+]
+## Woods on the clifftop, kept off the town's blocks: [model, count, scale from, to, seed].
+const CLIFF_WOODS := [["poplar", 45, 1.6, 2.4, 11], ["pine", 40, 2.2, 3.2, 12], ["dead_tree", 14, 1.1, 1.6, 13]]
+const CLIFF_CLEAR := [[-30, 24, 32, 16], [-19, 54, 14, 20], [-28, -19, 23, 14], [-21, 5, 10, 10], [-25, 47, 10, 10], [-13, 15, 6, 6]]
+## Telegraph poles along the cliff edge and up the north road: [x, y, h] each, wired in order.
+const CLIFF_POLES := [[-6, -90, 14], [-6, -60, 14], [-6, -30, 14], [-6, 0, 14], [-6, 30, 14], [-6, 60, 14], [-6, 90, 14]]
+const ROAD_POLES := [[35.2, -88, 0], [35.2, -64, 0], [35.2, -40, 0], [35.2, -16, 0], [35.2, 1, 0]]
+
 ## Worn yellow paint on the quay, no collision: [rect, dash length (0 = solid)]. Dashes run along the long side.
 const MARKINGS := [
 	[[26.5, -0.6, 7, 0.3], 0],      # stop line at the gate
@@ -273,6 +328,9 @@ const MARKINGS := [
 	[[60.8, 3, 0.2, 56], 0],        # quay edge line
 	[[57.5, 4, 0.15, 54], 2.0],     # quay lane
 	[[48.4, 23.5, 0.15, 33], 1.5],  # the mid lane
+	[[29.9, -90, 0.2, 84], 2.0],    # the road north, past the gate
+	[[26.4, -90, 0.15, 84], 0],     # its edge lines
+	[[33.45, -90, 0.15, 84], 0],
 ]
 ## Small lights with a lamp you can see from afar: [[x, y, h], colour, range, pole base h or -1 for none].
 const BEACONS := [
@@ -292,7 +350,7 @@ func _build() -> void:
 	var nav := _nav_region()
 	var land := _group(nav, "Land")
 	for l in LAND:
-		_box(land, "Land%d" % land.get_child_count(), l[0], -1, 0, l[1], Color.WHITE)
+		_box(land, "Land%d" % land.get_child_count(), l[0], _land_floor(l[1]), 0, l[1], Color.WHITE)
 	var solid := _group(nav, "Solid")
 	for s in SOLID:
 		_box(solid, s[0], s[1], s[2], s[3], s[4], s[5])
@@ -314,9 +372,10 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l)
 	_backdrop()
-	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
-	_markings()
-	_beacons()
+	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS, false)
+	_surroundings()
+	_markings(MARKINGS)
+	_beacons(BEACONS)
 	_mood("harbour")
 
 	var spots := _group(_root, "Spots")
@@ -416,15 +475,14 @@ func _backdrop() -> void:
 	m.metallic_specular = 0.7
 	plane.material = m
 	sea.mesh = plane
-	sea.position = Vector3(0, -1.0, 0)
+	sea.position = Vector3(0, SEA_H, 0)
 	_add(bd, sea)
-	# ground under the backdrop blocks: the clifftop west and the far shore east and south (no collision)
-	for g in [["Clifftop", [-60, -60, 58, 240], 13, 14, "rock"], ["FarShoreE", [120, -60, 80, 260], -2, 1, "quay"],
-			["FarShoreS", [-60, 120, 180, 80], -2, 1, "quay"]]:
+	# ground under the backdrop: the clifftop, the north shore, the breakwater, the far shores (no collision)
+	for g in BACKDROP_LAND:
 		var land := MeshInstance3D.new()
 		land.name = g[0]
 		var r: Array = g[1]
-		land.mesh = _box_mesh(Vector3(r[2], g[3] - g[2], r[3]), _mat(g[4], Color(0.7, 0.7, 0.75)))
+		land.mesh = _box_mesh(Vector3(r[2], g[3] - g[2], r[3]), _mat(g[4], g[5] if g.size() > 5 else Color(0.7, 0.7, 0.75)))
 		land.position = Vector3(r[0] + r[2] / 2.0 - 40.0, (g[2] + g[3]) / 2.0, r[1] + r[3] / 2.0 - 40.0)
 		_add(bd, land)
 
@@ -446,54 +504,19 @@ func _crane_lattice(solid: Node3D) -> void:
 		solid.add_child(b)
 
 
-## The MARKINGS strips, a hair above the ground.
-func _markings() -> void:
-	var g := _group(_root, "Markings")
-	var mat := _mat("concrete", Color(1.0, 0.78, 0.2))
-	for mk in MARKINGS:
-		var r: Array = mk[0]
-		var along_x: bool = r[2] > r[3]
-		var length: float = r[2] if along_x else r[3]
-		var dash: float = mk[1] if mk[1] > 0 else length
-		var t := 0.0
-		while t < length:
-			var d := minf(dash, length - t)
-			var strip := MeshInstance3D.new()
-			strip.name = "Strip%d" % g.get_child_count()
-			strip.mesh = _box_mesh(Vector3(d, 0.02, r[3]) if along_x else Vector3(r[2], 0.02, d), mat)
-			strip.position = _p([r[0] + t + d / 2, r[1] + r[3] / 2, 0.01] if along_x else [r[0] + r[2] / 2, r[1] + t + d / 2, 0.01])
-			strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			_add(g, strip)
-			t += dash * 2
+## A quay's floor reaches into the sea; a pier deck is a thin slab on its pilings.
+func _land_floor(mat: String) -> float:
+	return PIER_FLOOR if mat == "pier" else -3.0
 
 
-## The BEACONS: a glowing lamp, its light and, if it has one, a pole down to its base.
-func _beacons() -> void:
-	var g := _group(_root, "Beacons")
-	for bc in BEACONS:
-		var at := _p(bc[0])
-		var lamp := MeshInstance3D.new()
-		lamp.name = "Lamp%d" % g.get_child_count()
-		var sphere := SphereMesh.new()
-		sphere.radius = 0.15
-		sphere.height = 0.3
-		var m := StandardMaterial3D.new()
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		m.albedo_color = bc[1]
-		sphere.material = m
-		lamp.mesh = sphere
-		lamp.position = at
-		_add(g, lamp)
-		var l := OmniLight3D.new()
-		l.name = "Light"
-		l.light_color = bc[1]
-		l.omni_range = bc[2]
-		l.light_energy = 2.0
-		_add(lamp, l)
-		if bc[3] >= 0:
-			var pole := MeshInstance3D.new()
-			pole.name = "Pole"
-			var ph: float = bc[0][2] - bc[3] - 0.15
-			pole.mesh = _box_mesh(Vector3(0.1, ph, 0.1), _mat("rust", Color(0.6, 0.6, 0.6)))
-			pole.position = Vector3(0, -0.15 - ph / 2, 0)
-			_add(lamp, pole)
+## SURROUNDINGS, PILINGS, the clifftop woods and the telegraph lines, under $Backdrop.
+func _surroundings() -> void:
+	var g := _group(_root.get_node("Backdrop"), "Surroundings")
+	g.owner = _root
+	_dress(g, SURROUNDINGS, false)
+	_instances(g, "Pilings", "piling", PILINGS.map(func(p: Array) -> Array: return [[p[0], p[1], PIER_FLOOR - 4.0], 0.0, 1.0]))
+	for w in CLIFF_WOODS:
+		_scatter(g, w[0].to_pascal_case() + "Woods", w[0], [[-45, -95, 40, 270]], w[1], 14.0, w[2], w[3], w[4], CLIFF_CLEAR, 3.0)
+	_scatter(g, "BreakwaterRocks", "boulder_a", [[62, -46, 46, 2], [62, -39, 46, 2]], 40, 0.3, 0.8, 1.6, 21, [], 0, SKINS.boulder_a)
+	_power_line(g, "utility_pole", CLIFF_POLES)
+	_power_line(g, "utility_pole", ROAD_POLES)
