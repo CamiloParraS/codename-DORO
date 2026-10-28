@@ -48,6 +48,26 @@ const CORE_DRESS := [
 	["monitoring_screen", [-33.1, 31, 1], 90], ["monitoring_screen", [-33.1, 33, 1], 90],
 	["cabinet_b", [-33.5, 38, 0], 90], ["cabinet_b", [-33.5, 39.3, 0], 90], ["cabinet_a", [-33.5, 25, 0], 90],
 	["pipe_riser", [-14.9, 23, 0], 270], ["pipe_riser", [-14.9, 41, 0], 270],
+	# server racks down the north and south walls, clear of the guards' and the director's beats
+	["cabinet_b", [-28, 22.55, 0], 180], ["cabinet_b", [-26.8, 22.55, 0], 180], ["cabinet_b", [-25.6, 22.55, 0], 180],
+	["cabinet_b", [-22, 22.55, 0], 180], ["cabinet_b", [-20.8, 22.55, 0], 180], ["cabinet_b", [-19.6, 22.55, 0], 180],
+	["cabinet_b", [-28, 41.45, 0], 0], ["cabinet_b", [-26.8, 41.45, 0], 0], ["cabinet_b", [-25.6, 41.45, 0], 0],
+	["cabinet_b", [-22, 41.45, 0], 0], ["cabinet_b", [-20.8, 41.45, 0], 0], ["cabinet_b", [-19.6, 41.45, 0], 0],
+	["generator", [-16.6, 38.5, 0], 90], ["vent_unit", [-24, 22.5, 2.8], 180], ["vent_unit", [-24, 41.5, 2.8], 0],
+	["crate_wide", [-32.6, 40.8, 0], 90], ["cardboard_box", [-32.5, 39.6, 0], 15], ["drum", [-15.7, 25.5, 0], 0],
+	["ceiling_lamp", [-14.8, 32, 3.8], 0],  # over the room's door
+]
+## Red alarm lamps on the roofs, the crane and the north shore's sheds: the lockdown, seen through the red fog.
+const ALARM := Color(1, 0.1, 0.05)
+const CORE_BEACONS := [
+	[[18.5, 21, 5.0], ALARM, 8.0, 4.3], [[12, 32, 7.2], ALARM, 8.0, 6.5], [[42, 10, 5.0], ALARM, 8.0, 4.3],
+	[[15, 56, 6.0], ALARM, 8.0, 5.3], [[28, 30, 6.7], ALARM, 8.0, 6.0], [[56, 20, 8.6], ALARM, 8.0, 8.0],
+	[[11, -24, 12.2], ALARM, 10.0, 11.5], [[50, -34, 13.1], ALARM, 10.0, 12.4],
+]
+## Hazard paint round the terminal and down the corridor's middle (core-only, on top of MARKINGS).
+const CORE_MARKINGS := [
+	[[-32.4, 29.8, 0.15, 4.4], 0], [[-32.4, 29.8, 2.6, 0.15], 0], [[-32.4, 34.05, 2.6, 0.15], 0], [[-29.95, 29.8, 0.15, 4.4], 0],
+	[[-14, 31.95, 16, 0.1], 1.0], [[-30, 23.8, 12, 0.12], 0], [[-30, 40.1, 12, 0.12], 0],
 ]
 const CORE_REACH := {
 	OpsEastDoor = [23.2, 32, 0], LiftHall = [15.5, 30, 0], LiftMouth = [8, 32, 0], Corridor = [-6, 32, 0], RoomDoor = [-15, 32, 0], Room = [-24, 32, 0],
@@ -63,7 +83,7 @@ func _build() -> void:
 	var nav := _nav_region()
 	var land := _group(nav, "Land")
 	for l in LAND:
-		_box(land, "Land%d" % land.get_child_count(), l[0], -1, 0, l[1], Color.WHITE)
+		_box(land, "Land%d" % land.get_child_count(), l[0], _land_floor(l[1]), 0, l[1], Color.WHITE)
 	for l in CORE_LAND:
 		_box(land, "Land%d" % land.get_child_count(), l, -1, 0, "stone", Color.WHITE)
 	var solid := _group(nav, "Solid")
@@ -90,7 +110,10 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l)
 	_backdrop()
-	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
+	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS, false)
+	_surroundings()
+	_markings(MARKINGS + CORE_MARKINGS)
+	_beacons(BEACONS + CORE_BEACONS)
 	_mood("core")
 
 	var spots := SPOTS.duplicate()
