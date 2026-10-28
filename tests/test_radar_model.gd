@@ -70,3 +70,19 @@ func test_radar_clear_of_life_bar_and_its_label() -> void:
 	assert_false(r.intersects(life_bar))
 	assert_false(r.intersects(label))
 	assert_true(Rect2(Vector2.ZERO, canvas).encloses(r))
+
+
+func test_noise_ring_spreads_to_its_range_and_goes() -> void:
+	assert_eq(RadarModel.ping_radius(6.0, 0.0), 0.0)
+	assert_true(RadarModel.ping_radius(6.0, 0.25) < RadarModel.ping_radius(6.0, 0.4))
+	assert_true(RadarModel.ping_radius(10.0, 0.25) > RadarModel.ping_radius(6.0, 0.25), "a louder noise spreads wider")
+	assert_true(RadarModel.ping_radius(60.0, 0.4) <= RadarModel.HALF, "pinned inside the square")
+	assert_eq(RadarModel.ping_radius(6.0, RadarModel.PING_TIME), -1.0)
+
+
+func test_a_guard_shows_only_while_his_noise_is_young_or_the_scanner_runs() -> void:
+	assert_eq(RadarModel.guard_alpha(0.0, false), 1.0)
+	assert_true(RadarModel.guard_alpha(0.75, false) < 1.0)
+	assert_eq(RadarModel.guard_alpha(RadarModel.GUARD_PING_SHOW, false), 0.0)
+	assert_eq(RadarModel.guard_alpha(99.0, false), 0.0, "a silent guard is off the Radar")
+	assert_eq(RadarModel.guard_alpha(99.0, true), 1.0, "the Scanner shows him")

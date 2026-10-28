@@ -84,9 +84,10 @@ func _draw() -> void:
 	var fwd := Vector3(-cam.global_basis.z.x, 0, -cam.global_basis.z.z).normalized()
 	var right := Vector3(cam.global_basis.x.x, 0, cam.global_basis.x.z).normalized()
 	_arcs(fwd, right)
-	if _operative.aiming:  # shots leave from the screen centre
+	if _operative.aiming:  # shots leave from the crosshair, which wanders a little with the sway
 		var tex := _crosshair(_operative.gun().crosshair)
-		draw_texture(tex, (size / 2 - tex.get_size() / 2).round())
+		var wander := Locomotion.drift_px(_operative.aim_drift(), cam.fov, size.y)
+		draw_texture(tex, (size / 2 + wander - tex.get_size() / 2).round())
 	_left()
 	_radar()
 	_right()
@@ -338,7 +339,7 @@ func _vt(pos: Vector2, s: String, col: Color) -> void:
 	draw_set_transform(Vector2.ZERO, 0.0)
 
 
-## Bottom-left square, north-up: faint grid, guards in chrome with a facing tick, the objective (white diamond)
+## Bottom-left square, north-up: faint grid, guards in chrome with a facing tick (only while they make noise, or under the Scanner; a calling guard always), the objective (white diamond)
 ## or Target (white ring), the Operative's triangle. Dark with static and a blinking "JAMMED" in ALERT/EVASION.
 ## No vision cones: the Scanner owns those.
 func _radar() -> void:
@@ -362,11 +363,20 @@ func _radar() -> void:
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		if g.is_down():
 			continue
-		var p := c + RadarModel.blip(RadarModel.flat(g.global_position) - origin, 2)
+		var off := RadarModel.flat(g.global_position) - origin
+		var scanned: bool = _operative.items.scanning() and off.length() <= Items.SCANNER_RANGE
+		var calling := AlertChain.area.calling(g)  # a calling guard is always on: it is the one to stop
+		var a := 1.0 if calling else RadarModel.guard_alpha(g.ping_age, scanned)
+		if a <= 0.0:
+			continue
+		var p := c + RadarModel.blip(off, 2)
 		var face := RadarModel.facing(g.global_basis)
-		var mid_call := RadarModel.call_flash(AlertChain.area.calling(g), Time.get_ticks_msec())  # flashes red mid-call
-		draw_circle(p, 2, HudPalette.DANGER if mid_call else HudPalette.CHROME)
-		draw_line(p, p + face * 6, HudPalette.CHROME_DIM, 1.0)
+		var mid_call := RadarModel.call_flash(calling, Time.get_ticks_msec())  # flashes red mid-call
+		draw_circle(p, 2, Color(HudPalette.DANGER if mid_call else HudPalette.CHROME, a))
+		draw_line(p, p + face * 6, Color(HudPalette.CHROME_DIM, a), 1.0)
+	var ring := RadarModel.ping_radius(_operative.ping_range, _operative.ping_age)
+	if ring > 0.0:
+		draw_arc(c, ring, 0, TAU, 24, Color(HudPalette.CHROME, 1.0 - _operative.ping_age / RadarModel.PING_TIME), 1.0)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	for b: Dictionary in (run.radar_blips() if run else []):
 		var p := c + RadarModel.blip(RadarModel.flat(b.pos) - origin, 4)

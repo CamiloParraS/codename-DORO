@@ -210,6 +210,7 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 	g.operative = $Operative
 	g.holdup_answer = post.get_meta("holdup", "")
 	g.encounter = post.get_meta("enc", 0)
+	g.role = post.get_meta("role", "")
 	add_child(g)
 	g.global_transform = post.global_transform
 	g.post = post.global_transform

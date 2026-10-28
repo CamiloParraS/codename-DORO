@@ -38,6 +38,24 @@ static func call_flash(calling: bool, ticks_msec: int) -> bool:
 	return calling and (ticks_msec / 150) % 2 == 0
 
 
+const PING_TIME := 0.5  # s a noise ring takes to spread out to its range
+const GUARD_PING_SHOW := 1.5  # s a guard's blip stays after it made a noise
+
+
+## How visible a guard's blip is, 0..1: always while the Scanner runs, else it fades after the guard's last noise.
+static func guard_alpha(ping_age: float, scanning: bool) -> float:
+	if scanning:
+		return 1.0
+	return clampf(1.0 - ping_age / GUARD_PING_SHOW, 0.0, 1.0)
+
+
+## Pixel radius of a noise ring `age` s after the noise, or -1 once it is gone.
+static func ping_radius(noise_range: float, age: float) -> float:
+	if age < 0.0 or age >= PING_TIME:
+		return -1.0
+	return minf(noise_range / RANGE, 1.0) * (HALF - 2) * age / PING_TIME
+
+
 ## Bottom-left, right of the life bar and its label.
 static func rect(canvas: Vector2) -> Rect2:
 	return Rect2(MARGIN, canvas.y - 18 - HALF * 2, HALF * 2, HALF * 2)
