@@ -5,6 +5,7 @@ extends RefCounted
 
 const PAR_PER_ENCOUNTER := 120.0  # s; Reinforcements don't add to it
 const LETTERS := ["S", "A", "B", "C"]
+const TITLES := {"S": "FOX", "A": "DOBERMAN", "B": "JACKAL", "C": "PIGEON"}  # the codename a grade earns, MGS-style
 
 var kills := 0      # guard deaths the Operative caused, Targets included
 var alerts := 0     # completed Radio calls (Caution is free)

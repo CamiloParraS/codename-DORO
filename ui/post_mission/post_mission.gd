@@ -80,6 +80,7 @@ func _draw_rank() -> void:
 		draw_set_transform(Vector2(size.x / 2, 112), 0.0, Vector2(k, k))
 		_centered(0, 18, rank.grade(par), HudPalette.WHITE, 48)
 		draw_set_transform(Vector2.ZERO)
+		_centered(size.x / 2, 136, Rank.TITLES[rank.grade(par)], HudPalette.CHROME_DIM, 8)
 	var lines := stats()
 	for i in lines.size():
 		var since := _age - (FIRST + (i + 1) * STAT_STEP)

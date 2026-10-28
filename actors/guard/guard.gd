@@ -345,6 +345,10 @@ func partner_calm() -> bool:
 
 
 func _refresh_mark() -> void:
+	if neutral_left > 0.0 and not dead:  # asleep, and it wears off
+		_mark.text = "zZz"
+		_mark.modulate = Color.WHITE
+		return
 	var talk := on_air()
 	if _tele_left > 0.0 and (alert.state == GuardAlert.State.PATROL or _tele_icon == Telegraph.FLANK_ICON):
 		_mark.text = _tele_icon
@@ -380,9 +384,9 @@ func neutralize() -> void:
 	alert = GuardAlert.new()
 	order = {}
 	seen_rate = 0.0
-	_mark.text = ""
 	collision_layer = 0
 	_lie(true)
+	_refresh_mark()
 	if dropped:
 		Mix.sfx_at(self, &"body_fall")
 		_partners_see()

@@ -26,6 +26,7 @@ var crouching := false
 var walking := false
 var moving := false
 var carrying: Node3D     # the Down guard on the shoulder
+var looking := false  # first-person look (hold Z): eye view, feet planted
 var ladder: Node3D       # the Ladder being climbed (group "ladders", Bottom and Top markers)
 var prompt := ""         # shown by the HUD
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
@@ -217,8 +218,10 @@ func _unhandled_input(e: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
-	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
-	_back_arm.spring_length = lerpf(_back_arm.spring_length, Locomotion.CAM_DIST_AIM if aiming else Locomotion.CAM_DIST, minf(1.0, 10 * delta))
+	looking = Input.is_action_pressed("look") and not (aiming or _choking or radio_open or ladder or carrying)
+	camera.fov = lerpf(camera.fov, 50.0 if aiming else 75.0 if looking else 70.0, minf(1.0, 12 * delta))
+	_shoulder_arm.spring_length = lerpf(_shoulder_arm.spring_length, 0.0 if looking else 0.55, minf(1.0, 14 * delta))
+	_back_arm.spring_length = lerpf(_back_arm.spring_length, 0.0 if looking else Locomotion.CAM_DIST_AIM if aiming else Locomotion.CAM_DIST, minf(1.0, 14 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	health.tick(delta, get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT))
 	items.tick(delta)
@@ -231,7 +234,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if aiming and not _choking and gun().automatic and Input.is_action_pressed("fire"):
 		_fire()
-	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var v := Vector2.ZERO if looking else Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
 		_choke_left -= delta
 		if not _grip_holds() or (not _killing and not Input.is_action_pressed("interact")):  # turned round, alerted, or E released
@@ -704,4 +707,4 @@ func _process(delta: float) -> void:
 	_pitch_node.rotation.x = _pitch + _recoil
 	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()), Vector2(velocity.x, velocity.z).length())
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
-	model.visible = _back_arm.get_hit_length() > HIDE_BODY_BELOW
+	model.visible = not looking and _back_arm.get_hit_length() > HIDE_BODY_BELOW

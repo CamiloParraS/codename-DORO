@@ -102,3 +102,8 @@ func test_the_post_mission_screen_is_rank_then_aigis_and_replays_stop_at_rank() 
 			s.advance()
 			assert_eq(commits[0], 1)
 		assert_true(s.is_queued_for_deletion(), "committing frees the screen")
+
+
+func test_every_letter_has_a_codename() -> void:
+	for l in Rank.LETTERS:
+		assert_true(Rank.TITLES.has(l), "codename for " + l)
