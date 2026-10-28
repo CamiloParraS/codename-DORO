@@ -67,6 +67,10 @@ const BRACE_REACH := Vector2(0.15, 0.75)
 const HAND_TO_GUN := Basis(Vector3(0.04, 0.995, -0.095), Vector3(-0.1, 0.095, 0.99), Vector3(0.994, -0.04, 0.105))
 ## Where a grip sits in the hand bone's frame: the bone's origin is the wrist, and the mitt closes this far along it.
 const PALM := Vector3(0, 0.07, 0.02)
+## Rifle clips that aim where the body faces. On Nikita's arms their off hand lands 20-35 degrees to the left, which
+## _brace would follow, so _square_up() turns the chest back until the hands line up straight ahead.
+const SQUARED := ["aim", "crouch_aim", "fire"]
+const TWIST_BONE := "spine_01"
 ## Metres the rifle's handguard sits above the line through its grip, along the gun's up: where the off hand holds.
 const HANDGUARD := 0.09
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
@@ -148,7 +152,20 @@ func _process(delta: float) -> void:
 		_anim.advance(_since_step)
 		_since_step = 0.0
 		if _weapon == "rifle":
+			if _clip in SQUARED:
+				for i in 2:  # a second pass takes up what the first left
+					_square_up()
 			_brace()
+
+
+## Twists the upper body about the vertical so the line between the palms points the way the rig faces (+Z).
+func _square_up() -> void:
+	var r := skeleton.get_bone_global_pose(skeleton.find_bone(HAND_BONE)) * PALM
+	var l := skeleton.get_bone_global_pose(skeleton.find_bone(OFF_HAND)) * Vector3(0, PALM.y, 0)
+	var yaw := atan2(l.x - r.x, l.z - r.z)  # + is to the rig's left
+	var bone := skeleton.find_bone(TWIST_BONE)
+	var up := skeleton.get_bone_global_pose(skeleton.get_bone_parent(bone)).basis.orthonormalized().inverse() * Vector3.UP
+	skeleton.set_bone_pose_rotation(bone, Quaternion(up, -yaw) * skeleton.get_bone_pose_rotation(bone))
 
 
 ## Aims the rifle from the gun hand at the off hand, keeping its grip in the gun hand.
