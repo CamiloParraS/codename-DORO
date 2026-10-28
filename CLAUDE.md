@@ -2,7 +2,7 @@
 
 ### Issue tracker
 
-Issues and specs are local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+Issues and specs are local markdown files under `.scratch/<feature>/`. `.scratch/` is git-ignored and never committed, so it exists only on the machine that wrote it. See `docs/agents/issue-tracker.md`.
 
 Build tickets: `.scratch/pw-feel-build/issues/` (`/implement 01` means `pw-feel-build/issues/01-*`); `.scratch/mgs-feel-build/issues/` holds the older ones (tickets 11–14 are superseded; 01, 04, 09, 10 still stand per ticket 09 of the pw-feel map). Each ticket is self-contained; its `**Spec:**` line leads to the decision ticket in `.scratch/pw-feel/issues/`, so open it only when the build ticket leaves a question open.
 

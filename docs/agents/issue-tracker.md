@@ -1,6 +1,6 @@
 # Issue tracker: Local Markdown
 
-Issues and specs for this repo live as markdown files in `.scratch/`.
+Issues and specs for this repo live as markdown files in `.scratch/`. That folder is local-only and git-ignored: it is never committed, so each machine keeps its own copy.
 
 ## Conventions
 
