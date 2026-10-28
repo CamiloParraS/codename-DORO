@@ -67,6 +67,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - "Male Choking_1" by Drkvixn91, https://freesound.org/s/318080/, CC0 (`sfx_choke.ogg`, first 1.6 s)
 - "Climbing Metal Ladder hands and feet" by DeqstersLab, https://freesound.org/s/767343/, CC0 (`sfx_ladder_*.ogg`, three slices)
 - "Walkie Talkie - Transmission Start" by bruce965, https://freesound.org/s/321905/, CC0 (`sfx_radio_on.ogg`)
+- "radio-static" by carroll27, https://freesound.org/s/151903/, CC0 (`sfx_radio_static.ogg`, the loudest 0.15 s)
 - "Radio receiver on/off" by LukaCafuka, https://freesound.org/s/753402/, CC0 (`sfx_radio_off.ogg`, the off click)
 - "Shock Stab 12" by nomiqbomi, https://freesound.org/s/578382/, CC0 (`sting_alert.ogg`, first 0.4 s)
 - "9_inch_inflate" by tix99, https://freesound.org/s/732685/, CC0 (`sfx_fulton_launch.ogg`)

@@ -136,6 +136,10 @@ _Avoid_: Voice, voice sample
 A fake radio order the Operative sends using a Voiceprint, which Glaukopis may check for authenticity.
 _Avoid_: Deepfake, fake call, spoof order
 
+**Radio point**:
+A named spot in an Area that a Spoofed transmission can send a guard to.
+_Avoid_: Spoof place, waypoint, drop point
+
 ### Record
 
 **Profile**:
