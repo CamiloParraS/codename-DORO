@@ -38,12 +38,13 @@ const MIXAMO_CLIPS := {
 	"hand_to_ear": "talking_on_phone", "dead": "pro_death_from_the_front",
 	"climb": "climbing_ladder", "use": "button_pushing", "throw": "throw", "pick_up": "picking_up",
 }
-## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
-## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
+## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire,
+## crouch-walk or low kneel takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
 ## loops as the aim (the loose "Pistol Aim" holsters halfway through).
 const PISTOL_CLIPS := {
 	"idle": "pistol_idle", "walk": "hg_pistol_walk", "run": "hg_pistol_run",
-	"aim": "hg_pistol_idle", "crouch_idle": "pistol_kneeling_idle", "crouch_aim": "pistol_kneeling_idle",  # already raised
+	"aim": "hg_pistol_idle", "crouch_aim": "pistol_kneeling_idle",  # raised; no low-ready pistol kneel exists, so
+	# crouch_idle keeps the rifle's, which holds the pistol low with the off hand free
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
@@ -64,6 +65,10 @@ const BRACE_REACH := Vector2(0.15, 0.75)
 ## The hand bone's local frame in the Mixamo aim pose: Y runs forward, Z up. This turns a gun file (muzzle +X,
 ## up +Y) to point level along the way the hand does.
 const HAND_TO_GUN := Basis(Vector3(0.04, 0.995, -0.095), Vector3(-0.1, 0.095, 0.99), Vector3(0.994, -0.04, 0.105))
+## Where a grip sits in the hand bone's frame: the bone's origin is the wrist, and the mitt closes this far along it.
+const PALM := Vector3(0, 0.07, 0.02)
+## Metres the rifle's handguard sits above the line through its grip, along the gun's up: where the off hand holds.
+const HANDGUARD := 0.09
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
 const GUNS := {
 	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0), "muzzle": 0.35},
@@ -152,14 +157,18 @@ func _brace() -> void:
 	var l := skeleton.get_bone_global_pose(skeleton.find_bone(OFF_HAND))
 	var hand := r.basis.orthonormalized()
 	var grip: Vector3 = GUNS.rifle.grip
-	var reach := r.origin.distance_to(l.origin)
+	var palm := r * PALM
+	var off := l * Vector3(0, PALM.y, 0)  # the off hand's palm (its bone points along the fingers too)
+	var reach := palm.distance_to(off)
 	if reach < BRACE_REACH.x or reach > BRACE_REACH.y:
-		_gun.transform = Transform3D(HAND_TO_GUN, HAND_TO_GUN * -grip)
+		_gun.transform = Transform3D(HAND_TO_GUN, PALM + HAND_TO_GUN * -grip)
 		return
-	var x := (l.origin - r.origin) / reach  # the muzzle
+	var x := (off - palm) / reach  # the muzzle
 	var z := x.cross(hand * HAND_TO_GUN.y).normalized()
+	x = (off - z.cross(x) * HANDGUARD - palm).normalized()  # dipped so the handguard, not the grip line, meets the hand
+	z = x.cross(hand * HAND_TO_GUN.y).normalized()
 	var aim := hand.inverse() * Basis(x, z.cross(x), z)
-	_gun.transform = Transform3D(aim, aim * -grip)
+	_gun.transform = Transform3D(aim, PALM + aim * -grip)
 
 
 func _rest_pose() -> Animation:
@@ -236,7 +245,7 @@ func hold(weapon: String) -> void:
 	at.bone_name = HAND_BONE
 	skeleton.add_child(at)
 	_gun = GUNS[weapon].scene.instantiate()
-	_gun.transform = Transform3D(HAND_TO_GUN, HAND_TO_GUN * -GUNS[weapon].grip)
+	_gun.transform = Transform3D(HAND_TO_GUN, PALM + HAND_TO_GUN * -GUNS[weapon].grip)
 	at.add_child(_gun)
 	if weapon == "tranq":
 		var can := SUPPRESSOR.instantiate()
