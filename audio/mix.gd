@@ -47,6 +47,7 @@ const STREAMS := {
 	&"radio_on": "res://assets/audio/sfx_radio_on.ogg",
 	&"radio_off": "res://assets/audio/sfx_radio_off.ogg",
 	&"ui_click": "res://assets/audio/sfx_ui_click.ogg",
+	&"radio_static": "res://assets/audio/sfx_radio_static.ogg",
 }
 const STEP_DB := -2.0           # a standing (run) footstep
 const CROUCH_STEP_DB := -14.0   # a crouched footstep: much quieter than STEP_DB...
@@ -85,6 +86,11 @@ func _process(delta: float) -> void:
 	var cue := _beat.update(states, now)
 	if cue != &"":
 		play(&"sting_" + cue)
+		if cue == &"alert":
+			rumble(0.3, 0.6, 0.15)
+			var spotted := get_tree().get_first_node_in_group("operative")
+			if spotted:
+				spotted.kick(0.06)
 	var op := get_tree().get_first_node_in_group("operative")
 	apply_scale(_beat.scale(now, get_tree().paused or (op != null and op.health.dead())))
 	var want := _state.update(delta, states)
@@ -96,6 +102,17 @@ func _process(delta: float) -> void:
 	var sky := op != null and NoFulton.open_sky(get_tree(), op.global_position)
 	_outdoor.volume_db = move_toward(_outdoor.volume_db, OUTDOOR_DB if sky else SILENT, 12.0 * delta)
 	advance_duck(delta)
+
+
+## A short freeze for a hit or a takedown; the same hit-stop the "!" uses.
+func hit_stop(secs: float) -> void:
+	_beat.stop(Time.get_ticks_msec() / 1000.0, secs)
+
+
+## Pad rumble, no-op without a pad. Everything felt through the hands goes through here.
+func rumble(weak: float, strong: float, secs: float) -> void:
+	for pad in Input.get_connected_joypads():
+		Input.start_joy_vibration(pad, weak, strong, secs)
 
 
 ## Touches Engine.time_scale only while a hit-stop is on or being restored.

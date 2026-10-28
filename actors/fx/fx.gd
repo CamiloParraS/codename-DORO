@@ -107,3 +107,54 @@ static func lamp(c: Color, size: float) -> MeshInstance3D:
 	box.material = glow(c)
 	m.mesh = box
 	return m
+
+
+const RADIO_FILL := preload("res://actors/fx/radio_fill.gdshader")
+const BEACON_PERIOD := 1.05
+
+
+## A radio-mode fill (see radio_fill.gdshader): drawn over the world dim, through walls and fog.
+static func radio_fill(c: Color, hatch := false, pulse := 0.0, priority := 10) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = RADIO_FILL
+	m.render_priority = priority
+	m.set_shader_parameter("colour", c)
+	m.set_shader_parameter("hatch", hatch)
+	m.set_shader_parameter("pulse", pulse)
+	return m
+
+
+## A Radio point's marker: a 40 m stippled beam and a ground ring pulsing outward, white at full alpha when
+## hot, half when cold. Real-time tween (radio mode slows the game); it frees with `parent`.
+static func beacon(parent: Node, at: Vector3, hot := true) -> Node3D:
+	var root := Node3D.new()
+	parent.add_child(root)
+	root.global_position = at
+	var a := 1.0 if hot else 0.5
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.35
+	cyl.bottom_radius = 0.35
+	cyl.height = 40.0
+	cyl.radial_segments = 8
+	cyl.cap_top = false
+	cyl.cap_bottom = false
+	var beam := MeshInstance3D.new()
+	beam.mesh = cyl
+	beam.material_override = radio_fill(Color(1, 1, 1, 0.55 * a), true, 0.0, 12)
+	beam.position.y = 20.0
+	root.add_child(beam)
+	var torus := TorusMesh.new()
+	torus.inner_radius = 1.4
+	torus.outer_radius = 1.7
+	torus.rings = 24
+	torus.ring_segments = 4
+	var ring := MeshInstance3D.new()
+	ring.mesh = torus
+	ring.material_override = radio_fill(Color(1, 1, 1, 0.92 * a), false, 0.0, 12)
+	ring.position.y = 0.05
+	ring.scale = Vector3(0.3, 0.05, 0.3)
+	root.add_child(ring)
+	var tw := ring.create_tween().set_loops().set_ignore_time_scale(true)
+	tw.tween_property(ring, "scale", Vector3(1, 0.05, 1), BEACON_PERIOD)
+	tw.tween_property(ring, "scale", Vector3(0.3, 0.05, 0.3), 0.0)
+	return root

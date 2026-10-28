@@ -112,7 +112,7 @@ func test_every_stream_loads() -> void:
 
 func test_each_wanted_sound_has_a_stream() -> void:
 	for k in [&"shot_quiet", &"shot_quiet_rifle", &"shot_loud", &"takedown", &"body_fall", &"dart_hit", &"dart_vest", &"choke",
-			&"mag_land", &"footstep", &"ladder", &"fulton_launch", &"fulton_lift", &"radio_on", &"radio_off", &"patrol", &"ui_click"]:
+			&"mag_land", &"footstep", &"ladder", &"fulton_launch", &"fulton_lift", &"radio_on", &"radio_off", &"patrol", &"ui_click", &"radio_static"]:
 		assert_true(Mix.STREAMS.has(k), "%s mapped" % k)
 
 
