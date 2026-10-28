@@ -57,6 +57,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 - `spaceEngineLow_000` (`assets/audio/ambience_hum.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
 - `impactMetal_000` (`assets/audio/sfx_knock.ogg`), Sci-fi Sounds by Kenney, https://kenney.nl/assets/sci-fi-sounds, CC0 1.0
+- "Bullet passbys.wav" by Audionautics, https://freesound.org/s/134024/, CC BY 3.0 (`assets/audio/sfx_whiz_0-7.ogg`: its eight passes, trimmed and level-matched)
 - `impactMetal_light_000`-`002` (`assets/audio/sfx_ricochet_0-2.ogg`) and `impactPunch_medium_000`-`002` (`assets/audio/sfx_bullet_hit_0-2.ogg`), Impact Sounds by Kenney, https://kenney.nl/assets/impact-sounds, CC0 1.0
 - `question_002` (`assets/audio/sting_question.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
 - `confirmation_002` (`assets/audio/sting_relief.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0

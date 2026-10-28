@@ -24,6 +24,7 @@ const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion 
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MISS_BY := 0.7           # metres a missed shot passes from the Operative's chest
+const WHIZ_RANGE := 2.0        # metres: a miss passing this close to the Operative's chest whizzes past it
 const RISE_TIME := 4.0          # seconds a Fultoned guard takes to rise out of sight
 const BALLOON_TIME := 6.0       # seconds after launch that guards can see the balloon
 const BALLOON_SEEN := 20.0      # flat metres from the spot within which a guard who sees it comes to look
@@ -228,7 +229,7 @@ func _shoot_back(delta: float) -> void:
 
 
 ## What the Operative sees and hears of a shot: the bang, a flash and tracer from the rifle's muzzle, then blood
-## and a thud on a hit, or a miss that flies past to throw sparks off whatever it meets.
+## and a thud on a hit, or a miss that whizzes past to throw sparks off whatever it meets.
 func _shot_effects(lands: bool) -> void:
 	var w := get_parent()
 	var from := model.muzzle(global_position + Vector3.UP * 1.3 - global_basis.z * 0.6)
@@ -244,7 +245,11 @@ func _shot_effects(lands: bool) -> void:
 	var end: Vector3 = from + (past - from).normalized() * Health.RANGE * 2.0
 	var q := PhysicsRayQueryParameters3D.create(from, end, 1 | 2, [get_rid(), operative.get_rid()])
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
-	Fx.tracer(w, from, hit.get("position", end))
+	var stop: Vector3 = hit.get("position", end)
+	Fx.tracer(w, from, stop)
+	var near := Geometry3D.get_closest_point_to_segment(chest, from, stop)
+	if near.distance_to(chest) <= WHIZ_RANGE:  # not when a wall took it first
+		Mix.sfx_at(self, &"bullet_whiz", near)
 	if not hit.is_empty():
 		Fx.puff(w, hit.position, Color(1, 0.75, 0.25), 6, 4.0, 0.3)  # sparks
 		Fx.puff(w, hit.position, Color(0.6, 0.58, 0.55), 5, 1.2, 0.6)  # dust
