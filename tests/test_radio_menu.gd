@@ -121,3 +121,92 @@ func test_no_pending_poll_means_no_report_in() -> void:
 	m.choose(0)
 	assert_eq(m.options()[0][0], "Kostas")
 	assert_eq(m.options().size(), 4, "three guards and All units")
+
+
+func test_speaker_hover_names_the_voiceprint_owner() -> void:
+	var m := _menu()
+	m.hint_label = "Request hint"
+	assert_eq(m.referents(0), {hot = ["Kostas"], cold = [], place = "", place_hot = false})
+	assert_eq(m.referents(1).hot, [], "Request hint names nobody")
+
+
+func test_single_recipient_hover_keeps_the_speaker_cold() -> void:
+	var m := _menu()
+	m.choose(0)
+	var r := m.referents(1)            # Dimos
+	assert_eq(r.hot, ["Dimos"])
+	assert_eq(r.cold, ["Kostas"])
+
+
+func test_all_units_lights_everyone_but_the_speaker() -> void:
+	var m := _menu()
+	m.choose(0)
+	var r := m.referents(m.options().size() - 1)
+	assert_eq(r.hot, ["Dimos", "Eleni"])
+	assert_eq(r.cold, ["Kostas"])
+
+
+func test_hq_has_no_referents() -> void:
+	var m := RadioMenu.new(["Kostas"], ["Kostas", "Dimos"], ["Dock"], "Kostas")
+	m.choose(0)
+	assert_eq(m.referents(0).hot, [])
+	assert_eq(m.referents(0).cold, ["Kostas"])
+
+
+func test_radio_point_hover_is_hot_with_both_picks_cold() -> void:
+	var m := _menu()
+	m.choose(0)
+	m.choose(1)
+	m.choose(0)                        # go check
+	var r := m.referents(1)            # Gatehouse
+	assert_eq(r.place, "Gatehouse")
+	assert_true(r.place_hot)
+	assert_eq(r.hot, [])
+	assert_eq(r.cold, ["Kostas", "Dimos"])
+
+
+func test_confirm_lights_everything_picked() -> void:
+	var m := _menu()
+	m.choose(0)
+	m.choose(1)
+	m.choose(0)
+	m.choose(0)                        # Dock
+	var r := m.referents(0)
+	assert_eq(r.hot, ["Kostas", "Dimos"])
+	assert_eq(r.cold, [])
+	assert_eq(r.place, "Dock")
+	assert_true(r.place_hot)
+
+
+func test_dead_zone_shows_only_the_cold_picks() -> void:
+	var m := _menu()
+	m.choose(0)
+	m.choose(1)                        # order step: both picks are earlier
+	var r := m.referents(-1)
+	assert_eq(r.hot, [])
+	assert_eq(r.cold, ["Kostas", "Dimos"])
+
+
+func test_a_guard_is_shown_by_his_role_numbered_when_two_share_it() -> void:
+	var m := _menu()
+	m.roles = {Kostas = "patroller", Dimos = "patroller", Eleni = "observer"}
+	assert_eq(m.shown("Kostas"), "Patroller 2", "names sort: Dimos is 1, Kostas 2")
+	assert_eq(m.shown("Dimos"), "Patroller 1")
+	assert_eq(m.shown("Eleni"), "Observer", "alone in its role: no number")
+
+
+func test_a_guard_without_a_role_keeps_his_name() -> void:
+	var m := _menu()
+	m.roles = {Kostas = "patroller"}
+	assert_eq(m.shown("Dimos"), "Dimos")
+	assert_eq(m.shown("Gone"), "Gone", "left the Area")
+
+
+func test_the_confirm_line_uses_the_role() -> void:
+	var m := _menu()
+	m.roles = {Dimos = "gatekeeper"}
+	m.choose(0)
+	m.choose(1)
+	m.choose(0)
+	m.choose(0)
+	assert_eq(m.line(), "Gatekeeper, go check the Dock.")

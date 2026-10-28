@@ -7,15 +7,20 @@ extends Control
 const SLOW := 0.25           # time scale while the radial is open
 const SEARCH_SPREAD := 5.0   # exposed: the search spot is within ± this of the transmit point
 const REPLY_DELAY := 1.0     # seconds before the recipient answers
-const R_IN := 26.0
-const R_OUT := 70.0
+const R_IN := 20.0
+const R_OUT := 52.0
 const POINTER_MAX := 60.0
+const EDGE := 16.0           # px inset of an off-screen referent's pointer
 const ACKS := {go = "radio.ack.go", hold = "radio.ack.hold", all_clear = "radio.ack.all_clear"}  # text keys; {place}
 ## RadioMenu's fixed option labels -> their text keys (guard and place names show as they are).
 const LABELS := {"All units": "radio.opt.all_units", "Go check": "radio.opt.go", "Hold position": "radio.opt.hold",
 	"All clear": "radio.opt.all_clear", "Report in": "radio.opt.report_in", "Send": "radio.opt.send", "HQ": "ui.who.hq"}
 
-var glaukopis := Glaukopis.new()   # one per Mission: the Area scene holds this node
+var glaukopis := Glaukopis.new():   # one per Mission: the Area scene holds this node
+	set(v):
+		glaukopis = v  # a Checkpoint restore swaps it: a send beat in flight never happened
+		if is_instance_valid(_look):
+			_look.clear_beat()
 var menu: RadioMenu                # null while closed
 var _pointer := Vector2.ZERO       # virtual pointer from mouse motion (the mouse stays captured)
 var hq := HqRadio.new()            # Downs L1 / L3: HQ's polls
@@ -23,6 +28,8 @@ var _now := 0.0
 var _last_alert := -INF
 var _places := {}                  # name -> position
 var _operative: Node3D
+var _look: RadioLook               # the world dim and fills, in the Area
+var _hot_key := ""                 # what is hot now, for the hover tick
 
 
 func _ready() -> void:
@@ -44,6 +51,13 @@ func _process(delta: float) -> void:
 			_last_alert = _now
 			break
 	if menu:
+		var r := _referents()
+		_look.show_referents(r.hot, r.cold, r.place_at, r.place_hot)
+		var key: String = str(r.hot.map(func(g): return g.name)) + (r.place if r.place_hot else "")
+		if key != _hot_key and (r.hot.size() or r.place_hot):  # the highlight snapped to a new referent
+			Mixer.play(&"ui_click", Mix.RADIO)
+			Mixer.play(&"radio_static", Mix.RADIO)
+		_hot_key = key
 		queue_redraw()
 
 
@@ -80,11 +94,19 @@ func _open() -> void:
 	for m: Node3D in get_tree().get_nodes_in_group("spoof_place"):
 		_places[String(m.name).trim_prefix("Spoof").capitalize()] = m.global_position
 	menu = RadioMenu.new(_operative.voiceprints.held.duplicate(), up, _places.keys(), hq.who())
+	for g in get_tree().get_nodes_in_group("guards"):
+		if g.role != "":
+			menu.roles[String(g.name)] = g.role
 	menu.hint_label = tr("radio.request_hint")
 	_pointer = Vector2.ZERO
 	Engine.time_scale = SLOW
 	_operative.radio_open = true
 	Mixer.play(&"radio_on", Mix.RADIO)
+	if not is_instance_valid(_look):
+		_look = RadioLook.new()
+		get_tree().current_scene.add_child(_look)
+	_look.open()
+	_hot_key = ""
 
 
 func close() -> void:
@@ -92,6 +114,8 @@ func close() -> void:
 		Mixer.play(&"radio_off", Mix.RADIO)
 	menu = null
 	Engine.time_scale = 1.0
+	if is_instance_valid(_look):
+		_look.close()
 	if is_instance_valid(_operative):
 		_operative.radio_open = false
 	queue_redraw()
@@ -114,6 +138,11 @@ func _choose(i: int) -> void:
 	var line := menu.line()
 	close()
 	_send(pick, line)
+	if pick.order != "report_in":
+		var speaker := _guard(pick.speaker)
+		_look.beat(speaker.global_position if speaker else _operative.global_position,
+			pick.recipients.map(_guard).filter(func(g): return g != null),
+			_places[pick.place] if pick.order == "go" else Vector3.INF)
 
 
 ## Glaukopis judges the transmission on the facts on the ground; the recipients answer a moment later.
@@ -250,8 +279,9 @@ func _guard(guard_name: String) -> Node3D:
 func _draw() -> void:
 	if not menu:
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.SHADE)
-	var c := size / 2
+	var c := _centre()
+	draw_circle(c, R_OUT + 46, Color(0, 0, 0, 0.6))  # the world dim is the 3D look's; only the radial gets a backing
+	_draw_referents()
 	var opts := menu.options()
 	var n := opts.size()
 	_centered(c + Vector2(0, -R_OUT - 30), _crumb(), HudPalette.CHROME)
@@ -285,12 +315,12 @@ func _draw() -> void:
 
 ## An option as shown: upper case, the fixed ones translated.
 func _label(s: String) -> String:
-	return (tr(LABELS[s]) if LABELS.has(s) else s).to_upper()
+	return (tr(LABELS[s]) if LABELS.has(s) else menu.shown(s)).to_upper()
 
 
 func _crumb() -> String:
 	if menu.step == "confirm":
-		return "%s: %s" % [menu.pick.speaker.to_upper(), menu.line()]
+		return "%s: %s" % [menu.shown(menu.pick.speaker).to_upper(), menu.line()]
 	var parts := PackedStringArray()
 	if menu.pick.has("speaker") and menu.step != "speaker":
 		parts.append(_label(menu.pick.speaker))
@@ -307,3 +337,73 @@ func _centered(pos: Vector2, s: String, col: Color) -> void:
 
 func _t(pos: Vector2, s: String, col: Color) -> void:
 	HudPalette.text(self, pos, s, col)
+
+
+# --- Referents: brackets, edge pointers, the Radar blink ------------------------------------------
+
+## The radial is left of centre: at the middle it covers most of what it names.
+func _centre() -> Vector2:
+	return Vector2(R_OUT + 120, size.y / 2 - 10)
+
+
+## RadioMenu.referents for the hovered option, with names mapped to guards still in the Area.
+func _referents() -> Dictionary:
+	var r := menu.referents(_hover())
+	var out := {hot = [], cold = [], place = r.place, place_at = _places.get(r.place, Vector3.INF), place_hot = r.place_hot}
+	for k in ["hot", "cold"]:
+		out[k] = r[k].map(_guard).filter(func(g): return g != null)
+	return out
+
+
+func _draw_referents() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	var r := _referents()
+	var spots := []  # [feet, height, hot, name]
+	for k in ["hot", "cold"]:
+		for g: Node3D in r[k]:
+			spots.append([g.global_position, 1.8, k == "hot", menu.shown(String(g.name))])
+	if r.place_at != Vector3.INF:
+		spots.append([r.place_at, 2.0, r.place_hot, r.place])
+	var blink := int(Time.get_ticks_msec() / 200) % 2 == 0
+	var radar := RadarModel.rect(size)
+	var origin := RadarModel.flat(_operative.global_position)
+	var jammed := RadarModel.jammed(HudModel.phase(AlertChain.area)[0])
+	for s in spots:
+		var a := 1.0 if s[2] else 0.5
+		var col := Color(HudPalette.WHITE, a)
+		var feet: Vector3 = s[0]
+		if cam.is_position_behind(feet) or not Rect2(Vector2.ZERO, size).grow(-EDGE).has_point(cam.unproject_position(feet)):
+			_edge_pointer(cam, feet, col)
+		if s[2]:
+			if not cam.is_position_behind(feet):
+				var foot := cam.unproject_position(feet)
+				var h := maxf(absf(foot.y - cam.unproject_position(feet + Vector3.UP * s[1]).y), 10.0)
+				var box := Rect2(foot - Vector2(h * 0.35, h), Vector2(h * 0.7, h))
+				_brackets(box, col)
+				_centered(box.position + Vector2(box.size.x / 2, -4 - 8), s[3].to_upper(), col)
+			if blink and not jammed:
+				var p := radar.get_center() + RadarModel.blip(RadarModel.flat(feet) - origin, 4)
+				draw_rect(Rect2(p - Vector2(4, 4), Vector2(8, 8)), HudPalette.WHITE)
+
+
+## A triangle at the screen edge toward an off-screen point, mirrored through the centre when behind the camera.
+func _edge_pointer(cam: Camera3D, at: Vector3, col: Color) -> void:
+	var c := size / 2
+	var p := cam.unproject_position(at)
+	if cam.is_position_behind(at):
+		p = c - (p - c)
+	var d := (p - c).normalized()
+	var half := size / 2 - Vector2.ONE * EDGE
+	var e := c + d * minf(half.x / maxf(absf(d.x), 1e-4), half.y / maxf(absf(d.y), 1e-4))
+	draw_colored_polygon(PackedVector2Array([e + d * 8, e + d.rotated(2.4) * 6, e + d.rotated(-2.4) * 6]), col)
+
+
+func _brackets(b: Rect2, col: Color) -> void:
+	var l := minf(b.size.x, b.size.y) * 0.3
+	for corner in [b.position, Vector2(b.end.x, b.position.y), b.end, Vector2(b.position.x, b.end.y)]:
+		var sx := 1.0 if corner.x == b.position.x else -1.0
+		var sy := 1.0 if corner.y == b.position.y else -1.0
+		draw_line(corner, corner + Vector2(l * sx, 0), col)
+		draw_line(corner, corner + Vector2(0, l * sy), col)
