@@ -5,7 +5,7 @@ extends McpTestSuite
 ## rooms refuse a Fulton, and the verb steps (eavesdrop, Hold-up) complete from the guards' state.
 
 const SCENE := "res://areas/harbour/harbour.tscn"
-const ROLES := ["gatekeeper", "observer", "patroller", "interceptor", "investigator"]
+const ROLES := ["gatekeeper", "observer", "patroller", "interceptor", "investigator", "foreman"]
 const WATCH := preload("res://areas/objective_watch.gd")
 const NO_FULTON := preload("res://areas/no_fulton.gd")
 

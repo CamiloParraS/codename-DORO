@@ -463,6 +463,7 @@ radio.said.report_in,"HQ, {who} here. Nothing to report.","Base, aquí {who}. Si
 radio.role.gatekeeper,Gatekeeper,Portero
 radio.role.observer,Observer,Observador
 radio.role.patroller,Patroller,Patrullero
+radio.role.foreman,Foreman,Capataz
 radio.role.interceptor,Interceptor,Interceptor
 radio.role.investigator,Investigator,Investigador
 radio.ack.go,"Copy, checking the {place}.","Recibido, voy a mirar en {place}."
