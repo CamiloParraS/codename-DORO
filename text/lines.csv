@@ -460,6 +460,11 @@ radio.said.go,"{to}, go check the {place}.","{to}, revisar {place}."
 radio.said.hold,"{to}, hold your position.","{to}, mantener la posición."
 radio.said.all_clear,"{to}, all clear, stand down.","{to}, todo despejado, retirada."
 radio.said.report_in,"HQ, {who} here. Nothing to report.","Base, aquí {who}. Sin novedad."
+radio.role.gatekeeper,Gatekeeper,Portero
+radio.role.observer,Observer,Observador
+radio.role.patroller,Patroller,Patrullero
+radio.role.interceptor,Interceptor,Interceptor
+radio.role.investigator,Investigator,Investigador
 radio.ack.go,"Copy, checking the {place}.","Recibido, voy a mirar en {place}."
 radio.ack.hold,"Copy, holding.","Recibido, mantengo la posición."
 radio.ack.all_clear,"Copy, standing down.","Recibido, me retiro."
