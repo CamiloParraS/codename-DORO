@@ -17,6 +17,7 @@ var _blip: VoiceBlip
 var _t := 0.0
 var _line_t := 0.0  # since the current line began: its glyph's pulse
 var _font := HudPalette.HEADING
+var _still_tex: Texture2D
 
 
 func _ready() -> void:
@@ -35,6 +36,7 @@ func begin() -> void:
 
 func start(record: Dictionary, then: String) -> void:
 	model = Finale.from_record(record)
+	_still_tex = load(Finale.stills(model.band)[0].path)  # not in _draw: a texture first loaded there draws white (Godot 4.7)
 	leave_to = then
 	visible = true
 	HudPalette.fade(self)
@@ -145,7 +147,7 @@ func _voice_line(at: Vector2) -> void:
 ## The band's still, slowly zooming from 1.0x to 1.15x and drifting while the ending plays.
 func _still() -> void:
 	var s: Dictionary = Finale.stills(model.band)[0]
-	var tex: Texture2D = load(s.path)
+	var tex: Texture2D = _still_tex
 	var k := clampf(_t / STILL_SECONDS, 0.0, 1.0)
 	var r := Rect2(Vector2(-20.0, -10.0) * k, size * (1.0 + 0.15 * k))
 	draw_texture_rect(tex, r, true, HudPalette.STILL)

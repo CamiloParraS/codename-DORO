@@ -51,6 +51,8 @@ func _process(delta: float) -> void:
 	_phase_age += delta
 	_tick_age += delta
 	_read_run()
+	if _operative and _operative.aiming:
+		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
 	_subs.tick(delta)
 	_tip_left = maxf(_tip_left - delta, 0.0)
 	if _live:

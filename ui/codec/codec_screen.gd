@@ -20,6 +20,7 @@ var _line_t := 0.0  # since the current line began
 var _line := 0
 var _cut := -1.0    # seconds left of the closing cut; -1 while the call is on
 var _font := HudPalette.HEADING
+var _faces := {}  # portrait path -> texture
 
 
 func _init(lines := []) -> void:
@@ -30,6 +31,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for f in ResourceLoader.list_directory(PORTRAITS.get_base_dir()):  # not in _draw: a texture first loaded there draws white (Godot 4.7)
+		if f.ends_with(".png"):
+			_faces[PORTRAITS.get_base_dir().path_join(f)] = load(PORTRAITS.get_base_dir().path_join(f))
 	Mixer.codec_call(true)
 	HudPalette.fade(self)
 	if talk.done():
@@ -114,7 +118,7 @@ func _static() -> void:
 
 func _portrait(r: Rect2, id: String, speaking: bool, typing: bool) -> void:
 	var f := 0 if StoryMotion.still(self) else StoryMotion.frame(_line_t, speaking, typing)
-	draw_texture_rect(load(FRAME % [id, f]), r, false, HudPalette.WHITE if speaking else HudPalette.HINT)
+	draw_texture_rect(_faces[FRAME % [id, f]], r, false, HudPalette.WHITE if speaking else HudPalette.HINT)
 	draw_rect(r, HudPalette.CHROME if speaking else HudPalette.EMPTY, false, 2.0)
 
 
