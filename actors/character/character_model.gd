@@ -71,6 +71,8 @@ const PALM := Vector3(0, 0.07, 0.02)
 ## _brace would follow, so _square_up() turns the chest back until the hands line up straight ahead.
 const SQUARED := ["aim", "crouch_aim", "fire"]
 const TWIST_BONE := "spine_01"
+## Where a SQUARED rifle points, up from level (radians). The clips aim 12-18 degrees down on Nikita.
+const AIM_PITCH := deg_to_rad(2.0)
 ## Metres the rifle's handguard sits above the line through its grip, along the gun's up: where the off hand holds.
 const HANDGUARD := 0.09
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
@@ -155,6 +157,8 @@ func _process(delta: float) -> void:
 			if _clip in SQUARED:
 				for i in 2:  # a second pass takes up what the first left
 					_square_up()
+				_brace()
+				_turn(Vector3.RIGHT, -(AIM_PITCH - _muzzle_pitch()))  # leaning back raises it, the hands with it
 			_brace()
 
 
@@ -162,10 +166,20 @@ func _process(delta: float) -> void:
 func _square_up() -> void:
 	var r := skeleton.get_bone_global_pose(skeleton.find_bone(HAND_BONE)) * PALM
 	var l := skeleton.get_bone_global_pose(skeleton.find_bone(OFF_HAND)) * Vector3(0, PALM.y, 0)
-	var yaw := atan2(l.x - r.x, l.z - r.z)  # + is to the rig's left
+	_turn(Vector3.UP, -atan2(l.x - r.x, l.z - r.z))  # atan2 + is to the rig's left
+
+
+## Rotates TWIST_BONE (the upper body) by `angle` about `axis`, both in skeleton space.
+func _turn(axis: Vector3, angle: float) -> void:
 	var bone := skeleton.find_bone(TWIST_BONE)
-	var up := skeleton.get_bone_global_pose(skeleton.get_bone_parent(bone)).basis.orthonormalized().inverse() * Vector3.UP
-	skeleton.set_bone_pose_rotation(bone, Quaternion(up, -yaw) * skeleton.get_bone_pose_rotation(bone))
+	var local := skeleton.get_bone_global_pose(skeleton.get_bone_parent(bone)).basis.orthonormalized().inverse() * axis
+	skeleton.set_bone_pose_rotation(bone, Quaternion(local.normalized(), angle) * skeleton.get_bone_pose_rotation(bone))
+
+
+## The held gun's muzzle pitch in skeleton space (radians, + up).
+func _muzzle_pitch() -> float:
+	var x := (skeleton.get_bone_global_pose(skeleton.find_bone(HAND_BONE)).basis * _gun.transform.basis).x.normalized()
+	return asin(x.y)
 
 
 ## Aims the rifle from the gun hand at the off hand, keeping its grip in the gun hand.
@@ -311,11 +325,14 @@ func ride(mount: Node3D) -> void:
 		if not _home:
 			_home = get_parent_node_3d()
 		reparent(mount, false)
+		physics_interpolation_mode = PHYSICS_INTERPOLATION_MODE_OFF  # the bone moves per frame, not per tick
 		transform = CARRIED
 		_clip = "down"
 		_anim.play("down")
 		_anim.seek(_anim.get_animation("down").length, true)
 	elif _home:
 		reparent(_home, false)
+		physics_interpolation_mode = PHYSICS_INTERPOLATION_MODE_INHERIT
 		transform = Transform3D.IDENTITY
+		reset_physics_interpolation()
 		_home = null
