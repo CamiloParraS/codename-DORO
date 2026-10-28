@@ -38,6 +38,13 @@ const SHOTS := {
 		pier = [Vector3(12, 2, 28), Vector3(30, -1, 45)],
 		cliff = [Vector3(5, 3, -25), Vector3(-45, 14, -55)],
 		crane_north = [Vector3(16, 10, -21), Vector3(20, 0, -80)],
+		bow_out = [Vector3(42, 7, -56), Vector3(31, 0, -38)],
+	}],
+	## Candidates for the main menu's backdrop (ui/main_menu/backdrop.png), shot with the HUD hidden.
+	menu = ["res://areas/harbour/harbour.tscn", {
+		quay = [Vector3(42, 5, 30), Vector3(0, 6, 0)],
+		bow = [Vector3(48, 3, -50), Vector3(10, 7, -20)],
+		water = [Vector3(55, 1.5, 10), Vector3(20, 6, -10)],
 	}],
 	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
 	relay_edges = ["res://areas/relay_station/relay_station.tscn", {
@@ -48,6 +55,7 @@ const SHOTS := {
 		motor_pool = [Vector3(-30, 2.5, 33), Vector3(10, 0, 20)],
 		hill_above = [Vector3(-20, 25, 75), Vector3(-10, -10, 40)],
 		valley = [Vector3(0, -8, 90), Vector3(0, 4, 30)],
+		mast = [Vector3(-20, 9, -12), Vector3(-3, 18, -29)],
 	}],
 	research_annex = ["res://areas/research_annex/research_annex.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
 	annex_edges = ["res://areas/research_annex/research_annex.tscn", {
@@ -73,6 +81,8 @@ func _shoot() -> void:
 	var area: String = OS.get_cmdline_user_args()[0] if OS.get_cmdline_user_args().size() else "harbour"
 	var scene: Node = load(SHOTS[area][0]).instantiate()
 	root.add_child(scene)
+	if area == "menu":
+		scene.get_node("HudLayer").queue_free()
 	var cam := Camera3D.new()
 	cam.fov = 70
 	scene.add_child(cam)

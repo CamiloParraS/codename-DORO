@@ -35,8 +35,10 @@ const PROPS := {
 	ResupplyCrate = "crate", DockCrate1 = "container_a", DockCrate2 = "container_b", Container1 = "container_a", Container2 = "container_b",
 	Container3 = "container_a", Container4 = "container_b", Container5 = "container_b", Container6 = "container_a",
 	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
-	Crane = "crane_tower", CraneBoom = "crane_boom",
+	Crane = "crane_tower", CraneBoom = "crane_boom", Bridge = "freighter_bridge", Antenna = "lattice_mast",
 }
+## Boxes with no mesh of their own: a dress model draws them (the freighter_hull shell over the hull and bow).
+const SHELLED := ["Hull", "Bow", "BowTip"]
 ## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
 ## equal share of the length and the full height; its depth scales with its height.
 const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock"}
@@ -45,7 +47,7 @@ const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock"}
 const DRESS_SOLID_H := 0.6
 ## Colliders that differ from the model's bounds: the lamp post's arm overhangs, so only its pole blocks;
 ## ceiling lamps hang out of reach.
-const DRESS_SHAPES := {lamp_post = Vector3(0.4, 6, 0.4), ceiling_lamp = Vector3.ZERO, utility_pole = Vector3(0.4, 9, 0.4),
+const DRESS_SHAPES := {lamp_post = Vector3(0.4, 6, 0.4), ceiling_lamp = Vector3.ZERO, freighter_hull = Vector3.ZERO, utility_pole = Vector3(0.4, 9, 0.4),
 	pine = Vector3(0.6, 8, 0.6), tyre_fender = Vector3.ZERO, piling = Vector3.ZERO}
 ## Models that light up: [light offset in the model's own axes, range, colour].
 const DRESS_LIGHTS := {
@@ -102,16 +104,21 @@ func _bake(nav: NavigationRegion3D) -> void:
 
 
 ## Each Area's light and fog: sun [pitch, yaw], colour and energy; ambient colour and energy; fog (also the
-## sky) colour, begin and end in metres.
+## sky's horizon unless `haze` gives the horizon its own glow, so far hills stand dark against it) colour, begin
+## and end in metres; the sky's zenith colour, and how much the sun glows in it.
 const MOODS := {
-	harbour = {sun = [-18, 235], sun_c = Color(0.95, 0.7, 0.55), sun_e = 0.55, amb = Color(0.42, 0.5, 0.7), amb_e = 0.75,
-		fog = Color(0.24, 0.29, 0.4), fog_from = 18.0, fog_to = 110.0},  # dusk-blue haze, last light low in the west
-	relay_station = {sun = [-50, 140], sun_c = Color(0.5, 0.55, 0.75), sun_e = 0.25, amb = Color(0.5, 0.34, 0.22), amb_e = 0.7,
-		fog = Color(0.2, 0.12, 0.07), fog_from = 15.0, fog_to = 80.0},  # sodium orange night under a thin moon
-	research_annex = {sun = [-65, 20], sun_c = Color(0.92, 0.96, 1.0), sun_e = 0.9, amb = Color(0.75, 0.8, 0.85), amb_e = 0.55,
-		fog = Color(0.66, 0.7, 0.75), fog_from = 30.0, fog_to = 130.0},  # cold clinical white overcast
-	core = {sun = [-60, 35], sun_c = Color(0.7, 0.3, 0.25), sun_e = 0.35, amb = Color(0.55, 0.2, 0.17), amb_e = 0.8,
-		fog = Color(0.18, 0.05, 0.05), fog_from = 15.0, fog_to = 80.0},  # dim red emergency light
+	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.7, amb = Color(0.42, 0.5, 0.7), amb_e = 0.7,
+		fog = Color(0.3, 0.32, 0.42), fog_from = 18.0, fog_to = 120.0,
+		zenith = Color(0.07, 0.1, 0.2), glow = 0.9},  # dusk-blue haze, last light low in the west
+	relay_station = {sun = [-40, 140], sun_c = Color(0.62, 0.7, 0.95), sun_e = 0.6, amb = Color(0.46, 0.44, 0.52), amb_e = 1.35,
+		fog = Color(0.11, 0.09, 0.1), fog_from = 15.0, fog_to = 85.0, haze = Color(0.34, 0.18, 0.1),
+		zenith = Color(0.03, 0.04, 0.1), glow = 0.6},  # sodium-lit haze on the horizon, a thin moon in a dark sky
+	research_annex = {sun = [-65, 20], sun_c = Color(0.95, 0.97, 1.0), sun_e = 1.0, amb = Color(0.72, 0.78, 0.85), amb_e = 0.5,
+		fog = Color(0.66, 0.7, 0.75), fog_from = 40.0, fog_to = 140.0,
+		zenith = Color(0.45, 0.52, 0.6), glow = 0.3},  # cold clinical white overcast
+	core = {sun = [-60, 35], sun_c = Color(0.75, 0.32, 0.25), sun_e = 0.4, amb = Color(0.46, 0.27, 0.26), amb_e = 0.75,
+		fog = Color(0.15, 0.06, 0.06), fog_from = 15.0, fog_to = 80.0,
+		zenith = Color(0.05, 0.01, 0.02), glow = 0.4},  # dim red emergency light
 }
 
 
@@ -126,21 +133,42 @@ func _mood(area: String) -> void:
 	sun.light_energy = md.sun_e
 	sun.shadow_enabled = true
 	_add(_root, sun)
+	var sky_mat := ShaderMaterial.new()
+	sky_mat.shader = load("res://assets/shaders/psx_sky.gdshader")
+	sky_mat.set_shader_parameter("horizon", md.get("haze", md.fog))
+	sky_mat.set_shader_parameter("zenith", md.zenith)
+	sky_mat.set_shader_parameter("glow", md.glow)
+	var sky := Sky.new()
+	sky.sky_material = sky_mat
+	sky.radiance_size = Sky.RADIANCE_SIZE_32  # nothing reflects it but the sea
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = md.fog
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = md.amb
 	env.ambient_light_energy = md.amb_e
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_DEPTH
 	env.fog_light_color = md.fog
 	env.fog_density = 1.0
 	env.fog_depth_begin = md.fog_from
 	env.fog_depth_end = md.fog_to
+	env.fog_sky_affect = 0.0  # the sky draws its own horizon
+	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC  # lamps and glints roll off instead of clipping
+	env.tonemap_exposure = 1.15
+	env.tonemap_white = 4.0
+	env.ssao_enabled = true  # boxes sit on the ground instead of floating on it
+	env.ssao_radius = 1.2
+	env.ssao_intensity = 1.3
+	env.ssao_light_affect = 0.15
 	env.glow_enabled = true  # lamps bloom a little at 480 lines
-	env.glow_intensity = 0.6
-	env.glow_hdr_threshold = 0.9
+	env.glow_intensity = 0.7
+	env.glow_bloom = 0.03
+	env.glow_hdr_threshold = 0.85
+	env.adjustment_enabled = true
+	env.adjustment_contrast = 1.08
+	env.adjustment_saturation = 1.12
 	var we := WorldEnvironment.new()
 	we.name = "Mood"
 	we.environment = env
@@ -258,7 +286,7 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	var row: String = ROWS.keys().reduce(func(found: String, k: String) -> String: return k if name.begins_with(k) else found, "")
 	if layer == 1 and row != "":
 		_row(b, size, ROWS[row])
-	elif layer == 1:
+	elif layer == 1 and name not in SHELLED:
 		var m := MeshInstance3D.new()
 		m.name = "Mesh"
 		m.mesh = _box_mesh(size, _mat(mat, tint))

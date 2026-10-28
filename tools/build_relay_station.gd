@@ -48,7 +48,7 @@ const SOLID := [
 	["RoadSideS", [76, 47.8, 12, 0.2], 3, 6, "metal", Color(0.6, 0.65, 0.6)],
 	["RoadBarrier", [88, 40, 0.4, 8], 3, 4.2, "metal", Color(0.9, 0.5, 0.2)],
 	# summit
-	["Mast", [34, 8, 6, 6], 6, 18, "stone", Color(0.75, 0.75, 0.75)],
+	["Mast", [34, 8, 6, 6], 6, 18, "concrete", Color(0.8, 0.8, 0.78)],
 	["Antenna", [36, 10, 2, 2], 18, 34, "metal", Color(0.85, 0.3, 0.25)],
 	["GeneratorShed", [16, 4, 6, 4], 6, 9, "brick", Color.WHITE],
 	["ConsoleDesk", [39, 17.5, 2, 1], 6, 7.1, "metal", Color(0.4, 0.45, 0.5)],

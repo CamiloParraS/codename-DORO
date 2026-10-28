@@ -206,6 +206,8 @@ const CROSSINGS := [
 ## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
+	# the freighter's hull and pointed bow round the Hull, Bow and BowTip boxes (they keep the collision)
+	["freighter_hull", [71, 29, -3], 0],
 	# quay: bollards on the edge, floodlights leaning over the yard
 	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],
 	["bollard", [61, 42, 0], 0], ["bollard", [61, 52, 0], 0],
@@ -469,10 +471,11 @@ func _backdrop() -> void:
 	sea.name = "SeaPlane"
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(400, 400)
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(0.06, 0.1, 0.16)
-	m.roughness = 0.15  # glassy, so the sodium lamps and the low sun glint on it
-	m.metallic_specular = 0.7
+	plane.subdivide_width = 99  # 4 m quads for the swell
+	plane.subdivide_depth = 99
+	var m := ShaderMaterial.new()
+	m.shader = load("res://assets/shaders/psx_water.gdshader")
+	m.set_shader_parameter("sky", MOODS[String(_root.name).to_snake_case()].fog)  # glassy at a slant: lamps and the low sun glint on it
 	plane.material = m
 	sea.mesh = plane
 	sea.position = Vector3(0, SEA_H, 0)

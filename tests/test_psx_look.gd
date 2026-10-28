@@ -14,10 +14,11 @@ func test_surface_has_no_snap_or_affine() -> void:
 	assert_true(code.contains("filter_nearest"))
 
 
-func test_post_is_31_levels_without_dither() -> void:
+## Ordered dither since the sky gradients: plain banding drew rings across fog and sky.
+func test_post_is_31_levels_with_ordered_dither() -> void:
 	var code: String = load("res://assets/shaders/psx_post.gdshader").code
 	assert_true(code.contains("levels = 31.0"))
-	assert_false(code.to_lower().contains("bayer"))
+	assert_true(code.to_lower().contains("bayer"))
 
 
 func test_textures_are_128() -> void:
