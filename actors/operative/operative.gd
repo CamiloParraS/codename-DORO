@@ -90,6 +90,7 @@ func _ready() -> void:
 
 	_pivot = Node3D.new()
 	_pivot.top_level = true
+	_pivot.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # moved per frame below, camera and all
 	add_child(_pivot)
 	_pitch_node = Node3D.new()
 	_pivot.add_child(_pitch_node)
@@ -341,6 +342,7 @@ func restore(s: Dictionary) -> void:
 	_fultoning = null
 	ladder = null
 	global_transform = s.xform
+	reset_physics_interpolation()
 	velocity = Vector3.ZERO
 	_yaw = s.yaw
 	_pitch = s.pitch
@@ -489,6 +491,7 @@ func _mount(l: Node3D) -> void:
 	var bottom: Vector3 = l.get_node("Bottom").global_position
 	var top: Vector3 = l.get_node("Top").global_position
 	global_position = Vector3(bottom.x, top.y - 0.05, bottom.z) if global_position.y > bottom.y + 1.0 else bottom
+	reset_physics_interpolation()
 	velocity = Vector3.ZERO
 	model.rotation.y = atan2(-(top.x - bottom.x), -(top.z - bottom.z))
 
@@ -717,7 +720,9 @@ func _nearest(down: bool, alive := false) -> Node3D:
 
 func _process(delta: float) -> void:
 	var head := 0.95 if crouching else 1.45
-	_pivot.global_position = _pivot.global_position.lerp(global_position + Vector3.UP * head, minf(1.0, 15 * delta))
+	# follows the body where it is drawn (between physics ticks), not where the last tick left it: a step-wise
+	# follow made a moving character judder against the camera, which reads as a blur
+	_pivot.global_position = _pivot.global_position.lerp(get_global_transform_interpolated().origin + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
 	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task()), Vector2(velocity.x, velocity.z).length())

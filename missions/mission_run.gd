@@ -125,6 +125,7 @@ func restore_checkpoint() -> void:
 		elif g in _checkpoint.dead:
 			g.carrier = null
 			g.global_transform = _checkpoint.dead[g][0]
+			g.reset_physics_interpolation()
 			g.known_down = _checkpoint.dead[g][1]
 		else:
 			g.return_to_post()

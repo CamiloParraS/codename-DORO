@@ -153,6 +153,7 @@ static func beacon(parent: Node, at: Vector3, hot := true) -> Node3D:
 	ring.material_override = radio_fill(Color(1, 1, 1, 0.92 * a), false, 0.0, 12)
 	ring.position.y = 0.05
 	ring.scale = Vector3(0.3, 0.05, 0.3)
+	ring.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # pulsed per frame, even when paused
 	root.add_child(ring)
 	var tw := ring.create_tween().set_loops().set_ignore_time_scale(true)
 	tw.tween_property(ring, "scale", Vector3(1, 0.05, 1), BEACON_PERIOD)

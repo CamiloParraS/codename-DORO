@@ -485,6 +485,7 @@ func return_to_post() -> void:
 	seen_rate = 0.0
 	last_reason = ""
 	global_transform = post
+	reset_physics_interpolation()  # a jump back to post, not a glide
 	velocity = Vector3.ZERO
 	_wp = 0
 	_stop = {}
@@ -579,8 +580,8 @@ func fulton() -> void:
 	_balloon = Fx.balloon()
 	_balloon.position.y = 3.0
 	add_child(_balloon)
-	create_tween().tween_property(_balloon, "scale", Vector3.ONE, Fx.INFLATE)
-	var t := create_tween()
+	create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS).tween_property(_balloon, "scale", Vector3.ONE, Fx.INFLATE)
+	var t := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)  # per tick, so physics interpolation smooths it
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 1.5, 1.0)
 	t.tween_property(self, "global_position", global_position + Vector3.UP * 40.0, RISE_TIME - 1.0)
 	t.tween_callback(hide)

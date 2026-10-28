@@ -158,6 +158,7 @@ func _pair_up(patrols: Array) -> void:
 		b.route = a.route.duplicate()
 		b.stops = a.stops.duplicate()
 		b.global_position = a.global_position + a.global_basis.x * 1.5
+		b.reset_physics_interpolation()
 		b.post = b.global_transform
 
 
@@ -170,6 +171,7 @@ func _spawn_chat(post: Marker3D) -> Array:
 		g.name = post.name.replace("Post", "Guard") + "AB"[seat]
 		g.global_position = post.global_position + post.global_basis.x * (1.0 if seat == 0 else -1.0)
 		g.look_at(post.global_position)
+		g.reset_physics_interpolation()
 		g.post = g.global_transform
 		g.route.assign([g.global_position])
 		g.stops.assign([{yaw = g.rotation.y, hold = Guard.PAUSE}])
@@ -213,5 +215,6 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 	g.role = post.get_meta("role", "")
 	add_child(g)
 	g.global_transform = post.global_transform
+	g.reset_physics_interpolation()
 	g.post = post.global_transform
 	return g
