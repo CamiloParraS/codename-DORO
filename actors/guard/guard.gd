@@ -23,6 +23,7 @@ const HOLD_TIME := 30.0         # seconds a guard told to hold its position stay
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
+const MISS_BY := 0.7           # metres a missed shot passes from the Operative's chest
 const RISE_TIME := 4.0          # seconds a Fultoned guard takes to rise out of sight
 const BALLOON_TIME := 6.0       # seconds after launch that guards can see the balloon
 const BALLOON_SEEN := 20.0      # flat metres from the spot within which a guard who sees it comes to look
@@ -220,8 +221,34 @@ func _shoot_back(delta: float) -> void:
 	_fire_left = FIRE_INTERVAL
 	_muzzle_flash()
 	model.react("fire", FIRE_INTERVAL)
-	if randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking()):
+	var lands := randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking())
+	_shot_effects(lands)
+	if lands:
 		operative.take_hit()
+
+
+## What the Operative sees and hears of a shot: the bang, a flash and tracer from the rifle's muzzle, then blood
+## and a thud on a hit, or a miss that flies past to throw sparks off whatever it meets.
+func _shot_effects(lands: bool) -> void:
+	var w := get_parent()
+	var from := model.muzzle(global_position + Vector3.UP * 1.3 - global_basis.z * 0.6)
+	var chest: Vector3 = operative.global_position + Vector3.UP * operative.chest_height()
+	Mix.sfx_at(self, &"shot_loud")
+	Fx.flash(w, from, false)
+	if lands:
+		Fx.tracer(w, from, chest)
+		Fx.puff(w, chest, Color(0.7, 0.1, 0.1), 6, 1.5)
+		Mix.sfx_at(operative, &"bullet_hit")
+		return
+	var past: Vector3 = chest + Vector3(randf_range(-1, 1), randf_range(-0.4, 0.8), randf_range(-1, 1)).normalized() * MISS_BY
+	var end: Vector3 = from + (past - from).normalized() * Health.RANGE * 2.0
+	var q := PhysicsRayQueryParameters3D.create(from, end, 1 | 2, [get_rid(), operative.get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	Fx.tracer(w, from, hit.get("position", end))
+	if not hit.is_empty():
+		Fx.puff(w, hit.position, Color(1, 0.75, 0.25), 6, 4.0, 0.3)  # sparks
+		Fx.puff(w, hit.position, Color(0.6, 0.58, 0.55), 5, 1.2, 0.6)  # dust
+		Mix.sfx_at(self, &"ricochet", hit.position)
 
 
 ## A brief light at chest height in front of the guard, so a shot is visible whether or not it lands.

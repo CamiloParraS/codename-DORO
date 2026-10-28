@@ -35,6 +35,8 @@ const STREAMS := {
 	&"shot_quiet": "res://assets/audio/sfx_shot_quiet.ogg",
 	&"shot_quiet_rifle": "res://assets/audio/sfx_shot_quiet_rifle.ogg",
 	&"shot_loud": "res://assets/audio/sfx_shot_loud.ogg",
+	&"bullet_hit": ["res://assets/audio/sfx_bullet_hit_0.ogg", "res://assets/audio/sfx_bullet_hit_1.ogg", "res://assets/audio/sfx_bullet_hit_2.ogg"],
+	&"ricochet": ["res://assets/audio/sfx_ricochet_0.ogg", "res://assets/audio/sfx_ricochet_1.ogg", "res://assets/audio/sfx_ricochet_2.ogg"],
 	&"takedown": "res://assets/audio/sfx_takedown.ogg",
 	&"body_fall": "res://assets/audio/sfx_body_fall.ogg",
 	&"dart_hit": "res://assets/audio/sfx_dart_hit.ogg",
