@@ -41,3 +41,7 @@ assets/models/animations/target_clips.res
 
 # Export output
 build/
+
+# Local tooling state (agent worktrees, impeccable cache)
+.claude/
+.impeccable/
