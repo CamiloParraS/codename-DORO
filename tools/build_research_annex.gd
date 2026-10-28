@@ -158,11 +158,39 @@ const DRESS := [
 	# yard and dock
 	["pallet_stack", [5.5, 60, 0], 90], ["generator", [24, 74.5, 0], 0], ["jerrycan", [26.3, 74.6, 0], 30],
 	["drum", [60.5, 70, 0], 0], ["drum", [61, 70.8, 0], 40], ["pallet", [56, 73, 0], 0],
+	["crate_wide", [50, 74.6, 0], 0], ["cardboard_box", [50.3, 74.6, 0.67], 25],
+	# the north strip: stock along the fence, a checkpoint barrier inside the gate
+	["pallet_stack", [10, 5.6, 0], 0], ["crate_wide", [12.6, 5.2, 0], 0], ["drum", [64, 5.5, 0], 0], ["drum", [64.8, 5.9, 0], 30],
+	["jersey_barrier", [22, 5, 0], 0],
+	# the lab's roof: air handlers and a dish (seen from the towers)
+	["vent_unit", [15, 40, 4.3], 0], ["vent_unit", [32, 48, 4.3], 90], ["vent_unit", [46, 38, 4.3], 0],
+	["sat_dish", [50, 35, 4.3], 30, 0.7],
 ]
-## Out on the plain past the north fence, into the fog.
+## Paint: the road's centre line out of the gate, the stop line, the truck's bay.
+const MARKINGS := [
+	[[39.9, -120, 0.2, 124], 2.0, 0, Color(0.95, 0.95, 0.92)], [[36.2, 2.4, 7.6, 0.3], 0, 0, Color(0.95, 0.95, 0.92)],
+	[[27, 15.4, 9, 0.15], 0], [[27, 19.6, 9, 0.15], 0], [[27, 15.4, 0.15, 4.35], 0],
+]
+## Out on the plain past the north fence, into the fog (heights from _ground_h).
 const BACKDROP_DRESS := [
-	["chimney", [20, -25, 0], 0, 2.0], ["tank_tall", [64, -20, 0], 0, 2.5], ["shed", [-15, 30, 0], 90, 1.5],
+	["chimney", [20, -25], 0, 2.0], ["tank_tall", [64, -20], 0, 2.5], ["shed", [-15, 30], 90, 1.5], ["water_tower", [90, 14], 0, 6.0],
+	["shed", [-14, 46], 90, 1.2], ["van", [-12, 38], 20], ["jersey_barrier", [37, -12], 0], ["jersey_barrier", [43, -16], 0],
+	# the quarry floor: gravel heaps, a parked van, drums
+	["mound", [75, 45], 0, 2.0, "ground", Color(0.75, 0.72, 0.68)], ["mound", [92, 62], 40, 2.6, "ground", Color(0.75, 0.72, 0.68)],
+	["mound", [70, 72], 70, 1.6, "ground", Color(0.75, 0.72, 0.68)], ["van", [84, 50], 30], ["drum", [80, 52], 0], ["drum", [80.8, 52.6], 0],
+	["lamp_post", [66, 40], 90],
 ]
+const TERRAIN := Color(0.8, 0.8, 0.75)
+const GROUND_RECT := [-158, -158, 400, 400]
+const GROUND_HOLES := [[4, 4, 72, 26], [4, 30, 58, 46], [36, -118, 8, 122]]  # the Area's land, the road
+const WOODS := [  # [model, rects, count, scale from, to, seed]
+	["pine", [[-70, -70, 60, 200], [-10, 84, 72, 60], [-70, -80, 100, 60], [50, -80, 110, 60]], 130, 2.2, 3.4, 51],
+	["poplar", [[-70, -70, 60, 200], [-10, 84, 72, 60], [-70, -80, 100, 60]], 70, 1.6, 2.4, 52],
+	["pine_small", [[-30, -40, 30, 140], [0, 82, 60, 20]], 40, 1.6, 2.6, 53], ["dead_tree", [[-60, -60, 220, 200]], 12, 1.2, 1.8, 54],
+]
+const WOODS_CLEAR := [[-2, -2, 84, 84], [30, -120, 20, 125], [58, 26, 200, 200]]  # 6 m off the fences, the road, the pit
+const PYLONS := [[-100, -40], [-40, -42], [20, -44], [80, -46], [140, -48]]
+const ROAD_POLES := [[45.5, -108], [45.5, -84], [45.5, -60], [45.5, -36], [45.5, -12]]
 ## The diagram's three, plus the Dock its deception Approaches send guards to.
 const SPOOFS := {SpoofYard = [26, 70, 0], SpoofNorth = [12, 24, 0], SpoofQuarry = [60, 20, 0], SpoofDock = [59, 58, 0]}
 
@@ -217,7 +245,8 @@ func _build() -> void:
 	var nm := nav.navigation_mesh
 
 	_backdrop()
-	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS)
+	_surroundings()
+	_markings(MARKINGS)
 	_mood("research_annex")
 
 	var spots := _group(_root, "Spots")
@@ -256,18 +285,16 @@ func _wall_run(parent: Node3D, w: Array) -> void:
 		_box(parent, w[0] + (str(i + 1) if spans.size() > 1 else ""), rect, 0, WALL_H, "brick", Color(0.8, 0.78, 0.72))
 
 
-## The plain outside the fence and the quarry pit, 14 m deep, open to the south and east. No collision:
+## The quarry pit's sheer west and north walls and the road out; _surroundings lays the ground. No collision:
 ## the fences, the rim and tower rails and the road barrier close every edge, so no kill volume is needed.
 ## ponytail: the rest of the Backdrop kit (distant blocks, skyline, fog) is its own build.
 func _backdrop() -> void:
 	var bd := _group(_root, "Backdrop")
 	bd.add_to_group("backdrop", true)
 	for p in [
-		["PlainW", [-160, -160, 222, 400], -0.2, -0.1, "ground", Color(0.8, 0.8, 0.75)],
-		["PlainN", [62, -160, 178, 190], -0.2, -0.1, "ground", Color(0.8, 0.8, 0.75)],
-		["PitWallW", [61, 30, 1, 210], -14, -0.1, "stone", Color(0.65, 0.6, 0.55)],
-		["PitWallN", [62, 29, 178, 1], -14, -0.1, "stone", Color(0.65, 0.6, 0.55)],
-		["PitFloor", [62, 30, 178, 210], -14.2, -14, "stone", Color(0.5, 0.48, 0.45)],
+		["PitWallW", [61, 30, 1, 60], -14, -0.1, "stone", Color(0.65, 0.6, 0.55)],
+		["PitWallN", [62, 29, 48, 1], -14, -0.1, "stone", Color(0.65, 0.6, 0.55)],
+		["RoadNorth", [36, -118, 8, 110], -1, 0, "ground", Color.WHITE],
 	]:
 		var m := MeshInstance3D.new()
 		m.name = p[0]
@@ -275,3 +302,42 @@ func _backdrop() -> void:
 		m.mesh = _box_mesh(Vector3(r[2], p[3] - p[2], r[3]), _mat(p[4], p[5]))
 		m.position = Vector3(r[0] + r[2] / 2.0 - 40.0, (p[2] + p[3]) / 2.0, r[1] + r[3] / 2.0 - 40.0)
 		_add(bd, m)
+
+
+## The plain round the fences rolls into hills further out; the quarry pit (x > 62, y > 30) is 14 m deep and
+## climbs out in benches on its far sides; the road north is kept level.
+func _ground_h(x: float, y: float) -> float:
+	var n := _noise.get_noise_2d(x, y)
+	var d := maxf(maxf(4.0 - x, x - 76.0), maxf(maxf(4.0 - y, y - 76.0), 0.0))
+	var h := -0.1 + smoothstep(20.0, 90.0, d) * (8.0 + 7.0 * n) + n * 0.4 * smoothstep(5.0, 15.0, d)
+	h += smoothstep(90.0, 150.0, d) * 22.0 * (n + 1.0)  # far ridges on the skyline
+	if y < 4.0:
+		h = lerpf(-0.1, h, smoothstep(5.0, 12.0, absf(x - 40.0)))
+	if x >= 62.0 and y >= 30.0:
+		var out := maxf(maxf(x - 110.0, y - 100.0), 0.0)  # metres past the pit floor's edge
+		if out < 24.0:
+			var k := floorf(out / 6.0)
+			return -14.0 + 3.5 * (k + smoothstep(4.0, 6.0, out - 6.0 * k))
+	return h
+
+
+var _noise := FastNoiseLite.new()
+
+
+func _surroundings() -> void:
+	_noise.seed = 3
+	_noise.frequency = 0.025
+	var bd: Node3D = _root.get_node("Backdrop")
+	var g := _group(bd, "Surroundings")
+	g.owner = _root
+	_heightfield(g, "Plain", GROUND_RECT, 4.0, _ground_h, GROUND_HOLES, "terrain", TERRAIN, "res://areas/research_annex/plain.res")
+	_dress(bd, BACKDROP_DRESS.map(func(it: Array) -> Array:
+		var at: Array = [it[1][0], it[1][1], _ground_h(it[1][0], it[1][1])]
+		return [it[0], at] + it.slice(2)), false)
+	for w in WOODS:
+		_scatter(g, w[0].to_pascal_case() + "Woods", w[0], w[1], w[2], _ground_h, w[3], w[4], w[5], WOODS_CLEAR, 1.0)
+	# rocks: no clearance, their own skins, casting shadows
+	_scatter(g, "PitRocks", "boulder_b", [[64, 32, 44, 66]], 22, -14.0, 1.0, 2.5, 55, [], 0, SKINS.boulder_b, true)
+	_scatter(g, "RimRocks", "boulder_a", [[-20, -20, 120, 18], [-20, 80, 80, 14]], 18, _ground_h, 0.8, 2.0, 56, WOODS_CLEAR, 0, SKINS.boulder_a, true)
+	_power_line(g, "pylon", PYLONS.map(func(p: Array) -> Array: return [p[0], p[1], _ground_h(p[0], p[1]) - 0.2]))
+	_power_line(g, "utility_pole", ROAD_POLES.map(func(p: Array) -> Array: return [p[0], p[1], _ground_h(p[0], p[1])]))
