@@ -54,6 +54,8 @@ var _victim_down := false  # it was already Down when the kill began
 var _yaw := 0.0
 var _pitch := -0.25
 var _recoil := 0.0
+var ping_range := 0.0  # metres of the last noise made, for the Radar's ring
+var ping_age := 99.0   # s since it
 var _sway := Locomotion.SWAY_MOVING  # degrees of hitscan sway, see Locomotion.sway
 var _pivot: Node3D
 var _pitch_node: Node3D
@@ -92,7 +94,7 @@ func _ready() -> void:
 	_pivot.add_child(_pitch_node)
 	_shoulder_arm = _make_arm(0.55)
 	_pitch_node.add_child(_shoulder_arm)
-	_back_arm = _make_arm(3.2)
+	_back_arm = _make_arm(Locomotion.CAM_DIST)
 	_shoulder_arm.add_child(_back_arm)
 	camera = Camera3D.new()
 	camera.fov = 70
@@ -191,6 +193,7 @@ func _unhandled_input(e: InputEvent) -> void:
 	elif e.is_action_pressed("knock") and _knock_left <= 0.0:
 		_knock_left = KNOCK_COOLDOWN
 		Guard.broadcast(get_tree(), global_position, GuardAlert.KNOCK_RANGE, "a knock")
+		ping(GuardAlert.KNOCK_RANGE)
 		Mix.sfx_at(self, &"knock")
 	elif e.is_action_pressed("interact") and _choke_left <= 0.0:
 		_interact()
@@ -215,6 +218,7 @@ func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 70.0, minf(1.0, 12 * delta))
+	_back_arm.spring_length = lerpf(_back_arm.spring_length, Locomotion.CAM_DIST_AIM if aiming else Locomotion.CAM_DIST, minf(1.0, 10 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	health.tick(delta, get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT))
 	items.tick(delta)
@@ -236,6 +240,8 @@ func _physics_process(delta: float) -> void:
 			_choke_left = 0.0
 		elif _choke_left <= 0.0:
 			Mix.sfx_at(self, &"takedown")
+			Mixer.hit_stop(0.03)
+			Mixer.rumble(0.2, 0.5, 0.12)
 			if _choking == held_up:
 				held_up = null  # a choke after a Hold-up is a takedown like any other
 			if _killing:
@@ -252,13 +258,18 @@ func _physics_process(delta: float) -> void:
 	moving = v != Vector2.ZERO
 	_sway = Locomotion.sway(_sway, moving, crouching, delta)
 	_knock_left -= delta
+	ping_age += delta
 	if moving and (not looks_walking() or carrying) and not _choking and not ladder:  # running is loud; crouched and carry steps are sound only
-		if not crouching and not carrying:
-			Guard.broadcast(get_tree(), global_position, GuardAlert.FOOTSTEP_RANGE, "footsteps")
+		var surface := _floor_surface()
+		var loud := not crouching and not carrying
+		if loud:
+			Guard.broadcast(get_tree(), global_position, GuardAlert.footstep_range(surface), "footsteps")
 		_step_left -= delta
 		if _step_left <= 0.0:
 			_step_left = STEP_EVERY_CARRY if carrying else (STEP_EVERY_CROUCH if crouching else STEP_EVERY)
-			var step := Mix.sfx_at(self, Mix.step_sound(_floor_surface()), Vector3.INF, Mix.step_db(crouching, carrying != null))
+			if loud:
+				ping(GuardAlert.footstep_range(surface))
+			var step := Mix.sfx_at(self, Mix.step_sound(surface), Vector3.INF, Mix.step_db(crouching, carrying != null))
 			if carrying:
 				step.pitch_scale *= Mix.CARRY_STEP_PITCH
 			elif crouching:
@@ -276,12 +287,31 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+## Where the aim has wandered to from the crosshair, degrees; none unless aiming.
+func aim_drift() -> Vector2:
+	return Locomotion.drift(_sway, Time.get_ticks_msec() / 1000.0) if aiming else Vector2.ZERO
+
+
+## A camera kick of `rad` radians, settling by RECOIL_RECOVERY like a shot's.
+func kick(rad: float) -> void:
+	_recoil += rad
+
+
+## A noise of `noise_range` metres was made: the Radar spreads a ring for it.
+func ping(noise_range: float) -> void:
+	ping_range = noise_range
+	ping_age = 0.0
+
+
 ## A guard's bullet landed. Dying opens the Game Over screen (MissionRun).
 func take_hit() -> void:
 	if health.dead():
 		return
 	health.hit()
 	model.react("hit")
+	kick(0.12)
+	Mixer.hit_stop(0.04)
+	Mixer.rumble(0.6, 1.0, 0.2)
 	if health.dead():
 		get_tree().call_group.call_deferred("checkpoint", "game_over")
 
@@ -370,6 +400,8 @@ func _fire() -> void:
 	var sp := arm.spread(carrying != null)
 	var dir := -camera.global_basis.z
 	sp += deg_to_rad(_sway)
+	var wander := aim_drift()
+	dir = (dir + camera.global_basis.x * tan(deg_to_rad(wander.x)) + camera.global_basis.y * tan(deg_to_rad(wander.y))).normalized()
 	dir = (dir + camera.global_basis.x * randf_range(-sp, sp) + camera.global_basis.y * randf_range(-sp, sp)).normalized()
 	# The crosshair decides where; the shot is seen leaving the muzzle and flying to that point.
 	var cam := camera.global_position

@@ -96,3 +96,17 @@ func test_sway_settles_over_point_eight_seconds() -> void:
 	for i in 40:  # 0.8 s total
 		s = Locomotion.sway(s, false, false, 0.01)
 	assert_true(is_equal_approx(s, 0.25))
+
+
+func test_aim_drift_follows_the_sway_and_stays_small() -> void:
+	assert_eq(Locomotion.drift(0.0, 3.0), Vector2.ZERO)
+	var worst := 0.0
+	for i in 200:
+		worst = maxf(worst, Locomotion.drift(Locomotion.SWAY_MOVING, i * 0.1).length())
+	assert_true(worst < Locomotion.SWAY_MOVING * Locomotion.DRIFT_GAIN * 2.0)
+	assert_true(Locomotion.drift(Locomotion.SWAY_CROUCHED, 1.0).length() < Locomotion.drift(Locomotion.SWAY_MOVING, 1.0).length())
+
+
+func test_drift_px_is_zero_at_centre_and_y_is_screen_down() -> void:
+	assert_eq(Locomotion.drift_px(Vector2.ZERO, 50.0, 360.0), Vector2.ZERO)
+	assert_true(Locomotion.drift_px(Vector2(0, 1), 50.0, 360.0).y < 0.0, "up in the world is up the screen")
