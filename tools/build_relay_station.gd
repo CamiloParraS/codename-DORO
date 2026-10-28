@@ -299,6 +299,17 @@ func _ground_h(x: float, y: float) -> float:
 var _noise := FastNoiseLite.new()
 
 
+## A mountain model is 120 m wide with a flat foot, so its base sits on the lowest ground under its footprint:
+## anywhere higher the edge hangs in the air beside the Area.
+func _peak_base(pk: Array) -> float:
+	var r: float = 72.0 * pk[3]  # half the model plus its turn
+	var low := INF
+	for i in 9:
+		for j in 9:
+			low = minf(low, _ground_h(pk[1][0] + (i - 4) * r / 4.0, pk[1][1] + (j - 4) * r / 4.0))
+	return low
+
+
 func _surroundings() -> void:
 	_noise.seed = 7
 	_noise.frequency = 0.035
@@ -312,6 +323,6 @@ func _surroundings() -> void:
 		_scatter(g, "Rocks%d" % k, ["boulder_a", "boulder_b"][k], [[-50, 78, 180, 50], [-40, -30, 36, 100], [84, -30, 40, 60]], 35,
 			_ground_h, 1.0, 3.0, 40 + k, WOODS_CLEAR, 1.0, ["terrain", SNOW_FIELD], true)  # clear 1 m, skin, cast shadows
 	_dress(g, PEAKS.map(func(pk: Array) -> Array:
-		return [pk[0], [pk[1][0], pk[1][1], _ground_h(pk[1][0], pk[1][1]) - 4.0], pk[2], pk[3], "terrain", SNOW_FIELD]), false)
+		return [pk[0], [pk[1][0], pk[1][1], _peak_base(pk)], pk[2], pk[3], "terrain", SNOW_FIELD]), false)
 	_power_line(g, "pylon", PYLONS.map(func(p: Array) -> Array: return [p[0], p[1], _ground_h(p[0], p[1]) - 0.2]))
 	_power_line(g, "utility_pole", ROAD_POLES.map(func(p: Array) -> Array: return [p[0], p[1], 3.0]))
