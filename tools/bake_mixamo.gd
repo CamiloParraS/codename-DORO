@@ -13,11 +13,15 @@ extends SceneTree
 const SRC := {
 	"_raw/Models_Animations/animations/mixamo/": "", "_raw/Models_Animations/animations/mixamo/carry anims/": "",
 	"_raw/work/mx_packs/Pro Rifle Pack/": "pro_", "_raw/work/mx_packs/Pistol_Handgun Locomotion Pack/": "hg_",
+	"_raw/work/mx_packs/Basic Shooter Pack/": "bs_",
 }
 const OUT := "res://assets/models/animations/mixamo_clips.res"
 const BODY := "res://assets/models/characters/Nikita_Rigged.glb"
 const KEY_FPS := 30.0
-const LOOPS := ["idle", "walk", "strafe", "aim", "carrying", "pistol_run", "rifle_run", "pro_run", "pro_sprint"]  # clips whose name contains one of these loop
+const LOOPS := ["idle", "walk", "strafe", "aim", "carrying", "pistol_run", "rifle_run", "pro_run", "pro_sprint", "climbing_ladder", "button_pushing"]  # clips whose name contains one of these loop
+## Clips exported with the hips far off rest (Climbing Ladder floats ~1 m up and to the side): their hips start at
+## rest, with the clip's own vertical travel stripped, and turned round: the file faces -Z, away from the rungs.
+const REBASE := ["climbing_ladder"]
 const BONES := {
 	"Hips": "pelvis", "Spine": "spine_01", "Spine1": "spine_02", "Spine2": "spine_03", "Neck": "neck_01",
 	"Head": "Head", "LeftShoulder": "clavicle_l", "LeftArm": "upperarm_l", "LeftForeArm": "lowerarm_l",
@@ -57,13 +61,13 @@ func _bake_dir(dir: String, prefix: String, lib: AnimationLibrary, tgt: Skeleton
 			scene.free()
 			continue
 		var name := prefix + file.get_basename().to_lower().replace(" (", "_").replace(")", "").replace(" ", "_")
-		var a := _retarget(src, player.get_animation("mixamo_com"), tgt, LOOPS.any(func(l): return name.contains(l)))
+		var a := _retarget(src, player.get_animation("mixamo_com"), tgt, LOOPS.any(func(l): return name.contains(l)), name in REBASE)
 		a.loop_mode = Animation.LOOP_LINEAR if LOOPS.any(func(l): return name.contains(l)) else Animation.LOOP_NONE
 		lib.add_animation(name, a)
 		scene.free()
 
 
-func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -> Animation:
+func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool, rebase: bool) -> Animation:
 	var pairs := []  # [source bone, target bone, track index of its rotation, track index of its position or -1]
 	var out := Animation.new()
 	out.length = from.length
@@ -86,6 +90,7 @@ func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -
 	var pelvis := tgt.find_bone("pelvis")
 	var above := tgt.get_bone_global_rest(tgt.get_bone_parent(pelvis)).affine_inverse()
 	var moves: Array[Vector3] = []
+	var turn := Basis(Vector3.UP, PI) if rebase else Basis.IDENTITY
 	for t in times:
 		src.reset_bone_poses()
 		for i in from.get_track_count():
@@ -103,7 +108,7 @@ func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -
 			posed.append((posed[parent] if parent >= 0 else Transform3D.IDENTITY) * src.get_bone_pose(i))
 		var delta := {}  # target bone -> the world rotation its Mixamo twin made since rest
 		for pr in pairs:
-			delta[pr[1]] = posed[pr[0]].basis.orthonormalized() * src.get_bone_global_rest(pr[0]).basis.orthonormalized().inverse()
+			delta[pr[1]] = turn * posed[pr[0]].basis.orthonormalized() * src.get_bone_global_rest(pr[0]).basis.orthonormalized().inverse()
 		var world := {}  # target bone -> its new world basis (bones are listed parents first)
 		for i in tgt.get_bone_count():
 			if delta.has(i):
@@ -114,7 +119,7 @@ func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -
 		for pr in pairs:
 			var up: Basis = world[tgt.get_bone_parent(pr[1])]
 			out.rotation_track_insert_key(pr[2], t, (up.inverse() * world[pr[1]]).get_rotation_quaternion())
-		var moved := (posed[0].origin - rest_hips) * k
+		var moved := turn * (posed[0].origin - rest_hips) * k
 		moves.append(moved)
 	var pace := Vector2(moves[-1].x - moves[0].x, moves[-1].z - moves[0].z).length() / from.length
 	if loops and pace > 0.3:  # slower is an idle's sway, not a stride
@@ -124,5 +129,7 @@ func _retarget(src: Skeleton3D, from: Animation, tgt: Skeleton3D, loops: bool) -
 		if loops:  # the clip's forward travel goes, or the model glides ahead and snaps back at each loop
 			var drift: Vector3 = moves[-1] - moves[0]
 			m -= Vector3(drift.x, 0, drift.z) * (times[n] / from.length)
+		if rebase:  # and, like the forward travel, the climb itself: the game moves the body up the rungs
+			m -= moves[0] + Vector3(0, moves[-1].y - moves[0].y, 0) * (times[n] / from.length)
 		out.position_track_insert_key(hips, times[n], above * (tgt.get_bone_global_rest(pelvis).origin + m))
 	return out

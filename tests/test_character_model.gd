@@ -13,12 +13,15 @@ func test_operative_clip_priority() -> void:
 	assert_eq(clip.call(true, true, true, true, true, false), "takedown", "a choke beats everything")
 	assert_eq(clip.call(false, true, true, true, true, true), "carry", "carrying beats aim and crouch")
 	assert_eq(clip.call(false, true, false, false, false, false), "carry_idle", "carrying but standing still")
-	assert_eq(clip.call(false, false, true, true, true, false), "aim")
+	assert_eq(clip.call(false, false, true, true, true, false), "crouch_aim", "aiming crouched keeps it low")
+	assert_eq(clip.call(false, false, true, false, true, false), "aim")
 	assert_eq(clip.call(false, false, false, true, true, false), "crouch_walk")
 	assert_eq(clip.call(false, false, false, true, false, false), "crouch_idle")
 	assert_eq(clip.call(false, false, false, false, true, true), "walk")
 	assert_eq(clip.call(false, false, false, false, true, false), "run")
 	assert_eq(clip.call(false, false, false, false, false, false), "idle")
+	assert_eq(clip.call(false, false, true, false, true, false, "climb"), "climb", "a task beats aim and movement")
+	assert_eq(clip.call(true, false, false, false, false, false, "use"), "takedown", "but not a choke")
 
 
 func test_guard_clip_by_speed() -> void:
@@ -26,6 +29,16 @@ func test_guard_clip_by_speed() -> void:
 	assert_eq(CharacterModel.guard_clip(false, 0.0), "idle")
 	assert_eq(CharacterModel.guard_clip(false, 2.0), "walk")
 	assert_eq(CharacterModel.guard_clip(false, 5.0), "run")
+	assert_eq(CharacterModel.guard_clip(true, 0.0, true), "dead", "killed on its feet: it falls")
+
+
+func test_dead_falls_back_to_down_without_the_mixamo_bake() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	m.play("dead")
+	assert_eq(anim.current_animation, "dead" if anim.has_animation("dead") else "down")
+	m.free()
 
 
 func test_every_clip_the_game_asks_for_is_baked() -> void:

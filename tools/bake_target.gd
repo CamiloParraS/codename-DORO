@@ -13,6 +13,10 @@ const CLIPS := {
 	"run": ["_raw/work/aap/running.fbx", true],
 	"down": [SRC + "Sleeping Idle.fbx", false],
 	"talk": [SRC + "Talking.fbx", false], "talk_b": [SRC + "Talking (1).fbx", false],  # gestures for react()
+	# the guard reactions it shares through guard.gd: held up, startled, shot, searching, calling, killed
+	"kneel": [SRC + "Taken Hostage - Victim.fbx", false], "startle": [SRC + "Surprised.fbx", false],
+	"hit": ["_raw/work/mx_packs/Basic Shooter Pack/hit reaction.fbx", false], "look": [SRC + "Look Around.fbx", false],
+	"hand_to_ear": [SRC + "Talking On Phone.fbx", false], "dead": ["_raw/work/mx_packs/Pro Rifle Pack/death from the front.fbx", false],
 }
 
 

@@ -22,24 +22,28 @@ const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
 ## Game clip -> Mixamo clip that replaces it. Locomotion is the Pro Rifle pack (rifle at low ready, paced near the
-## game's speeds); hit, fire and reload are one-shots for react(); carry_idle is the fireman hold standing still;
-## kneel is a held-up guard with its hands up (it raises them, then holds); takedown is the choke grip, looped.
+## game's speeds); hit, fire and reload are one-shots for react() (hit and fire are the Basic Shooter's short standing
+## takes: the loose Hit Reaction flinches at kneeling height); carry_idle is the fireman hold standing still;
+## kneel is a held-up guard with its hands up (it raises them, then holds); takedown is the choke grip, looped;
+## dead falls on its back and holds the last frame; climb, use (a console) and the fulton kneel are operative_clip()
+## tasks; throw and pick_up are one-shots for the Magazine and a resupply crate.
 const MIXAMO_CLIPS := {
 	"idle": "pro_idle", "walk": "pro_walk_forward", "run": "pro_run_forward",
-	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching",
+	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching", "crouch_aim": "pro_idle_crouching_aiming",
 	"crouch_walk": "pro_walk_crouching_forward", "takedown": "hostage_situation_idle_-_villain",
-	"hit": "hit_reaction", "fire": "firing_rifle", "reload": "reloading",
+	"hit": "bs_hit_reaction", "fire": "bs_firing_rifle", "reload": "reloading",
 	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
 	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
 	"talk": "talking", "talk_b": "talking_1",  # gestures for react() while a guard speaks
-	"hand_to_ear": "talking_on_phone",
+	"hand_to_ear": "talking_on_phone", "dead": "pro_death_from_the_front",
+	"climb": "climbing_ladder", "use": "button_pushing", "throw": "throw", "pick_up": "picking_up",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire or
 ## crouch-walk takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
 ## loops as the aim (the loose "Pistol Aim" holsters halfway through).
 const PISTOL_CLIPS := {
 	"idle": "pistol_idle", "walk": "hg_pistol_walk", "run": "hg_pistol_run",
-	"aim": "hg_pistol_idle", "crouch_idle": "pistol_kneeling_idle",
+	"aim": "hg_pistol_idle", "crouch_idle": "pistol_kneeling_idle", "crouch_aim": "pistol_kneeling_idle",  # already raised
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
@@ -82,14 +86,16 @@ var _weapon := ""    # the name it was hold()n with, which picks the clip set
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
 
 
-## Which clip the Operative shows.
-static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool) -> String:
+## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
+static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool, task := "") -> String:
 	if choking:
 		return "takedown"
+	if task != "":
+		return task
 	if carrying:
 		return "carry" if moving else "carry_idle"
 	if aiming:
-		return "aim"
+		return "crouch_aim" if crouching else "aim"
 	if crouching:
 		return "crouch_walk" if moving else "crouch_idle"
 	if moving:
@@ -97,8 +103,10 @@ static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouchin
 	return "idle"
 
 
-## Which clip a guard shows, by flat speed (m/s).
-static func guard_clip(down: bool, speed: float) -> String:
+## Which clip a guard shows, by flat speed (m/s). dead is one killed on its feet: it falls instead of sleeping.
+static func guard_clip(down: bool, speed: float, dead := false) -> String:
+	if dead:
+		return "dead"
 	if down:
 		return "down"
 	if speed > 3.0:
@@ -198,8 +206,8 @@ func play(clip: String, ground_speed := 0.0) -> void:
 	clip = _swapped(clip)
 	if _busy > 0.0:
 		return
-	if not _anim.has_animation(clip):  # carry_idle is Mixamo only
-		clip = "idle"
+	if not _anim.has_animation(clip):  # carry_idle, crouch_aim, dead and the tasks are Mixamo only
+		clip = {"dead": "down", "crouch_aim": "crouch_idle"}.get(clip, "idle")
 	if clip != _clip:
 		_clip = clip
 		_anim.play(clip, 0.2)

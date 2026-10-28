@@ -45,6 +45,7 @@ var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame
 var neutral_left := 0.0          # seconds until a Neutralized guard wakes
 var dead := false                # killed: Down for good, and a guard who checks it radios an alert
+var _fell := false               # killed on its feet: the model plays the fall, not the sleeping pose
 var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var held := false                # being choked: stands still
@@ -54,6 +55,7 @@ var holdup_answer := ""          # what a Hold-up gets out of it (text key holdu
 var carrier: Node3D:             # the Operative carrying this guard
 	set(v):
 		carrier = v
+		_fell = false  # dropped again, it lies in the plain down pose instead of falling a second time
 		model.ride(v.model.carry_mount() if v else null)
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
@@ -153,7 +155,7 @@ func _physics_process(delta: float) -> void:
 	if flat > 1.0 and not is_down() and _step_left <= 0.0:  # footsteps, for the Radar: faster when running
 		_step_left = 0.3 if flat > 3.0 else 0.5
 		ping()
-	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat), flat)
+	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat, _fell), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	_voice_tick(delta)
 	if _balloon:
@@ -398,6 +400,7 @@ func kill() -> void:
 	if dead:
 		return
 	var alerted := get_tree().get_nodes_in_group("guards").any(func(g): return g.alert.state == GuardAlert.State.ALERT)
+	_fell = not is_down()
 	neutralize()
 	dead = true
 	get_tree().call_group("mission_tally", "event", "target_kill" if target else "kill")

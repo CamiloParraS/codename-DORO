@@ -380,6 +380,7 @@ func _flight() -> PackedVector3Array:
 func _throw_magazine() -> void:
 	throwing = false
 	if items.throw(carrying != null):
+		model.react("throw", 0.8, 1.75)  # the clip's wind-up and release; its slow recovery is cut
 		var land := _flight()[-1]
 		Guard.broadcast(get_tree(), land, GuardAlert.KNOCK_RANGE, "a thrown magazine")
 		Mix.sfx_at(self, &"mag_land", land)
@@ -475,6 +476,7 @@ func _interact() -> void:
 			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
 		items.resupply([tranq, rifle])
+		model.react("pick_up", 1.0, 2.0)  # the bend to the crate, not the clip's long stand back up
 	elif _ladder_near():
 		_mount(_ladder_near())
 
@@ -677,6 +679,19 @@ func _fulton_target() -> Guard:
 	return best
 
 
+## The clip for what it is busy at (CharacterModel.operative_clip): climbing, kneeling at a Fulton, or holding E at
+## a console (a relay_console's held time).
+func _task() -> String:
+	if ladder:
+		return "climb"
+	if _fultoning:
+		return "crouch_idle"
+	for c in get_tree().get_nodes_in_group("intel"):
+		if c.get("held"):
+			return "use"
+	return ""
+
+
 func _crate_near() -> bool:
 	for c: Node3D in get_tree().get_nodes_in_group("resupply_crate"):
 		if _flat_dist(c) <= CRATE_REACH:
@@ -705,6 +720,6 @@ func _process(delta: float) -> void:
 	_pivot.global_position = _pivot.global_position.lerp(global_position + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
-	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking()), Vector2(velocity.x, velocity.z).length())
+	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task()), Vector2(velocity.x, velocity.z).length())
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = not looking and _back_arm.get_hit_length() > HIDE_BODY_BELOW
