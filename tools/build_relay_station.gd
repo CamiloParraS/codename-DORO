@@ -9,6 +9,8 @@ extends "res://tools/area_builder.gd"
 
 const OUT := "res://areas/relay_station/relay_station.tscn"
 const SNOW := Color(0.92, 0.93, 0.97)
+const SNOW_FIELD := Color(1.5, 1.5, 1.6)  # the hillside: overbright, so snow still reads pale under the sodium night
+const VALLEY_H := -13.5   # the valley floor the hillside falls to, south of the motor pool
 
 ## Walkable ground, solid from -1 up to its top h: [rect, material, h, tint]. The terraces' faces are
 ## their retaining walls. The 2 m landings at the top of each ramp turn it onto the level above flush.
@@ -144,7 +146,39 @@ const DRESS := [
 	# office inside
 	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 0], ["chair", [61, 11.2, 6], 180],
 	["locker", [53, 8.65, 6], 180], ["ceiling_lamp", [57, 13, 9.5], 0],
+	# the relay's dishes on the summit, either side of the mast
+	["sat_dish", [29.5, 6.6, 6], 200], ["sat_dish", [46, 6.4, 6], 160],
+	# a checkpoint at the road gate
+	["jersey_barrier", [84, 40.6, 3], 0], ["jersey_barrier", [84, 47.4, 3], 0], ["sandbags", [78.6, 41.2, 3], 0],
+	# drifts against the rails, the retaining walls and the cliffs (low: no collider)
+	["mound", [18, 74.6, 0], 0, 0.42, "ground", SNOW], ["mound", [40, 74.8, 0], 20, 0.42, "ground", SNOW],
+	["mound", [52, 74.6, 0], 0, 0.42, "ground", SNOW], ["mound", [44, 33.3, 3], 0, 0.42, "ground", SNOW],
+	["mound", [24, 33.2, 3], 10, 0.4, "ground", SNOW], ["mound", [10, 4.8, 6], 0, 0.42, "ground", SNOW],
+	["mound", [66, 4.8, 6], 0, 0.42, "ground", SNOW], ["mound", [74.5, 22, 6], 90, 0.42, "ground", SNOW],
+	["mound", [74.4, 52, 3], 90, 0.4, "ground", SNOW], ["mound", [5.2, 66, 0], 90, 0.42, "ground", SNOW],
 ]
+## Paint, white: the helipad's H and square on the summit, the road's centre line. [rect, dash, floor h, colour].
+const PAINT := Color(0.95, 0.95, 0.92)
+const MARKINGS := [
+	[[7.4, 12, 0.4, 4], 0, 6, PAINT], [[10.2, 12, 0.4, 4], 0, 6, PAINT], [[7.8, 13.8, 2.4, 0.4], 0, 6, PAINT],
+	[[5, 10, 8, 0.2], 0, 6, PAINT], [[5, 17.8, 8, 0.2], 0, 6, PAINT], [[5, 10.2, 0.2, 7.6], 0, 6, PAINT], [[12.8, 10.2, 0.2, 7.6], 0, 6, PAINT],
+	[[76, 43.9, 134, 0.2], 2.0, 3, PAINT],
+]
+## Beyond the rails: the ground (_ground_h), the road on east, forests, rocks, a pylon line across the valley,
+## telegraph poles along the road and the peaks behind the north ridge.
+const GROUND_RECT := [-120, -120, 320, 330]
+const GROUND_HOLES := [[0, 0, 80, 76], [80, 40, 130, 8]]  # the Area, the road out
+const WOODS := [  # [model, rects, count, scale from, to, seed]
+	["pine", [[-70, 78, 220, 70]], 150, 2.2, 3.6, 31], ["pine_small", [[-60, 78, 200, 40]], 70, 2.0, 3.0, 32],
+	["pine", [[-70, -50, 66, 126]], 55, 2.0, 3.2, 33], ["pine", [[84, -50, 70, 126]], 50, 2.0, 3.2, 34],
+	["pine", [[-40, -60, 160, 56]], 45, 2.0, 3.2, 35], ["dead_tree", [[-60, 80, 200, 60]], 14, 1.2, 1.8, 36],
+]
+const WOODS_CLEAR := [[0, 0, 80, 76], [76, 36, 140, 16]]
+const PYLONS := [[-70, 100], [-10, 97], [50, 96], [110, 97], [170, 100]]  # inside the fog's 80 m from the motor pool
+const ROAD_POLES := [[92, 38.7], [112, 38.7], [132, 38.7], [152, 38.7], [172, 38.7], [192, 38.7]]
+const PEAKS := [["mountain_a", [-20, -60], 0, 1.0], ["mountain_b", [60, -68], 40, 1.1], ["mountain_a", [140, -40], 120, 0.9],
+	["mountain_b", [-70, 20], 90, 0.9], ["mountain_b", [160, 100], 200, 0.9]]
+
 const SPOOFS := {SpoofGarage = [47, 60, 0], SpoofMess = [50, 44, 3], SpoofHelipad = [12, 16, 6], SpoofMast = [44, 15, 6]}
 
 ## What the navmesh must reach from the start: every terrace, the office roof, the catwalk, and every objective.
@@ -193,6 +227,8 @@ func _build() -> void:
 	for l in LADDERS:
 		_ladder(ladders, l).set_meta("walkable", true)
 	_backdrop()
+	_surroundings()
+	_markings(MARKINGS)
 	_mood("relay_station")
 
 	var spots := _group(_root, "Spots")
@@ -239,3 +275,43 @@ func _backdrop() -> void:
 	valley.mesh = plane
 	valley.position = Vector3(0, -14.0, 0)
 	_add(bd, valley)
+
+
+## The hillside round the Area: the cliffs' tops (north 20, west and east 12) climb into the mountain, the
+## east side opens on the road (h 3) and south of the motor pool the slope falls to the valley.
+func _ground_h(x: float, y: float) -> float:
+	var n := _noise.get_noise_2d(x, y)
+	if y >= 76.0:
+		var t := y - 76.0
+		var h := lerpf(-0.4, VALLEY_H, smoothstep(0.0, 34.0, t)) + n * 2.5 * smoothstep(0.0, 10.0, t)
+		return h + maxf(maxf(-x, x - 80.0), 0.0) * 0.45  # ridges come down either side of the valley
+	var hs := []
+	if x <= 0.0:
+		hs.append(12.0 - x * 0.7 + n * 5.0 * smoothstep(0.0, 12.0, -x))
+	if x >= 80.0:
+		var e := 12.0 + (x - 80.0) * 0.6 + n * 5.0 * smoothstep(0.0, 12.0, x - 80.0)
+		hs.append(lerpf(2.9, e, smoothstep(4.5, 10.0, absf(y - 44.0))))
+	if y <= 0.0:
+		hs.append(20.0 - y * 0.8 + n * 6.0 * smoothstep(0.0, 12.0, -y))
+	return minf(hs.max(), 75.0) if hs else 0.0
+
+
+var _noise := FastNoiseLite.new()
+
+
+func _surroundings() -> void:
+	_noise.seed = 7
+	_noise.frequency = 0.035
+	var g := _group(_root.get_node("Backdrop"), "Surroundings")
+	g.owner = _root
+	_heightfield(g, "Hillside", GROUND_RECT, 4.0, _ground_h, GROUND_HOLES, "terrain", SNOW_FIELD, "res://areas/relay_station/hillside.res")
+	_box(g, "RoadOut", [88, 40, 122, 8], 2, 3, "ground", Color.WHITE).collision_layer = 0
+	for w in WOODS:
+		_scatter(g, w[0].to_pascal_case() + "Woods%d" % w[5], w[0], w[1], w[2], _ground_h, w[3], w[4], w[5], WOODS_CLEAR, 2.0)
+	for k in 2:
+		_scatter(g, "Rocks%d" % k, ["boulder_a", "boulder_b"][k], [[-50, 78, 180, 50], [-40, -30, 36, 100], [84, -30, 40, 60]], 35,
+			_ground_h, 1.0, 3.0, 40 + k, WOODS_CLEAR, 1.0, ["terrain", SNOW_FIELD], true)  # clear 1 m, skin, cast shadows
+	_dress(g, PEAKS.map(func(pk: Array) -> Array:
+		return [pk[0], [pk[1][0], pk[1][1], _ground_h(pk[1][0], pk[1][1]) - 4.0], pk[2], pk[3], "terrain", SNOW_FIELD]), false)
+	_power_line(g, "pylon", PYLONS.map(func(p: Array) -> Array: return [p[0], p[1], _ground_h(p[0], p[1]) - 0.2]))
+	_power_line(g, "utility_pole", ROAD_POLES.map(func(p: Array) -> Array: return [p[0], p[1], 3.0]))
