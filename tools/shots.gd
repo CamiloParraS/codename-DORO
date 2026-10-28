@@ -30,9 +30,38 @@ const SHOTS := {
 		liftmouth = [Vector3(-25.5, 2.0, -16), Vector3(-25.5, 1.5, -4)],
 		slipway = [Vector3(-29, 3, 26), Vector3(-29, 0.5, 37)],
 	}],
+	## Each Area's borders from where the Operative stands: what lies past the playable square.
+	harbour_edges = ["res://areas/harbour/harbour.tscn", {
+		road_out = [Vector3(-10, 2.5, -32), Vector3(-10, 0, -70)],
+		north_sea = [Vector3(31, 5, -36), Vector3(50, 0, -80)],
+		quay_south = [Vector3(5, 2.5, 22), Vector3(10, -1, 50)],
+		pier = [Vector3(12, 2, 28), Vector3(30, -1, 45)],
+		cliff = [Vector3(5, 3, -25), Vector3(-45, 14, -55)],
+		crane_north = [Vector3(16, 10, -21), Vector3(20, 0, -80)],
+	}],
 	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
+	relay_edges = ["res://areas/relay_station/relay_station.tscn", {
+		south_drop = [Vector3(-10, 2.5, 30), Vector3(-5, -8, 60)],
+		road_out = [Vector3(38, 5.5, 4), Vector3(70, 3, 4)],
+		summit_view = [Vector3(-20, 8.5, -20), Vector3(10, 0, 40)],
+		summit_north = [Vector3(-10, 8, -15), Vector3(-10, 10, -50)],
+		motor_pool = [Vector3(-30, 2.5, 33), Vector3(10, 0, 20)],
+		hill_above = [Vector3(-20, 25, 75), Vector3(-10, -10, 40)],
+		valley = [Vector3(0, -8, 90), Vector3(0, 4, 30)],
+	}],
 	research_annex = ["res://areas/research_annex/research_annex.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
-	core = ["res://areas/core/core.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)], yard = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)]}],
+	annex_edges = ["res://areas/research_annex/research_annex.tscn", {
+		road_out = [Vector3(0, 2.5, -28), Vector3(0, 0, -70)],
+		quarry = [Vector3(15, 3, -2), Vector3(35, -10, 25)],
+		west = [Vector3(-28, 2.5, 10), Vector3(-70, 0, 10)],
+		south = [Vector3(-20, 2.5, 30), Vector3(-20, 0, 70)],
+		north_strip = [Vector3(-30, 2.5, -20), Vector3(30, 0, -36)],
+		yard = [Vector3(-30, 2.5, 30), Vector3(10, 0, 28)],
+		sky_north = [Vector3(0, 12, -30), Vector3(0, 25, -160)],
+		pit = [Vector3(25, 6, -12), Vector3(60, -14, 40)],
+	}],
+	core = ["res://areas/core/core.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)], yard = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)],
+		corridor = [Vector3(-36, 2, -8), Vector3(-54, 1.5, -8)], room = [Vector3(-56, 2.5, -14), Vector3(-72, 1, -4)]}],
 }
 
 
