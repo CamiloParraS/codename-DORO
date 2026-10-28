@@ -20,7 +20,10 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Set dressing in `assets/models/props/` (placed by each Area's `DRESS` data in `tools/build_*.gd`):
   - Pizza Doggy's PSX Mega Pack (same license as the line above): `drum`, `crate_small`, `supply_crate`, `cardboard_box`, `vending_machine`, `jerrycan`, `pc`, `monitor`, `monitoring_screen`, `chair`, `shelf`, `table`, `locker`, `ceiling_lamp`.
   - PSX Industrial Environment Asset Pack by godgoldfear (CC 4.0, see below), split out of its FBX in Blender, metallic zeroed: `generator`, `pallet`, `pallet_stack`, `barrel_a`, `barrel_b`, `crate_wide`, `cabinet_a`, `cabinet_b`, `pipe_riser`, `tank_tall`, `vent_unit`, `chimney`, `shed`.
-  - PSX style barriers by valsekemarplant (CC0, see below): `bollard`, `cone`.
+  - PSX style barriers by valsekemarplant (CC0, see below): `bollard`, `cone`, `jersey_barrier` (`Jersey_barrier_dirty`).
+  - Pizza Doggy's Retro Tree Pack v1.0, Super Low Res (same license as the Pizza Doggy line above): `pine` (`tree_rt_3`), `pine_small` (`tree_rt_1`), `poplar` (`tree_rt_2_1`), `dead_tree` (`dead_tree_rt_1`).
+  - Kenney City Kit (Industrial), https://kenney.nl, CC0 1.0: `water_tower`.
+  - Made for this project in Blender (via the Blender MCP, textured with the project's own `assets/textures/`): `utility_pole`, `pylon`, `sat_dish`, `lighthouse`, `buoy_red`, `buoy_green`, `piling`, `vent_cowl`, `tyre_fender`; and the bare shapes the builders skin with `psx_surface` (`SKINS` in `tools/area_builder.gd`): `mountain_a`, `mountain_b`, `boulder_a`, `boulder_b`, `mound`.
   - Also from godgoldfear's pack, textures relinked and split out in Blender (`_raw/work/bl/export_props.py`, `fence.py`): `fence` (frame plus chain-link panel), `roadblock`, `sandbags`, `pipe_arch`, `tank_wide`, and the Backdrop blocks `block_tall`, `block_wide`, `block_hall`, `block_long`.
   - Surface textures in `assets/textures/` (cropped and cut to 128 px): `asphalt`, `concrete`, `corrugated_rust`, `panels`, `cargo_green`, `hatch`, `bridge_windows`, `hazard` from godgoldfear's pack (CC 4.0); `deck_plate`, `rust`, `planks`, `rock` from Screaming Brain Studios' Tiny Texture Pack 2 (CC0, see below).
   - `crane_tower`, `crane_boom`: made for this project in Blender (procedural lattice, `_raw/work/bl/crane.blend`, exported by `export_crane.py`).
