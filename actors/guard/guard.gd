@@ -68,6 +68,7 @@ var instant_down := false        # Downs L2: seeing a Down guard raises the aler
 var carry_only := false          # a Target a Fulton would kill (Campaign `carry_only`): carried out on foot
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
+var role := ""                   # its post's role (patroller, observer...), "" = none
 var encounter := 0               # the Encounter its post belongs to (0 = none)
 var detours: Array[Vector3] = [] # spots in its Encounter, one visited per patrol loop in Caution (the Area sets them)
 
@@ -130,6 +131,15 @@ func _ready() -> void:
 	_agent.velocity_computed.connect(_on_velocity_computed)
 
 
+var ping_age := 99.0  # s since this guard last made a noise (a step, a line): the Radar shows him while it is young
+var _step_left := 0.0
+
+
+## This guard made a noise the Radar can pick up.
+func ping() -> void:
+	ping_age = 0.0
+
+
 func _physics_process(delta: float) -> void:
 	_clock += delta
 	_tele_left -= delta
@@ -138,6 +148,11 @@ func _physics_process(delta: float) -> void:
 	_prev_state = alert.state
 	_prev_calling = alert.calling
 	var flat := Vector2(velocity.x, velocity.z).length()
+	ping_age += delta
+	_step_left -= delta
+	if flat > 1.0 and not is_down() and _step_left <= 0.0:  # footsteps, for the Radar: faster when running
+		_step_left = 0.3 if flat > 3.0 else 0.5
+		ping()
 	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	_voice_tick(delta)

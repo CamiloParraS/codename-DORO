@@ -29,7 +29,7 @@ func test_alert_is_a_sting_with_hit_stop() -> void:
 	var b := AlertBeat.new()
 	assert_eq(b.update([S], 1.0), &"question")
 	assert_eq(b.update([A, S], 2.0), &"alert")
-	assert_eq(b.scale(2.1, false), AlertBeat.STOP_SCALE)
+	assert_eq(b.scale(2.0 + AlertBeat.STOP_TIME / 2, false), AlertBeat.STOP_SCALE)
 
 
 func test_evasion_end_is_relief_but_evasion_to_alert_is_a_new_sting() -> void:
@@ -66,3 +66,13 @@ func test_no_relief_when_the_last_evading_guard_is_downed_or_the_list_empties() 
 	assert_eq(_beat([[E, P], [P]]), [&"", &""], "downed guard leaves the list")
 	assert_eq(_beat([[E], []]), [&"", &""], "scene change empties it")
 	assert_eq(_beat([[E, P], [P, P]]), [&"", &"relief"], "a genuine end still cues")
+
+
+func test_a_hit_stop_on_demand_never_shortens_a_running_one() -> void:
+	var b := AlertBeat.new()
+	b.stop(10.0, 0.04)
+	assert_eq(b.scale(10.02, false), AlertBeat.STOP_SCALE)
+	assert_eq(b.scale(10.05, false), 1.0)
+	b.update([A], 20.0)  # the "!" stop is STOP_TIME
+	b.stop(20.0, 0.03)
+	assert_eq(b.scale(20.0 + AlertBeat.STOP_TIME - 0.01, false), AlertBeat.STOP_SCALE)

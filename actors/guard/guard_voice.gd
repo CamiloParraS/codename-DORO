@@ -37,6 +37,8 @@ func say(event: StringName, key := "") -> bool:
 	bus = Mix.RADIO if Bark.on_radio(event) else Mix.VOICE
 	pitch_scale = Bark.pitch(str(get_parent().name))
 	play()
+	if get_parent().has_method("ping"):
+		get_parent().ping()  # the Radar hears a bark
 	return true
 
 

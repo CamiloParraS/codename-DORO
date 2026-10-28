@@ -3,7 +3,7 @@ extends RefCounted
 ## The cue a change in the Mission's highest guard state fires: "?" on Suspicion, "!" on Alert (with a
 ## hit-stop), relief when Evasion ends. Node-free; the Mix autoload feeds it every frame and applies scale().
 
-const STOP_TIME := 0.2    # real seconds of hit-stop
+const STOP_TIME := 0.1    # real seconds of hit-stop
 const STOP_SCALE := 0.05  # Engine.time_scale during it
 
 var _top := GuardAlert.State.PATROL
@@ -29,6 +29,11 @@ func update(states: Array, now: float) -> StringName:
 	if prev == GuardAlert.State.EVASION and top < GuardAlert.State.EVASION and not left:
 		return &"relief"
 	return &""
+
+
+## A hit-stop of `secs` real seconds from `now` (a hit, a takedown); never shortens one already running.
+func stop(now: float, secs: float) -> void:
+	_stop_until = maxf(_stop_until, now + secs)
 
 
 ## The time scale to run at. `cancel` (paused, Operative dead) ends the hit-stop for good.

@@ -474,3 +474,8 @@ func test_calling_or_alerted_guards_ignore_a_drop() -> void:
 	var a := GuardAlert.new()
 	a.shot(SPOT)
 	assert_eq(a.see_drop(SPOT, "Kostas"), "")
+
+
+func test_metal_floors_carry_footsteps_further() -> void:
+	assert_eq(GuardAlert.footstep_range(&""), GuardAlert.FOOTSTEP_RANGE)
+	assert_true(GuardAlert.footstep_range(&"metal") > GuardAlert.FOOTSTEP_RANGE)

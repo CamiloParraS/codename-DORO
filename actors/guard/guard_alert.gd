@@ -16,6 +16,7 @@ const NOISE_FILL := 0.35
 const CAMERA_LOSE_TIME := 3.0  # a camera drops its alert this quickly: it never searches
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
+const SURFACE_LOUDNESS := {&"metal": 1.3}  # floor tag -> footstep range multiplier; anything else is 1.0
 const PARTNER_RANGE := 15.0  # a guard seen dropping within this, in the front cone; the name call carries as far
 const PARTNER_DELAY := 3.0   # seconds from a partner's "?" to his "!"
 const FLINCH := 0.35       # seconds of the startle on going "!"; cosmetic, never holds up the response
@@ -203,6 +204,11 @@ func wake(pos: Vector3) -> String:
 	last_known = pos
 	meter = SUSPECT_AT
 	return _go(State.SUSPICION, "woke up")
+
+
+## How far a run's footsteps carry on a floor `surface` tag: metal rings.
+static func footstep_range(surface: StringName) -> float:
+	return FOOTSTEP_RANGE * SURFACE_LOUDNESS.get(surface, 1.0)
 
 
 ## Does a guard at ear hear a noise of this radius at pos: 3D distance, through walls.
