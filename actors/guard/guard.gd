@@ -379,7 +379,10 @@ func partner_calm() -> bool:
 
 
 func _refresh_mark() -> void:
-	if neutral_left > 0.0 and not dead:  # asleep, and it wears off
+	if dead:  # no symbol: zZz is only for the knocked out
+		_mark.text = ""
+		return
+	if neutral_left > 0.0:  # asleep, and it wears off
 		_mark.text = "zZz"
 		_mark.modulate = Color.WHITE
 		return
@@ -435,6 +438,7 @@ func kill() -> void:
 	_fell = not is_down()
 	neutralize()
 	dead = true
+	_refresh_mark()
 	get_tree().call_group("mission_tally", "event", "target_kill" if target else "kill")
 	if alerted:
 		get_tree().call_group("mission_tally", "event", "alert_kill")

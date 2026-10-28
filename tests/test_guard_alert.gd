@@ -153,6 +153,21 @@ func test_noise_never_alerts() -> void:
 	assert_eq(a.meter, GuardAlert.SUSPECT_AT)
 
 
+func test_footsteps_never_escalate_but_other_noise_does() -> void:
+	var a := GuardAlert.new()
+	a.hear(SPOT, "footsteps")
+	_run(a, GuardAlert.NOISE_GRACE + 0.5, 0.0, false)
+	for i in 10:
+		a.hear(SPOT, "footsteps")
+	assert_eq(a.state, S.SUSPICION, "footsteps alone never alert")
+	var b := GuardAlert.new()
+	b.hear(SPOT, "a knock")
+	_run(b, GuardAlert.NOISE_GRACE + 0.5, 0.0, false)
+	for i in 10:
+		b.hear(SPOT, "a knock")
+	assert_true(b.calling, "other noise still escalates")
+
+
 func test_noise_redirects_a_search() -> void:
 	var a := _evading()
 	_run(a, 8.0, 0.0, true)
@@ -431,15 +446,15 @@ func test_continuous_noise_moves_the_look_point_but_never_restarts_the_look_arou
 
 func test_noise_more_than_1_s_into_suspicion_adds_035() -> void:
 	var a := GuardAlert.new()
-	a.hear(SPOT, "footsteps")
-	a.hear(SPOT, "footsteps")
+	a.hear(SPOT, "a knock")
+	a.hear(SPOT, "a knock")
 	assert_eq(a.meter, GuardAlert.SUSPECT_AT, "inside the grace")
 	_run(a, 1.2, 0.0)
 	var m := a.meter
-	a.hear(SPOT, "footsteps")
+	a.hear(SPOT, "a knock")
 	assert_true(is_equal_approx(a.meter, m + 0.35), "%f" % a.meter)
-	a.hear(SPOT, "footsteps")
-	assert_eq(a.hear(SPOT, "footsteps"), "heard footsteps again", "repeated noise escalates to a call")
+	a.hear(SPOT, "a knock")
+	assert_eq(a.hear(SPOT, "a knock"), "heard a knock again", "repeated noise escalates to a call")
 	assert_true(a.calling)
 
 

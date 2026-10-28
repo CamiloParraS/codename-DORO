@@ -133,7 +133,7 @@ func see_drop(pos: Vector3, name_: String) -> String:
 
 ## A noise reached this guard: suspicion at the source, never an alert by itself. A suspicious guard
 ## moves its look point there without restarting the look-around, and a noise more than NOISE_GRACE s
-## into Suspicion adds NOISE_FILL to the meter, so repeated noise escalates. A searching guard moves
+## into Suspicion adds NOISE_FILL to the meter, so repeated noise escalates (footsteps never do: only sight alerts). A searching guard moves
 ## its search there.
 func hear(pos: Vector3, what: String) -> String:
 	if state == State.ALERT or calling:
@@ -142,7 +142,7 @@ func hear(pos: Vector3, what: String) -> String:
 	if state == State.PATROL:
 		meter = maxf(meter, SUSPECT_AT)
 		return _go(State.SUSPICION, "heard %s" % what)
-	if state == State.SUSPICION and since > NOISE_GRACE:
+	if state == State.SUSPICION and since > NOISE_GRACE and what != "footsteps":
 		meter = minf(meter + NOISE_FILL, 1.0)
 		if meter >= 1.0:
 			return _call("heard %s again" % what)
