@@ -361,6 +361,8 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 		b.add_child(m)
 		m.scale = s
 		m.position = Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * s - Vector3.UP * size.y / 2
+		if solid and key == "lamp_post":  # the arm skews the bounds' centre: the pole stands at the model's origin
+			b.get_node("Shape").position = Vector3(m.position.x, 0, m.position.z)
 		if DRESS_LIGHTS.has(key):
 			var l := OmniLight3D.new()
 			l.name = "Light"
