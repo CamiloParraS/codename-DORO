@@ -73,7 +73,7 @@ func test_text_has_one_line_per_mission_and_each_idle() -> void:
 	l.count("dart")
 	l.finish_mission()
 	var text := l.to_text()
-	assert_contains(text, "mission 1 time 125 s darts 1 rifle 0 spoofs 0")
+	assert_contains(text, "mission 1 time 125 s darts 1 rifle 0 spoofs 0 takedowns 0 fultons 0 holdups 0 alerts 0")
 	assert_contains(text, "idle 125 s")
 
 
@@ -83,3 +83,31 @@ func test_seconds_is_the_latest_missions_time() -> void:
 	log.start_mission(0)
 	log.tick(2.5, false)
 	assert_eq(log.seconds(), 2.5)
+
+
+func test_the_runs_shape_first_spotted_encounters_alerts_and_tips() -> void:
+	var l := _log()
+	l.enter_encounter(1)
+	l.tick(12.0, false)
+	l.tip("crouch")
+	l.spotted()
+	l.tick(3.0, false)
+	l.spotted()  # only the first counts
+	l.enter_encounter(0, "SternDrop")
+	l.enter_encounter(2)
+	l.alert(2)
+	l.count("takedown")
+	l.count("holdup")
+	var m: Dictionary = l.missions[0]
+	assert_eq(m.spotted, 12.0)
+	assert_eq(m.encounters, [[1, 0.0, ""], [0, 15.0, "SternDrop"], [2, 15.0, ""]])
+	assert_eq(m.alerts, [[2, 15.0]])
+	assert_eq(m.tips, [["crouch", 12.0]])
+	var text := l.to_text()
+	for line in ["takedowns 1 fultons 0 holdups 1 alerts 1", "first spotted 12 s", "15 s: encounter 0 (left by SternDrop)",
+			"15 s: alert in encounter 2", "12 s: tip crouch"]:
+		assert_contains(text, line)
+
+
+func test_never_spotted_says_so() -> void:
+	assert_contains(_log().to_text(), "first spotted never")

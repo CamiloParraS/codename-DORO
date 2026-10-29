@@ -328,7 +328,7 @@ func _row(b: Node3D, size: Vector3, key: String) -> void:
 		b.add_child(m)
 
 
-## Set dressing from assets/models/props: [model, [x, y, h], facing, scale (1 if missing), skin material,
+## Set dressing from assets/models/props: [model, [x, y, h], facing, scale (1 if missing; a Vector3 per axis), skin material,
 ## skin tint], each standing on its base at h. Call it before the bake: anything DRESS_SOLID_H or taller is a
 ## StaticBody3D whose box collider (layer 1) the navmesh routes round, centred on the body like _box's so
 ## _check_markers sees it. Backdrop dressing passes solid = false: nothing out there is touched.
@@ -336,7 +336,8 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 	var g := _group(parent, "Dressing")
 	for it in items:
 		var key: String = it[0]
-		var s: float = it[3] if it.size() > 3 else 1.0
+		var sc: Variant = it[3] if it.size() > 3 else 1.0
+		var s: Vector3 = sc if sc is Vector3 else Vector3.ONE * sc  # a Vector3 stretches per model axis
 		var m: Node3D = load("res://assets/models/props/%s.glb" % key).instantiate()
 		var box := _model_box(m)
 		var size: Vector3 = DRESS_SHAPES.get(key, box.size) * s
@@ -358,7 +359,7 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 			shape.shape = _box_shape(size)
 			b.add_child(shape)
 		b.add_child(m)
-		m.scale = Vector3.ONE * s
+		m.scale = s
 		m.position = Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * s - Vector3.UP * size.y / 2
 		if DRESS_LIGHTS.has(key):
 			var l := OmniLight3D.new()
@@ -856,7 +857,7 @@ func _check_markers() -> void:
 		# a camera hangs from its mount, so the mount must be on a wall face or a pole (within 0.3 m)
 		if parent.name == "CameraMounts" and not boxes.any(func(b: Array) -> bool: return b[1].has_point(_world(m).origin)):
 			push_warning("%s hangs in the air" % _root.get_path_to(m))
-		if parent.name in ["SentryHighPoints", "CameraMounts"] or parent.is_in_group("ladders"):
+		if parent.name in ["SentryHighPoints", "CameraMounts", "Encounters"] or parent.is_in_group("ladders"):  # an Encounter marker is a rect's corner
 			continue
 		for b in boxes:
 			if b[1].has_point(_world(m).origin + Vector3.UP * 0.5):

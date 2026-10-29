@@ -1,6 +1,6 @@
 ## The Harbour Area (greybox). Marker groups: spot, sentry_high_point, camera_mount, guard_post,
-## guard_post_extra, spoof_place. A guard post's child markers are its patrol route. Every $GuardPosts post
-## is staffed, so the Area sets its own guard count. Marker meta (all optional): `hold` (seconds) and
+## guard_post_extra, spoof_place, split_post (where the smoke-break pair go once recorded), encounter. A guard
+## post's child markers are its patrol route. Every $GuardPosts post is staffed, so the Area sets its own guard count. Marker meta (all optional): `hold` (seconds) and
 ## `scan` (degrees) make a stop that faces the marker's -Z, held that long and swept across that arc (a
 ## routeless post with `scan` is a scanning post; a sentry high point reads `scan` too); `chat` on a post
 ## staffs it with a chatting pair; `holdup` names what a Hold-up gets out of its guard. Crawlspaces and
@@ -33,6 +33,9 @@ func _ready() -> void:
 	_spawn_targets(guards)
 	if Deployment.pairs(deployed):
 		_pair_up(guards.filter(func(g: Guard) -> bool: return g.route.size() > 1))
+	var smoke := get_node_or_null("Intel/IntelSmokeBreak")
+	if smoke and has_node("SplitPosts"):
+		smoke.reached.connect(split_pair)
 	_set_detours(guards)
 	$MissionRun.tally.add("spawned", guards.size())  # escorts included, Targets not (they add 3 each)  # the Lethality denominator (reinforcements add theirs)
 	var helmets := Deployment.helmets(deployed, guards.size())
@@ -96,6 +99,7 @@ func _process(_delta: float) -> void:
 	if n > 0:
 		_send(n)
 	_dismiss()
+	_leave()
 
 
 func _send(n: int) -> void:
@@ -181,6 +185,31 @@ func _spawn_chat(post: Marker3D) -> Array:
 	pair[0].chat_partner = pair[1]
 	pair[1].chat_partner = pair[0]
 	return pair
+
+
+## The smoke break is recorded: the pair stop talking and each walks to its $SplitPosts marker (named after
+## the guard) and stays there, or, with `leaves`, goes inside there (_leave); a Checkpoint restore puts it back
+## there, not at the chat. Safe to call again.
+func split_pair() -> void:
+	for m: Marker3D in $SplitPosts.get_children():
+		var g: Guard = get_node_or_null(NodePath(m.name))
+		if g == null or g.chat == null:
+			continue
+		g.chat = null
+		g.post = m.global_transform
+		g.route.assign([m.global_position])
+		g.stops.assign([{yaw = m.global_rotation.y, hold = Guard.PAUSE}])
+		if m.get_meta("leaves", false):
+			g.add_to_group("leaving")
+
+
+## A guard sent off by split_pair is gone once it reaches its post up and on patrol, like a dismissed
+## reinforcement (it still counts as spawned: a life spared).
+func _leave() -> void:
+	for g: Guard in get_tree().get_nodes_in_group("leaving"):
+		if not g.is_down() and g.alert.state == GuardAlert.State.PATROL and g._flat_dist(g.route[0]) < Guard.REACHED:
+			g.remove_from_group("guards")
+			g.queue_free()
 
 
 ## A route point's stop from its Marker meta: {} unless it has `hold` or `scan`.

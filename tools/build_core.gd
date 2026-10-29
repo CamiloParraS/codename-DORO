@@ -28,7 +28,7 @@ const CORE_BUILDING := ["CoreRoom", ROOM, 4.0, [["E", 32.0]], Color(0.7, 0.75, 0
 ## Its steps are reaching the building (IntelOps) and taking the lift (IntelLift).
 const CORE_DROP_POSTS := ["PostP", "PostForeman"]
 const CORE_HARBOUR_POSTS := [
-	["PostStern", [74, 58, DECK], 270, {role = "patroller", enc = 1}, [[66.2, 58, {hold = 3.0, f = 0}]]],
+	["PostStern", [78, 58, DECK], 270, {role = "patroller", enc = 1}, [[66.2, 58, {hold = 3.0, f = 0}]]],
 	["PostLiftHall", [15.5, 25, 0], 180, {hold = 5.0, role = "interceptor", enc = 3}, []],
 ]
 const CORE_SEAL := [["OpsNorthPlug", [19, 19.85, 2, 0.3], 0, 4, "panels", Color.WHITE]]
@@ -135,7 +135,7 @@ func _build() -> void:
 	_posts("ExtraGuardPosts", EXTRA_POSTS, "guard_post_extra")
 	var spoofs := _group(_root, "SpoofPlaces")
 	for n in SPOOFS:
-		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
+		_marker(spoofs, n, SPOOFS[n], 0, {}, "spoof_place")
 
 	_rooms(ROOMS + CORE_ROOMS)
 	_actors()

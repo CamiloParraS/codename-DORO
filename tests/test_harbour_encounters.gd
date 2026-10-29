@@ -164,3 +164,39 @@ func test_a_fultoned_speakers_voice_can_still_be_spoofed() -> void:
 	g.known_down = true
 	assert_true(radio.speaker_facts(g).speaker_known_down, "a known Down speaker still counts")
 	g.free()
+
+
+## pw-feel 12: MissionRun finds the Operative's Encounter from these markers (tutorial tips, the session log).
+func test_encounter_markers_match_the_data_and_the_start_is_on_the_deck() -> void:
+	var h: Node = load(SCENE).instantiate()
+	var ids := []
+	for m: Marker3D in h.get_node("Encounters").get_children():
+		if m.is_in_group("encounter"):
+			ids.append(m.get_meta("id"))
+	assert_eq(ids, [1, 2, 3])
+	var e1: Marker3D = h.get_node("Encounters/Encounter1")
+	var d: Vector3 = h.get_node("Spots/OperativeStart").position - e1.position
+	var size: Vector2 = e1.get_meta("size")
+	assert_true(d.x >= 0 and d.z >= 0 and d.x <= size.x and d.z <= size.y, "the start is in Encounter 1")
+	h.free()
+
+
+## The smoke-break pair split once recorded: a SplitPosts marker for each seat's guard (harbour.gd split_pair).
+func test_split_posts_name_the_chat_pair() -> void:
+	var h: Node = load(SCENE).instantiate()
+	var names := h.get_node("SplitPosts").get_children().map(func(m: Node) -> String: return m.name)
+	assert_eq(names, ["GuardPA", "GuardPB"])
+	assert_true(h.get_node("GuardPosts/PostP").has_meta("chat"), "PostP seats GuardPA and GuardPB")
+	h.free()
+
+
+## The first lessons stand alone (pw-feel 12): O1 and O2 are 15 m (a shout) from every other guard post.
+func test_the_decks_first_two_guards_are_out_of_shout_range() -> void:
+	var h: Node = load(SCENE).instantiate()
+	var posts := h.get_node("GuardPosts").get_children()
+	for lone in ["PostO1", "PostO2"]:
+		var a: Marker3D = h.get_node("GuardPosts/" + lone)
+		for b: Marker3D in posts:
+			if b != a:
+				assert_true(a.position.distance_to(b.position) >= AlertChain.SHOUT_RANGE, "%s to %s" % [lone, b.name])
+	h.free()

@@ -24,6 +24,9 @@ const GAME_OVER := preload("res://ui/game_over/game_over.gd")
 const MENU := "res://ui/main_menu/main_menu.tscn"
 
 const LOG_PATH := "user://session_log.txt"  # rewritten at each Mission's end; the observer opens it
+## Tally events that count as doing a tutorial verb.
+const TEACH_EVENTS := {dart = "tranq", spoof = "radio", takedown = "takedown", fulton = "fulton"}
+const EXIT_NEAR := 5.0  # metres from an encounter_exit marker that name the way the Operative left
 
 var tally := MissionTally.new()
 var record := Aigis.new_record()
@@ -35,6 +38,9 @@ var rank := Rank.new()             # run-wide: a Checkpoint never restores it
 var first_s := false               # set on commit: the slot's first S on this Mission (Requisition unlocks)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
+var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame
+var _items := {}                   # Scanner charges and Magazines last frame: a drop is a use
+var _holding := false              # some guard was held up last frame
 var step := 0                      # objective steps done
 var ended := false
 var hints := HintTracker.new()     # Metis's Hints for the current step
@@ -190,6 +196,8 @@ func event(name_: String) -> void:
 	if not ended:
 		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
 		tally.add(name_)
+		if TEACH_EVENTS.has(name_):
+			_metis_line(tutorial.done(TEACH_EVENTS[name_], record.mission, campaign))
 		if name_ == "kill" or name_ == "target_kill":
 			rank.kills += 1
 
@@ -221,7 +229,7 @@ func _physics_process(delta: float) -> void:
 		var alerting: bool = AlertChain.area.phase in [AlertChain.Phase.ALERT, AlertChain.Phase.EVASION]
 		SessionLog.current.tick(delta, alerting)
 		_guide(delta, alerting)
-	_teach(delta)
+	_teach()
 
 
 ## Ticks the AlertChain and passes its events to the guards. Only a completed call counts as an Alert
@@ -234,12 +242,15 @@ func _run_chain(delta: float) -> void:
 		if g.seen_rate > 0.0:
 			spotter = g
 	var cam_sees := get_tree().get_nodes_in_group("cameras").any(func(c: SecurityCamera) -> bool: return c.seeing)
+	if spotter:
+		SessionLog.current.spotted()
 	var ev := chain.tick(delta, spotter != null or cam_sees)
 	match ev:
 		&"alert", &"realert":
 			if ev == &"alert":
 				tally.add("alert")
 				rank.alerts += 1
+				SessionLog.current.alert(_enc_now)
 			var pos := chain.call_pos if ev == &"alert" or not spotter else spotter.alert.last_known
 			var who := str(chain.caller.name) if ev == &"alert" and chain.caller is Node else "HQ"
 			for g: Guard in guards:
@@ -287,26 +298,66 @@ func _hint(tier: int) -> void:
 		get_tree().call_group("codec_live", "live_call", [["analyst", _steps()[step].hint[tier - 1]]])
 
 
-## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time each verb matters.
-func _teach(delta: float) -> void:
+## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time a verb matters in the
+## Encounter that teaches it; a verb the player does unprompted is spent (or, LINE_ONLY, gets just the line).
+func _teach() -> void:
 	var op: Node3D = get_tree().get_first_node_in_group("operative")
 	if not op:
 		return
-	var world := {guard = INF, down = INF, spot = INF, prints = op.voiceprints.held.size(),
-		scanner = op.items.charges, magazines = op.items.magazines, tranq = op.gun() == op.tranq,
-		holdup = INF, fulton = op.fulton_ready(), caution = AlertChain.area.phase == AlertChain.Phase.CAUTION}
+	var enc := encounter_at(op.global_position)
+	if enc != _enc_now:
+		SessionLog.current.enter_encounter(enc, _exit_near(op.global_position) if _enc_now > 0 else "")
+		_enc_now = enc
+	var world := {guard = INF, down = INF, spot = INF, holdup = INF, fulton = op.fulton_ready(), enc = enc}
+	var holding := false
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
 		if key != "":
 			world[key] = minf(world[key], _flat(op, g))
 		if key == "guard" and g.holdup_answer != "":
 			world.holdup = minf(world.holdup, _flat(op, g))
+		holding = holding or g.held_up
 	for s: Node3D in get_tree().get_nodes_in_group("eavesdrop_spot"):
 		world.spot = minf(world.spot, _flat(op, s))
-	var verb := tutorial.update(delta, record.mission, campaign, Tutorial.relevant(world))
+	var doing := {crouch = op.crouching, carry = op.carrying != null, eavesdrop = not op.voiceprints.held.is_empty(),
+		holdup = holding, scanner = op.items.charges < _items.get("charges", op.items.charges),
+		magazine = op.items.magazines < _items.get("magazines", op.items.magazines),
+		caution = AlertChain.area.phase == AlertChain.Phase.CAUTION}
+	_items = {charges = op.items.charges, magazines = op.items.magazines}
+	if holding and not _holding:
+		SessionLog.current.count("holdup")
+	_holding = holding
+	var verb := tutorial.update(record.mission, campaign, Tutorial.relevant(world))
 	if verb != "":
 		get_tree().call_group("tutorial_tip", "tip", tr(Tutorial.prompt_key(verb)))
+		_metis_line(verb)
+		SessionLog.current.tip(verb)
+	for v: String in doing:
+		if doing[v]:
+			_metis_line(tutorial.done(v, record.mission, campaign))
+
+
+func _metis_line(verb: String) -> void:
+	if verb != "":
 		get_tree().call_group("radio_log", "say", "METIS", tr(Tutorial.line_key(verb)))
+
+
+## The encounter_exit marker within EXIT_NEAR of pos (its name: Gangway, SternDrop), or "".
+func _exit_near(pos: Vector3) -> String:
+	for m: Node3D in get_tree().get_nodes_in_group("encounter_exit"):
+		if m.global_position.distance_to(pos) <= EXIT_NEAR:
+			return m.name
+	return ""
+
+
+## The Encounter (its id) whose $Encounters marker rect holds pos, or 0. Areas without them have none.
+func encounter_at(pos: Vector3) -> int:
+	for m: Marker3D in get_tree().get_nodes_in_group("encounter"):
+		var size: Vector2 = m.get_meta("size")
+		var d := pos - m.global_position
+		if d.x >= 0.0 and d.z >= 0.0 and d.x <= size.x and d.z <= size.y:
+			return m.get_meta("id")
+	return 0
 
 
 static func _flat(a: Node3D, b: Node3D) -> float:

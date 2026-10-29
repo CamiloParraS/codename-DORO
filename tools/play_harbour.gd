@@ -1,6 +1,6 @@
-## Headless playthrough of the Harbour's three Encounters and the Core revisit (pw-feel 07): spawns, the
-## navmesh route, patrol routes, designed sight lines, every Mission 1 step by its verb (eavesdrop, Hold-up,
-## lift panel), Fulton outdoors and refused indoors, Extraction and the Rank page, the Alert chain (a stopped
+## Headless playthrough of the Harbour's three Encounters and the Core revisit (pw-feel 07, the deck from 12):
+## spawns, the navmesh route, patrol routes, designed sight lines, every Mission 1 step by its verb (eavesdrop,
+## the pair's split and the stern drop it opens to a Spoof, Hold-up, lift panel), Fulton outdoors and refused indoors, Extraction and the Rank page, the Alert chain (a stopped
 ## call; a completed one through Alert, Evasion and Caution, with Reinforcements from the bridge), every way a
 ## Hold-up ends (Alert, 6 m, a partner's sight, a choke), a guard looking at a balloon, a Game Over and
 ## Continue, and what the Core changes. Prints PASS/FAIL.
@@ -16,6 +16,7 @@ var _area: Node
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	TranslationServer.set_locale("en")  # the prompt checks read English text, whatever the machine's language
 	await mission_1()
 	await chain()
 	await holdups()
@@ -179,7 +180,7 @@ func mission_1() -> void:
 
 	# traversal: the navmesh joins the start to each Encounter's way through and on to the Extraction point
 	var start: Vector3 = area.get_node("Spots/OperativeStart").global_position
-	var legs := [["E1 smoke break", start, at(75.9, 53, 2)], ["E1 → E2 gangway foot", at(75.9, 53, 2), at(60, 46)],
+	var legs := [["E1 smoke break", start, at(78.8, 53.6, 2)], ["E1 → E2 gangway foot", at(78.8, 53.6, 2), at(60, 46)],
 		["E2 lane W (the Foreman)", at(60, 46), at(42.5, 50)], ["E2 → E3 alley", at(42.5, 50), at(24.6, 37.5)],
 		["E3 lift panel", at(24.6, 37.5), at(22, 22.2)], ["E3 → slipway", at(22, 22.2), at(11, 74)]]
 	var total := 0.0
@@ -207,8 +208,9 @@ func mission_1() -> void:
 		check(best[g].all(func(d: float) -> bool: return d < 1.5), "%s walks its whole route (closest per point %s)" % [g.name, best[g].map(func(d): return snappedf(d, 0.1))])
 
 	# sight lines as drawn
-	check(await seen(op, "GuardO1", at(67.2, 15, 2), true, 3.0) == 0.0, "E1: the hatches hide a crouched Operative from O1")
-	check(await seen(op, "GuardO1", at(65.7, 30, 2), true, 3.0) == 0.0, "E1: O1 never sees the port rail behind him")
+	check(await seen(op, "GuardO1", start, false, 15.0) == 0.0, "E1: the start is out of O1's cones for his whole loop")
+	check(await seen(op, "GuardO1", at(69.5, 7, 2), true, 15.0) == 0.0, "E1: the port hatch hides a crouched Operative from O1")
+	check(await seen(op, "GuardO1", at(79.9, 22, 2), true, 15.0) == 0.0, "E1: O1 never sees the starboard rail beside him")
 	check(await seen(op, "GuardO5", at(66, 38, 2), false, 6.0) > 0.0, "E1: O5's sweep covers the port rail north of him")
 	check(await seen(op, "GuardO2", at(66.5, 25, 2), false, 20.0) == 0.0, "E1: O2 never sees a Hold-up behind O1 (20 s)")
 	check(await seen(op, "GuardObserver", at(42.5, 42), false, 6.0) > 0.0, "E2: the roof Observer covers lane W's north end")
@@ -217,7 +219,7 @@ func mission_1() -> void:
 	check(await seen(op, "GuardGate", at(15.5, 30), false, 6.0) == 0.0, "E3: the Gatekeeper can't see into the lift hall")
 
 	# step 1: eavesdrop the smoke break, unseen
-	await place(op, at(75.9, 53, 2), true)
+	await place(op, at(78.8, 53.6, 2), true)
 	var pair_saw := 0.0
 	for i in 40 * 60:
 		await get_tree().physics_frame
@@ -226,6 +228,15 @@ func mission_1() -> void:
 			break
 	check(run.step == 1, "step 1 done by eavesdropping (Voiceprints %s)" % [op.voiceprints.held])
 	check(pair_saw == 0.0, "the pair never see the eavesdrop spot")
+
+	# the pair split once recorded: A into the bridge, B to the stern rail, where he blocks the drop until Spoofed
+	check(await until(func() -> bool: return guard("GuardPA") == null, 20.0), "A goes into the bridge once the smoke break is recorded")
+	var pb := guard("GuardPB")
+	check(pb.chat == null and await until(func() -> bool: return pb._flat_dist(pb.route[0]) < Guard.REACHED, 10.0), "B moves to the stern rail")
+	check(await seen(op, "GuardPB", at(69.1, 59.4, 2), true, 3.0) > 0.0, "unspoofed, B blocks the stern drop")
+	check(pb.obey("go", area.get_node("SpoofPlaces/SpoofBow").global_position, "GuardPA"), "B takes a go order in A's voice")
+	await until(func() -> bool: return pb._flat_dist(pb.route[0]) > 15.0, 20.0)
+	check(await seen(op, "GuardPB", at(69.1, 59.4, 2), true, 3.0) == 0.0, "B sent to the bow: the stern drop is clear")
 
 	# step 2: hold up the Foreman from behind and question him
 	var fm := guard("GuardForeman")
@@ -277,7 +288,7 @@ func mission_1() -> void:
 	ops.neutralize()
 	await place(op, ops.global_position + Vector3(0.8, 0, 0))
 	await frames(2)
-	check("no Fulton indoors" in op.prompt, "indoors the prompt says no Fulton (%s)" % op.prompt)
+	check("no fulton indoors" in op.prompt.to_lower(), "indoors the prompt says no Fulton (%s)" % op.prompt)
 	Input.action_press("fulton")
 	await secs(4.0)
 	Input.action_release("fulton")
@@ -290,7 +301,7 @@ func mission_1() -> void:
 	ops.global_position = at(22.8, 22.4)
 	await place(op, at(22, 22.4))
 	await frames(5)
-	check("hold E to enter the code" in op.prompt and "E carry" in op.prompt, "beside the lift panel and a body, both prompts show (%s)" % op.prompt)
+	check("enter the code" in op.prompt.to_lower() and "[e] carry" in op.prompt.to_lower(), "beside the lift panel and a body, both prompts show (%s)" % op.prompt)
 	Input.action_press("interact")
 	await secs(4.3)
 	Input.action_release("interact")
@@ -299,7 +310,9 @@ func mission_1() -> void:
 	await place(op, at(11, 74))
 	await frames(10)
 	check(run.ended, "the slipway's Extraction point ends the Mission")
-	var page := run.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("committed"))
+	var rank_page := func() -> Array: return run.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("committed"))
+	await until(func() -> bool: return not rank_page.call().is_empty(), 4.0)  # after the 2.3 s outro card
+	var page: Array = rank_page.call()
 	check(page.size() == 1 and page[0].rank_only and page[0].stats()[2] == ["ALERTS", str(run.rank.alerts)] and page[0].rank.grade(page[0].par) != "",
 		"the Rank page shows: grade %s, %s" % [page[0].rank.grade(page[0].par) if page.size() else "-", page[0].stats() if page.size() else []])
 	if page.size():
@@ -367,7 +380,16 @@ func holdups() -> void:
 	var fm := guard("GuardForeman")
 	var y1 := guard("GuardY1")
 	var obs := guard("GuardObserver")
-	await until(func() -> bool: return obs._flat_dist(fm.global_position) > GuardAlert.PARTNER_RANGE + 3.0, 60.0)
+	# lane W: only his south hold is out of the roof Observer's reach (18.9 m), so each Hold-up takes him there
+	var park := func() -> void:
+		fm.global_position = at(42.5, 56.5)
+		fm.rotation.y = 0.0  # facing north, up the lane
+		fm.velocity = Vector3.ZERO
+		fm.reset_physics_interpolation()
+		fm._stop = fm.stops[1]  # standing out his south hold, not turning to the last stop's facing
+		fm._pause = fm.stops[1].hold
+		fm._wp = 0
+	await until(func() -> bool: return fm.velocity.length() < 0.1 and fm._stop == fm.stops[1] and fm.global_basis.z.z > 0.95, 60.0)
 
 	await hold_up(op, fm)
 	check(fm.held_up, "held up")
@@ -380,6 +402,8 @@ func holdups() -> void:
 	calm = true
 	await frames(2)
 
+	park.call()
+	await frames(5)
 	await hold_up(op, fm)
 	check(fm.held_up, "held up again")
 	op.global_position = fm.global_position + fm.global_basis.z * (Holdup.RANGE + 1.0)
@@ -389,6 +413,8 @@ func holdups() -> void:
 	AlertChain.area.stand_down()  # his own call on being freed
 	await frames(2)
 
+	park.call()
+	await frames(5)
 	await hold_up(op, fm)
 	check(fm.held_up, "held up a third time")
 	check(in_view(y1, fm, 8.0), "Y1 placed 8 m off, facing the kneeling Foreman")
@@ -399,6 +425,8 @@ func holdups() -> void:
 	AlertChain.area.stand_down()
 	await frames(2)
 
+	park.call()
+	await frames(5)
 	await hold_up(op, fm)
 	Input.action_press("interact")
 	await aim_for(op, fm, Holdup.ASK_TIME + 0.3)

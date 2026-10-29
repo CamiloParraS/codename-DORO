@@ -1,8 +1,9 @@
 @tool
 extends McpTestSuite
 
-## Mission 1's tutorial: each verb's tip shows once, the first time it is relevant, only in the
-## campaign's Mission 1; the Harbour has an eavesdrop spot beside a guard's check-in route.
+## Mission 1's tutorial: each verb's tip shows once, the first time it is relevant in the Encounter that
+## teaches it, only in the campaign's Mission 1; a verb done unprompted is spent; the Harbour has an
+## eavesdrop spot beside a guard's check-in route.
 
 const NOTHING := {}
 
@@ -12,62 +13,78 @@ func suite_name() -> String:
 
 
 func _world(over := {}) -> Dictionary:
-	var w := {guard = INF, down = INF, spot = INF, prints = 0, scanner = 3, magazines = 4, tranq = false,
-		holdup = INF, fulton = false, caution = false}
+	var w := {guard = INF, down = INF, spot = INF, holdup = INF, fulton = false, enc = 1}
 	w.merge(over, true)
 	return w
 
 
 func test_a_guard_nearby_teaches_crouch_first() -> void:
 	var t := Tutorial.new()
-	assert_eq(t.update(0.1, 0, true, Tutorial.relevant(_world({guard = 10.0}))), "crouch")
+	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 10.0}))), "crouch")
 
 
 func test_nothing_relevant_nothing_shown() -> void:
 	var t := Tutorial.new()
-	assert_eq(t.update(0.1, 0, true, Tutorial.relevant(_world())), "")
+	assert_eq(t.update(0, true, Tutorial.relevant(_world())), "")
 
 
-func test_each_tip_shows_once() -> void:
+func test_each_tip_shows_once_and_the_next_follows_without_a_timer() -> void:
 	var t := Tutorial.new()
 	var near := Tutorial.relevant(_world({guard = 3.0}))
-	assert_eq(t.update(0.1, 0, true, near), "crouch")
-	assert_eq(t.update(Tutorial.GAP + 0.1, 0, true, near), "takedown", "crouch is spent, the next verb follows")
-	assert_true(t.seen.has("crouch"))
+	assert_eq(t.update(0, true, near), "crouch")
+	assert_eq(t.update(0, true, near), "takedown", "crouch is spent, the next verb follows")
+	assert_eq(t.update(0, true, near), "")
 
 
-func test_tips_are_spaced_apart() -> void:
-	var t := Tutorial.new()
-	var near := Tutorial.relevant(_world({guard = 3.0}))
-	t.update(0.1, 0, true, near)
-	assert_eq(t.update(1.0, 0, true, near), "", "still in the gap")
+func test_each_encounter_teaches_only_its_verbs() -> void:
+	assert_true(Tutorial.relevant(_world({guard = 3.0})).takedown, "the deck teaches the takedown")
+	assert_false(Tutorial.relevant(_world({guard = 3.0, enc = 2})).takedown, "not in the yard")
+	assert_false(Tutorial.relevant(_world({holdup = 10.0})).holdup, "no Hold-up tip on the deck")
+	assert_true(Tutorial.relevant(_world({holdup = 10.0, enc = 2})).holdup, "the yard teaches the Hold-up")
+	assert_false(Tutorial.relevant(_world({fulton = true})).fulton, "no Fulton tip on the deck")
+	assert_true(Tutorial.relevant(_world({fulton = true, enc = 2})).fulton)
+	for over in [{guard = 3.0}, {down = 1.0}, {spot = 1.0}, {holdup = 1.0}, {fulton = true}]:
+		over.enc = 3
+		assert_false(Tutorial.relevant(_world(over)).values().has(true), "no tips in Operations: %s" % [over])
+		over.enc = 0
+		assert_false(Tutorial.relevant(_world(over)).values().has(true), "none between Encounters: %s" % [over])
 
 
-func test_every_verb_has_a_trigger() -> void:
-	var cases := {
-		crouch = {guard = 10.0}, takedown = {guard = 3.0}, carry = {down = 1.5}, tranq = {guard = 10.0, tranq = true},
-		eavesdrop = {spot = 4.0}, radio = {prints = 1}, scanner = {guard = 20.0}, magazine = {guard = 8.0},
-		holdup = {holdup = 10.0}, fulton = {fulton = true}, caution = {caution = true},
-	}
-	assert_eq(cases.keys().map(str), Tutorial.VERBS)
+func test_every_verb_is_tipped_by_one_encounter_or_is_line_only() -> void:
+	var tipped := []
+	for enc: int in Tutorial.BY_ENCOUNTER:
+		tipped.append_array(Tutorial.BY_ENCOUNTER[enc])
+	tipped.append_array(Tutorial.LINE_ONLY)
+	tipped.sort()
+	var all := Tutorial.VERBS.duplicate()
+	all.sort()
+	assert_eq(tipped, all)
+	var cases := {crouch = {guard = 10.0}, takedown = {guard = 3.0}, carry = {down = 1.5}, eavesdrop = {spot = 4.0},
+		holdup = {holdup = 10.0, enc = 2}, fulton = {fulton = true, enc = 2}}
 	for verb: String in cases:
 		assert_true(Tutorial.relevant(_world(cases[verb]))[verb], verb)
-		assert_false(Tutorial.relevant(_world())[verb], verb + " with nothing around")
 
 
-func test_the_hold_up_tip_waits_for_the_guard_it_matters_for() -> void:
-	assert_false(Tutorial.relevant(_world({guard = 3.0})).holdup, "an ordinary guard close by")
-	assert_true(Tutorial.relevant(_world({holdup = 10.0})).holdup, "the Foreman (a scripted answer) in sight range")
+func test_a_verb_done_unprompted_never_gets_its_tip() -> void:
+	var t := Tutorial.new()
+	assert_eq(t.done("takedown", 0, true), "", "a tipped verb gets no line when done")
+	var near := Tutorial.relevant(_world({guard = 3.0}))
+	assert_eq(t.update(0, true, near), "crouch")
+	assert_eq(t.update(0, true, near), "", "takedown was already done")
 
 
-func test_no_scanner_charges_no_scanner_tip() -> void:
-	assert_false(Tutorial.relevant(_world({guard = 20.0, scanner = 0})).scanner)
+func test_a_line_only_verb_gets_metis_once_on_first_use() -> void:
+	var t := Tutorial.new()
+	assert_eq(t.done("tranq", 0, true), "tranq")
+	assert_eq(t.done("tranq", 0, true), "", "once")
+	assert_eq(Tutorial.new().done("tranq", 1, true), "", "Mission 2")
+	assert_eq(Tutorial.new().done("radio", 0, false), "", "Free mode")
 
 
 func test_only_the_campaigns_mission_1_teaches() -> void:
 	var near := Tutorial.relevant(_world({guard = 3.0}))
-	assert_eq(Tutorial.new().update(0.1, 1, true, near), "", "Mission 2")
-	assert_eq(Tutorial.new().update(0.1, 0, false, near), "", "Free mode")
+	assert_eq(Tutorial.new().update(1, true, near), "", "Mission 2")
+	assert_eq(Tutorial.new().update(0, false, near), "", "Free mode")
 
 
 func test_every_verb_has_a_prompt_and_a_metis_line_in_both_languages() -> void:

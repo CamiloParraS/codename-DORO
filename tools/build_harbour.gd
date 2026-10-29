@@ -17,7 +17,7 @@ const PIER_FLOOR := -0.35 # a pier deck's underside
 ## exit spot [x, y, h], next]. Guard posts carry their Encounter as `enc` meta. The north yard (gatehouse,
 ## road) belongs to none: it is where reinforcements come in and Targets run to.
 const ENCOUNTERS := [
-	[1, "Perimeter", "timing", [64.6, 3.2, 12.6, 57], [65.4, 46, DECK], 2],             # the freighter deck; exit down the gangway
+	[1, "Perimeter", "timing", [64.6, -3, 16.6, 63.2], [65.4, 46, DECK], 2],            # the freighter deck; exit down the gangway or the stern drop
 	[2, "Loading yard", "positioning", [26, 19, 36, 47], [27, 39.3, 0], 3],          # container lanes; exit along Warehouse B's south wall
 	[3, "Operations building", "manipulation", [2, 18, 24, 60], [11, 74, 0], 0],     # Ops round the lift mouth; exit to the slipway
 ]
@@ -53,26 +53,27 @@ const SOLID := [
 	["KerbSlipW", [6.7, 70, 0.3, 7.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbSlipE", [15, 70, 0.3, 7.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
 	["KerbSlipTip", [6.7, 77, 8.6, 0.3], 0, KERB_H, "planks", Color(0.8, 0.8, 0.8)],
-	# the freighter: hull to deck height, bow, rails with a gap for the gangway and the stern drop
-	["Hull", [65, 11, 12, 49], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["Bow", [67.5, 5, 7, 6], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["BowTip", [69.5, 3.5, 3, 1.5], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["RailPort1", [65, 11, 0.2, 33.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	# the freighter: hull to deck height, bow, rails with a gap for the gangway and the stern drop. 16 m wide and
+	# its bow out to y -2.7 (pw-feel 12): the bow is a guard-free start, and the deck has room to go round a cone
+	["Hull", [65, 5, 16, 55], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
+	["Bow", [69.5, -1, 7, 6], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
+	["BowTip", [71.5, -2.5, 3, 1.5], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
+	["RailPort1", [65, 5, 0.2, 39.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailPort2", [65, 47.2, 0.2, 12.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailStarboard", [76.8, 11, 0.2, 49], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailBowW", [67.5, 3.5, 0.2, 7.5], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailBowE", [74.3, 3.5, 0.2, 7.5], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailBowFront", [67.5, 3.3, 7, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailShoulderW", [65, 10.9, 2.5, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailShoulderE", [74.5, 10.9, 2.5, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailStarboard", [80.8, 5, 0.2, 55], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailBowW", [69.5, -2.5, 0.2, 7.5], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailBowE", [76.3, -2.5, 0.2, 7.5], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailBowFront", [69.5, -2.7, 7, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailShoulderW", [65, 4.9, 4.5, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["RailShoulderE", [76.5, 4.9, 4.5, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailSternW", [65, 59.8, 3.6, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["RailSternE", [69.6, 59.8, 7.4, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
-	["Bridge", [67, 48, 8, 8], DECK, DECK + 6, "superstructure", Color(0.9, 0.95, 1.0)],
-	["DeckContainer1", [74, 20, 3, 7], DECK, DECK + CONTAINER_H, "metal", Color(0.28, 0.34, 0.4)],
-	["DeckContainer2", [73, 30, 2.4, 8], DECK, DECK + CONTAINER_H, "metal", Color(0.34, 0.34, 0.33)],
-	["DeckContainer3", [66.5, 36, 2.4, 6], DECK, DECK + CONTAINER_H, "metal", Color(0.28, 0.35, 0.3)],
-	["HatchStarboard", [73, 12, 3, 7], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
-	["HatchPort", [68, 12, 2.5, 5], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
+	["RailSternE", [69.6, 59.8, 11.4, 0.2], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
+	["Bridge", [69, 48, 8, 8], DECK, DECK + 6, "superstructure", Color(0.9, 0.95, 1.0)],
+	["DeckContainer1", [76, 19, 3, 7], DECK, DECK + CONTAINER_H, "metal", Color(0.28, 0.34, 0.4)],
+	["DeckContainer2", [75.5, 30, 2.4, 8], DECK, DECK + CONTAINER_H, "metal", Color(0.34, 0.34, 0.33)],
+	["DeckContainer3", [66.5, 33, 2.4, 6], DECK, DECK + CONTAINER_H, "metal", Color(0.28, 0.35, 0.3)],
+	["HatchStarboard", [75, 8, 3.5, 7], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
+	["HatchPort", [67.5, 8, 3.5, 6], DECK, DECK + LOW_H, "hatch_cover", Color(0.85, 0.9, 0.85)],
 	# the Loading yard: two columns of containers either side of a 3 m mid lane (x 47-50), with lane W
 	# (x 41-44) beyond; the gaps in the columns are staggered so no cross lane runs straight through
 	["Crane", [54, 18, 4, 4], 0, 8, "hatch", Color(1.0, 0.78, 0.2)],
@@ -109,7 +110,7 @@ const CRANE_SOLID := [["CraneBase", [54, 18, 4, 4], 0, 2.4], ["CranePlate", [54,
 const LOW := [
 	[[44, 22, 6, 1.2], 0], [[26, 45, 8, 1.2], 0], [[48, 14, 1.2, 6], 0], [[52, 56, 6, 1.2], 0],
 	[[8, 43, 5, 1.2], 0],        # the forecourt, in front of the lift housing
-	[[66, 21, 1.2, 3], DECK],    # deck crates by the port rail, halfway from the hatches to Container 3
+	[[66, 22, 1.2, 3], DECK],    # deck crates by the port rail, the port way past O1
 ]
 ## Enterable buildings: [name, rect, height, doors [[side, centre(, width)]], tint, base, wall material].
 const BUILDINGS := [
@@ -143,15 +144,16 @@ const GANGWAY := {top = [65, 46], bottom = [61, 46], width = 2.4}
 ## role (gatekeeper, observer, patroller, interceptor, investigator, foreman), enc (Encounter), holdup (what a
 ## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 11 spawned: 5 / 3 / 3.
 const GUARD_POSTS := [
-	# E1 Perimeter: learn the rhythm. O2 keeps aft of y 42, out of sight of a Hold-up behind O1.
-	["PostO1", [70, 25, DECK], 90, {hold = 5.0, role = "observer", enc = 1}, []],                          # look-out across the starboard hatches
-	["PostO2", [70.5, 42, DECK], 180, {role = "patroller", enc = 1}, [[72, 47, {hold = 6.0, f = 180}]]],  # paces aft; chats 6 s at the bridge door
-	["PostP", [73, 58, DECK], 0, {chat = "smoke", role = "investigator", enc = 1}, []],                         # smoke break behind the bridge: step 1
-	["PostO5", [66.5, 45, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                      # gangway head, sweeps up the deck
-	# E2 Loading yard: overlapping threats
-	["PostY1", [58, 24, 0], 180, {role = "patroller", enc = 2}, [[58, 48, {hold = 4.0, f = 90}], [57, 59, {}]]],  # quay; holds facing the gangway foot
-	["PostForeman", [48.5, 24, 0], 180, {role = "foreman", enc = 2, holdup = "lift_code"},                 # the lane loop: step 2
-		[[48.5, 39, {hold = 3.0, f = 270}], [42.5, 39, {}], [42.5, 54, {hold = 3.0, f = 90}], [48.5, 54, {}]]],
+	# E1 Perimeter (pw-feel 12): the bow half teaches, one guard at a time, each 15 m+ from every other (a shout's
+	# reach) so a mistake costs one guard; the stern half (O5 and the pair) is the test and the exit.
+	["PostO1", [70, 17, DECK], 180, {hold = 6.0, role = "patroller", enc = 1}, [[70, 21, {hold = 4.0, f = 0}]]],  # 6 s back to the bow, 4 s facing it
+	["PostO2", [79.5, 35, DECK], 90, {hold = 3.0, role = "patroller", enc = 1}, [[79.5, 40, {hold = 6.0, f = 180}]]],  # starboard walk; 6 s back to the bow at the aft end: the choke
+	["PostP", [75, 58, DECK], 0, {chat = "smoke", role = "investigator", enc = 1}, []],                      # smoke break behind the bridge: step 1; splits once recorded (PAIR_SPLIT)
+	["PostO5", [66, 47, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                          # beside the gangway head, sweeps up the deck
+	# E2 Loading yard
+	["PostY1", [58, 32, 0], 180, {role = "patroller", enc = 2}, [[58, 50, {hold = 4.0, f = 225}]]],          # quay; holds with his back to the gangway foot
+	["PostForeman", [42.5, 39, 0], 270, {hold = 3.0, role = "foreman", enc = 2, holdup = "lift_code"},         # lane W, 15.5 m from Y1: step 2
+		[[42.5, 56.5, {hold = 5.0, f = 0}]]],                                                                     # 5 s at the south end, his back to it: the Hold-up
 	["PostObserver", [38.5, 38, 6], 150, {scan = 90.0, role = "observer", enc = 2}, []],                     # Warehouse B roof's south-east edge (from the middle the roof hides the ground)
 	# E3 Operations: three guarded doors
 	["PostGate", [20, 45, 0], 120, {scan = 60.0, role = "gatekeeper", enc = 3}, []],                          # south door, watches the yard's exit
@@ -169,35 +171,46 @@ const TARGET_POSTS := [  # ponytail: unused, the Core places its own director; k
 ]
 const SENTRIES := [
 	["SentryCrane", [56, 19.5, 8], 230, {scan = 90.0}],
-	["SentryBridge", [71, 52, 8], 0, {scan = 90.0}],
+	["SentryBridge", [73, 52, 8], 0, {scan = 90.0}],
 ]
 ## Camera mounts: [name, [x, y, h], facing, pole base h]. Without a pole base the mount is on a wall face.
 const CAMERAS := [
-	["CamGangway", [67, 47.95, 5], 340], ["CamLanes", [53.5, 25, 3], 194, 0.0],
+	["CamGangway", [70, 47.95, 5], 340], ["CamLanes", [53.5, 25, 3], 194, 0.0],
 	["CamOps", [22, 42.05, 3.6], 150], ["CamAlley", [25.95, 29, 5], 200],
 ]
 ## DeckEntry: reinforcements for an Operative nearer the deck come out of the bridge (harbour.gd).
 const SPOTS := {
-	OperativeStart = [71, 7, DECK], RoadEntry = [30, -2, 0], DeckEntry = [71, 46.6, DECK], Extraction = [11, 74, 0],
+	OperativeStart = [73, 0, DECK], RoadEntry = [30, -2, 0], DeckEntry = [73, 46.6, DECK], Extraction = [11, 74, 0],
 	ResupplyCrate = [59, 49.5, 1], FreightLift = [8, 32, 0], SafeRoom = [46, 7.5, 0],
 }
-const SPOOFS := {SpoofDock = [52, 72], SpoofWarehouse = [42, 40], SpoofGatehouse = [40, 16.5], SpoofForecourt = [14, 46]}
-## Where to eavesdrop the smoke break: [x, y, h]. Within 6 m of the pair's B seat, the bridge corner hiding it from A.
-const EAVESDROP := {EavesdropSpot = [75.9, 53, DECK]}
+## Places a Spoofed "go" sends a guard: [x, y, h]. Bow takes O5 off the gangway or B off the stern drop.
+const SPOOFS := {SpoofDock = [52, 72, 0], SpoofWarehouse = [42, 40, 0], SpoofGatehouse = [40, 16.5, 0], SpoofForecourt = [14, 46, 0],
+	SpoofBow = [73, 6, DECK]}
+## Where to eavesdrop the smoke break: [x, y, h]. The starboard walk beside the bridge, 5.2 m from A, out of both cones; the pair sit 1 m in from it so A reads as about to turn.
+const EAVESDROP := {EavesdropSpot = [78.8, 53.6, DECK]}
+## Once the smoke break is recorded (IntelSmokeBreak) the pair split (harbour.gd): {guard: [[x, y, h], facing,
+## leaves]}. A walks 4 m to the bridge's aft door and goes inside (gone, like a dismissed reinforcement); B
+## moves to the stern rail by the drop, facing along it (west), his back to the starboard walk. Neither walk
+## crosses the eavesdrop spot. B can be Spoofed with A's voice once A is inside (Glaukopis exposes it while B
+## can see A); unspoofed, he blocks the drop.
+const PAIR_SPLIT := {GuardPA = [[73, 56.8, DECK], 0, true], GuardPB = [[71.5, 58.8, DECK], 270, false]}
+## The freighter's two ways off, where they leave Encounter 1: the session log names the one taken.
+const EXITS := {Gangway = [64.5, 46, DECK], SternDrop = [69.1, 60.5, DECK]}
 ## Mission 1's steps (Campaign data names them), each done with a verb rather than a walk-in pickup
 ## (areas/intel_pickup.gd). watch (objective_watch.gd): a guard's Voiceprint or Hold-up answer; console (relay_console.gd): hold E.
 const OBJECTIVES := {
-	IntelSmokeBreak = {at = [75.9, 53, DECK], watch = "voiceprint", guards = ["GuardPA", "GuardPB"]},
-	IntelForeman = {at = [48.5, 50, 0], watch = "answer", guards = ["GuardForeman"]},
+	IntelSmokeBreak = {at = [78.8, 53.6, DECK], watch = "voiceprint", guards = ["GuardPA", "GuardPB"]},
+	IntelForeman = {at = [42.5, 50, 0], watch = "answer", guards = ["GuardForeman"]},
 	IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "ui.prompt.enter_code"},
 }
 ## Safe → exposed → safe crossings, as drawn and timed in the prototype: [id, Encounter, [[x, y, h]...]]. The build
 ## checks both ends are on the navmesh; the prototype's vision sim times them (.scratch/pw-feel/research/harbour-generator-data.md).
 const CROSSINGS := [
-	["X1", 1, [[67.2, 16.5, DECK], [66.6, 20.6, DECK]]], ["X2", 1, [[65.7, 24.4, DECK], [65.7, 35.6, DECK]]],
-	["X3", 1, [[69.6, 41.6, DECK], [72, 45.4, DECK]]], ["X4", 1, [[76, 43, DECK], [75.9, 53, DECK]]],
-	["X5", 1, [[65.4, 46, DECK], [53.6, 47.5, 0]]], ["X6", 1, [[66, 50, DECK], [69.1, 59.4, DECK]]],
-	["X7", 2, [[53.6, 45.5, 0], [48.5, 43, 0]]], ["X8", 2, [[51, 57.5, 0], [48.5, 47, 0]]],
+	["X0", 1, [[73, 0.5, DECK], [71.5, 10, DECK]]], ["X1", 1, [[78.8, 15.5, DECK], [79.9, 27, DECK]]],
+	["X2", 1, [[67.2, 14.5, DECK], [65.8, 33, DECK]]], ["X3", 1, [[78, 28, DECK], [79.5, 38.5, DECK]]],
+	["X4", 1, [[79.5, 41, DECK], [78.8, 53.6, DECK]]], ["X5", 1, [[67, 46, DECK], [53.6, 47.5, 0]]],
+	["X6", 1, [[78.8, 53.6, DECK], [69.1, 59.4, DECK]]],
+	["X7", 2, [[53.6, 45.5, 0], [48.5, 43, 0]]], ["X8", 2, [[47, 60.5, 0], [42.5, 59, 0]]],
 	["X9", 2, [[47.5, 37, 0], [27, 39.1, 0]]], ["X10", 3, [[26.5, 39.4, 0], [23.2, 32, 0]]],
 	["X11", 3, [[31, 26.5, 0], [20, 19.6, 0]]], ["X12", 3, [[15.5, 34, 0], [21.2, 21.8, 0]]],
 	["X13", 3, [[20, 42.6, 0], [11, 73, 0]]],
@@ -207,7 +220,7 @@ const CROSSINGS := [
 ## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
 	# the freighter's hull and pointed bow round the Hull, Bow and BowTip boxes (they keep the collision)
-	["freighter_hull", [71, 29, -3], 0],
+	["freighter_hull", [73, 25.72, -3], 0, Vector3(1.333, 1, 1.106)],  # stretched to the 16 m wide, 62.7 m long deck
 	# quay: bollards on the edge, floodlights leaning over the yard
 	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],
 	["bollard", [61, 42, 0], 0], ["bollard", [61, 52, 0], 0],
@@ -234,7 +247,7 @@ const DRESS := [
 	["locker", [36.7, 12.5, 0], 90], ["ceiling_lamp", [42, 10, 3.8], 0],
 	["vent_unit", [40, 8, 4.3], 0],  # on the gatehouse roof
 	# freighter deck
-	["drum", [73, 6.5, DECK], 0], ["drum", [73.8, 7, DECK], 40],
+	["drum", [75.5, 3, DECK], 0], ["drum", [74.7, 3.4, DECK], 40],
 	# the freight lift lit from inside, so the way down reads from the yard; sandbags at the road gate
 	["ceiling_lamp", [7, 32, 5.9], 0], ["sandbags", [23.5, 5, 0], 0], ["pipe_arch", [3.6, 20, 0], 0],
 	# the lift as a working freight bay (cabinets, generator, pipes, lamps over the mouth)
@@ -257,9 +270,9 @@ const DRESS := [
 	["bollard", [7.5, 72, 0], 0], ["bollard", [7.5, 76, 0], 0], ["bollard", [14.5, 72, 0], 0], ["bollard", [14.5, 76, 0], 0],
 	["sandbags", [8.2, 70.8, 0], 0], ["drum", [14.2, 70.9, 0], 0], ["drum", [13.5, 70.8, 0], 25],
 	# deck: mast lights over the bow (the start) and the starboard walk
-	["lamp_post", [68.2, 8, DECK], 90], ["lamp_post", [76.2, 41, DECK], 270],
+	["lamp_post", [66, 8, DECK], 90], ["lamp_post", [80.4, 43, DECK], 270],
 	# deck: cowl vents at the bow shoulder and on the bridge roof
-	["vent_cowl", [75.6, 9.4, DECK], 270], ["vent_cowl", [68.3, 49.4, DECK + 6], 0], ["vent_cowl", [73.7, 49.4, DECK + 6], 0],
+	["vent_cowl", [79.6, 6.5, DECK], 270], ["vent_cowl", [70.3, 49.4, DECK + 6], 0], ["vent_cowl", [75.7, 49.4, DECK + 6], 0],
 	# the north-east quay: stock by the fence, cones round the crane's foot
 	["pallet_stack", [59, 4, 0], 10], ["crate_wide", [56.3, 3.3, 0], 0], ["cardboard_box", [56.5, 3.4, 0.67], 20],
 	["cone", [53.3, 17.4, 0], 0], ["cone", [58.7, 17.4, 0], 0], ["cone", [53.3, 22.6, 0], 0], ["cone", [58.7, 22.6, 0], 0],
@@ -338,9 +351,9 @@ const MARKINGS := [
 const BEACONS := [
 	[[14.9, 77.1, 2.2], Color(1, 0.15, 0.1), 7.0, 0.5],    # the slipway tip, the Extraction point
 	[[55.9, 79.1, 2.2], Color(1, 0.15, 0.1), 5.0, 0.5],    # the south pier tip
-	[[66.8, 49, 7.2], Color(1, 0.12, 0.1), 5.0, -1],        # port sidelight on the bridge
-	[[75.2, 49, 7.2], Color(0.15, 1, 0.3), 5.0, -1],        # starboard sidelight
-	[[71, 52, 10.5], Color(1, 0.95, 0.85), 6.0, 8.0],       # masthead light over the bridge roof
+	[[68.8, 49, 7.2], Color(1, 0.12, 0.1), 5.0, -1],        # port sidelight on the bridge
+	[[77.2, 49, 7.2], Color(0.15, 1, 0.3), 5.0, -1],        # starboard sidelight
+	[[73, 52, 10.5], Color(1, 0.95, 0.85), 6.0, 8.0],       # masthead light over the bridge roof
 ]
 
 
@@ -394,7 +407,15 @@ func _build() -> void:
 	_posts("ExtraGuardPosts", EXTRA_POSTS, "guard_post_extra")
 	var spoofs := _group(_root, "SpoofPlaces")
 	for n in SPOOFS:
-		_marker(spoofs, n, SPOOFS[n] + [0], 0, {}, "spoof_place")
+		_marker(spoofs, n, SPOOFS[n], 0, {}, "spoof_place")
+	var encounters := _group(_root, "Encounters")  # MissionRun reads which one the Operative is in (tutorial tips)
+	for e in ENCOUNTERS:
+		_marker(encounters, "Encounter%d" % e[0], [e[3][0], e[3][1], 0], 0, {id = e[0], size = Vector2(e[3][2], e[3][3])}, "encounter")
+	for n in EXITS:
+		_marker(encounters, n, EXITS[n], 0, {}, "encounter_exit")
+	var split := _group(_root, "SplitPosts")
+	for n in PAIR_SPLIT:
+		_marker(split, n, PAIR_SPLIT[n][0], PAIR_SPLIT[n][1], {leaves = PAIR_SPLIT[n][2]}, "split_post")
 	var eavesdrops := _group(_root, "EavesdropSpots")
 	for n in EAVESDROP:
 		_marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
