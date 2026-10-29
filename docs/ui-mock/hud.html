@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer HUD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #f2f4f3;
+  --ink-2: rgba(242, 244, 243, .74);
+  --ink-3: rgba(242, 244, 243, .56);
+  --smoke: rgba(22, 25, 27, .55);
+  --smoke-hi: rgba(22, 25, 27, .72);
+  --hair: rgba(242, 244, 243, .26);
+  --chrome: #d4bc8a;          /* corner brackets */
+  --aigis: #a9d6dc;
+  --dmg: #c9302a;
+  --slp: #2c6aa3;
+  --accent: #d4bc8a;         /* muted sand: keeps the HUD from reading monochrome without shouting */
+  --accent-dim: rgba(212, 188, 138, .5);
+}
+
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: #07080a; color: var(--ink); font-family: Barlow, sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--aigis); color: #0c0e0f; }
+
+/* ---------- mock controls (not part of the HUD) ---------- */
+.mockbar { position: fixed; inset: 0 0 auto 0; height: 48px; z-index: 10; display: flex; align-items: center; gap: 6px; padding: 0 16px; background: #0c0e0f; border-bottom: 1px solid #23272a; font: 500 13px/1 Barlow; letter-spacing: .04em; }
+.mockbar .title { font: 700 14px/1 "Barlow Condensed"; letter-spacing: .14em; margin-right: 14px; color: var(--ink-2); }
+.mockbar button { font: inherit; color: var(--ink-2); background: none; border: 1px solid transparent; padding: 8px 12px; cursor: pointer; letter-spacing: .06em; text-transform: uppercase; }
+.mockbar button:hover { color: var(--ink); border-color: #2c3134; }
+.mockbar button[aria-pressed="true"] { color: #0c0e0f; background: var(--ink); }
+.mockbar button:focus-visible { outline: 2px solid var(--aigis); outline-offset: 2px; }
+.mockbar .sep { width: 1px; height: 24px; background: #2c3134; margin: 0 8px; }
+.mockbar .grow { flex: 1; }
+.mockbar kbd { font: 600 11px Barlow; border: 1px solid #3a4044; padding: 2px 5px; color: var(--ink-2); }
+
+/* ---------- stage ---------- */
+.viewport { position: fixed; inset: 48px 0 0 0; }
+.stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center; overflow: hidden; background: #0b0a12; }
+.scene { position: absolute; inset: 0; background: url(scene.jpg) center / cover; image-rendering: pixelated; transition: filter .35s cubic-bezier(.16, 1, .3, 1); }
+body[data-state="radio"] .scene, body[data-state="radio"] .guard { filter: grayscale(.8) brightness(.55); }
+
+.hud { position: absolute; inset: 0; perspective: 1400px; }
+.corner { position: absolute; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.16, 1, .3, 1); }
+.corner.l { transform-origin: left center; transform: rotateY(calc(6deg + var(--px, 0) * 2deg)) rotateX(calc(var(--py, 0) * -1.5deg)); }
+.corner.r { transform-origin: right center; transform: rotateY(calc(-6deg + var(--px, 0) * 2deg)) rotateX(calc(var(--py, 0) * -1.5deg)); }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+
+.panel { position: relative; background: linear-gradient(180deg, rgba(242, 244, 243, .07), transparent 40%), var(--smoke); border: 1px solid var(--hair); }
+.panel::before, .panel::after { content: ""; position: absolute; width: 10px; height: 10px; border: 2px solid var(--chrome); transition: border-color .6s; }
+.panel::before { left: -3px; top: -3px; border-right: 0; border-bottom: 0; }
+.panel::after { right: -3px; bottom: -3px; border-left: 0; border-top: 0; }
+.chip { display: inline-block; font: 700 13px/1 "Barlow Condensed"; letter-spacing: .1em; padding: 3px 5px 2px; color: #fff; background: var(--slp); }
+
+[data-show] { transition: opacity .22s cubic-bezier(.16, 1, .3, 1); }
+.off { opacity: 0 !important; pointer-events: none; }
+
+/* ---------- top-left: Aigis, small and quiet ---------- */
+.aigis { left: 64px; top: 52px; opacity: .9; }
+.aigis .voice { display: flex; align-items: center; gap: 10px; font: 600 22px/1 "Barlow Condensed"; letter-spacing: .26em; color: var(--aigis); }
+.habits { display: flex; gap: 20px; margin-top: 14px; }
+.habit { position: relative; width: 32px; text-align: center; }
+.habit svg.ic { display: block; margin: 0 auto; opacity: .62; }
+.habit .pips { display: flex; justify-content: center; gap: 2px; margin-top: 5px; }
+.habit .pips i { width: 8px; height: 3px; background: rgba(242, 244, 243, .25); }
+.habit .pips i.on { background: var(--accent); }
+.habit.rose svg.ic { opacity: 1; }
+.habit.rose .up { position: absolute; right: -9px; top: -3px; }
+
+/* ---------- top-centre: alert, timer inside the plate ---------- */
+.phase { position: absolute; left: 50%; top: 52px; transform: translateX(-50%); display: flex; align-items: stretch; background: var(--dmg); color: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, .35); }
+.phase .word { font: 700 26px/1 "Barlow Condensed"; letter-spacing: .4em; padding: 10px 6px 9px 24px; }
+.phase .time { font: 600 26px/1 Barlow; padding: 10px 22px 9px 18px; border-left: 1px solid rgba(255, 255, 255, .45); }
+
+/* ---------- top-right: Radar ---------- */
+.radar { right: 64px; top: 48px; width: 300px; height: 300px; }
+.radar .disc { position: absolute; inset: 0; border-radius: 50%; background: var(--smoke); border: 1px solid var(--hair); }
+.radar svg { position: absolute; inset: 0; }
+.blip-call { animation: flash .3s steps(1) infinite; }
+@keyframes flash { 50% { fill: transparent; } }
+/* MGS1-style jamming: the Radar goes dead, nothing shows through */
+.jam { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #150a0b; border: 1px solid rgba(201, 48, 42, .7); display: grid; place-items: center; }
+.jam svg { position: absolute; inset: 0; }
+.jam .bands { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .35) 0 2px, transparent 2px 6px); animation: roll 1.2s linear infinite; }
+@keyframes roll { to { background-position: 0 24px; } }
+.jam .tag { position: relative; font: 700 20px/1 "Barlow Condensed"; letter-spacing: .32em; padding-left: .32em; color: #fff; text-shadow: 0 0 6px rgba(0, 0, 0, .8); }
+
+/* ---------- bottom-left: life, one continuous bar ---------- */
+.life { left: 64px; bottom: 64px; height: 300px; width: 80px; }
+.life .bar { position: absolute; left: 0; bottom: 0; width: 12px; height: 300px; background: rgba(12, 14, 15, .55); border: 1px solid var(--hair); }
+.life .bar i { position: absolute; left: 2px; right: 2px; bottom: 2px; background: var(--accent); transition: height .5s cubic-bezier(.16, 1, .3, 1); }
+.life .bar .lost { background: var(--dmg); transition: height 1.2s .4s cubic-bezier(.16, 1, .3, 1); }
+.life .who { position: absolute; left: 24px; bottom: 0; writing-mode: vertical-rl; transform: rotate(180deg); font: 600 22px/1 "Barlow Condensed"; letter-spacing: .3em; color: var(--accent); }
+
+/* ---------- bottom-right: gear, narrow and quiet ---------- */
+.gear { right: 64px; bottom: 64px; width: 320px; }
+.card { padding: 12px 16px; }
+.card .name { font: 600 19px/1 "Barlow Condensed"; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; color: var(--accent); }
+.card svg.sil { position: absolute; left: 16px; bottom: 14px; }
+.card .count { position: absolute; right: 16px; bottom: 10px; font: 600 46px/1 Barlow; }
+.card .count small { font: 500 20px/1 Barlow; color: var(--ink-3); margin-left: 3px; }
+.card.weapon { height: 118px; }
+.card.item { height: 84px; width: 220px; margin-left: auto; margin-bottom: 12px; }
+.card.item svg.sil { bottom: 12px; }
+.card.item .count { font-size: 34px; }
+
+/* PW-style selector, scaled down; the count gets its own band */
+.selector { position: absolute; right: 336px; bottom: 0; display: flex; gap: 6px; align-items: flex-end; }
+.slot { width: 72px; height: 200px; position: relative; background: var(--smoke); border: 1px solid var(--hair); }
+.slot .vname { position: absolute; left: 8px; top: 10px; writing-mode: vertical-rl; font: 600 17px/1 "Barlow Condensed"; letter-spacing: .14em; text-transform: uppercase; }
+.slot .art { position: absolute; left: 0; right: 0; top: 40px; bottom: 30px; display: grid; place-items: center; }
+.slot .art svg { transform: rotate(-90deg); }
+.slot .n { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; display: grid; place-items: center; border-top: 1px solid var(--hair); font: 600 15px/1 Barlow; }
+.slot.empty { background: rgba(22, 25, 27, .3); border-style: dashed; }
+.slot.empty .vname { color: var(--ink-3); }
+.slot.sel { background: var(--accent); color: #0c0e0f; border-color: var(--accent); height: 220px; }
+.slot.sel .n { border-top-color: rgba(12, 14, 15, .25); }
+.slot.sel svg [fill="#f2f4f3"] { fill: #0c0e0f; }
+.selector .keys { position: absolute; left: 0; bottom: -40px; display: flex; gap: 6px; }
+
+/* ---------- world: guard, marks, arc ---------- */
+.arcs { position: absolute; inset: 0; pointer-events: none; }
+.guard { position: absolute; left: 1222px; top: 748px; transition: filter .35s; }
+.mark { position: absolute; left: 1262px; top: 742px; transform: translate(-50%, -100%); font: 700 60px/1 Barlow; color: var(--ink); text-shadow: 0 2px 0 #000, 0 0 12px rgba(0, 0, 0, .6); }
+.mark.bang { color: #e0423a; font-size: 72px; animation: pop .28s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes pop { from { transform: translate(-50%, -100%) scale(.4); } }
+
+/* contextual action: lower middle of the screen, no text */
+.prompt { position: absolute; left: 960px; top: 850px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; }
+.key { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 6px; background: var(--ink); color: #0c0e0f; font: 700 20px/1 Barlow; box-shadow: 0 3px 8px rgba(0, 0, 0, .5); }
+.key.sm { width: 30px; height: 30px; font-size: 14px; border-radius: 4px; }
+.key.wide { width: auto; padding: 0 8px; }
+.prompt .act { width: 76px; height: 76px; display: grid; place-items: center; background: var(--smoke-hi); border: 1px solid var(--hair); border-radius: 50%; }
+
+/* ---------- radio: the in-game radial, in the new language ---------- */
+.radio { position: absolute; inset: 0; }
+.radio .backing { position: absolute; left: 516px; top: 530px; width: 460px; height: 460px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(12, 14, 15, .6) 50%, rgba(12, 14, 15, 0) 70%); }
+.radio svg.ring { position: absolute; left: 0; top: 0; }
+.radio .crumb { position: absolute; left: 516px; top: 296px; transform: translateX(-50%); white-space: nowrap; font: 600 17px/1 "Barlow Condensed"; letter-spacing: .14em; color: var(--ink-3); text-transform: uppercase; }
+.radio .crumb b { color: var(--ink-2); font-weight: 600; }
+.radio .stepname { position: absolute; left: 516px; top: 530px; transform: translate(-50%, -50%); font: 600 20px/1 "Barlow Condensed"; letter-spacing: .24em; padding-left: .24em; color: var(--accent); }
+.radio .lbl { position: absolute; font: 600 20px/1 "Barlow Condensed"; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.radio .lbl i { font-style: normal; margin-right: 8px; opacity: .7; }
+.radio .lbl.on { color: var(--accent); }
+.radio .hints { position: absolute; left: 516px; top: 748px; transform: translateX(-50%); display: flex; gap: 22px; align-items: center; font: 600 15px/1 "Barlow Condensed"; letter-spacing: .14em; color: var(--ink-3); text-transform: uppercase; white-space: nowrap; }
+.radio .hints span { display: flex; align-items: center; gap: 8px; }
+.radio .referent { position: absolute; left: 1214px; top: 726px; width: 96px; height: 206px; }
+.radio .referent::before, .radio .referent::after { content: ""; position: absolute; width: 22px; height: 22px; border: 2px solid var(--ink); }
+.radio .referent::before { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.radio .referent::after { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+.radio .referent span { position: absolute; left: 50%; top: -26px; transform: translateX(-50%); white-space: nowrap; font: 600 16px/1 "Barlow Condensed"; letter-spacing: .14em; text-transform: uppercase; }
+
+/* ---------- Codec call during play: middle right ---------- */
+.call { position: absolute; left: 64px; top: 400px; width: 560px; display: flex; gap: 16px; align-items: flex-start; }
+.call .face { width: 84px; height: 84px; flex: none; position: relative; overflow: hidden; border: 1px solid var(--hair); background: #1a1d1f; }
+.call .face img { width: 100%; height: 100%; image-rendering: pixelated; filter: grayscale(1) contrast(1.3) brightness(1.05); display: block; }
+.call .face::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, rgba(12, 14, 15, .35) .8px, transparent 1.3px) 0 0 / 4px 4px; mix-blend-mode: multiply; }
+.call .tag { display: flex; align-items: center; gap: 10px; font: 600 16px/1 "Barlow Condensed"; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); padding-top: 4px; }
+.call .tag b { color: var(--accent); font-weight: 600; }
+.call .tag .wave { display: flex; gap: 2px; align-items: center; height: 14px; }
+.call .tag .wave i { width: 3px; background: var(--ink-2); animation: wv .9s ease-in-out infinite; }
+@keyframes wv { 50% { transform: scaleY(.3); } }
+.call p { font: 500 24px/1.4 Barlow; margin-top: 8px; text-shadow: 0 2px 6px rgba(0, 0, 0, .9), 0 0 2px #000; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body data-state="sneak">
+
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">GHOST LAYER · HUD MOCK</span>
+  <button data-set="sneak" aria-pressed="true">Sneaking</button>
+  <button data-set="notice">Noticed</button>
+  <button data-set="alert">Alert</button>
+  <button data-set="select">Selector</button>
+  <button data-set="radio">Radio</button>
+  <button data-set="call">Call</button>
+  <span class="sep"></span>
+  <button id="t-aigis" aria-pressed="true">Aigis layer</button>
+  <button id="t-lang" aria-pressed="false">Español</button>
+  <span class="grow"></span>
+  <span><kbd>1</kbd>–<kbd>6</kbd> states · move the mouse for parallax</span>
+</div>
+
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene"></div>
+
+  <svg class="arcs" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+    <g data-show="notice">
+      <path d="M1105.4 755.6A260 260 0 0 0 1209.9 611.7" fill="none" stroke="rgba(242,244,243,.28)" stroke-width="2"/>
+      <path id="arcFill" d="M1105.4 755.6A260 260 0 0 0 1209.9 611.7" fill="none" stroke="#f2f4f3" stroke-width="10"/>
+    </g>
+    <g data-show="alert"><path d="M1105.4 755.6A260 260 0 0 0 1209.9 611.7" fill="none" stroke="#c9302a" stroke-width="14"/></g>
+  </svg>
+
+  <!-- a guard in the scene (stands in for the 3D) -->
+  <svg class="guard" width="84" height="176" viewBox="0 0 84 176" aria-hidden="true"><path d="M30 6q12-8 24 0l2 14H28z" fill="#2b2d36"/><path d="M31 18h22v14q-11 6-22 0z" fill="#3a3c47"/><path d="M22 34h40l6 54H16z" fill="#2b2d36"/><path d="M22 34h8l-4 54h-10z" fill="#454856"/><path d="M18 88h20l-2 84H22zM46 88h20l-4 84H48z" fill="#23252d"/><path d="M14 170h26v6H14zM44 170h26v6H44z" fill="#16171c"/><path d="M62 40l14 4-4 48h-6z" fill="#23252d"/><path d="M70 30l6 2-2 70h-4z" fill="#16171c"/></svg>
+
+  <div class="hud">
+
+    <!-- top-left: Aigis -->
+    <div class="corner l aigis">
+      <div class="voice">
+        <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="#a9d6dc" stroke-width="3"/><circle cx="15" cy="20" r="5" fill="none" stroke="#a9d6dc" stroke-width="3"/><circle cx="29" cy="20" r="5" fill="none" stroke="#a9d6dc" stroke-width="3"/></svg>
+        PALLAS
+      </div>
+      <div class="habits">
+        <div class="habit rose" title="Stealth"><svg class="up" width="11" height="9" viewBox="0 0 12 10"><path d="M6 0l6 10H0z" fill="#a9d6dc"/></svg>
+          <svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="6" r="3"/><path d="M15 10l-5 8 6 2-2 8M15 10l7 4 4-2M10 18l-5 5"/></svg>
+          <div class="pips"><i class="on"></i><i class="on"></i><i></i></div></div>
+        <div class="habit" title="Combat"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="16" r="9"/><path d="M16 3v7M16 22v7M3 16h7M22 16h7"/></svg>
+          <div class="pips"><i class="on"></i><i></i><i></i></div></div>
+        <div class="habit" title="Headshots"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="11" r="6"/><path d="M6 29c0-7 20-7 20 0M16 2v4M16 16v4M7 11h4M21 11h4"/></svg>
+          <div class="pips"><i></i><i></i><i></i></div></div>
+        <div class="habit" title="Takedowns"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><circle cx="22" cy="9" r="3"/><path d="M9 10v8l-3 10M9 14l11-1M22 13l2 7-4 8M24 20l4 8"/></svg>
+          <div class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+        <div class="habit" title="Downs"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="22" r="3"/><path d="M10 23h14l5 3M14 23l3-4h5M3 28h26"/></svg>
+          <div class="pips"><i></i><i></i><i></i></div></div>
+        <div class="habit" title="Spoofing"><svg class="ic" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#f2f4f3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="12" width="10" height="17" rx="2"/><path d="M14 12V5M8 9a9 9 0 0 1 0-6M24 9a9 9 0 0 0 0-6"/></svg>
+          <div class="pips"><i class="on"></i><i></i><i></i></div></div>
+      </div>
+    </div>
+
+    <!-- top-centre: alert -->
+    <div class="phase" data-show="alert"><span class="word" data-en="ALERT" data-es="ALERTA">ALERT</span><span class="time num">0:24</span></div>
+
+    <!-- top-right: Radar -->
+    <div class="corner r radar" aria-label="Radar">
+      <div class="disc"></div>
+      <svg width="300" height="300" viewBox="0 0 300 300" aria-hidden="true">
+        <defs><radialGradient id="cone"><stop offset="0" stop-color="#f2f4f3" stop-opacity=".36"/><stop offset="1" stop-color="#f2f4f3" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="150" cy="150" r="96" fill="none" stroke="rgba(212,188,138,.28)"/>
+        <circle cx="150" cy="150" r="48" fill="none" stroke="rgba(212,188,138,.28)"/>
+        <path d="M150 6v14M150 280v14M6 150h14M280 150h14" stroke="rgba(212,188,138,.7)" stroke-width="2"/>
+        <path d="M200 92l-62 26a64 64 0 0 0 24 46z" fill="url(#cone)" transform="rotate(-8 200 92)"/>
+        <path d="M200 84l7 14h-14z" fill="#f2f4f3" transform="rotate(-120 200 92)"/>
+        <path d="M96 196l-28-58a64 64 0 0 1 56 0z" fill="url(#cone)"/>
+        <path d="M96 188l7 14h-14z" fill="#f2f4f3"/>
+        <path class="blip-call" d="M214 202l7 14h-14z" fill="#c9302a" transform="rotate(200 214 209)"/>
+        <path d="M268 60l6 11h-12z" fill="rgba(242,244,243,.55)" transform="rotate(45 268 65)"/>
+        <path d="M150 134l13 30-13-8-13 8z" fill="#d4bc8a" stroke="#0c0e0f" stroke-width="1.5" stroke-linejoin="round"/>
+        <text x="158" y="30" fill="rgba(242,244,243,.7)" font-family="Barlow Condensed" font-weight="600" font-size="16" letter-spacing="1">N</text>
+      </svg>
+      <div class="jam" data-show="alert">
+        <svg width="300" height="300" aria-hidden="true"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3"><animate attributeName="seed" values="1;9;4;7;2" dur=".4s" repeatCount="indefinite"/></feTurbulence><feColorMatrix values="0 0 0 0 .78  0 0 0 0 .22  0 0 0 0 .2  0 0 0 1.4 -.45"/></filter><rect width="300" height="300" filter="url(#noise)"/></svg>
+        <div class="bands"></div>
+        <span class="tag" data-en="JAMMED" data-es="BLOQUEADO">JAMMED</span>
+      </div>
+    </div>
+
+    <!-- bottom-left: life -->
+    <div class="corner l life">
+      <div class="bar"><i class="lost" id="lifeLost" style="height:70%"></i><i id="lifeFill" style="height:70%"></i></div>
+      <div class="who" data-en="OPERATIVE" data-es="OPERATIVO">OPERATIVE</div>
+    </div>
+
+    <!-- bottom-right: item over weapon; the selector opens to their left -->
+    <div class="corner r gear">
+      <div class="panel card item">
+        <div class="name" data-en="Scanner" data-es="Escáner">Scanner</div>
+        <svg class="sil" width="64" height="40" viewBox="0 0 80 50" aria-hidden="true"><path d="M4 14h40v26H4zM14 40h12l-2 8h-8zM44 18l16-10v38L44 36zM64 12h4v30h-4zM72 8h3v38h-3z" fill="#f2f4f3"/><rect x="9" y="19" width="22" height="10" fill="#0c0e0f"/></svg>
+        <div class="count num">3</div>
+      </div>
+      <div class="panel card weapon">
+        <div class="name"><span data-en="Tranq pistol" data-es="Pistola tranq.">Tranq pistol</span><span class="chip">SLP</span></div>
+        <svg class="sil" width="150" height="62" viewBox="0 0 200 80" aria-hidden="true"><path d="M8 18h108l4-4h6v4h70v12H126v4H8z" fill="#f2f4f3"/><path d="M40 34h56l-4 6H78q-5 0-7 5L62 74H38l9-34h-7z" fill="#f2f4f3"/><path d="M72 40q2 11 13 9M16 20v10M22 20v10M28 20v10" stroke="#0c0e0f" stroke-width="2" fill="none"/></svg>
+        <div class="count num">4<small>/ 4</small></div>
+      </div>
+
+      <div class="selector" data-show="select">
+        <div class="slot empty"><span class="vname" data-en="Empty" data-es="Vacío">Empty</span></div>
+        <div class="slot"><span class="vname">CQC</span>
+          <div class="art"><svg width="40" height="40" viewBox="0 0 60 60"><path d="M12 22q0-8 8-8h24q8 0 8 8v18q0 14-16 14H26q-14 0-14-14z" fill="#f2f4f3"/><path d="M23 14v12M32 14v12M41 14v12M12 32h18q4 0 4 4" stroke="#0c0e0f" stroke-width="2.5" fill="none"/></svg></div></div>
+        <div class="slot"><span class="vname" data-en="Rifle" data-es="Fusil">Rifle</span>
+          <div class="art"><svg width="120" height="40" viewBox="0 0 240 80"><path d="M4 22l36-5h20v-3h90v6h36v-4h50v14h-50v-4h-36v8h-38l6 26H100l-6-26H76l-6 16H56l4-16H40L4 40z" fill="#f2f4f3"/><rect x="92" y="6" width="32" height="7" fill="#f2f4f3"/></svg></div>
+          <span class="n num">12/24</span></div>
+        <div class="slot sel"><span class="vname" data-en="Tranq pistol" data-es="Pistola tranq.">Tranq pistol</span>
+          <div class="art"><svg width="100" height="40" viewBox="0 0 200 80"><path d="M8 18h108l4-4h6v4h70v12H126v4H8z" fill="#f2f4f3"/><path d="M40 34h56l-4 6H78q-5 0-7 5L62 74H38l9-34h-7z" fill="#f2f4f3"/></svg></div>
+          <span class="n num">4/4</span></div>
+        <div class="keys"><span class="key sm">◀</span><span class="key sm">▶</span></div>
+      </div>
+    </div>
+
+    <!-- world marks -->
+    <div class="mark" data-show="notice">?</div>
+    <div class="mark bang" data-show="alert">!</div>
+    <div class="prompt" data-show="sneak">
+      <span class="key">E</span>
+      <span class="act" title="Hold up"><svg width="50" height="50" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="8" r="5" fill="#f2f4f3"/><path d="M9 38V22l-5-11 3-2 7 9h12l7-9 3 2-5 11v16h-5V28h-10v10z" fill="#f2f4f3"/></svg></span>
+    </div>
+
+    <!-- radio: segmented ring left of centre, labels outside, step in the middle (as in ui/radio/radio.gd) -->
+    <div class="radio" data-show="radio">
+      <div class="backing"></div>
+      <svg class="ring" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g fill="none" stroke-width="84">
+          <path d="M419.6 469.1A114 114 0 0 1 612.4 469.1" stroke="rgba(212,188,138,.78)"/>
+          <path d="M616.9 477A114 114 0 0 1 520.6 643.9" stroke="rgba(242,244,243,.14)"/>
+          <path d="M511.4 643.9A114 114 0 0 1 415.1 477" stroke="rgba(242,244,243,.14)"/>
+        </g>
+        <circle cx="516" cy="464" r="5" fill="#0c0e0f"/>
+      </svg>
+      <div class="crumb"><b>GUARD05</b> › <b data-en="PATROLLER 2" data-es="PATRULLERO 2">PATROLLER 2</b></div>
+      <div class="stepname" data-en="ORDER" data-es="ORDEN">ORDER</div>
+      <div class="lbl on" style="left:516px;top:340px;transform:translateX(-50%)"><i>1</i><span data-en="Go check" data-es="Ve a mirar">Go check</span></div>
+      <div class="lbl" style="left:664px;top:606px"><i>2</i><span data-en="Hold position" data-es="Mantén la posición">Hold position</span></div>
+      <div class="lbl" style="left:368px;top:606px;transform:translateX(-100%)"><i>3</i><span data-en="All clear" data-es="Todo despejado">All clear</span></div>
+      <div class="hints">
+        <span><span class="key sm wide">LMB</span><span>OK</span></span>
+        <span><span class="key sm wide">RMB</span><span data-en="Back" data-es="Volver">Back</span></span>
+        <span><span class="key sm">Q</span><span data-en="Close" data-es="Cerrar">Close</span></span>
+      </div>
+      <div class="referent"><span data-en="PATROLLER 2" data-es="PATRULLERO 2">PATROLLER 2</span></div>
+    </div>
+
+    <!-- Codec call during play: middle left -->
+    <div class="call" data-show="call">
+      <div class="face"><img src="handler.png" alt="Handler"></div>
+      <div>
+        <div class="tag"><span class="wave"><i style="height:6px"></i><i style="height:14px;animation-delay:-.2s"></i><i style="height:10px;animation-delay:-.4s"></i><i style="height:14px;animation-delay:-.1s"></i></span>CALL ›› <b data-en="Handler" data-es="Enlace">Handler</b></div>
+        <p data-en="The two deck hands smoke behind the bridge, at the freighter's stern." data-es="Los dos marineros fuman detrás del puente, en la popa del carguero.">The two deck hands smoke behind the bridge, at the freighter's stern.</p>
+      </div>
+    </div>
+
+  </div>
+</div></div>
+
+<script>
+const stage = document.getElementById('stage');
+function fit() { stage.style.transform = `translate(-50%, -50%) scale(${Math.min(innerWidth / 1920, (innerHeight - 48) / 1080)})`; }
+addEventListener('resize', fit); fit();
+
+const STATES = ['sneak', 'notice', 'alert', 'select', 'radio', 'call'];
+let aigisOn = true;
+function setState(st) {
+  document.body.dataset.state = st;
+  document.querySelectorAll('[data-set]').forEach(b => b.setAttribute('aria-pressed', b.dataset.set === st));
+  document.querySelectorAll('[data-show]').forEach(el => el.classList.toggle('off', el.dataset.show !== st));
+  const hurt = st === 'alert', fill = document.getElementById('lifeFill'), lost = document.getElementById('lifeLost');
+  fill.style.height = hurt ? '46%' : '70%';
+  if (hurt) { lost.style.transition = 'none'; lost.style.height = '70%'; requestAnimationFrame(() => requestAnimationFrame(() => { lost.style.transition = ''; lost.style.height = '46%'; })); }
+  else lost.style.height = '70%';
+  // the radio owns the screen: gear and the Aigis cue step back
+  document.querySelector('.gear').classList.toggle('off', st === 'radio');
+  document.querySelector('.aigis').classList.toggle('off', st === 'radio' || !aigisOn);
+}
+document.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => setState(b.dataset.set)));
+addEventListener('keydown', e => { const i = +e.key - 1; if (STATES[i]) setState(STATES[i]); });
+
+document.getElementById('t-aigis').addEventListener('click', e => {
+  aigisOn = !aigisOn; e.currentTarget.setAttribute('aria-pressed', aigisOn);
+  setState(document.body.dataset.state);
+});
+document.getElementById('t-lang').addEventListener('click', e => {
+  const es = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', es);
+  document.documentElement.lang = es ? 'es' : 'en';
+  document.querySelectorAll('[data-en]').forEach(el => el.textContent = es ? el.dataset.es : el.dataset.en);
+});
+
+// noticing: the arc fills, then empties
+let t = 0;
+const arc = document.getElementById('arcFill'), len = 182;
+arc.style.strokeDasharray = `${len} ${len}`;
+(function tick() { t = (t + .004) % 1; const f = t < .7 ? t / .7 : 1 - (t - .7) / .3; arc.style.strokeDashoffset = len * (1 - f * .85); requestAnimationFrame(tick); })();
+
+stage.addEventListener('mousemove', e => {
+  const r = stage.getBoundingClientRect();
+  stage.style.setProperty('--px', ((e.clientX - r.left) / r.width * 2 - 1).toFixed(3));
+  stage.style.setProperty('--py', ((e.clientY - r.top) / r.height * 2 - 1).toFixed(3));
+});
+setState('sneak');
+</script>
+</body>
+</html>
