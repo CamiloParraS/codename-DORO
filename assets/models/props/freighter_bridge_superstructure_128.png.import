@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d0clfifl54i18"
-path="res://.godot/imported/freighter_bridge_superstructure_128.png-35253cb5271c8115a1298f401d3ca71e.ctex"
+path.s3tc="res://.godot/imported/freighter_bridge_superstructure_128.png-35253cb5271c8115a1298f401d3ca71e.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "b78c099ec0edd694a0b7b0afd6a5c9c2"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/freighter_bridge_superstructure_128.png"
-dest_files=["res://.godot/imported/freighter_bridge_superstructure_128.png-35253cb5271c8115a1298f401d3ca71e.ctex"]
+dest_files=["res://.godot/imported/freighter_bridge_superstructure_128.png-35253cb5271c8115a1298f401d3ca71e.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
