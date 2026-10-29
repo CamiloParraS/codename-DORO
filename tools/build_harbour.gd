@@ -422,6 +422,15 @@ func _build() -> void:
 	_rooms(ROOMS)
 
 	_actors()
+	# the bridge's aft door, where PAIR_SPLIT sends guard A in; the model's wall sits BRIDGE_DOOR_INSET behind the box face (y 56)
+	const BRIDGE_DOOR_INSET := 0.5
+	var doorway := _box(_root, "BridgeDoorway", [PAIR_SPLIT.GuardPA[0][0] - 0.6, 56.11 - BRIDGE_DOOR_INSET - 1.03, 1.2, 1.03], DECK, DECK + 2.2, "metal", Color(0.04, 0.04, 0.05))  # a black recess 1 m deep behind the door, what the guard walks into
+	doorway.owner = _root
+	_own(doorway)
+	var door := _box(_root, "BridgeDoor", [PAIR_SPLIT.GuardPA[0][0] - 0.6, 56.11 - BRIDGE_DOOR_INSET, 1.2, 0.02], DECK, DECK + 2.2, "metal", Color(0.45, 0.5, 0.55))
+	door.owner = _root
+	_own(door)
+	door.set_script(load("res://areas/harbour/bridge_door.gd"))
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y = 1.5
 	_objectives()

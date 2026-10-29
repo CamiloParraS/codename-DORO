@@ -203,13 +203,31 @@ func split_pair() -> void:
 			g.add_to_group("leaving")
 
 
-## A guard sent off by split_pair is gone once it reaches its post up and on patrol, like a dismissed
-## reinforcement (it still counts as spawned: a life spared).
+## A guard sent off by split_pair, once at its post up and on patrol, opens the bridge door, walks 3 m
+## through it and is gone, like a dismissed reinforcement (it still counts as spawned: a life spared).
 func _leave() -> void:
 	for g: Guard in get_tree().get_nodes_in_group("leaving"):
-		if not g.is_down() and g.alert.state == GuardAlert.State.PATROL and g._flat_dist(g.route[0]) < Guard.REACHED:
-			g.remove_from_group("guards")
-			g.queue_free()
+		if not g.is_down() and not g.has_meta("entering") and g.alert.state == GuardAlert.State.PATROL and g._flat_dist(g.route[0]) < Guard.REACHED:
+			_enter(g)
+
+
+## ponytail: a straight tween with the guard's AI off; a Down or an alert mid-walk is ignored (about 2 s).
+func _enter(g: Guard) -> void:
+	g.set_meta("entering", true)
+	g.set_physics_process(false)
+	g.velocity = Vector3.ZERO
+	g.model.play(CharacterModel.guard_clip(false, Guard.PATROL_SPEED), Guard.PATROL_SPEED)
+	var door: Node = get_node_or_null("BridgeDoor")
+	if door:
+		door.open()
+	var t := create_tween()
+	t.tween_interval(0.4)  # the door slides
+	t.tween_property(g, "global_position", g.global_position + Vector3(0, 0, -3.0), 3.0 / Guard.PATROL_SPEED)
+	t.tween_callback(func() -> void:
+		g.remove_from_group("guards")
+		g.queue_free()
+		if door:
+			door.close())
 
 
 ## A route point's stop from its Marker meta: {} unless it has `hold` or `scan`.
