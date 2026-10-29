@@ -23,7 +23,7 @@
 * { box-sizing: border-box; margin: 0; }
 html, body { height: 100%; }
 body { background: #07080a; color: var(--ink); font-family: Barlow, sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
-::selection { background: var(--sel); color: #fff; }
+::selection { background: var(--sel); color: var(--white); }
 .num { font-variant-numeric: tabular-nums lining-nums; }
 
 /* mock controls */
@@ -55,7 +55,7 @@ body { background: #07080a; color: var(--ink); font-family: Barlow, sans-serif; 
 .points .n { font: 500 36px/1 Barlow; }
 .points .n.tick { animation: tick .45s cubic-bezier(.16, 1, .3, 1); }
 @keyframes tick { from { color: var(--sel); transform: translateY(-5px); } }
-.signed { position: absolute; right: 72px; top: 118px; background: var(--sel); color: #fff; font: 600 15px/1 "Barlow Condensed"; letter-spacing: .14em; padding: 7px 10px 6px; border-radius: 2px; animation: signed 3.4s cubic-bezier(.16, 1, .3, 1) both; }
+.signed { position: absolute; right: 72px; top: 118px; background: var(--sel); color: var(--white); font: 600 15px/1 "Barlow Condensed"; letter-spacing: .14em; padding: 7px 10px 6px; border-radius: 2px; animation: signed 3.4s cubic-bezier(.16, 1, .3, 1) both; }
 @keyframes signed { 0% { opacity: 0; transform: translateY(-6px); } 10%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 .strip { position: absolute; left: 300px; right: 72px; top: 112px; height: 44px; display: flex; align-items: center; justify-content: flex-end; gap: 26px; padding: 0 16px; background: var(--strip); color: var(--white); border-radius: 2px;
   font: 500 18px/1 "Barlow Condensed"; letter-spacing: .12em; text-transform: uppercase; }
