@@ -47,6 +47,12 @@ for o in parts:
     for v in o.data.vertices:
         v.co.y += shift
 
+# 0b. The goggles are modelled wider than the head and stand off the brow: narrow them and seat them on the face.
+for v in O["Goggles"].data.vertices:
+    v.co.x *= 0.8
+    v.co.y += 0.015  # Nikita faces -Y here
+    v.co.z += 0.015
+
 # 1. Pose the arms into Nikita's A-pose.
 tip = max((v.co for v in O["Nikita"].data.vertices), key=lambda c: c.x)
 for side, sign in (("l", 1), ("r", -1)):
