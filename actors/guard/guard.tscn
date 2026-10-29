@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b710dy0ydgapd" path="res://actors/guard/guard.gd" id="1_ys3fj"]
 [ext_resource type="PackedScene" path="res://actors/character/character_model.tscn" id="4_model"]
-[ext_resource type="FontFile" uid="uid://4w2iv1frkcrj" path="res://assets/fonts/press_start_2p_regular.ttf" id="2_mxi3m"]
+[ext_resource type="FontFile" uid="uid://jwuc3m32u86e" path="res://assets/fonts/barlow_semibold.ttf" id="2_mxi3m"]
 [ext_resource type="BehaviorTree" uid="uid://cmum4s6d12reh" path="res://actors/guard/guard_tree.tres" id="3_edkue"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mkyd0"]
@@ -28,7 +28,7 @@ pixel_size = 0.006
 billboard = 1
 no_depth_test = true
 font = ExtResource("2_mxi3m")
-font_size = 96
+font_size = 128
 outline_size = 16
 
 [node name="NavAgent" type="NavigationAgent3D" parent="." unique_id=1949564014]

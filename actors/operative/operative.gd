@@ -29,6 +29,7 @@ var carrying: Node3D     # the Down guard on the shoulder
 var looking := false  # first-person look (hold Z): eye view, feet planted
 var ladder: Node3D       # the Ladder being climbed (group "ladders", Bottom and Top markers)
 var prompt := ""         # shown by the HUD
+var prompt_parts: Array = []  # the same prompt for the HUD, text-free: Operative.part() dicts
 var aiming := false      # RMB held: over-the-shoulder aim, LMB fires
 var radio_open := false  # the radial radio takes the mouse (RMB is "back" there, not aim)
 var tranq := Tranq.new()
@@ -501,6 +502,7 @@ func _climb(dir: float, delta: float) -> void:
 	moving = dir != 0.0
 	velocity = Vector3.ZERO
 	prompt = Prompts.verb("crouch", "ui.prompt.drop_off")
+	prompt_parts = [part("crouch", "drop_off")]
 	var bottom: Vector3 = ladder.get_node("Bottom").global_position
 	var top: Vector3 = ladder.get_node("Top").global_position
 	var y := global_position.y + dir * CLIMB_SPEED * delta
@@ -552,32 +554,65 @@ func _grip_holds() -> bool:
 	return _choking.is_down() if _victim_down else _choking.can_be_choked(global_position)
 
 
-## The HUD's action prompt, "[E] CARRY  [X] KILL": keys from the InputMap, verbs translated.
+## The HUD's action prompt, "[E] CARRY  [X] KILL": keys from the InputMap, verbs translated. prompt_parts
+## carries the same choices for the HUD's text-free prompt.
 func _update_prompt() -> void:
 	var kill := Prompts.verb("kill_takedown", "ui.prompt.kill")
+	var fulton := _fulton_part()
 	if carrying:
 		prompt = Prompts.verb("interact", "ui.prompt.drop")
+		prompt_parts = [part("interact", "drop")]
 	elif _choking:
 		prompt = tr("ui.prompt.killing" if _killing else "ui.prompt.choking")
+		prompt_parts = [part("", "kill" if _killing else "choke", false, "busy")]
 	elif _fultoning:
 		prompt = tr("ui.prompt.fultoning")
+		prompt_parts = [part("", "fulton", false, "busy")]
 	elif held_up and not held_up.answered:
 		prompt = _join(tr("ui.prompt.questioning") if _ask > 0.0 else Prompts.hold("interact", "ui.prompt.question"), _fulton_hint())
+		prompt_parts = [part("", "question", false, "busy") if _ask > 0.0 else part("interact", "question", true), fulton]
 	elif not held_up and _holdup_target():
 		prompt = Prompts.verb("interact", "ui.prompt.hold_up")
+		prompt_parts = [part("interact", "hold_up")]
 	elif _nearest(true):
 		prompt = _join(Prompts.verb("interact", "ui.prompt.carry"), kill if _nearest(true, true) else "", _fulton_hint())
+		prompt_parts = [part("interact", "carry"), part("kill_takedown", "kill") if _nearest(true, true) else {}, fulton]
 	elif _nearest(false):
 		prompt = _join(Prompts.verb("interact", "ui.prompt.choke"), kill, _fulton_hint())
+		prompt_parts = [part("interact", "choke"), part("kill_takedown", "kill"), fulton]
 	elif _crate_near() and not items.crate_used:
 		prompt = Prompts.verb("interact", "ui.prompt.resupply")
+		prompt_parts = [part("interact", "resupply")]
 	elif _ladder_near():
 		prompt = Prompts.verb("interact", "ui.prompt.climb")
+		prompt_parts = [part("interact", "climb")]
 	else:
 		prompt = ""
+		prompt_parts = []
 	for c in get_tree().get_nodes_in_group("intel"):  # a hold-E console: its line beside the carry and Fulton ones
 		var line: String = c.prompt_for(self) if c.has_method("prompt_for") else ""
 		prompt = _join(prompt, line)
+		if line != "":
+			prompt_parts.append(part("interact", "console", true))
+	prompt_parts = prompt_parts.filter(func(p: Dictionary) -> bool: return not p.is_empty())
+
+
+## One choice of the HUD's text-free prompt: the action whose key to show ("" = none, the move is under
+## way), the pictogram, whether the key is held, and a state: "" offered, "busy" under way, "warn" barred.
+static func part(action: String, icon: String, hold := false, state := "") -> Dictionary:
+	return {action = action, icon = icon, hold = hold, state = state}
+
+
+## _fulton_hint as a prompt part: offered, barred (no open sky, or a Target too ill to fly), or none.
+func _fulton_part() -> Dictionary:
+	var g := _fulton_target()
+	if not g:
+		var barred := get_tree().get_nodes_in_group("guards").any(func(b: Guard) -> bool:
+			return b.carry_only and b.fulton_state_ok() and _flat_dist(b) <= TAKEDOWN_REACH)
+		return part("", "fulton", false, "warn") if barred else {}
+	if fultons <= 0:
+		return {}
+	return part("fulton", "fulton", true) if fulton_ready() else part("", "fulton", false, "warn")
 
 
 ## Prompt parts two spaces apart, skipping empty ones.

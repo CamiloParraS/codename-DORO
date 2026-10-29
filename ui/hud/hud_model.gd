@@ -1,4 +1,4 @@
-## HUD E's rules, node-free so they can be tested: which phase shows and for how long, and where and
+## The HUD's rules, node-free so they can be tested: which phase shows and for how long, and where and
 ## how each detection arc is drawn.
 class_name HudModel
 extends RefCounted
@@ -65,10 +65,10 @@ static func deceive(fill: float, dominant: String) -> float:
 	return fill
 
 
-## Chrome to Aigis cyan as `aigis` (0..1) rises, faint to full as the meter fills (width grows too, so
-## hue is not the only cue); red when alerted.
+## Light toward Aigis cyan as `aigis` (0..1) rises, faint to full as the meter fills (the fill also grows
+## along the arc, so hue is not the only cue); damage red when alerted.
 static func arc_color(fill: float, alerted: bool, aigis := 1.0) -> Color:
-	var c: Color = HudPalette.DANGER if alerted else HudPalette.CHROME.lerp(HudPalette.AIGIS, aigis)
+	var c: Color = HudPalette.DMG if alerted else HudPalette.LIGHT.lerp(HudPalette.CYAN, aigis * 0.6)
 	c.a = 0.35 + 0.65 * fill
 	return c
 

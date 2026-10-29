@@ -1,20 +1,21 @@
-## Radar rules, node-free: north-up (world -Z is up the screen), 30 m to the edge, anything farther pinned
-## to the edge, jammed while the phase is ALERT or EVASION.
+## Radar rules, node-free: a north-up disc (world -Z is up the screen), 30 m to the rim, anything farther pinned
+## to the rim, jammed while the phase is ALERT or EVASION. Sizes are HUD design px (1920x1080 canvas).
 class_name RadarModel
 extends RefCounted
 
 const RANGE := 30.0  # metres from the Operative to the Radar's edge
-const HALF := 40.0  # px, half the square's side
-const MARGIN := 38.0  # px from the canvas's left edge: clear of the life bar and its label
+const HALF := 150.0  # px, the disc's radius
+const MARGIN := 64.0  # px from the canvas's right edge
+const TOP := 48.0  # px from the canvas's top edge
 
 
-## Offset from the Operative in metres (x, z) -> square coords in [-1, 1], pinned to the edge.
+## Offset from the Operative in metres (x, z) -> disc coords (length <= 1), pinned to the rim.
 static func unit(offset: Vector2) -> Vector2:
 	var u := offset / RANGE
-	return u / maxf(1.0, maxf(absf(u.x), absf(u.y)))
+	return u / maxf(1.0, u.length())
 
 
-## Pixel offset from the square's centre for a world offset; `inset` keeps the blip inside the border.
+## Pixel offset from the disc's centre for a world offset; `inset` keeps the blip inside the rim.
 static func blip(offset: Vector2, inset: float) -> Vector2:
 	return unit(offset) * (HALF - inset)
 
@@ -56,6 +57,6 @@ static func ping_radius(noise_range: float, age: float) -> float:
 	return minf(noise_range / RANGE, 1.0) * (HALF - 2) * age / PING_TIME
 
 
-## Bottom-left, right of the life bar and its label.
+## Top-right, on the HUD design canvas (1080 tall, as wide as the window's aspect makes it).
 static func rect(canvas: Vector2) -> Rect2:
-	return Rect2(MARGIN, canvas.y - 18 - HALF * 2, HALF * 2, HALF * 2)
+	return Rect2(canvas.x - MARGIN - HALF * 2, TOP, HALF * 2, HALF * 2)

@@ -274,43 +274,76 @@ func _guard(guard_name: String) -> Node3D:
 	return null
 
 
-# --- Drawing: HudPalette chrome -----------------------------------------------------------------
+# --- Drawing: on the HUD's design canvas (DESIGN.md Radio) ------------------------------------------
+
+const RING_IN := 72.0  # design px; the hover logic keeps R_IN / R_OUT in logical px
+const RING_OUT := 156.0
+
 
 func _draw() -> void:
 	if not menu:
 		return
-	var c := _centre()
-	draw_circle(c, R_OUT + 46, Color(0, 0, 0, 0.6))  # the world dim is the 3D look's; only the radial gets a backing
-	_draw_referents()
+	var k := size.y / HudPalette.DESIGN_H
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	var c := _centre() / k
+	draw_circle(c, RING_OUT + 46, Color(HudPalette.DARK_INK, 0.55))  # the radial's own backing; the world dim is the 3D look's
+	_draw_referents(k)
 	var opts := menu.options()
 	var n := opts.size()
-	_centered(c + Vector2(0, -R_OUT - 30), _crumb(), HudPalette.CHROME)
-	_centered(c + Vector2(0, 4), tr("radio.step." + menu.step), HudPalette.WHITE)
-	_centered(c + Vector2(0, R_OUT + 34), "  ".join(PackedStringArray([Prompts.verb("fire", "radio.ok"),
-		Prompts.verb("aim", "ui.back"), Prompts.verb("radio", "radio.close")])), HudPalette.CHROME_DIM)
+	var crumb := _crumb()
+	if menu.step == "confirm":
+		HudPalette.hud_text(self, c + Vector2(0, -RING_OUT - 60), crumb, 20, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 1)
+	else:
+		HudPalette.hud_label(self, c + Vector2(0, -RING_OUT - 60), crumb, 17, HudPalette.LIGHT_2, 0.14, HudPalette.LABEL, 1)
+	_hints(c + Vector2(0, RING_OUT + 40))
 	if n == 0:
-		_centered(c + Vector2(0, 20), tr("radio.no_voiceprints"), HudPalette.CHROME_DIM)
+		HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.no_voiceprints"), 17, HudPalette.LIGHT_3, 0.14, HudPalette.LABEL, 1)
 		return
 	var hover := _hover()
 	var step := TAU / n
+	var mean := (RING_IN + RING_OUT) / 2
 	for i in n:
 		var mid := -PI / 2 + i * step
 		var on := i == hover
 		var gap := 0.04 if n > 1 else 0.0
-		draw_arc(c, (R_IN + R_OUT) / 2, mid - step / 2 + gap, mid + step / 2 - gap, 24,
-			Color(HudPalette.CHROME, 0.8) if on else Color(HudPalette.CHROME, 0.25), R_OUT - R_IN)
-		var shown := _label(opts[i][0])
-		var label: String = ("%d %s" % [i + 1, shown]) if i < 9 else shown
+		draw_arc(c, mean, mid - step / 2 + gap, mid + step / 2 - gap, 48,
+			Color(HudPalette.SAND, 0.78) if on else Color(HudPalette.LIGHT, 0.14), RING_OUT - RING_IN, true)
+		var num := "%d " % (i + 1) if i < 9 else ""
+		var label := _label(opts[i][0])
+		var f := HudPalette.tracked(HudPalette.LABEL, 20, 0.12)
+		var nw := f.get_string_size(num, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+		var w := nw + f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
 		var dir := Vector2.from_angle(mid)
-		var p := c + dir * (R_OUT + 8) + Vector2(0, 4 + 4 * dir.y)
-		var w := HudPalette.HEADING.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		var p := c + dir * (RING_OUT + 12) + Vector2(0, 7 + 10 * dir.y)
 		if dir.x < -0.2:
 			p.x -= w
 		elif dir.x <= 0.2:
 			p.x -= w / 2
-		_t(p, label, HudPalette.WHITE if on else HudPalette.CHROME_DIM)
+		var ink := HudPalette.SAND if on else HudPalette.LIGHT_3
+		HudPalette.hud_text(self, p, num, 20, Color(ink, ink.a * 0.7), f)
+		HudPalette.hud_text(self, p + Vector2(nw, 0), label, 20, ink, f)
+	HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.step." + menu.step), 20, HudPalette.SAND, 0.24, HudPalette.LABEL, 1, false)
 	if _pointer.length() > 12.0:
-		draw_circle(c + _pointer.normalized() * (R_IN - 6), 2.5, HudPalette.WHITE)
+		draw_circle(c + _pointer.normalized() * (RING_IN - 8), 5, HudPalette.LIGHT)
+
+
+## Under the ring: OK, back and close, each as its key and a word.
+func _hints(top_centre: Vector2) -> void:
+	var pairs := [[Prompts.key("fire"), tr("radio.ok")], [Prompts.key("aim"), tr("ui.back")], [Prompts.key("radio"), tr("radio.close")]]
+	var f := HudPalette.tracked(HudPalette.LABEL, 15, 0.14)
+	var widths := []
+	var total := 0.0
+	for p: Array in pairs:
+		var kw := maxf(30.0, HudPalette.FIGURE.get_string_size(p[0], HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 16)
+		var w: float = kw + 8 + f.get_string_size(String(p[1]).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+		widths.append(w)
+		total += w
+	total += 22.0 * (pairs.size() - 1)
+	var x := top_centre.x - total / 2
+	for i in pairs.size():
+		var kw := HudPalette.keycap(self, Vector2(x, top_centre.y), pairs[i][0], true)
+		HudPalette.hud_text(self, Vector2(x + kw + 8, top_centre.y + 21), String(pairs[i][1]).to_upper(), 15, HudPalette.LIGHT_3, f)
+		x += widths[i] + 22.0
 
 
 ## An option as shown: upper case, the fixed ones translated.
@@ -328,15 +361,7 @@ func _crumb() -> String:
 		parts.append(_label("All units" if menu.pick.all_units else menu.pick.recipients[0]))
 	if menu.step == "place":
 		parts.append(_label("Go check"))
-	return " > ".join(parts)
-
-
-func _centered(pos: Vector2, s: String, col: Color) -> void:
-	HudPalette.centered(self, pos.x, pos.y, s, col)
-
-
-func _t(pos: Vector2, s: String, col: Color) -> void:
-	HudPalette.text(self, pos, s, col)
+	return " › ".join(parts)
 
 
 # --- Referents: brackets, edge pointers, the Radar blink ------------------------------------------
@@ -355,55 +380,56 @@ func _referents() -> Dictionary:
 	return out
 
 
-func _draw_referents() -> void:
+## In design px (`k` = logical px per design px): brackets and a name on the hovered option's guards and
+## Radio point, edge pointers toward the ones off screen, and their blink on the Radar.
+func _draw_referents(k: float) -> void:
 	var cam := get_viewport().get_camera_3d()
 	if cam == null:
 		return
 	var r := _referents()
 	var spots := []  # [feet, height, hot, name]
-	for k in ["hot", "cold"]:
-		for g: Node3D in r[k]:
-			spots.append([g.global_position, 1.8, k == "hot", menu.shown(String(g.name))])
+	for key in ["hot", "cold"]:
+		for g: Node3D in r[key]:
+			spots.append([g.global_position, 1.8, key == "hot", menu.shown(String(g.name))])
 	if r.place_at != Vector3.INF:
 		spots.append([r.place_at, 2.0, r.place_hot, r.place])
 	var blink := int(Time.get_ticks_msec() / 200) % 2 == 0
-	var radar := RadarModel.rect(size)
+	var radar := RadarModel.rect(size / k)  # the Radar lives on the HUD's design canvas
 	var origin := RadarModel.flat(_operative.global_position)
 	var jammed := RadarModel.jammed(HudModel.phase(AlertChain.area)[0])
 	for s in spots:
-		var a := 1.0 if s[2] else 0.5
-		var col := Color(HudPalette.WHITE, a)
+		var col := Color(HudPalette.LIGHT, 1.0 if s[2] else 0.5)
 		var feet: Vector3 = s[0]
 		if cam.is_position_behind(feet) or not Rect2(Vector2.ZERO, size).grow(-EDGE).has_point(cam.unproject_position(feet)):
-			_edge_pointer(cam, feet, col)
+			_edge_pointer(cam, feet, col, k)
 		if s[2]:
 			if not cam.is_position_behind(feet):
-				var foot := cam.unproject_position(feet)
-				var h := maxf(absf(foot.y - cam.unproject_position(feet + Vector3.UP * s[1]).y), 10.0)
+				var foot := cam.unproject_position(feet) / k
+				var h := maxf(absf(foot.y - cam.unproject_position(feet + Vector3.UP * s[1]).y / k), 30.0)
 				var box := Rect2(foot - Vector2(h * 0.35, h), Vector2(h * 0.7, h))
 				_brackets(box, col)
-				_centered(box.position + Vector2(box.size.x / 2, -4 - 8), s[3].to_upper(), col)
+				HudPalette.hud_label(self, box.position + Vector2(box.size.x / 2, -12), s[3], 16, col, 0.14, HudPalette.LABEL, 1)
 			if blink and not jammed:
-				var p := radar.get_center() + RadarModel.blip(RadarModel.flat(feet) - origin, 4)
-				draw_rect(Rect2(p - Vector2(4, 4), Vector2(8, 8)), HudPalette.WHITE)
+				var p := radar.get_center() + RadarModel.blip(RadarModel.flat(feet) - origin, 12)
+				draw_rect(Rect2(p - Vector2(6, 6), Vector2(12, 12)), HudPalette.LIGHT)
 
 
 ## A triangle at the screen edge toward an off-screen point, mirrored through the centre when behind the camera.
-func _edge_pointer(cam: Camera3D, at: Vector3, col: Color) -> void:
+func _edge_pointer(cam: Camera3D, at: Vector3, col: Color, k: float) -> void:
 	var c := size / 2
 	var p := cam.unproject_position(at)
 	if cam.is_position_behind(at):
 		p = c - (p - c)
 	var d := (p - c).normalized()
 	var half := size / 2 - Vector2.ONE * EDGE
-	var e := c + d * minf(half.x / maxf(absf(d.x), 1e-4), half.y / maxf(absf(d.y), 1e-4))
-	draw_colored_polygon(PackedVector2Array([e + d * 8, e + d.rotated(2.4) * 6, e + d.rotated(-2.4) * 6]), col)
+	var e := (c + d * minf(half.x / maxf(absf(d.x), 1e-4), half.y / maxf(absf(d.y), 1e-4))) / k
+	draw_colored_polygon(PackedVector2Array([e + d * 24, e + d.rotated(2.4) * 18, e + d.rotated(-2.4) * 18]), col)
 
 
+## 22 px L-shapes in 2 px ink at the box's four corners.
 func _brackets(b: Rect2, col: Color) -> void:
-	var l := minf(b.size.x, b.size.y) * 0.3
+	var l := minf(22.0, minf(b.size.x, b.size.y) * 0.3)
 	for corner in [b.position, Vector2(b.end.x, b.position.y), b.end, Vector2(b.position.x, b.end.y)]:
 		var sx := 1.0 if corner.x == b.position.x else -1.0
 		var sy := 1.0 if corner.y == b.position.y else -1.0
-		draw_line(corner, corner + Vector2(l * sx, 0), col)
-		draw_line(corner, corner + Vector2(0, l * sy), col)
+		draw_polyline(PackedVector2Array([corner + Vector2(l * sx, 0), corner, corner + Vector2(0, l * sy)]), col, 2.0)

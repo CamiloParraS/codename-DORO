@@ -297,6 +297,10 @@ ui.hud.call,CALL >>,LLAMADA >>
 ui.hud.vp,VP,VOZ
 ui.hud.operative,OPERATIVE,OPERATIVO
 ui.hud.jammed,JAMMED,BLOQUEADO
+ui.gear.tranq,TRANQ PISTOL,PISTOLA TRANQ.
+ui.gear.rifle,RIFLE,FUSIL
+ui.gear.scanner,SCANNER,ESCÁNER
+ui.gear.magazine,MAGAZINE,CARGADOR
 ui.phase.alert,ALERT,ALERTA
 ui.phase.evasion,EVASION,EVASIÓN
 ui.phase.caution,CAUTION,PRECAUCIÓN

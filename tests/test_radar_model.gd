@@ -1,7 +1,7 @@
 @tool
 extends McpTestSuite
 
-## Radar rules: north-up blip placement, range pinning, jamming, placement clear of the life bar.
+## Radar rules: north-up blip placement, range pinning to the disc, jamming, top-right placement on the 1920x1080 HUD canvas.
 
 
 func suite_name() -> String:
@@ -13,9 +13,12 @@ func test_north_up_world_minus_z_is_up() -> void:
 	assert_eq(RadarModel.unit(Vector2(30, 0)), Vector2(1, 0))
 
 
-func test_beyond_range_pins_to_the_edge_keeping_direction() -> void:
-	assert_eq(RadarModel.unit(Vector2(60, -30)), Vector2(1, -0.5))
+func test_beyond_range_pins_to_the_disc_edge_keeping_direction() -> void:
+	var u := RadarModel.unit(Vector2(60, -30))
+	assert_true(is_equal_approx(u.length(), 1.0), "on the rim")
+	assert_true(is_equal_approx(u.angle(), Vector2(2, -1).angle()), "same bearing")
 	assert_eq(RadarModel.unit(Vector2(0, 300)), Vector2(0, 1))
+	assert_true(is_equal_approx(RadarModel.unit(Vector2(25, 25)).length(), 1.0), "a diagonal past range is pinned too, not left in a square corner")
 
 
 func test_a_far_blip_sits_inside_the_border_on_the_edge() -> void:
@@ -62,21 +65,21 @@ func test_a_pending_call_flashes_the_blip_and_stops_with_the_call() -> void:
 	assert_false(RadarModel.call_flash(chain.calling("camera"), 0), "only callers flash")
 
 
-func test_radar_clear_of_life_bar_and_its_label() -> void:
-	var canvas := Vector2(640, 360)
-	var r := RadarModel.rect(canvas)
-	var life_bar := Rect2(10, canvas.y - 104, 7, 86)
-	var label := Rect2(20, canvas.y - 104, 14, 86)  # OPERATIVE, rotated, from the bar's foot
-	assert_false(r.intersects(life_bar))
-	assert_false(r.intersects(label))
-	assert_true(Rect2(Vector2.ZERO, canvas).encloses(r))
+func test_radar_sits_top_right_inside_the_canvas_at_any_aspect() -> void:
+	for canvas: Vector2 in [Vector2(1920, 1080), Vector2(2560, 1080)]:
+		var r := RadarModel.rect(canvas)
+		assert_eq(r.size, Vector2.ONE * RadarModel.HALF * 2)
+		assert_eq(r.end.x, canvas.x - RadarModel.MARGIN, "64 px in from the right edge")
+		assert_eq(r.position.y, RadarModel.TOP)
+		assert_true(Rect2(Vector2.ZERO, canvas).encloses(r))
+		assert_true(r.position.x > canvas.x / 2 + 300, "clear of the centred phase plate")
 
 
 func test_noise_ring_spreads_to_its_range_and_goes() -> void:
 	assert_eq(RadarModel.ping_radius(6.0, 0.0), 0.0)
 	assert_true(RadarModel.ping_radius(6.0, 0.25) < RadarModel.ping_radius(6.0, 0.4))
 	assert_true(RadarModel.ping_radius(10.0, 0.25) > RadarModel.ping_radius(6.0, 0.25), "a louder noise spreads wider")
-	assert_true(RadarModel.ping_radius(60.0, 0.4) <= RadarModel.HALF, "pinned inside the square")
+	assert_true(RadarModel.ping_radius(60.0, 0.4) <= RadarModel.HALF, "pinned inside the disc")
 	assert_eq(RadarModel.ping_radius(6.0, RadarModel.PING_TIME), -1.0)
 
 

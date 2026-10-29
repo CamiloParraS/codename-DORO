@@ -52,6 +52,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 
 - Press Start 2P, Copyright 2012 The Press Start 2P Project Authors (cody@zone38.net), SIL Open Font License 1.1. OFL.txt is included at res://assets/fonts/OFL.txt.
 - VT323, Copyright 2011 The VT323 Project Authors (peter.hull@oikoi.com), SIL Open Font License 1.1. ofl_vt323.txt is included at res://assets/fonts/ofl_vt323.txt.
+- Barlow and Barlow Condensed (Medium, SemiBold, Bold) by Jeremy Tribby, https://github.com/jpt/barlow, Copyright 2017 The Barlow Project Authors, SIL Open Font License 1.1. ofl_barlow.txt is included at res://assets/fonts/ofl_barlow.txt.
 
 ## Audio
 

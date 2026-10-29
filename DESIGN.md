@@ -427,13 +427,13 @@ The HUD is near-monochrome ink on smoke with one muted sand accent. Signal colou
 
 **HUD corner map (1920x1080).** The edge margin is 64px (Aigis and the phase plate sit at top 52px, the Radar at top 48px).
 - **Top-left:** Aigis cue. Voice icon (26px) plus name, with the Habit strip 14px below: six 32px stroke icons 20px apart, each with three 8x3px pips. Drawn at 90% opacity; it can be switched off and steps back while the radio is open.
-- **Top-centre:** phase plate, ALERT only.
-- **Top-right:** Radar, a 300px disc.
+- **Top-centre:** phase plate. ALERT is the solid damage-red plate; EVASION is a smoke-hi plate with a 1.5px sand edge and sand type; CAUTION is a smoke-hi plate with a hairline and Ink 2 type. All three hold the word and, behind a 1px divider, the m:ss timer; the plate's fill and edge carry the phase as much as its hue.
+- **Top-right:** Radar, a 300px disc. Held Voiceprints list under it, right-aligned 32px below the disc: VP caption (15px, Ink 3), then up to three names (17px, Ink 2) and a "+n".
 - **Middle-left:** codec call during play, at left 64px, top 400px, 560px wide: an 84px portrait, then tag and subtitle.
 - **Centre-left:** radio ring, centred at (516, 530).
 - **Lower-middle:** contextual prompt, centred at x 960, top 850px.
-- **Bottom-left:** life, a 12x300px vertical bar with OPERATIVE running bottom-to-top 24px to its right.
-- **Bottom-right:** gear, 320px wide: the item card (220x84px, right-aligned) stacked 12px above the weapon card (320x118px). The selector opens to their left (336px from the right edge of the cluster, slots 6px apart).
+- **Bottom-left:** life, a 12x300px vertical bar with OPERATIVE running bottom-to-top 24px to its right, and the stance figure (standing 40px or crouched 26px, Ink at 85%) standing on the bar's top.
+- **Bottom-right:** gear, 320px wide: the item card (220x84px, right-aligned) stacked 12px above the weapon card (320x118px), with the Fulton card (88x84px: a balloon and the count; sand, red at none, blinking ink while a balloon could go up) in the space left of the item card. The selector opens to their left (336px from the right edge of the cluster, slots 6px apart).
 - **World-anchored:** `?` / `!` over the guard's head, detection arcs around the screen centre, radio referent brackets around the targeted guard.
 
 **Requisition layout (1920x1080).** The edge margin is 72px.
@@ -489,13 +489,13 @@ A key drawn as a key.
 - **Sneak:** the base layout. The contextual prompt shows when an action is available; nothing else is extra.
 - **Noticed:** `?` over the guard (Mark style, ink). A detection arc around the screen centre on the guard's bearing: a 2px track at 28% ink and a 10px ink fill that grows as the guard's suspicion rises and drains as it falls.
 - **Alert:** the phase plate appears at top-centre: one damage-red plate holding the word (ALERT, ALERTA) and, behind a 1px 45% white divider, the countdown timer. `!` over the guard (alert-mark red, 72px, pops in). The arc becomes a solid 14px damage-red stroke. The Radar is fully jammed: jam-ground with animated red fractal static, rolling 2px dark bands every 6px, a 70% red rim, and JAMMED centred (Barlow Condensed 700 20px, 0.32em). Nothing of the Radar shows through. Life drains: the fill drops at once and the red lost segment follows after 400ms.
-- **Selector:** Peace Walker's selector, scaled down, opening left of the gear cards. Slots are 72x200px smoke columns with a hairline border, the name set vertically top-left, the gear silhouette rotated -90°, and a 28px count band at the foot behind a hairline. The selected slot is solid sand with dark-ink content and 20px taller (220px). Empty slots are 30% smoke with a dashed border and an Ink 3 name. Two small keycaps sit 40px under the row.
+- **Selector:** Peace Walker's selector, scaled down, opening left of the gear cards. Slots are 72x240px smoke columns with a hairline border, the name set vertically top-left, the gear silhouette rotated -90°, and a 28px count band at the foot behind a hairline. The selected slot is solid sand with dark-ink content and 20px taller (260px). Slot names are 15px. It opens for 1.4s whenever the weapon in hand or the selected item changes, fading over its last 0.3s. Empty slots are 30% smoke with a dashed border and an Ink 3 name. Two small keycaps sit 40px under the row.
 - **Radio:** the segmented ring from `ui/radio/radio.gd`, centred left of centre at (516, 530): mean radius 114px, ring width 84px (inner 72, outer 156), one arc per option starting at the top, 0.04 rad gap on each side. The hovered segment is sand at 78%, the others ink at 14%. Option labels sit outside the ring (number at 70% + label, Ink 3, sand when hovered), the step name in the centre in sand, the crumb (GUARD05 › PATROLLER 2) above, keycap hints below (LMB OK · RMB Back · Q Close). The scene drops to 80% grayscale at 55% brightness; gear and the Aigis cue fade out; the target guard gets ink referent brackets with its name above.
 - **Call:** a codec subtitle at middle-left without a panel: an 84px portrait (grayscale, contrast 1.3, a 4px halftone dot overlay, hairline border), then a tag row (four-bar animated waveform, CALL ›› and the speaker's name) and the subtitle in Subtitle style with the subtitle halo.
 
 ### Radar
 - **Disc:** 300px, smoke with a hairline border. Range rings at r 48 and 96 in sand at 28%; N/E/S/W ticks (14px, 2px) in sand at 70%; an N label in Barlow Condensed 600 16px.
-- **Marks:** the Operative is a sand arrow with a 1.5px dark-ink keyline at the centre; guards are ink triangles with a fading ink view cone (36% to 0); a guard beyond range is pinned to the edge at 55% ink; a calling guard's triangle is damage red, flashing every 300ms.
+- **Marks:** the Operative is a sand arrow with a 1.5px dark-ink keyline at the centre; guards are ink triangles on their facing, shown only while they make noise or under the Scanner (no view cones: the Scanner owns those); a guard beyond range is pinned to the edge at 55% ink; a calling guard's triangle is damage red, flashing every 300ms.
 - **Jammed:** see the Alert state.
 
 ### Life bar

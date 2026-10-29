@@ -27,6 +27,93 @@ const HEADING_SIZE := 8
 const TITLE_SIZE := 16
 const BODY_SIZE := 16
 const COLUMN := 400.0  # px, the width running text wraps to (live call, subtitles, briefing)
+
+# The revamp's HUD kit (DESIGN.md), drawn on a design canvas 1080 px tall and as wide as the window's
+# aspect. Ported screens use these; the ones still on the 640x360 look keep the constants above.
+const DESIGN_H := 1080.0
+const LIGHT := Color("f2f4f3")  # ink on the HUD: values, pictograms, marks
+const LIGHT_2 := Color("f2f4f3bd")
+const LIGHT_3 := Color("f2f4f38f")  # reserve counts, secondary labels
+const SMOKE := Color("16191b8c")  # panel fill over the scene
+const SMOKE_HI := Color("16191bb8")  # the prompt's action disc
+const HAIRLINE := Color("f2f4f342")
+const SAND := Color("d4bc8a")  # the Operative's own readouts: brackets, gear names, life, the Radar's arrow
+const SAND_DIM := Color("d4bc8a80")
+const CYAN := Color("a9d6dc")  # Aigis, and nothing else
+const DMG := Color("c9302a")  # ALERT, a calling guard, life lost
+const MARK_RED := Color("e0423a")  # the ! over a guard
+const SLP := Color("2c6aa3")
+const DARK_INK := Color("0c0e0f")  # legends on keycaps, keylines
+const WELL := Color("0c0e0f8c")  # the life bar's track
+const JAM := Color("150a0b")  # the jammed Radar's ground
+const FIGURE: FontFile = preload("res://assets/fonts/barlow_semibold.ttf")  # numbers
+const FIGURE_MED: FontFile = preload("res://assets/fonts/barlow_medium.ttf")  # sentences
+const LABEL: FontFile = preload("res://assets/fonts/barlow_condensed_semibold.ttf")  # tracked uppercase labels
+const LABEL_BOLD: FontFile = preload("res://assets/fonts/barlow_condensed_bold.ttf")
+const LABEL_MED: FontFile = preload("res://assets/fonts/barlow_condensed_medium.ttf")
+const HALO := Color(0, 0, 0, 0.55)  # the dark legibility halo under text on the scene
+static var _tracked := {}  # [font, px] -> FontVariation
+
+
+## `font` with `em` of tracking at `fs` px, cached.
+static func tracked(font: Font, fs: int, em: float) -> Font:
+	var px := roundi(fs * em)
+	if px == 0:
+		return font
+	var key := [font, px]
+	if not _tracked.has(key):
+		var v := FontVariation.new()
+		v.base_font = font
+		v.spacing_glyph = px
+		_tracked[key] = v
+	return _tracked[key]
+
+
+## A HUD label: uppercase Barlow Condensed, tracked, over a dark halo; `align` 0 left, 1 centred on x, 2 right-aligned to x.
+static func hud_label(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Color, em := 0.14, font: Font = LABEL, align := 0, halo := true) -> void:
+	hud_text(ci, pos, s.to_upper(), fs, col, tracked(font, fs, em), align, halo)
+
+
+## HUD text in any face over a dark halo (the Dark Halo rule: black, never a glow).
+static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Color, font: Font = FIGURE, align := 0, halo := true) -> void:
+	if align != 0:
+		var w := font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		pos.x -= w if align == 2 else w / 2
+	if halo:
+		ci.draw_string_outline(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, maxi(4, fs / 4), Color(HALO, HALO.a * col.a))
+	ci.draw_string(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+
+
+static var _key_box: StyleBoxFlat
+
+
+## A key drawn as a key (DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
+static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a := 1.0) -> float:
+	if not _key_box:
+		_key_box = StyleBoxFlat.new()
+		_key_box.shadow_size = 8
+		_key_box.shadow_offset = Vector2(0, 3)
+		_key_box.anti_aliasing = true
+	var side := 30.0 if small else 42.0
+	var fs := 14 if small else 20
+	var w := maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16)
+	_key_box.set_corner_radius_all(4 if small else 6)
+	_key_box.bg_color = Color(LIGHT, a)
+	_key_box.shadow_color = Color(0, 0, 0, 0.5 * a)
+	ci.draw_style_box(_key_box, Rect2(p, Vector2(w, side)))
+	hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
+	return w
+
+
+## A smoke panel with its hairline and the two sand corner brackets (DESIGN.md Panel).
+static func hud_panel(ci: CanvasItem, r: Rect2) -> void:
+	ci.draw_rect(r, SMOKE)
+	ci.draw_rect(Rect2(r.position, Vector2(r.size.x, r.size.y * 0.4)), Color(LIGHT, 0.05))
+	ci.draw_rect(r, HAIRLINE, false, 1.0)
+	var a := r.position - Vector2(3, 3)
+	var b := r.end + Vector2(3, 3)
+	ci.draw_polyline(PackedVector2Array([a + Vector2(0, 10), a, a + Vector2(10, 0)]), SAND, 2.0)
+	ci.draw_polyline(PackedVector2Array([b - Vector2(0, 10), b, b - Vector2(10, 0)]), SAND, 2.0)
 const FADE := 0.4  # s, every full-screen panel in and out (the post-Mission screen's)
 const MARKER := 12  # px left of a menu button's text, where ">" marks focus
 

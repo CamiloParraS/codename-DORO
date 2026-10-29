@@ -29,7 +29,7 @@ const RISE_TIME := 4.0          # seconds a Fultoned guard takes to rise out of 
 const BALLOON_TIME := 6.0       # seconds after launch that guards can see the balloon
 const BALLOON_SEEN := 20.0      # flat metres from the spot within which a guard who sees it comes to look
 const MARKS := ["", "?", "!", "?"]
-const MARK_COLORS := [Color.WHITE, Color(1, 0.85, 0.2), Color(1, 0.2, 0.2), Color(1, 0.5, 0.1)]
+const MARK_COLORS := [HudPalette.LIGHT, HudPalette.LIGHT, HudPalette.MARK_RED, HudPalette.SAND]  # the shape (? or !) carries the state; hue backs it
 
 var route: Array[Vector3] = []   # patrol points, walked in a loop
 var stops: Array[Dictionary] = []  # per route point (a sentry: its one spot): {yaw, scan[, hold]} from the Area; {} = a plain pause
