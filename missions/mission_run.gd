@@ -454,6 +454,7 @@ func _on_extraction() -> void:
 	var screen := SCREEN.new()
 	screen.rank = rank
 	screen.par = par
+	screen.mission_name = tr("ui.mission.%d" % record.mission)
 	screen.rank_only = not campaign  # replays and Free mode: the Rank page only
 	screen.strip = MissionTally.strip(record, after)
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))

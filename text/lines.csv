@@ -445,6 +445,8 @@ ui.codec.incoming,Codec · incoming call,Códec · llamada entrante
 ui.codec.in_progress,Codec · call in progress,Códec · llamada en curso
 ui.codec.answer,[{key}] ANSWER,[{key}] RESPONDER
 ui.post.rank,RANK,RANGO
+ui.post.title,MISSION RESULT,RESULTADO DE MISIÓN
+ui.post.nothing,NOTHING NEW,SIN NOVEDADES
 ui.post.learned,AIGIS HAS LEARNED,AIGIS HA APRENDIDO
 ui.post.time,CLEAR TIME,TIEMPO
 ui.post.kills,KILLS,MUERTES
