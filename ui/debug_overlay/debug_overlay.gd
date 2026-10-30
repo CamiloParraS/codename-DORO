@@ -12,16 +12,25 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 	var bg := ColorRect.new()
-	bg.color = Color(0, 0, 0, 0.75)
+	bg.color = Color(0.02, 0.03, 0.04, 0.86)
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
+	var rule := ColorRect.new()  # the cyan header rule: this is Aigis's view
+	rule.color = HudPalette.CYAN
+	rule.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	rule.offset_bottom = 2
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(rule)
 	for l: Label in [_left, _right]:
-		l.add_theme_font_size_override("font_size", 7)
+		l.add_theme_font_override("font", HudPalette.BODY)  # monospace: the columns line up
+		l.add_theme_font_size_override("font_size", HudPalette.BODY_SIZE)
+		l.add_theme_color_override("font_color", HudPalette.LIGHT)
+		l.add_theme_constant_override("line_spacing", -2)
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(l)
-	_left.position = Vector2(6, 4)
-	_right.position = Vector2(330, 4)
+	_left.position = Vector2(8, 6)
+	_right.position = Vector2(330, 6)
 
 
 func _input(e: InputEvent) -> void:

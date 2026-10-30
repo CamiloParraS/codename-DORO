@@ -16,7 +16,6 @@ var _i := 0
 var _blip: VoiceBlip
 var _t := 0.0
 var _line_t := 0.0  # since the current line began: its glyph's pulse
-var _font := HudPalette.HEADING
 var _still_tex: Texture2D
 
 
@@ -117,42 +116,48 @@ func _show(i: int) -> void:
 func _draw() -> void:
 	if model == null:
 		return
+	var k := size.y / HudPalette.DESIGN_H
+	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, size), HudPalette.INK)
-	var c := size / 2
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	var c := d / 2
 	match model.stage:
 		"order":
-			draw_arc(c, 60.0, 0, TAU, 48, Color(HudPalette.CHROME, 0.8), 28.0)
-			HudPalette.centered(self, c.x, c.y + 4, tr("ui.finale.order").to_upper(), HudPalette.WHITE)
-			HudPalette.centered(self, c.x, size.y - 24, Prompts.verb("fire", "ui.finale.send"), HudPalette.HINT)
+			draw_arc(c, 150.0, 0, TAU, 64, Color(HudPalette.LIGHT, 0.8), 70.0)
+			HudPalette.hud_text(self, c + Vector2(0, 14), tr("ui.finale.order").to_upper(), 40, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 40, 0.2), 1, false)
+			HudPalette.hud_text(self, Vector2(c.x, d.y - 80), Prompts.verb("fire", "ui.finale.send").to_upper(), 26, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.24), 1, false)
 		"debate":
-			_voice_line(Vector2(40, 60))
+			_voice_line(d, Vector2(110, 160))
 		"ending":
-			_still()
-			_voice_line(Vector2(40, size.y - 90))
+			_still(d)
+			_voice_line(d, Vector2(110, d.y - 240))
 
 
-func _voice_line(at: Vector2) -> void:
+## The Voice's glyph pulsing, its name in cyan, then the line typed out (wrapped whole, so it never reflows).
+func _voice_line(d: Vector2, at: Vector2) -> void:
+	var k := size.y / HudPalette.DESIGN_H
 	var who: String = _lines[_i][0]
-	var w := StoryMotion.draw_glyph(self, _font, at, GLYPHS[who], _line_t, HudPalette.AIGIS)
-	_text(at + Vector2(w + 16, 0), tr("ui.voice." + who), HudPalette.AIGIS)
-	var full := HudPalette.wrap(tr(_lines[_i][1]), size.x - 80)
+	var gf := HudPalette.tracked(HudPalette.DISPLAY, 34, 0.0)
+	var glyph: String = GLYPHS[who]
+	var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 34).x
+	draw_set_transform((at + Vector2(w / 2, -17)) * k, 0.0, Vector2(k, k) * StoryMotion.pulse(_line_t))
+	draw_string(gf, Vector2(-w / 2, 17), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 34, HudPalette.CYAN)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	HudPalette.hud_text(self, at + Vector2(w + 16, 0), tr("ui.voice." + who).to_upper(), 34, HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.24), 0, false)
+	var full := HudPalette.wrap(tr(_lines[_i][1]), minf(d.x - 220, 1500.0), HudPalette.FIGURE_MED, 36)
 	var left := _blip.shown().length()
 	for i in full.size():
-		HudPalette.text(self, at + Vector2(0, 24 + i * 16), full[i].left(maxi(left, 0)), HudPalette.WHITE, HudPalette.BODY, HudPalette.BODY_SIZE)
+		HudPalette.hud_text(self, at + Vector2(0, 56 + i * 50), full[i].left(maxi(left, 0)), 36, HudPalette.LIGHT, HudPalette.FIGURE_MED)
 		left -= full[i].length() + 1
 	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
-	_text(Vector2(size.x - 40 - _font.get_string_size(next, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x, size.y - 24), next, HudPalette.HINT)
+	HudPalette.hud_text(self, Vector2(d.x - 100, d.y - 70), next.to_upper(), 22, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)
 
 
 ## The band's still, slowly zooming from 1.0x to 1.15x and drifting while the ending plays.
-func _still() -> void:
+func _still(d: Vector2) -> void:
 	var s: Dictionary = Finale.stills(model.band)[0]
 	var tex: Texture2D = _still_tex
 	var k := clampf(_t / STILL_SECONDS, 0.0, 1.0)
-	var r := Rect2(Vector2(-20.0, -10.0) * k, size * (1.0 + 0.15 * k))
+	var r := Rect2(Vector2(-40.0, -20.0) * k, d * (1.0 + 0.15 * k))
 	draw_texture_rect(tex, r, true, HudPalette.STILL)
-	_text(Vector2(8, size.y - 8), s.credit, HudPalette.EMPTY)
-
-
-func _text(pos: Vector2, s: String, col: Color) -> void:
-	draw_string(_font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+	HudPalette.hud_text(self, Vector2(16, d.y - 16), s.credit, 16, HudPalette.EMPTY, HudPalette.FIGURE_MED, 0, false)

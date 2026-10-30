@@ -96,6 +96,25 @@ func _run() -> void:
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
 		await shoot("free_mode")
+		var fin := Control.new()  # the finale: the ending over its still
+		fin.set_script(load("res://ui/finale/finale.gd"))
+		get_tree().root.add_child(fin)
+		fin.start(_record(1), MENU)
+		fin.model.stage = "debate"
+		fin._play(Finale.debate(fin.model.band, fin.model.spoofing))
+		await wait(1.5)
+		await shoot("finale_debate")
+		fin.model.stage = "ending"
+		fin._play(Finale.ending(fin.model.band))
+		await wait(1.5)
+		await shoot("finale_ending")
+		fin.queue_free()
+		get_tree().paused = false
+		Engine.time_scale = 1.0
+		DebugOverlay.visible = true
+		await wait(0.5)
+		await shoot("debug_overlay")
+		DebugOverlay.visible = false
 	# --- briefing, requisition, codec
 	Campaign.start()
 	Campaign.slot = -1
