@@ -77,7 +77,19 @@ static func hud_label(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Col
 
 
 ## HUD text in any face over a dark halo (the Dark Halo rule: black, never a glow).
+## The smallest a design-px size may be on the real screen, so low-resolution windows stay readable.
+const MIN_PX := 11.0
+
+
+## `fs` (1080-tall design px) raised until it is at least MIN_PX tall in the actual window.
+static func legible(ci: CanvasItem, fs: int) -> int:
+	var win := ci.get_window()
+	var per_design: float = (win.size.y if win else DESIGN_H) / DESIGN_H
+	return maxi(fs, ceili(MIN_PX / maxf(per_design, 0.01)))
+
+
 static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Color, font: Font = FIGURE, align := 0, halo := true) -> void:
+	fs = legible(ci, fs)
 	if align != 0:
 		var w := font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		pos.x -= w if align == 2 else w / 2

@@ -427,7 +427,7 @@ func _gear(d: Vector2) -> void:
 	var name_w := _card_name(wr.position + Vector2(12, 29), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
 	var chip := "LTH" if gun.lethal else "SLP"
 	_chip(Vector2(wr.position.x + 12 + name_w + 8, wr.position.y + 11), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
-	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(50, 122), 0.83 if gun == _operative.rifle else 1.0, HudPalette.LIGHT)
+	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(50, 122), 1.0, HudPalette.LIGHT)
 	if gun.suppressor_max >= 0:  # shots left on the suppressor
 		var sx := wr.position.x + 12
 		for i in gun.suppressor_max:
@@ -460,14 +460,15 @@ func _gear(d: Vector2) -> void:
 func _card_name(p: Vector2, s: String, col := HudPalette.LIGHT) -> float:
 	var f := HudPalette.tracked(HudPalette.DISPLAY, 20, 0.14)
 	HudPalette.hud_text(_canvas, p, s.to_upper(), 20, col, f, 0, false)
-	return f.get_string_size(s.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+	return f.get_string_size(s.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(_canvas, 20)).x
 
 
 func _chip(p: Vector2, s: String, bg: Color) -> void:
 	var f := HudPalette.tracked(HudPalette.DISPLAY, 13, 0.1)
-	var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
-	_canvas.draw_rect(Rect2(p, Vector2(w + 12, 20)), bg)
-	HudPalette.hud_text(_canvas, p + Vector2(6, 15), s, 13, HudPalette.LIGHT, f, 0, false)
+	var fs := HudPalette.legible(_canvas, 13)
+	var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	_canvas.draw_rect(Rect2(p, Vector2(w + 12, fs + 7)), bg)
+	HudPalette.hud_text(_canvas, p + Vector2(6, fs + 2), s, 13, HudPalette.LIGHT, f, 0, false)
 
 
 ## Fulton balloons left: a balloon and the count, red at none, blinking light while one could go up now.
@@ -546,18 +547,15 @@ func _sil(kind: StringName, foot: Vector2, s: float, col: Color, rot := 0.0) -> 
 	var polys: Array = []
 	var cuts: Array = []  # dark detail lines over the silhouette
 	match kind:
-		&"tranq":  # 200 x 80
-			polys = [[8, 18, 116, 18, 120, 14, 126, 14, 126, 18, 196, 18, 196, 30, 126, 30, 126, 34, 8, 34],
-				[40, 34, 96, 34, 92, 40, 78, 40, 71, 45, 62, 74, 38, 74, 47, 40, 40, 40]]
-			cuts = [[16, 20, 16, 30], [22, 20, 22, 30], [28, 20, 28, 30]]
-		&"rifle":  # 240 x 80
-			polys = [[4, 22, 40, 17, 60, 17, 60, 14, 150, 14, 150, 20, 186, 20, 186, 16, 236, 16, 236, 30, 186, 30, 186, 26, 150, 26, 150, 34, 112, 34, 118, 60, 100, 60, 94, 34, 76, 34, 70, 50, 56, 50, 60, 34, 40, 34, 4, 40],
-				[92, 6, 124, 6, 124, 13, 92, 13]]
-			cuts = [[66, 20, 66, 32], [196, 16, 196, 30], [212, 16, 212, 30]]
-		&"scanner":  # 80 x 50
-			polys = [[4, 14, 44, 14, 44, 40, 4, 40], [14, 40, 26, 40, 24, 48, 16, 48], [44, 18, 60, 8, 60, 46, 44, 36],
-				[64, 12, 68, 12, 68, 42, 64, 42], [72, 8, 75, 8, 75, 46, 72, 46]]
-			cuts = [[9, 22, 31, 22], [9, 27, 25, 27]]
+		&"tranq":  # the mock's pistol, 120 x 56: slide, grip and a long suppressor
+			polys = [[4, 8, 92, 8, 92, 24, 64, 24, 58, 30, 40, 30, 32, 52, 18, 52, 26, 30, 4, 30], [92, 12, 116, 12, 116, 20, 92, 20]]
+			s *= 200.0 / 120.0
+		&"rifle":  # the mock's rifle, 160 x 56
+			polys = [[0, 22, 30, 22, 36, 16, 86, 16, 86, 24, 118, 24, 118, 18, 148, 18, 160, 22, 160, 30, 148, 30, 144, 36, 118, 36, 118, 32, 78, 32, 72, 38, 66, 52, 52, 52, 56, 38, 42, 34, 0, 34]]
+			s *= 200.0 / 160.0
+		&"scanner":  # 64 x 56
+			polys = [[4, 14, 38, 14, 38, 40, 4, 40], [38, 18, 52, 10, 52, 44, 38, 36], [56, 16, 59, 16, 59, 38, 56, 38]]
+			s *= 80.0 / 64.0
 		&"magazine":  # 60 x 50, lying down
 			polys = [[4, 18, 44, 14, 52, 16, 54, 30, 46, 34, 6, 34]]
 			cuts = [[14, 20, 14, 31], [24, 19, 24, 31], [34, 18, 34, 31]]
@@ -567,7 +565,7 @@ func _sil(kind: StringName, foot: Vector2, s: float, col: Color, rot := 0.0) -> 
 			_canvas.draw_line(top + Vector2(0, 15 * s), foot + Vector2(20, -14) * s, col, 2.0)
 			_canvas.draw_rect(Rect2(foot + Vector2(13, -14) * s, Vector2(14, 12) * s), col)
 			return
-	var h := 80.0 if kind in [&"tranq", &"rifle"] else 50.0
+	var h := 50.0 if kind == &"magazine" else 56.0
 	for poly: Array in polys:
 		var pts := PackedVector2Array()
 		for i in range(0, poly.size(), 2):
