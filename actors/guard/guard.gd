@@ -23,6 +23,7 @@ const HOLD_TIME := 30.0         # seconds a guard told to hold its position stay
 const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
 const SHOT_PUSH := 4.5          # m/s where a rifle bullet lands: the head takes it faster, as it weighs less
 const HEAD_SHOT_PUSH := 6.0
+const HIT_STAGGER := 0.3        # m a non-lethal rifle hit knocks a guard back
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
@@ -320,7 +321,19 @@ func _gaze_point() -> Variant:
 				return chat_partner.global_position + Vector3.UP * EYE
 			if operative and _flat_dist(operative.global_position) <= GLANCE_RANGE and can_see(operative):
 				return operative.global_position + Vector3.UP * EYE
+			if _pause > 0.0:
+				return _head_sweep(0.7, 1.3)  # at a stop: a slow look to either side
+		GuardAlert.State.EVASION:
+			if arrived() and goal() == search_spot():
+				return _head_sweep(1.2, 1.9)  # at a search spot: the head scans wider than the body
 	return null
+
+
+## A point in front of the guard, the head's heading swinging `amount` radians either side `rate` times faster than
+## the body's own sweep.
+func _head_sweep(amount: float, rate: float) -> Vector3:
+	var heading := (-global_basis.z).rotated(Vector3.UP, sin(_clock * rate) * amount)
+	return global_position + Vector3.UP * EYE + heading * 3.0
 
 
 ## Talks with its hands for one line of `seconds`; react() leaves it standing in idle after.
@@ -490,8 +503,16 @@ func shoot(head: bool, from: Vector3) -> void:
 		kill(from, head)
 	else:
 		model.react("hit", HIT_TIME)
+		if is_inside_tree():
+			move_and_collide(((global_position - from) * Vector3(1, 0, 1)).normalized() * HIT_STAGGER)
 		voice.say(&"pain")
 		_changed(alert.hear(from, "a bullet"))
+
+
+## A rifle bullet into a Down guard's ragdoll, at the bone it hit: the body is shoved.
+func shot_down(from: Vector3, bone: String) -> void:
+	var away := (global_position - from) * Vector3(1, 0, 1)
+	model.shove(away.normalized() * SHOT_PUSH * 0.7 + Vector3.UP * 0.5, bone)
 
 
 ## Does a rifle bullet kill: an unhelmeted headshot always, otherwise the BODY_HITS_TO_KILL-th hit.

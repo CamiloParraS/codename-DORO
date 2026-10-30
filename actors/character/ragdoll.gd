@@ -15,9 +15,11 @@ const BONES := {
 const TIP := 0.2         # m, how far the Head's capsule runs
 const LAYER := 1 << 7    # the bodies are only hit by the world, never the Operative or other guards
 const WORLD := 1
+const BLEND := 0.35     # s, how long the clip takes the body back from the physics when it gets up
 
 var skeleton: Skeleton3D
 var _sim: PhysicalBoneSimulator3D
+var _fade: Tween
 
 
 func _init(skel: Skeleton3D = null) -> void:
@@ -38,6 +40,8 @@ func center() -> Vector3:
 func start(push := Vector3.ZERO, at := "pelvis") -> void:
 	if _sim == null:
 		_build()
+	if _fade:
+		_fade.kill()
 	_sim.influence = 1.0
 	_sim.physical_bones_start_simulation()
 	var body: PhysicalBone3D = _sim.get_node_or_null(at)
@@ -45,10 +49,23 @@ func start(push := Vector3.ZERO, at := "pelvis") -> void:
 		body.apply_central_impulse(push * body.mass)
 
 
-## Back to the animation.
-func stop() -> void:
-	if active():
+## Shoves a bone of a body already lying there (a bullet into a Down guard).
+func shove(push: Vector3, at: String) -> void:
+	var body: PhysicalBone3D = _sim.get_node_or_null(at) if _sim else null
+	if body and active():
+		body.apply_central_impulse(push * body.mass)
+
+
+## Back to the animation: the physics lets go over `fade` seconds (0 = at once) instead of snapping to the clip.
+func stop(fade := BLEND) -> void:
+	if not active() or (_fade and _fade.is_running()):
+		return
+	if fade <= 0.0:
 		_sim.physical_bones_stop_simulation()
+		return
+	_fade = create_tween()
+	_fade.tween_property(_sim, "influence", 0.0, fade)
+	_fade.tween_callback(_sim.physical_bones_stop_simulation)
 
 
 func _build() -> void:

@@ -418,12 +418,18 @@ func _fire() -> void:
 	var from := model.muzzle(cam + dir * 0.9)
 	dir = Gun.muzzle_dir(from, point, dir)
 	Fx.flash(get_parent(), from, quiet)
-	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2, [get_rid()])
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 60.0, 1 | 2 | Ragdoll.LAYER, [get_rid()])
 	var hit := space.intersect_ray(q)
 	Fx.tracer(get_parent(), from, hit.get("position", from + dir * 60.0))
 	if hit.is_empty():
 		return
 	var c: Node3D = hit["collider"]
+	if c is PhysicalBone3D:  # a Down guard's ragdoll
+		var down := _guard_of(c)
+		_impact(hit["position"], true, arm.lethal)
+		if down and arm.lethal:
+			down.shot_down(global_position, (c as PhysicalBone3D).bone_name)
+		return
 	_impact(hit["position"], c.is_in_group("guards"), arm.lethal)
 	if arm.lethal and c.is_in_group("cameras"):
 		c.destroy()
@@ -436,6 +442,14 @@ func _fire() -> void:
 
 
 ## What a shot leaves where it lands: a dart puffs pale on a guard, a bullet throws sparks and dust off a wall.
+## The guard whose skeleton `bone` belongs to, or null.
+func _guard_of(bone: Node) -> Guard:
+	var n := bone.get_parent()
+	while n and not n is Guard:
+		n = n.get_parent()
+	return n as Guard
+
+
 func _impact(at: Vector3, on_guard: bool, lethal: bool) -> void:
 	var w := get_parent()
 	if on_guard:

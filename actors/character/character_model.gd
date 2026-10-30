@@ -388,16 +388,22 @@ func ragdoll_center() -> Vector3:
 	return _ragdoll.center() if _ragdoll and _ragdoll.active() else Vector3.INF
 
 
-## Back under the clip's control, from a ragdoll or not.
-func get_up() -> void:
+## Shoves a body that is already lying as a ragdoll, at the bone `at`.
+func shove(push: Vector3, at: String) -> void:
 	if _ragdoll:
-		_ragdoll.stop()
+		_ragdoll.shove(push, at)
+
+
+## Back under the clip's control, from a ragdoll or not; it eases over `fade` seconds.
+func get_up(fade := Ragdoll.BLEND) -> void:
+	if _ragdoll:
+		_ragdoll.stop(fade)
 
 
 ## On `mount` (a carry_mount) the model lies in the fixed shoulder pose; null puts it back where it was.
 func ride(mount: Node3D) -> void:
 	if mount:
-		get_up()
+		get_up(0.0)  # it is about to be moved onto the shoulder, so there is nothing to ease
 		if not _home:
 			_home = get_parent_node_3d()
 		reparent(mount, false)
