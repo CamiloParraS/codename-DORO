@@ -210,3 +210,13 @@ func test_the_confirm_line_uses_the_role() -> void:
 	m.choose(0)
 	m.choose(0)
 	assert_eq(m.line(), "Gatekeeper, go check the Dock.")
+
+
+func test_the_crumb_names_hq_when_reporting_in() -> void:  # an HQ pick has no recipients: recipients[0] crashed the radial
+	var m := RadioMenu.new(["Kostas"], ["Kostas", "Dimos"], ["Dock"], "Kostas")
+	m.choose(0)
+	m.choose(0)                        # HQ
+	var r: Control = preload("res://ui/radio/radio.gd").new()
+	r.menu = m
+	assert_eq(r._crumb().get_slice(" › ", 1), tr("ui.who.hq").to_upper())
+	r.free()

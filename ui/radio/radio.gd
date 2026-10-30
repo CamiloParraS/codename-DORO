@@ -373,7 +373,8 @@ func _crumb() -> String:
 	if menu.pick.has("speaker") and menu.step != "speaker":
 		parts.append(_label(menu.pick.speaker))
 	if menu.pick.has("recipients") and menu.step in ["order", "place"]:
-		parts.append(_label("All units" if menu.pick.all_units else menu.pick.recipients[0]))
+		var to: Array = menu.pick.recipients
+		parts.append(_label("All units" if menu.pick.all_units else "HQ" if to.is_empty() else to[0]))  # none: a report-in to HQ
 	if menu.step == "place":
 		parts.append(_label("Go check"))
 	return " › ".join(parts)
