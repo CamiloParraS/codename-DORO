@@ -23,6 +23,11 @@ static func flicker() -> Array:
 	return CUT_PATTERN
 
 
+## True under the reduced-motion setting: wipes and cuts land at once, the scan band and drift stay off.
+static func reduced() -> bool:
+	return GameSettings.current.get("reduce_motion", false)
+
+
 static func _tween(c: Node) -> Tween:
 	return c.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_ignore_time_scale(true)
 
@@ -31,6 +36,9 @@ static func _tween(c: Node) -> Tween:
 ## same control replaces one still running. `on_step` (optional) gets each progress level.
 static func wipe(control: Control, from_left := true, steps := 8, secs := 0.3, on_step := Callable()) -> Tween:
 	_kill(control)
+	if reduced():
+		steps = 1
+		secs = 0.0
 	var mat := ShaderMaterial.new()
 	mat.shader = WIPE_SHADER
 	mat.set_shader_parameter("from_left", from_left)
@@ -92,9 +100,9 @@ static func cut(control: CanvasItem, delay := 0.0) -> Tween:
 	control.set_meta(&"motion", t)
 	if delay > 0.0:
 		t.tween_interval(delay)
-	for a in CUT_PATTERN:
+	for a in ([1.0] if reduced() else CUT_PATTERN):
 		t.tween_callback(_set_alpha.bind(control, a))
-		t.tween_interval(CUT_STEP)
+		t.tween_interval(0.0 if reduced() else CUT_STEP)
 	t.tween_callback(_set_alpha.bind(control, 1.0))
 	return t
 

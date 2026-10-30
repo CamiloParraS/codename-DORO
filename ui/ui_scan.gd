@@ -9,6 +9,9 @@ const SHADER := preload("res://ui/ui_scan.gdshader")
 ## `backdrop` (optional) is drawn under the lines and drifts slowly when `drift` is on.
 static func make(backdrop: Texture2D = null, band := false, drift := false, tint := Color.WHITE) -> UiScan:
 	var s := UiScan.new()
+	if UiMotion.reduced():
+		band = false
+		drift = false
 	s.name = "UiScan"
 	s.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	s.set_anchors_preset(Control.PRESET_FULL_RECT)

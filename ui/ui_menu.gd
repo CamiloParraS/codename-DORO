@@ -15,10 +15,12 @@ const OPEN_SECS := 0.5
 
 var _rows := VBoxContainer.new()
 var _rule := ColorRect.new()
+var _width := WIDTH
 
 
-func _init() -> void:
-	custom_minimum_size.x = WIDTH
+func _init(width := WIDTH) -> void:
+	_width = width
+	custom_minimum_size.x = width
 	var box := StyleBoxFlat.new()
 	box.bg_color = Color(0.02, 0.03, 0.04, 0.8)
 	box.content_margin_bottom = 6
@@ -56,11 +58,11 @@ func clear(heading := "") -> void:
 
 ## One row; the right-hand `small` caption is optional. Pressing plays no sound of its own (the click is `tick`'s
 ## sibling, left to the caller's action).
-func add_row(text: String, on_press := Callable()) -> Button:
+func add_row(text: String, on_press := Callable(), danger := false) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.custom_minimum_size = Vector2(WIDTH, ROW_H)
+	b.custom_minimum_size = Vector2(_width, ROW_H)
 	b.focus_mode = Control.FOCUS_ALL
 	b.clip_text = true
 	var bare := StyleBoxEmpty.new()
@@ -78,13 +80,13 @@ func add_row(text: String, on_press := Callable()) -> Button:
 	b.add_theme_color_override("font_hover_pressed_color", HudPalette.DARK_INK)
 	b.add_theme_color_override("font_disabled_color", Color(HudPalette.LIGHT, 0.3))
 	var bar := ColorRect.new()  # the selection: white, with the red tab, drawn under the text
-	bar.color = HudPalette.LIGHT
+	bar.color = HudPalette.DMG if danger else HudPalette.LIGHT  # a danger row (quit) selects in red
 	bar.show_behind_parent = true
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bar.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bar.visible = false
 	var tab := ColorRect.new()
-	tab.color = HudPalette.DMG
+	tab.color = HudPalette.LIGHT if danger else HudPalette.DMG
 	tab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tab.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
 	tab.offset_right = 8

@@ -340,6 +340,9 @@ ui.settings.invert_y,INVERT Y,INVERTIR Y
 ui.settings.language,LANGUAGE,IDIOMA
 ui.settings.fullscreen,FULLSCREEN,PANTALLA COMPLETA
 ui.settings.volume,MASTER VOLUME,VOLUMEN GENERAL
+ui.settings.reduce_motion,REDUCE MOTION,REDUCIR MOVIMIENTO
+ui.on,ON,SÍ
+ui.off,OFF,NO
 ui.pause.title,PAUSED,PAUSA
 ui.pause.objective,OBJECTIVE,OBJETIVO
 ui.pause.resume,RESUME,REANUDAR
