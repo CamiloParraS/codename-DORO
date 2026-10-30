@@ -52,6 +52,10 @@ const STREAMS := {
 	&"radio_on": "res://assets/audio/sfx_radio_on.ogg",
 	&"radio_off": "res://assets/audio/sfx_radio_off.ogg",
 	&"ui_click": "res://assets/audio/sfx_ui_click.ogg",
+	# Named UI sounds, placeholders reusing existing SFX: tick = the click, beep = the radio squelch, thump = a body fall.
+	&"tick": "res://assets/audio/sfx_ui_click.ogg",
+	&"beep": "res://assets/audio/sfx_radio_on.ogg",
+	&"thump": "res://assets/audio/sfx_body_fall.ogg",
 	&"radio_static": "res://assets/audio/sfx_radio_static.ogg",
 }
 const STEP_DB := -2.0           # a standing (run) footstep
