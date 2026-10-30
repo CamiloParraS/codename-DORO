@@ -98,6 +98,7 @@ var _clip := ""
 var _since_step := 0.0
 var _busy := 0.0     # seconds left of a react() one-shot, which play() must not interrupt
 var _home: Node3D    # where the model lives while it rides someone's shoulder
+var _ragdoll: Ragdoll
 var _look: LookAtModifier3D  # turns the head to _gaze, weighted by _gaze_w
 var _gaze := Marker3D.new()
 var _gaze_w := 0.0
@@ -372,9 +373,31 @@ func carry_mount() -> Node3D:
 	return _holder
 
 
+## Goes limp where it stands, as a Ragdoll with bone `at` shoved by `push` (m/s). The Target's rig has no physical bones.
+func drop(push := Vector3.ZERO, at := "pelvis") -> void:
+	if kind == Kind.TARGET or _home:
+		return
+	if _ragdoll == null:
+		_ragdoll = Ragdoll.new(skeleton)
+		add_child(_ragdoll)
+	_ragdoll.start(push, at)
+
+
+## Where a ragdoll lies (world space), or Vector3.INF when it isn't one.
+func ragdoll_center() -> Vector3:
+	return _ragdoll.center() if _ragdoll and _ragdoll.active() else Vector3.INF
+
+
+## Back under the clip's control, from a ragdoll or not.
+func get_up() -> void:
+	if _ragdoll:
+		_ragdoll.stop()
+
+
 ## On `mount` (a carry_mount) the model lies in the fixed shoulder pose; null puts it back where it was.
 func ride(mount: Node3D) -> void:
 	if mount:
+		get_up()
 		if not _home:
 			_home = get_parent_node_3d()
 		reparent(mount, false)
@@ -389,3 +412,4 @@ func ride(mount: Node3D) -> void:
 		transform = Transform3D.IDENTITY
 		reset_physics_interpolation()
 		_home = null
+		drop()  # put down: it slumps to the ground

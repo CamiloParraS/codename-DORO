@@ -20,6 +20,9 @@ const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal 
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
+const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
+const SHOT_PUSH := 4.5          # m/s where a rifle bullet lands: the head takes it faster, as it weighs less
+const HEAD_SHOT_PUSH := 6.0
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
@@ -51,6 +54,8 @@ var dead := false                # killed: Down for good, and a guard who checks
 var _fell := false               # killed on its feet: the model plays the fall, not the sleeping pose
 var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
+var _shot_from := Vector3.INF   # where the bullet that kills it came from, while it goes Down
+var _shot_head := false
 var held := false                # being choked: stands still
 var held_up := false             # Hold-up: frozen at gunpoint (Operative), until released
 var answered := false            # gave its one Hold-up answer
@@ -447,18 +452,27 @@ func neutralize() -> void:
 	_lie(true)
 	_refresh_mark()
 	if dropped:
+		if _shot_from != Vector3.INF:  # knocked back from the shooter, at the place it was hit
+			var away := (global_position - _shot_from) * Vector3(1, 0, 1)
+			var speed := HEAD_SHOT_PUSH if _shot_head else SHOT_PUSH
+			model.drop(away.normalized() * speed + Vector3.UP * 1.0, "Head" if _shot_head else "spine_02")
+		else:
+			model.drop(model.global_basis.z * DROP_PUSH + Vector3.UP * 0.2)  # falls back, away from where it faced
 		Mix.sfx_at(self, &"body_fall")
 		_partners_see()
 
 
 ## Killed (a rifle shot): Down for good. Counts for Lethality and Combat; a kill while any guard is
 ## alerted is an alert_kill.
-func kill() -> void:
+func kill(from := Vector3.INF, head := false) -> void:
 	if dead:
 		return
+	_shot_from = from
+	_shot_head = head
 	var alerted := get_tree().get_nodes_in_group("guards").any(func(g): return g.alert.state == GuardAlert.State.ALERT)
 	_fell = not is_down()
 	neutralize()
+	_shot_from = Vector3.INF
 	dead = true
 	_refresh_mark()
 	get_tree().call_group("mission_tally", "event", "target_kill" if target else "kill")
@@ -473,7 +487,7 @@ func shoot(head: bool, from: Vector3) -> void:
 		get_tree().call_group("mission_tally", "event", "headshot")
 	hits += 1
 	if bullet_kills(head, helmet, hits, body_hits_to_kill):
-		kill()
+		kill(from, head)
 	else:
 		model.react("hit", HIT_TIME)
 		voice.say(&"pain")
@@ -524,6 +538,7 @@ func wake(from: Vector3) -> void:
 	if carrier:  # no longer Down: off the Operative's shoulder
 		carrier.carrying = null
 		carrier = null
+	model.get_up()
 	collision_layer = 2
 	_lie(false)
 	_changed(alert.wake(from))
@@ -696,7 +711,11 @@ func _lie(on: bool) -> void:
 func _down_tick(delta: float) -> void:
 	if carrier:  # the model lies in a fixed pose on the shoulder bone; the body just follows
 		global_position = carrier.global_position
-	elif not dead:
+	else:
+		var lies := model.ragdoll_center()  # the body slides where it falls: the hitbox goes with it
+		if lies != Vector3.INF:
+			global_position = Vector3(lies.x, global_position.y, lies.z)
+	if not carrier and not dead:
 		neutral_left -= delta
 		if neutral_left <= 0.0:
 			wake(global_position)
