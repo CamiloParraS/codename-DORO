@@ -536,6 +536,18 @@ func return_to_post() -> void:
 	_bt.restart()
 
 
+## Checkpoint restore of a Neutralized guard (after return_to_post): Down again where it lay, with
+## `left` seconds to go. Nobody sees it drop, and it makes no sound.
+func stay_down(at: Transform3D, left: float, was_known: bool) -> void:
+	global_transform = at
+	reset_physics_interpolation()
+	neutral_left = left
+	known_down = was_known
+	collision_layer = 0
+	_lie(true)
+	_refresh_mark()
+
+
 ## Can the Operative at `from` choke this guard: not Down, not alerted, outside its front cone.
 func can_be_choked(from: Vector3) -> bool:
 	if is_down() or alert.state >= GuardAlert.State.ALERT:

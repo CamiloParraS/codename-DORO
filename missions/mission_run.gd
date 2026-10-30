@@ -87,9 +87,12 @@ func _fresh_chain() -> void:
 func take_checkpoint() -> void:
 	SessionLog.current.progress()
 	var dead := {}
+	var downed := {}
 	for g in get_tree().get_nodes_in_group("guards"):
 		if g.dead:  # a body on the shoulder is kept as dropped where the Operative stands
 			dead[g] = [g.carrier.global_transform if g.carrier else g.global_transform, g.known_down]
+		elif g.is_down():  # Neutralized: stays Down where it lay, with the time it has left
+			downed[g] = [g.carrier.global_transform if g.carrier else g.global_transform, g.neutral_left, g.known_down]
 	var radio := get_tree().get_first_node_in_group("radio")
 	_checkpoint = {
 		step = step,
@@ -98,12 +101,13 @@ func take_checkpoint() -> void:
 		guards = get_tree().get_nodes_in_group("guards"),
 		glaukopis = copy(radio.glaukopis) if radio else null,
 		dead = dead,
+		downed = downed,
 		destroyed = get_tree().get_nodes_in_group("cameras").filter(func(c): return c.destroyed),
 	}
 
 
-## Back to the last Checkpoint. Bodies dead then lie where they lay; every other guard (Neutralized,
-## or killed since) is back at its post on patrol; reinforcements that arrived since are gone (the
+## Back to the last Checkpoint. Bodies dead then lie where they lay and guards Neutralized then stay Down
+## where they lay, with the time they had left; every other guard (up then, or killed since) is back at its post on patrol; reinforcements that arrived since are gone (the
 ## tally's spawned count rolls back with them). Cameras stay; one shot since works again, alert cleared.
 func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
@@ -133,6 +137,9 @@ func restore_checkpoint() -> void:
 			g.global_transform = _checkpoint.dead[g][0]
 			g.reset_physics_interpolation()
 			g.known_down = _checkpoint.dead[g][1]
+		elif g in _checkpoint.downed:
+			g.return_to_post()
+			g.stay_down(_checkpoint.downed[g][0], _checkpoint.downed[g][1], _checkpoint.downed[g][2])
 		else:
 			g.return_to_post()
 	for c in get_tree().get_nodes_in_group("cameras"):
