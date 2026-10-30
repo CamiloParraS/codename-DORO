@@ -10,6 +10,8 @@ const REPLY_DELAY := 1.0     # seconds before the recipient answers
 const R_IN := 20.0
 const R_OUT := 52.0
 const POINTER_MAX := 60.0
+const RING_SAND := Color("c9bfa4")  # the radial's highlight: SAND desaturated
+const RING_IN_SECS := 0.22  # the ring scales in over this, in 6 hard steps
 const EDGE := 16.0           # px inset of an off-screen referent's pointer
 const ACKS := {go = "radio.ack.go", hold = "radio.ack.hold", all_clear = "radio.ack.all_clear"}  # text keys; {place}
 ## RadioMenu's fixed option labels -> their text keys (guard and place names show as they are).
@@ -30,6 +32,8 @@ var _places := {}                  # name -> position
 var _operative: Node3D
 var _look: RadioLook               # the world dim and fills, in the Area
 var _hot_key := ""                 # what is hot now, for the hover tick
+var _age := 0.0                    # unscaled seconds since the radial opened
+var _last_hover := -2
 
 
 func _ready() -> void:
@@ -51,6 +55,11 @@ func _process(delta: float) -> void:
 			_last_alert = _now
 			break
 	if menu:
+		_age += delta / maxf(Engine.time_scale, 0.05)
+		var h := _hover()
+		if h != _last_hover and h >= 0:
+			Mixer.play(&"tick")
+		_last_hover = h
 		var r := _referents()
 		_look.show_referents(r.hot, r.cold, r.place_at, r.place_hot)
 		var key: String = str(r.hot.map(func(g): return g.name)) + (r.place if r.place_hot else "")
@@ -107,6 +116,8 @@ func _open() -> void:
 		get_tree().current_scene.add_child(_look)
 	_look.open()
 	_hot_key = ""
+	_age = 0.0
+	_last_hover = -2
 
 
 func close() -> void:
@@ -299,6 +310,10 @@ func _draw() -> void:
 	if n == 0:
 		HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.no_voiceprints"), 17, HudPalette.LIGHT_3, 0.14, HudPalette.LABEL, 1)
 		return
+	var grow := floorf(clampf(_age / RING_IN_SECS, 0.0, 1.0) * 6.0) / 6.0  # six hard steps from 88% to full size
+	var scale := 0.88 + 0.12 * grow
+	draw_set_transform(c * k * (1.0 - scale), 0.0, Vector2(k, k) * scale)
+	modulate.a = grow
 	var hover := _hover()
 	var step := TAU / n
 	var mean := (RING_IN + RING_OUT) / 2
@@ -307,7 +322,7 @@ func _draw() -> void:
 		var on := i == hover
 		var gap := 0.04 if n > 1 else 0.0
 		draw_arc(c, mean, mid - step / 2 + gap, mid + step / 2 - gap, 48,
-			Color(HudPalette.SAND, 0.78) if on else Color(HudPalette.LIGHT, 0.14), RING_OUT - RING_IN, true)
+			Color(RING_SAND, 0.72) if on else Color(HudPalette.LIGHT, 0.12), RING_OUT - RING_IN, true)
 		var num := "%d " % (i + 1) if i < 9 else ""
 		var label := _label(opts[i][0])
 		var f := HudPalette.tracked(HudPalette.LABEL, 20, 0.12)
@@ -319,10 +334,10 @@ func _draw() -> void:
 			p.x -= w
 		elif dir.x <= 0.2:
 			p.x -= w / 2
-		var ink := HudPalette.SAND if on else HudPalette.LIGHT_3
+		var ink := RING_SAND if on else HudPalette.LIGHT_3
 		HudPalette.hud_text(self, p, num, 20, Color(ink, ink.a * 0.7), f)
 		HudPalette.hud_text(self, p + Vector2(nw, 0), label, 20, ink, f)
-	HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.step." + menu.step), 20, HudPalette.SAND, 0.24, HudPalette.LABEL, 1, false)
+	HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.step." + menu.step), 20, RING_SAND, 0.24, HudPalette.LABEL, 1, false)
 	if _pointer.length() > 12.0:
 		draw_circle(c + _pointer.normalized() * (RING_IN - 8), 5, HudPalette.LIGHT)
 
@@ -398,7 +413,7 @@ func _draw_referents(k: float) -> void:
 	var origin := RadarModel.flat(_operative.global_position)
 	var jammed := RadarModel.jammed(HudModel.phase(AlertChain.area)[0])
 	for s in spots:
-		var col := Color(HudPalette.LIGHT, 1.0 if s[2] else 0.5)
+		var col := Color(HudPalette.LIGHT, (1.0 if int(Time.get_ticks_msec() / 600) % 2 == 0 else 0.55) if s[2] else 0.5)  # hot brackets blink at 1.2 s
 		var feet: Vector3 = s[0]
 		if cam.is_position_behind(feet) or not Rect2(Vector2.ZERO, size).grow(-EDGE).has_point(cam.unproject_position(feet)):
 			_edge_pointer(cam, feet, col, k)
