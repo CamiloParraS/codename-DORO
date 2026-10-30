@@ -20,6 +20,8 @@ const LOST_DRAIN := 0.6  # life per second
 const CALL := Vector2(64, 410)  # the live call card's corner
 const CALL_W := 430.0
 const FACE := 76.0
+const SUB_W := 1000.0  # subtitles and tips: centred, lower middle
+const SUB_BOTTOM := 820.0  # above the action prompt (it starts at 850)
 const PORTRAIT := "res://ui/codec/portraits/%s_%d.png"
 
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
@@ -216,8 +218,8 @@ func _draw_design() -> void:
 		_gear(d)
 		_selector(d)
 	var dim := 0.3 if radio_open else 1.0
-	_subtitles(_live_call(dim), dim)
-	_tutorial_tip(d)
+	_live_call(dim)
+	_tutorial_tip(d, _subtitles(d, dim))
 	_prompt(d)
 
 
@@ -725,23 +727,31 @@ func _portrait(who: String, frame: int) -> Texture2D:
 
 ## Guards' radio lines under the call: the speaker in a dim caption, the line wrapped to the call column, each
 ## fading out by Subtitles.LIFE, the newest at the bottom.
-func _subtitles(top: float, dim: float) -> void:
-	var y := top
+func _subtitles(d: Vector2, dim: float) -> float:
+	var blocks: Array = []  # [who, rows, alpha], oldest first
+	var total := 0.0
 	for l: Dictionary in _subs.lines:
-		var a := Subtitles.alpha(l["age"]) * dim
-		HudPalette.hud_label(_canvas, Vector2(CALL.x, y), _who(l["who"]), 15, Color(HudPalette.LIGHT_3, a), 0.16)
+		var rows := HudPalette.wrap(l["text"], SUB_W, HudPalette.FIGURE_MED, 26)
+		blocks.append([_who(l["who"]), rows, Subtitles.alpha(l["age"]) * dim])
+		total += 28 + rows.size() * 34 + 10
+	var y := SUB_BOTTOM - total
+	var top := y
+	for b: Array in blocks:
+		HudPalette.hud_label(_canvas, Vector2(d.x / 2, y + 18), b[0], 17, Color(HudPalette.LIGHT_3, b[2]), 0.16, HudPalette.LABEL, 1)
 		y += 28
-		for row in HudPalette.wrap(l["text"], CALL_W, HudPalette.FIGURE_MED, 22):
-			HudPalette.hud_text(_canvas, Vector2(CALL.x, y), row, 22, Color(HudPalette.LIGHT_2, a), HudPalette.FIGURE_MED)
-			y += 30
+		for row: String in b[1]:
+			HudPalette.hud_text(_canvas, Vector2(d.x / 2, y + 22), row, 26, Color(HudPalette.LIGHT, b[2]), HudPalette.FIGURE_MED, 1)
+			y += 34
 		y += 10
+	return top
 
 
-## Mission 1's tutorial line, centred under the phase plate.
-func _tutorial_tip(d: Vector2) -> void:
+## Mission 1's tutorial line, centred in the lower middle, just above the subtitles (or where they would be).
+func _tutorial_tip(d: Vector2, above: float) -> void:
 	if _tip_left <= 0.0:
 		return
 	var a := clampf(_tip_left, 0.0, 1.0)
-	var rows := HudPalette.wrap(_tip, 900, HudPalette.FIGURE_MED, 24)
+	var rows := HudPalette.wrap(_tip, SUB_W, HudPalette.FIGURE_MED, 26)
+	var y := above - 16 - rows.size() * 34
 	for i in rows.size():
-		HudPalette.hud_text(_canvas, Vector2(d.x / 2, 150 + i * 34), rows[i], 24, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED, 1)
+		HudPalette.hud_text(_canvas, Vector2(d.x / 2, y + 26 + i * 34), rows[i], 26, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED, 1)
