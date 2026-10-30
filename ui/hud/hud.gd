@@ -21,7 +21,7 @@ const CALL := Vector2(64, 410)  # the live call card's corner
 const CALL_W := 430.0
 const FACE := 76.0
 const SUB_W := 1000.0  # subtitles and tips: centred, lower middle
-const SUB_BOTTOM := 820.0  # above the action prompt (it starts at 850)
+const SUB_BOTTOM := 1010.0  # near the bottom edge; the action prompt sits above it
 const PORTRAIT := "res://ui/codec/portraits/%s_%d.png"
 
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
@@ -598,7 +598,7 @@ func _prompt(d: Vector2) -> void:
 		total += widths.back()
 	total += 28.0 * (parts.size() - 1)
 	var x := d.x / 2 - total / 2
-	var top := 850.0
+	var top := 730.0
 	for i in parts.size():
 		var p: Dictionary = parts[i]
 		var cx := x
