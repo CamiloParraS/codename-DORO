@@ -112,6 +112,9 @@ func _run() -> void:
 	brief._open_codec()
 	await wait(0.6)
 	var codec: CodecScreen = brief.get_child(brief.get_child_count() - 1)
+	await shoot("codec_ring")
+	codec._ringing = false  # answered
+	codec._burst = 0.0
 	codec.talk.press()  # reveal the first line
 	codec.talk.press()
 	await wait(2.0)

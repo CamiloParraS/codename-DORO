@@ -97,7 +97,7 @@ func _open_codec() -> void:
 
 
 func _call() -> void:
-	var codec := CodecScreen.new(Campaign.MISSIONS[record.mission].codec)
+	var codec := CodecScreen.new(Campaign.MISSIONS[record.mission].codec, true)
 	codec.finished.connect(func() -> void: Campaign.play(get_tree(), record, scene_file_path, true))
 	add_child(codec)
 

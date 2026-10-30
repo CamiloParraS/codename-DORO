@@ -49,6 +49,7 @@ const JAM := Color("150a0b")  # the jammed Radar's ground
 const FIGURE: FontFile = preload("res://assets/fonts/barlow_semibold.ttf")  # numbers
 const FIGURE_MED: FontFile = preload("res://assets/fonts/barlow_medium.ttf")  # sentences
 const LABEL: FontFile = preload("res://assets/fonts/barlow_condensed_semibold.ttf")  # tracked uppercase labels
+const DISPLAY: FontFile = preload("res://assets/fonts/antonio.ttf")  # the revamp headline face
 const LABEL_BOLD: FontFile = preload("res://assets/fonts/barlow_condensed_bold.ttf")
 const LABEL_MED: FontFile = preload("res://assets/fonts/barlow_condensed_medium.ttf")
 const HALO := Color(0, 0, 0, 0.55)  # the dark legibility halo under text on the scene

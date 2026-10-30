@@ -435,6 +435,9 @@ ui.voice.pallas,PALLAS,PALAS
 ui.voice.gorgo,GORGO,GORGO
 ui.voice.glaukopis,GLAUKOPIS,GLAUKOPIS
 ui.codec.next,[{key}] NEXT,[{key}] SIGUIENTE
+ui.codec.incoming,Codec · incoming call,Códec · llamada entrante
+ui.codec.in_progress,Codec · call in progress,Códec · llamada en curso
+ui.codec.answer,[{key}] ANSWER,[{key}] RESPONDER
 ui.post.rank,RANK,RANGO
 ui.post.learned,AIGIS HAS LEARNED,AIGIS HA APRENDIDO
 ui.post.time,CLEAR TIME,TIEMPO
