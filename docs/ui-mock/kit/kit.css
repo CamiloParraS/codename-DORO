@@ -1,0 +1,143 @@
+/* Ghost Layer UI mock kit: Peace Walker / MGSV game-UI language.
+   Flat black ground, hard slabs, white selection bars, red tabs, gold rank bars.
+   Motion is hard cuts, wipes and steps(): no easing, no drift. One effect layer: static scanlines. */
+:root {
+  --bg: #07090b;
+  --bg-2: #0e1418;
+  --steel: #1b2328;
+  --steel-2: #2a343b;
+  --ink: #ecebe3;
+  --ink-2: rgba(236, 235, 227, .88);
+  --ink-3: rgba(236, 235, 227, .74);
+  --line: rgba(236, 235, 227, .24);
+  --red: #c42032;
+  --red-hi: #e23a4c;
+  --gold: #cbb26b;
+  --gold-hi: #ecd994;
+  --cyan: #a9d6dc;
+  --blue: #2c6aa3;
+  --paper: #cfd0c9;
+  --paper-ink: #1d2123;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --head: Antonio, "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: Barlow, system-ui, sans-serif;
+  --tech: var(--head);
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: #000; color: var(--ink); font-family: var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--cyan); color: #000; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+
+/* ---- mock controls (not part of the game UI) ---- */
+.mockbar { position: fixed; inset: 0 0 auto 0; height: 44px; z-index: 50; display: flex; align-items: center; gap: 4px; padding: 0 14px; background: #000; border-bottom: 1px solid #1c2226; font: 600 12px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; }
+.mockbar .title { color: var(--ink-3); margin-right: 12px; }
+.mockbar a, .mockbar button { font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink-2); background: none; border: 1px solid transparent; padding: 9px 12px; cursor: pointer; text-decoration: none; }
+.mockbar a:hover, .mockbar button:hover { color: var(--ink); border-color: #2c3438; }
+.mockbar button[aria-pressed="true"] { color: #000; background: var(--ink); }
+.mockbar :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.mockbar .sep { width: 1px; height: 22px; background: #2a3236; margin: 0 8px; }
+.mockbar .grow { flex: 1; }
+.mockbar .hint { color: var(--ink-3); }
+
+.viewport { position: fixed; inset: 44px 0 0 0; }
+.stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); transform-origin: center; font-size: 20px; }
+
+/* ---- grounds ---- */
+.fill { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; background: url(../scene.jpg) center / cover; image-rendering: pixelated; }
+.scene.dim { filter: grayscale(.9) brightness(.15) contrast(1.1) blur(4px); transform: scale(1.06); }
+.vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 46%, transparent 38%, rgba(0, 0, 0, .78) 100%); }
+.scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .05) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; opacity: .7; }
+
+/* ---- dial: the giant emblem ring ---- */
+.dial { position: absolute; color: var(--ink); pointer-events: none; filter: opacity(.55); }
+.dial svg { width: 100%; height: 100%; overflow: visible; }
+.dial .spin { transform-origin: 50% 50%; }
+
+/* ambient: the background is never still, but never loud either */
+.spin-on .dial .spin { animation: spin 120s linear infinite; }
+.spin-on .dial .spin.rev { animation-duration: 180s; animation-direction: reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scene.dim { animation: drift 48s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1.06) translate(0, 0); } to { transform: scale(1.12) translate(-1.6%, -1%); } }
+.vig { overflow: hidden; }
+.vig::after, .cg::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 240px; pointer-events: none; background: linear-gradient(180deg, transparent, rgba(236, 235, 227, .025) 70%, rgba(236, 235, 227, .045) 98%, transparent); animation: sweep 9s linear infinite; }
+@keyframes sweep { from { transform: translateY(-260px); } to { transform: translateY(1100px); } }
+.cg::before { animation: gridmove 8s linear infinite; }
+@keyframes gridmove { to { background-position: 64px 64px, 64px 64px; } }
+
+/* ---- type ---- */
+.h1 { font: 700 76px/.92 var(--head); letter-spacing: .02em; text-transform: uppercase; }
+.h2 { font: 600 38px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; }
+.lab { font: 600 19px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.tech { font-family: var(--tech); letter-spacing: .06em; text-transform: uppercase; }
+.body { font: 400 22px/1.5 var(--body); color: var(--ink-2); }
+
+/* ---- title bar: label over a full-width rule (Peace Walker mission selector) ---- */
+.hdr { position: absolute; left: 80px; right: 80px; top: 54px; }
+.hdr .t { display: flex; align-items: flex-end; gap: 24px; font: 600 44px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; padding-bottom: 12px; }
+.hdr .t small { font: 500 22px/1 var(--head); letter-spacing: .3em; color: var(--ink-3); padding-bottom: 5px; }
+.hdr .rule { height: 3px; background: var(--ink); transform-origin: left; }
+.hdr .rule::after { content: ""; display: block; height: 1px; margin-top: 4px; background: var(--line); }
+.hdr .em { width: 38px; height: 38px; margin-bottom: 7px; }
+
+/* ---- plates ---- */
+.cut-r { clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 0 100%); }
+.cut-l { clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%); }
+.plate-red { background: var(--red); color: var(--ink); }
+.plate-ink { background: var(--ink); color: #0a0d0f; }
+.plate-steel { background: rgba(14, 20, 24, .88); border-top: 1px solid var(--line); }
+.slab { display: inline-flex; align-items: center; gap: 14px; padding: 0 44px 0 22px; height: 58px; font: 600 28px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 26px) 100%, 0 100%); }
+.slab.red { background: var(--red); color: var(--ink); }
+.slab.white { background: var(--ink); color: #0a0d0f; }
+
+/* ---- selection list: white bar on dark (Peace Walker result / menu rows) ---- */
+.rows { display: grid; }
+.row { position: relative; display: flex; align-items: center; gap: 18px; height: 56px; padding: 0 22px; font: 500 28px/1 var(--head); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid rgba(236, 235, 227, .14); cursor: pointer; }
+.row .v { margin-left: auto; font: 500 28px/1 var(--head); letter-spacing: .08em; color: var(--ink); }
+.row[aria-selected="true"], .row:hover { background: var(--ink); color: #0a0d0f; }
+.row[aria-selected="true"] .v, .row:hover .v { color: #0a0d0f; }
+.row.locked { color: var(--ink-3); cursor: default; }
+.row.locked:hover { background: none; color: var(--ink-3); }
+
+/* ---- keycaps ---- */
+.key { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 9px; background: var(--ink); color: #0a0d0f; font: 700 20px/1 var(--head); }
+.key.sm { min-width: 26px; height: 26px; font-size: 15px; padding: 0 6px; }
+.key.dark { background: #0a0d0f; color: var(--ink); border: 1px solid var(--line); }
+
+/* bottom prompt strip */
+.prompts { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; display: flex; align-items: center; gap: 34px; padding: 0 80px; background: linear-gradient(0deg, rgba(0, 0, 0, .86), transparent); font: 600 20px/1 var(--head); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-2); }
+.prompts span { display: inline-flex; align-items: center; gap: 10px; }
+.prompts .r { margin-left: auto; }
+
+/* corner brackets for HUD cards */
+.br { position: absolute; width: 14px; height: 14px; border: 2px solid var(--ink); }
+.br.tl { left: -1px; top: -1px; border-right: 0; border-bottom: 0; }
+.br.tr { right: -1px; top: -1px; border-left: 0; border-bottom: 0; }
+.br.bl { left: -1px; bottom: -1px; border-right: 0; border-top: 0; }
+.br.brr { right: -1px; bottom: -1px; border-left: 0; border-top: 0; }
+
+/* halftone portrait */
+.halftone { position: relative; overflow: hidden; background: #000; }
+.halftone img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; filter: grayscale(1) contrast(1.55) brightness(1.1); }
+.halftone::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 2px, transparent 2px 4px); }
+.halftone.tinted::before { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--tint, #7ec8b4); mix-blend-mode: multiply; }
+
+/* ---- entrance: hard cuts and wipes, stepped, no easing ---- */
+.a { opacity: 0; }
+.in .a { animation: cut .24s steps(1, end) var(--d, 0s) both; }
+.in .a.l { animation: wipe-l .3s steps(8, end) var(--d, 0s) both; }
+.in .a.r { animation: wipe-r .3s steps(8, end) var(--d, 0s) both; }
+.in .a.w { animation: wipe-l .45s steps(14, end) var(--d, 0s) both; }
+.in .a.f { animation: cut .5s steps(5, end) var(--d, 0s) both; }
+@keyframes cut { 0% { opacity: 0; } 25% { opacity: 1; } 50% { opacity: .3; } 75%, 100% { opacity: 1; } }
+@keyframes wipe-l { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+@keyframes wipe-r { from { opacity: 1; clip-path: inset(0 0 0 100%); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+@keyframes blink { 50% { opacity: .25; } }
+@keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+/* two-frame white hit, for a logo cut or a rank stamp */
+.flash { position: absolute; inset: 0; z-index: 40; background: #fff; opacity: 0; pointer-events: none; }
+.in .flash { animation: hit .16s steps(1, end) var(--d, .1s) both; }
+@keyframes hit { 0% { opacity: .85; } 50% { opacity: .3; } 99%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .in .a { animation-duration: .01s; animation-delay: 0s; } .in .flash, .scene.dim, .vig::after, .cg::after, .cg::before, .dial .spin { animation: none; } }

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer UI Mocks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+body { overflow: auto; background: #07090b; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 56px 24px 80px; }
+h1 { font: 700 64px/.95 var(--head); letter-spacing: .06em; text-transform: uppercase; }
+h1 small { display: block; margin-top: 12px; font: 500 20px/1 var(--head); letter-spacing: .4em; color: var(--ink-3); }
+h2 { margin: 48px 0 14px; font: 700 22px/1 var(--head); letter-spacing: .3em; text-transform: uppercase; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.g { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+a.c { display: block; padding: 18px 20px 20px; background: #0f1519; border-top: 3px solid var(--line); color: var(--ink); text-decoration: none; transition: background .15s, border-color .15s; }
+a.c:hover, a.c:focus-visible { background: var(--ink); color: #0a0d0f; border-color: var(--red); outline: none; }
+a.c b { display: block; font: 600 28px/1 var(--head); letter-spacing: .1em; text-transform: uppercase; }
+a.c span { display: block; margin-top: 8px; font: 400 16px/1.4 var(--body); opacity: .72; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Ghost Layer<small>UI direction mocks · 1920 × 1080</small></h1>
+  <h2>In play</h2>
+  <div class="g">
+    <a class="c" href="hud.html"><b>HUD</b><span>Sneaking, noticed, alert, selector, radio wheel, Codec subtitle</span></a>
+    <a class="c" href="mission-card.html"><b>Mission card</b><span>Area loading: route and objectives</span></a>
+    <a class="c" href="codec.html"><b>Codec call</b><span>Full-screen, paused</span></a>
+    <a class="c" href="pause.html"><b>Pause</b><span>With quit confirmation</span></a>
+    <a class="c" href="game-over.html"><b>Game over</b><span>Continue or quit</span></a>
+    <a class="c" href="debug.html"><b>Debug overlay</b><span>Profile, Voices, Lethality, field reasons</span></a>
+  </div>
+  <h2>Between Missions</h2>
+  <div class="g">
+    <a class="c" href="title.html"><b>Title and menu</b><span>Press start, main menu</span></a>
+    <a class="c" href="mission-select.html"><b>Mission select</b><span>Cleared Missions and records</span></a>
+    <a class="c" href="briefing.html"><b>Briefing</b><span>What Aigis saw, Voices, objectives</span></a>
+    <a class="c" href="results.html"><b>Results</b><span>Rank and "Aigis has learned"</span></a>
+    <a class="c" href="requisition.html"><b>Requisition</b><span>Spend Recruits on gear</span></a>
+    <a class="c" href="settings.html"><b>Settings</b><span>Language, audio, camera</span></a>
+    <a class="c" href="free-mode.html"><b>Free mode</b><span>Presets, Mission, Lethality ratio</span></a>
+    <a class="c" href="finale.html"><b>Finale</b><span>Voices debate, transmit memories</span></a>
+  </div>
+</div>
+</body>
+</html>

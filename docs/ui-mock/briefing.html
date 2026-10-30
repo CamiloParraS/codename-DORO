@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.col-l { position: absolute; left: 80px; top: 170px; width: 640px; }
+.sec-t { display: flex; align-items: center; gap: 14px; font: 700 26px/1 var(--head); letter-spacing: .24em; text-transform: uppercase; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.sec-t small { margin-left: auto; font: 500 17px/1 var(--head); letter-spacing: .26em; color: var(--ink-3); }
+.habits { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 18px; }
+.hab { position: relative; height: 138px; background: rgba(14, 20, 24, .72); border-top: 3px solid var(--line); padding-top: 24px; text-align: center; }
+.hab svg { width: 46px; height: 46px; color: var(--ink-2); }
+.hab .lb { margin-top: 10px; font: 600 12px/1 var(--head); letter-spacing: .16em; color: var(--ink-3); text-transform: uppercase; }
+.hab .pips { display: flex; gap: 4px; justify-content: center; margin-top: 12px; }
+.hab .pips i { width: 14px; height: 6px; background: rgba(236, 235, 227, .18); }
+.hab .pips i.on { background: var(--gold); }
+.hab.up { border-top-color: var(--gold); background: rgba(40, 34, 18, .72); }
+.hab.up svg { color: var(--gold-hi); }
+.hab .ar { position: absolute; right: 8px; top: 6px; width: 0; height: 0; border: 8px solid transparent; border-bottom: 13px solid var(--gold); border-top: 0; }
+.voices { margin-top: 36px; }
+.voice { display: grid; grid-template-columns: 46px 190px 1fr 70px; align-items: center; height: 62px; border-bottom: 1px solid rgba(236, 235, 227, .14); }
+.voice .sg { font: 700 24px/1 var(--head); color: var(--cyan); letter-spacing: .04em; }
+.voice .nm { font: 600 26px/1 var(--head); letter-spacing: .18em; text-transform: uppercase; }
+.voice .bar { height: 12px; background: rgba(236, 235, 227, .1); position: relative; }
+.voice .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(169, 214, 220, .5); transform-origin: left; }
+.voice.lead .bar i { background: var(--cyan); }
+.voice .pc { text-align: right; font: 500 30px/1 var(--head); letter-spacing: .04em; color: var(--ink-2); }
+.voice.lead .nm, .voice.lead .pc { color: var(--cyan); }
+
+.area { position: absolute; right: 80px; top: 170px; width: 1000px; }
+.photo { position: relative; height: 340px; overflow: hidden; background: #000; }
+.photo .scene { filter: grayscale(.75) contrast(1.15) brightness(.78); }
+.photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(5, 8, 10, .92) 0%, transparent 55%); }
+.photo .meta { position: absolute; left: 34px; bottom: 26px; z-index: 2; }
+.photo .mn { font: 700 78px/.92 var(--head); letter-spacing: .02em; text-transform: uppercase; }
+.photo .lc { margin-top: 12px; font: 500 22px/1 var(--head); letter-spacing: .3em; color: var(--ink-2); text-transform: uppercase; }
+.photo .tag { position: absolute; z-index: 2; right: 0; top: 30px; background: var(--red); padding: 12px 22px 12px 30px; font: 700 26px/1 var(--head); letter-spacing: .3em; clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%); }
+.photo .day { position: absolute; z-index: 2; left: 34px; top: 26px; font: 600 20px/1 var(--head); letter-spacing: .26em; text-transform: uppercase; }
+.photo .day b { color: var(--gold); font-weight: 600; }
+.objs { margin-top: 26px; }
+.obj { display: flex; align-items: center; gap: 22px; height: 70px; padding-right: 22px; border-bottom: 1px solid rgba(236, 235, 227, .14); font: 600 28px/1.05 var(--head); letter-spacing: .1em; text-transform: uppercase; }
+.obj .no { width: 44px; height: 44px; display: grid; place-items: center; background: var(--ink); color: #0a0d0f; font: 700 28px/1 var(--head); letter-spacing: 0; }
+.obj .tg { margin-left: auto; padding: 8px 14px; background: var(--red); font: 700 18px/1 var(--head); letter-spacing: .2em; }
+
+.tr { position: absolute; left: 80px; bottom: 100px; width: 640px; }
+.tr .hd { display: flex; align-items: center; gap: 12px; font: 600 16px/1 var(--head); letter-spacing: .3em; color: var(--cyan); text-transform: uppercase; }
+.tr .hd i { width: 9px; height: 9px; background: var(--cyan); }
+.tr .ln { display: flex; gap: 14px; margin-top: 12px; font: 400 21px/1.3 var(--body); color: var(--ink-2); }
+.tr .ln b { flex: none; width: 120px; font: 600 16px/1.7 var(--head); letter-spacing: .22em; color: var(--cyan); text-transform: uppercase; }
+.tr .ln:last-child { color: var(--ink); }
+.cont { position: absolute; right: 80px; bottom: 90px; }
+.note { position: absolute; right: 80px; bottom: 170px; width: 1000px; font: 400 19px/1.4 var(--body); color: var(--ink-3); text-align: right; }
+</style>
+</head>
+<body>
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Briefing</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Replay intercept</button><span class="grow"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene dim"></div>
+  <div class="vig"></div>
+
+  <div class="hdr"><div class="t a l"><svg class="em"><use href="#emblem"/></svg><span data-es="Informe">Briefing</span></div><div class="rule a w" style="--d:.2s"></div></div>
+
+  <div class="col-l">
+    <div class="sec-t a l" style="--d:.2s"><span data-es="Lo que vio Aigis">What Aigis saw</span></div>
+    <div class="habits">
+      <div class="hab up a" style="--d:.3s"><i class="ar"></i><svg><use href="#h-stealth"/></svg><div class="lb" data-es="Sigilo">Stealth</div><div class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+      <div class="hab a" style="--d:.35s"><svg><use href="#h-combat"/></svg><div class="lb" data-es="Combate">Combat</div><div class="pips"><i></i><i></i><i></i></div></div>
+      <div class="hab a" style="--d:.4s"><svg><use href="#h-headshots"/></svg><div class="lb" data-es="Cabezazos">Headshots</div><div class="pips"><i class="on"></i><i></i><i></i></div></div>
+      <div class="hab up a" style="--d:.45s"><i class="ar"></i><svg><use href="#h-takedowns"/></svg><div class="lb" data-es="Derribos">Takedowns</div><div class="pips"><i class="on"></i><i class="on"></i><i></i></div></div>
+      <div class="hab a" style="--d:.5s"><svg><use href="#h-downs"/></svg><div class="lb" data-es="Caídos">Downs</div><div class="pips"><i class="on"></i><i></i><i></i></div></div>
+      <div class="hab a" style="--d:.55s"><svg><use href="#h-spoofing"/></svg><div class="lb" data-es="Suplantar">Spoofing</div><div class="pips"><i></i><i></i><i></i></div></div>
+    </div>
+    <div class="voices">
+      <div class="sec-t a l" style="--d:.5s"><span data-es="Voces de Aigis">Voices of Aigis</span><small data-es="PESO">WEIGHT</small></div>
+      <div class="voice lead a" style="--d:.6s"><span class="sg">[ ]</span><span class="nm">Pallas</span><span class="bar"><i style="width:82%"></i></span><span class="pc num">41%</span></div>
+      <div class="voice a" style="--d:.66s"><span class="sg">( )</span><span class="nm">Glaukopis</span><span class="bar"><i style="width:48%"></i></span><span class="pc num">24%</span></div>
+      <div class="voice a" style="--d:.72s"><span class="sg">/\</span><span class="nm">Promachos</span><span class="bar"><i style="width:30%"></i></span><span class="pc num">15%</span></div>
+      <div class="voice a" style="--d:.78s"><span class="sg">&gt;&gt;</span><span class="nm">Nike</span><span class="bar"><i style="width:24%"></i></span><span class="pc num">12%</span></div>
+      <div class="voice a" style="--d:.84s"><span class="sg">XX</span><span class="nm">Gorgo</span><span class="bar"><i style="width:16%"></i></span><span class="pc num">8%</span></div>
+      <div class="why a" style="--d:.9s;margin-top:14px;font:400 18px/1.4 var(--body);color:var(--ink-3)"><span data-es="Pallas lidera el consejo: sus contramedidas pesan más en lo que despliega Aigis.">Pallas leads the council: her countermeasures weigh most in what Aigis deploys.</span></div>
+    </div>
+  </div>
+
+  <div class="area">
+    <div class="photo a w" style="--d:.3s">
+      <div class="scene"></div>
+      <div class="day"><span data-es="Día">Day</span> <b>2</b> · <span class="num">23:40</span></div>
+      <div class="tag" data-es="MISIÓN 2">MISSION 2</div>
+      <div class="meta"><div class="mn" data-es="Estación de relé de radio">Radio Relay Station</div><div class="lc" data-es="Isla Palladion · el relé de la cumbre">Palladion Island · the summit relay</div></div>
+      <span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+    </div>
+    <div class="objs">
+      <div class="sec-t a l" style="--d:.5s"><span data-es="Objetivos">Objectives</span></div>
+      <div class="obj a r" style="--d:.6s"><span class="no">1</span><span data-es="Recupera las llaves de cifrado del garaje">Recover the encryption keys from the garage</span></div>
+      <div class="obj a r" style="--d:.68s"><span class="no">2</span><span data-es="Sabotea la consola del relé: mantén E 5 segundos">Sabotage the relay console: hold E for 5 seconds</span></div>
+      <div class="obj a r" style="--d:.76s"><span class="no">3</span><span data-es="Registra la caseta en busca de las órdenes del jefe">Search the mess hut for the Chief's orders</span></div>
+      <div class="obj a r" style="--d:.84s"><span class="no" style="background:var(--red);color:var(--ink)">T</span><span data-es="Jefe del relé: elimínalo o sácalo">Relay Chief: kill or carry out</span><span class="tg" data-es="OBJETIVO">TARGET</span></div>
+    </div>
+  </div>
+
+  <div class="tr a" style="--d:.9s">
+    <div class="hd"><i></i><span data-es="Intercepción · repetición">Intercept · replay</span></div>
+    <div class="ln a" style="--d:1.2s"><b>Pallas</b><span data-es="Prefieres el enfoque silencioso. Aigis lo notó.">You favour the quiet approach. Aigis noticed.</span></div>
+    <div class="ln a" style="--d:2.4s"><b>Glaukopis</b><span data-es="Las cámaras vigilan los rincones callados ahora. Ven lo que un guardia no ve.">Cameras watch the quiet corners now. They see what a guard misses.</span></div>
+    <div class="ln a" style="--d:3.6s"><b>Pallas</b><span data-es="Camina con cuidado. Te estamos vigilando.">Walk softly. We are watching.</span></div>
+  </div>
+  <div class="cont a r" style="--d:1.1s"><span class="slab white"><span class="key sm">Any</span><span data-es="Abrir llamada de códec">Open the Codec call</span></span></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+</body>
+</html>

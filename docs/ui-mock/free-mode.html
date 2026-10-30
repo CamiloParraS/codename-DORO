@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Free Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.pre { position: absolute; left: 80px; top: 200px; width: 560px; }
+.pre .row { height: 76px; font-size: 32px; }
+.pre .row small { margin-left: auto; font: 500 17px/1 var(--head); letter-spacing: .2em; opacity: .65; }
+.mid { position: absolute; left: 700px; top: 200px; width: 1140px; }
+.sec { display: flex; align-items: center; gap: 24px; font: 700 24px/1 var(--head); letter-spacing: .26em; text-transform: uppercase; color: var(--ink-2); padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.ms { display: flex; gap: 8px; margin-top: 20px; }
+.ms span { flex: 1; height: 86px; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; border: 2px solid var(--line); font: 600 26px/1 var(--head); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); cursor: pointer; }
+.ms span small { margin-top: 8px; font: 500 15px/1 var(--head); letter-spacing: .24em; opacity: .7; }
+.ms span.on { background: var(--ink); color: #0a0d0f; border-color: var(--ink); }
+.rt { display: flex; align-items: center; gap: 28px; margin-top: 30px; }
+.rt .sl { position: relative; flex: 1; height: 14px; background: rgba(236, 235, 227, .18); }
+.rt .sl i { position: absolute; left: 0; top: 0; bottom: 0; width: 55%; background: var(--ink); }
+.rt .sl::after { content: ""; position: absolute; top: -9px; left: 55%; width: 8px; height: 32px; margin-left: -4px; background: var(--ink); }
+.rt .v { width: 200px; text-align: right; font: 500 38px/1 var(--head); letter-spacing: .06em; }
+.sum { margin-top: 40px; padding: 26px 30px 28px; background: rgba(14, 20, 24, .74); border-top: 3px solid var(--cyan); }
+.sum .h { font: 700 32px/1.1 var(--head); letter-spacing: .08em; text-transform: uppercase; }
+.sum .h b { color: var(--cyan); font-weight: 700; }
+.sum ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+.sum li { display: flex; align-items: center; gap: 14px; height: 50px; border-bottom: 1px solid rgba(236, 235, 227, .14); font: 600 22px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); }
+.sum li svg { width: 26px; height: 26px; }
+.sum li b { margin-left: auto; font: 500 28px/1 var(--head); color: var(--gold); }
+.act { position: absolute; right: 80px; bottom: 120px; display: flex; gap: 14px; align-items: center; }
+.slab.ghost { background: none; border: 2px solid var(--line); color: var(--ink); clip-path: none; padding: 0 28px; }
+.ft { position: absolute; left: 80px; bottom: 104px; font: 500 20px/1.5 var(--head); letter-spacing: .2em; color: var(--ink-3); text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Free mode</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Replay</button><span class="grow"></span><span class="hint">click a Preset or Mission</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene dim"></div>
+  <div class="vig"></div>
+  <div class="hdr"><div class="t a l"><svg class="em"><use href="#emblem"/></svg><span data-es="Modo libre">Free mode</span></div><div class="rule a w" style="--d:.2s"></div></div>
+
+  <div class="pre rows" id="pre"></div>
+  <div class="mid">
+    <div class="sec a r" style="--d:.2s"><span data-es="Misión">Mission</span></div>
+    <div class="ms a r" id="ms" style="--d:.25s"></div>
+    <div class="sec a r" style="--d:.3s;margin-top:34px"><span data-es="Letalidad">Ratio</span></div>
+    <div class="rt a r" style="--d:.35s"><div class="sl"><i></i></div><div class="v num" id="rv">0.55</div></div>
+    <div class="sum a r" style="--d:.4s"><div class="h" id="sh"></div><ul id="sl"></ul></div>
+  </div>
+  <div class="ft a" style="--d:.6s"><span data-es="Cada misión se juega en su propia zona.<br>F3: panel de depuración">Each mission plays in its own Area.<br>F3: debug overlay</span></div>
+  <div class="act a r" style="--d:.6s"><span class="slab ghost"><span data-es="Atrás">Back</span></span><span class="slab ghost"><span data-es="Final">Finale</span></span><span class="slab white"><span class="key sm">E</span><span data-es="Jugar">Play</span></span></div>
+  <div class="prompts"><span><span class="key sm dark">↑↓</span><span data-es="Elegir">Select</span></span><span><span class="key sm dark">E</span><span data-es="Jugar">Play</span></span><span class="r"><span class="key sm dark">Esc</span><span data-es="Atrás">Back</span></span></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+const P = [
+  { en: 'Clean slate', es: 'Desde cero', lv: { stealth: 0, combat: 0, headshots: 0, takedowns: 0, downs: 0, spoofing: 0 } },
+  { en: 'Ghost', es: 'Fantasma', lv: { stealth: 3, takedowns: 1 } },
+  { en: 'Trickster', es: 'Embaucador', lv: { spoofing: 3, stealth: 1, downs: 1 } },
+  { en: 'Butcher', es: 'Carnicero', lv: { combat: 3, headshots: 2 } },
+  { en: 'Custom', es: 'A medida', lv: {} },
+];
+const H = { stealth: ['Stealth', 'Sigilo', 'h-stealth'], combat: ['Combat', 'Combate', 'h-combat'], headshots: ['Headshots', 'Cabezazos', 'h-headshots'], takedowns: ['Takedowns', 'Derribos', 'h-takedowns'], downs: ['Downs', 'Caídos', 'h-downs'], spoofing: ['Spoofing', 'Suplantar', 'h-spoofing'] };
+let p = 1, m = 1; const L = () => GL.es ? 1 : 0;
+function render() {
+  document.getElementById('pre').innerHTML = P.map((x, i) => `<div class="row" data-i="${i}" ${i === p ? 'aria-selected="true"' : ''}><span>${[x.en, x.es][L()]}</span></div>`).join('');
+  document.getElementById('ms').innerHTML = [['Harbour', 'Puerto'], ['Radio Relay Station', 'Estación de relé'], ['Research Annex', 'Anexo']].map((x, i) => `<span class="${i === m ? 'on' : ''}" data-m="${i}">${[x[0], x[1]][L()]}<small>${['MISSION', 'MISIÓN'][L()]} ${i + 1}</small></span>`).join('');
+  const lv = P[p].lv, steps = Object.keys(lv).filter(k => lv[k]);
+  document.getElementById('sh').innerHTML = `${[P[p].en, P[p].es][L()]} · ${['MISSION', 'MISIÓN'][L()]} ${m + 1}: ${['AIGIS DEPLOYS', 'AIGIS DESPLIEGA'][L()]} <b>(${['BUDGET', 'PRESUPUESTO'][L()]} ${3 + steps.length * 2 + m})</b>`;
+  document.getElementById('sl').innerHTML = steps.length ? steps.map(k => `<li><svg><use href="#${H[k][2]}"/></svg>${H[k][L()]}<b>L${lv[k]}</b></li>`).join('') : `<li>${['NOTHING', 'NADA'][L()]}</li>`;
+  document.querySelectorAll('#pre .row').forEach(r => r.onclick = () => { p = +r.dataset.i; render(); });
+  document.querySelectorAll('#ms span').forEach(s => s.onclick = () => { m = +s.dataset.m; render(); });
+}
+window.onLang = render; render();
+addEventListener('keydown', e => { if (e.key === 'ArrowDown') p = Math.min(P.length - 1, p + 1); else if (e.key === 'ArrowUp') p = Math.max(0, p - 1); else return; render(); });
+</script>
+</body>
+</html>

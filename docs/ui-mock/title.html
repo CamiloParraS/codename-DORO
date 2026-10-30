@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.logo { position: absolute; left: 110px; top: 250px; }
+.logo .pre { font: 500 20px/1 var(--head); letter-spacing: .24em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 16px; padding-left: 6px; }
+.logo .g { font: 700 250px/.8 var(--head); letter-spacing: .01em; text-transform: uppercase; margin-left: -8px; }
+.logo .ly { font: 400 118px/1 var(--head); letter-spacing: .62em; text-transform: uppercase; margin-top: 8px; margin-left: 4px; }
+.band { position: absolute; left: 0; width: 1100px; top: 672px; height: 52px; display: flex; align-items: center; padding-left: 116px; background: linear-gradient(90deg, rgba(236, 235, 227, .95), rgba(236, 235, 227, .85) 60%, transparent); color: #0a0d0f; font: 700 26px/1 var(--head); letter-spacing: .5em; text-transform: uppercase; }
+.band em { font-style: normal; font-weight: 500; letter-spacing: .5em; margin-left: 18px; }
+.press { position: absolute; left: 116px; top: 806px; font: 500 22px/1 var(--head); letter-spacing: .5em; text-transform: uppercase; animation: blink 1.4s steps(2) infinite; }
+.menu { position: absolute; left: 1180px; top: 330px; width: 640px; background: rgba(5, 8, 10, .8); border-top: 3px solid var(--ink); padding-bottom: 6px; }
+.menu .row { height: 62px; font-size: 32px; }
+.menu .row small { font: 500 17px/1 var(--head); letter-spacing: .24em; opacity: .65; margin-left: auto; }
+.slot { position: absolute; left: 116px; bottom: 96px; display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; font: 600 20px/1 var(--head); letter-spacing: .2em; text-transform: uppercase; }
+.slot b { color: var(--gold); font-weight: 600; }
+.foot { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; font: 400 15px/1 var(--head); letter-spacing: .3em; color: var(--ink-3); text-transform: uppercase; }
+.emb { position: absolute; right: 80px; top: 56px; width: 120px; height: 120px; color: var(--ink); opacity: .9; }
+body[data-s="title"] .menu, body[data-s="title"] .slot { display: none; }
+body[data-s="menu"] .press { display: none; }
+body[data-s="menu"] .band { top: 672px; }
+.logo .g { position: relative; }
+.logo .g::before { content: attr(data-t); position: absolute; left: 0; top: 0; opacity: 0; pointer-events: none; }
+.in .logo .g::before { animation: slice 7s steps(1) 2.6s infinite; }
+@keyframes slice { 0%, 90% { opacity: 0; } 91% { opacity: .9; transform: translateX(-14px); clip-path: inset(18% 0 58% 0); } 93% { opacity: .9; transform: translateX(10px); clip-path: inset(62% 0 14% 0); } 95%, 100% { opacity: 0; } }
+.menu::before { content: ""; position: absolute; left: 0; right: 0; top: -3px; height: 3px; background: var(--ink); animation: draw .5s steps(10) both; }
+@keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.menu .row[aria-selected="true"] { animation: selwipe .16s steps(5) both; }
+.menu .row[aria-selected="true"]::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--red); }
+@keyframes selwipe { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+.band { overflow: hidden; }
+.band::after { content: ""; position: absolute; top: 0; bottom: 0; left: -160px; width: 160px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent); animation: shine 6s steps(30) 2.2s infinite; }
+@keyframes shine { 0% { left: -160px; } 40%, 100% { left: 1100px; } }
+.band em { display: inline-block; min-width: 1.5em; }
+</style>
+</head>
+<body data-s="title">
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Title</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="b-title" aria-pressed="true">Press start</button>
+  <button id="b-menu" aria-pressed="false">Menu</button>
+  <button id="t-replay">Replay</button>
+  <span class="grow"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage spin-on" id="stage">
+  <div class="scene dim" style="filter:grayscale(.5) brightness(.5) contrast(1.1)"></div>
+  <div class="dial a f" data-dial style="left:610px;top:-80px;width:1240px;height:1240px;color:#cfd3d0;opacity:.34;--d:.2s"></div>
+  <div class="vig"></div>
+  <div class="flash"></div>
+
+
+  <div class="logo">
+    <div class="g a l" data-t="Ghost" style="--d:.25s">Ghost</div>
+    <div class="ly a l" style="--d:.38s">Layer</div>
+  </div>
+  <div class="band a w" style="--d:.6s"><span data-es="Protocolo Aigis">Aigis Protocol</span><em>///</em></div>
+  <div class="press a f" style="--d:1.2s"><span data-es="Pulsa cualquier tecla">Press any key</span></div>
+
+  <div class="menu rows">
+    <div class="row a r" style="--d:.0s" aria-selected="true"><span data-es="Continuar">Continue</span></div>
+    <div class="row a r" style="--d:.05s"><span data-es="Nueva partida">New game</span></div>
+    <div class="row a r" style="--d:.1s"><span data-es="Cargar partida">Load game</span></div>
+    <div class="row a r" style="--d:.15s"><span data-es="Selección de misión">Mission select</span></div>
+    <div class="row a r" style="--d:.2s"><span data-es="Modo libre">Free mode</span></div>
+    <div class="row a r" style="--d:.25s"><span data-es="Ajustes">Settings</span></div>
+    <div class="row a r" style="--d:.3s"><span data-es="Salir">Quit</span></div>
+  </div>
+  <div class="slot a" style="--d:.45s">
+    <span class="lab">Slot 1</span><b data-es="Misión 2 · Estación de relé">Mission 2 · Radio Relay Station</b>
+    <span class="lab" data-es="Reclutas">Recruits</span><b class="num">7</b>
+  </div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+let sl = 3; setInterval(() => { const e = document.querySelector('.band em'); if (e) e.textContent = '/'.repeat(sl = sl % 3 + 1); }, 420);
+const set = s => { document.body.dataset.s = s; document.getElementById('b-title').setAttribute('aria-pressed', s === 'title'); document.getElementById('b-menu').setAttribute('aria-pressed', s === 'menu'); GL.play(); };
+document.getElementById('b-title').onclick = () => set('title');
+document.getElementById('b-menu').onclick = () => set('menu');
+addEventListener('keydown', e => { if (document.body.dataset.s === 'title') set('menu'); });
+document.querySelectorAll('.menu .row').forEach(r => r.addEventListener('mouseenter', () => { document.querySelectorAll('.menu .row').forEach(x => x.removeAttribute('aria-selected')); r.setAttribute('aria-selected', 'true'); }));
+</script>
+</body>
+</html>

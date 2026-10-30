@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Mission Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.scene.card { filter: grayscale(.6) brightness(.5) contrast(1.1); }
+.topbar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: rgba(6, 9, 11, .88); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 22px; padding: 0 80px; }
+.topbar .box { width: 56px; height: 56px; background: var(--ink); color: #0a0d0f; display: grid; place-items: center; }
+.topbar .box svg { width: 40px; height: 40px; }
+.topbar .k { font: 600 17px/1 var(--head); letter-spacing: .3em; color: var(--ink-3); text-transform: uppercase; }
+.topbar .v { font: 700 40px/1 var(--head); letter-spacing: .1em; text-transform: uppercase; margin-top: 7px; }
+.topbar .right { margin-left: auto; text-align: right; }
+.letter { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: rgba(6, 9, 11, .9); display: flex; align-items: center; justify-content: flex-end; padding: 0 80px; font: 600 20px/1 var(--head); letter-spacing: .4em; text-transform: uppercase; color: var(--ink-2); }
+.bigname { position: absolute; left: 80px; top: 170px; font: 700 190px/.86 var(--head); text-transform: uppercase; letter-spacing: .01em; color: rgba(236, 235, 227, .08); white-space: pre; }
+.route { position: absolute; inset: 0; }
+.route svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.node { position: absolute; width: 150px; height: 150px; margin: -75px 0 0 -75px; border: 7px solid var(--ink); border-radius: 50%; background: rgba(6, 9, 11, .92); display: grid; place-items: center; }
+.node svg { width: 62px; height: 62px; }
+.node .cap { position: absolute; top: 100%; margin-top: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 24px/1 var(--head); letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 2px 8px #000; }
+.node .cap small { display: block; margin-top: 8px; font: 500 16px/1 var(--head); letter-spacing: .26em; color: var(--ink-2); text-align: center; }
+.node .num { position: absolute; left: -14px; top: -14px; width: 40px; height: 40px; background: var(--ink); color: #0a0d0f; display: grid; place-items: center; font: 700 26px/1 var(--head); }
+.goal { position: absolute; width: 330px; height: 56px; margin: -28px 0 0 -330px; background: var(--red); transform: rotate(-12deg); transform-origin: right center; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0 100%); display: flex; align-items: center; padding-left: 30px; font: 700 28px/1 var(--head); letter-spacing: .4em; }
+.start { position: absolute; width: 20px; height: 20px; margin: -10px 0 0 -10px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 0 8px rgba(203, 178, 107, .25); }
+.start-l { position: absolute; font: 600 20px/1 var(--head); letter-spacing: .24em; color: var(--gold); margin: 24px 0 0 -40px; text-transform: uppercase; }
+.lead { position: absolute; left: 80px; bottom: 150px; width: 640px; }
+.lead .lab { color: var(--gold); }
+.lead p { margin-top: 12px; font: 400 26px/1.4 var(--body); color: var(--ink); text-shadow: 0 2px 10px #000; }
+</style>
+</head>
+<body>
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Mission card</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Replay</button><span class="grow"></span>
+  <span class="hint">Shown while the Area loads</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene card"></div>
+  <div class="vig"></div>
+  <div class="bigname a w" style="--d:.2s">Radio
+Relay
+Station</div>
+
+  <div class="route">
+    <svg class="lines" viewBox="0 0 1920 1080">
+      <g fill="none" stroke="#ecebe3" stroke-width="3">
+        <path class="a w" style="--d:.6s" d="M470 770 L760 640 L1090 560"/>
+        <path class="a w" style="--d:.9s" d="M1090 560 L1380 500 L1620 380"/>
+        <path class="a w" style="--d:1.2s" stroke-dasharray="3 9" d="M1620 380 L1700 300"/>
+      </g>
+      <g fill="#ecebe3"><path d="M740 654l24 -22 6 28z"/><path d="M1370 518l26 -20 4 30z"/></g>
+    </svg>
+    <div class="start a" style="left:470px;top:770px;--d:.4s"></div><div class="start-l a" style="left:470px;top:770px;--d:.5s" data-es="Entrada">Entry</div>
+    <div class="node a" style="left:760px;top:640px;--d:.7s"><span class="num">1</span><svg><use href="#i-lock"/></svg><div class="cap"><span data-es="Llaves de cifrado">Encryption keys</span><small data-es="GARAJE">GARAGE</small></div></div>
+    <div class="node a" style="left:1090px;top:560px;--d:1s"><span class="num">2</span><svg><use href="#i-scanner"/></svg><div class="cap"><span data-es="Sabotear consola">Sabotage console</span><small data-es="MANTÉN E · 5 S">HOLD E · 5 S</small></div></div>
+    <div class="node a" style="left:1620px;top:380px;--d:1.3s"><span class="num">3</span><svg><use href="#i-pouch"/></svg><div class="cap"><span data-es="Órdenes del jefe">Chief's orders</span><small data-es="CASETA">MESS HUT</small></div></div>
+    <div class="goal a r" style="left:1860px;top:240px;--d:1.6s"><span data-es="PUNTO DE EXTRACCIÓN">EXTRACTION</span></div>
+  </div>
+
+  <div class="lead a" style="--d:.8s">
+    <div class="lab" data-es="Objetivo de la misión">Mission target</div>
+    <p data-es="El jefe del relé está enfermo. Sácalo a pie: un Fulton lo mataría.">The Relay Chief is ill. Carry him out on foot: a Fulton would kill him.</p>
+  </div>
+
+  <div class="topbar a" style="--d:0s">
+    <div class="box"><svg><use href="#emblem"/></svg></div>
+    <div><div class="k" data-es="Próxima área">Next area</div><div class="v" data-es="Estación de relé de radio">Radio Relay Station</div></div>
+    <div class="right"><div class="k" data-es="Isla Palladion · día 2">Palladion Island · Day 2</div><div class="v num">23:40</div></div>
+  </div>
+  <div class="letter"><span data-es="Cargando">Loading</span><span style="display:inline-block;margin-left:22px;width:12px;height:12px;background:var(--red)"></span></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+</body>
+</html>

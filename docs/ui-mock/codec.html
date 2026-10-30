@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Codec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.stage { --g: #8fd9c0; --g2: rgba(143, 217, 192, .45); background: #040b0b; }
+.cg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, #0b1f1c 0%, #040b0b 70%); }
+.cg::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(143, 217, 192, .05) 0 1px, transparent 1px 64px), repeating-linear-gradient(0deg, rgba(143, 217, 192, .05) 0 1px, transparent 1px 64px); }
+.bars-t, .bars-b { position: absolute; left: 0; right: 0; height: 120px; background: #000; z-index: 3; }
+.bars-t { top: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 80px; }
+.bars-b { bottom: 0; }
+.bars-t .tag { font: 600 20px/1 var(--head); letter-spacing: .4em; color: var(--g); text-transform: uppercase; }
+.bars-t .rec { display: flex; align-items: center; gap: 12px; font: 600 18px/1 var(--head); letter-spacing: .3em; color: var(--ink-2); }
+.bars-t .rec i { width: 10px; height: 10px; background: var(--red-hi); }
+
+.pt { position: absolute; top: 200px; width: 370px; height: 340px; transition: opacity .3s, filter .3s; }
+.pt.l { left: 340px; } .pt.r { right: 340px; }
+.pt .ph { position: absolute; inset: 0; border: 2px solid var(--g2); background: #02100d; }
+.pt .halftone { position: absolute; inset: 14px; }
+.pt .halftone img { filter: grayscale(1) contrast(1.4) brightness(1.15); }
+.pt .halftone::before { content: ""; position: absolute; inset: 0; z-index: 1; background: #8fd9c0; mix-blend-mode: multiply; }
+.pt .halftone::after { z-index: 2; }
+.pt .halftone .jaw { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; clip-path: inset(64% 0 0 0); filter: grayscale(1) contrast(1.4) brightness(1.15); }
+.talking .pt.on .jaw { animation: jaw .22s steps(1, end) infinite; }
+@keyframes jaw { 0% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+.pt .nm { position: absolute; left: 0; bottom: -62px; height: 52px; padding: 0 26px 0 20px; display: flex; align-items: center; gap: 14px; background: var(--g); color: #02100d; font: 700 28px/1 var(--head); letter-spacing: .24em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%); }
+.pt.r .nm { left: auto; right: 0; clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%); padding: 0 20px 0 26px; }
+.pt.off { opacity: .42; filter: saturate(.6); }
+.pt.off .nm { background: rgba(143, 217, 192, .35); }
+.pt.on .ph { border-color: var(--g); }
+.pt .br { border-color: var(--g); }
+
+.mid { position: absolute; left: 740px; width: 440px; top: 200px; text-align: center; color: var(--g); }
+.mid .fq { font: 600 136px/1 var(--head); letter-spacing: .04em; }
+.mid .un { margin-top: 14px; font: 600 24px/1 var(--head); letter-spacing: .6em; padding-left: .6em; color: var(--ink-2); }
+.wave { display: flex; align-items: center; justify-content: center; gap: 5px; height: 120px; margin-top: 54px; }
+.wave i { width: 7px; height: 100%; background: var(--g); transform: scaleY(.1); }
+.talking .wave i { animation: wv .5s steps(3, end) infinite alternate; }
+@keyframes wv { to { transform: scaleY(1); } }
+.wave i:nth-child(3n) { animation-duration: .38s; } .wave i:nth-child(3n+1) { animation-duration: .62s; animation-delay: -.2s; } .wave i:nth-child(5n) { animation-duration: .31s; }
+.mid .arrows { display: flex; justify-content: space-between; margin-top: 56px; font: 600 24px/1 var(--head); letter-spacing: .24em; color: var(--ink-2); }
+.mid .sig { display: flex; gap: 6px; justify-content: center; margin-top: 40px; }
+.mid .sig i { width: 14px; height: 30px; background: var(--g); opacity: .9; }
+.mid .sig i:nth-child(n+5) { opacity: .2; }
+
+.sub { position: absolute; left: 0; right: 0; bottom: 120px; height: 190px; z-index: 4; background: #000; border-top: 2px solid var(--g); padding: 30px 420px 0; text-align: center; }
+.sub .who { font: 700 24px/1 var(--head); letter-spacing: .3em; color: var(--g); text-transform: uppercase; }
+.sub .tx { margin-top: 14px; font: 600 36px/1.35 var(--body); color: #fff; min-height: 100px; text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000; }
+.sub .st { position: absolute; right: 80px; bottom: 22px; display: flex; align-items: center; gap: 14px; font: 600 18px/1 var(--head); letter-spacing: .24em; color: var(--ink-2); }
+.sub .st .n { color: var(--g); }
+.sub .blk { display: none; }
+.static { position: absolute; inset: 0; z-index: 6; opacity: 0; pointer-events: none; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='1'/><feColorMatrix values='0 0 0 0 .56  0 0 0 0 .85  0 0 0 0 .75  0 0 0 2.2 -.8'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>"); }
+.burst .static { animation: stat .16s steps(1, end); }
+.burst .pt .ph { animation: tear .16s steps(1, end); }
+@keyframes stat { 0% { opacity: .9; background-position: 0 0; } 50% { opacity: .5; background-position: 90px 40px; } 99%, 100% { opacity: 0; } }
+@keyframes tear { 0% { transform: translateX(14px) skewX(-6deg); } 50% { transform: translateX(-8px); } 99%, 100% { transform: none; } }
+/* incoming call: only Metis's frame, blinking, until the player answers */
+body[data-s="ring"] .sub, body[data-s="ring"] #pL, body[data-s="ring"] .mid .arrows { visibility: hidden; }
+body[data-s="ring"] #pR { filter: saturate(.6); }
+body[data-s="ring"] .bars-t .tag { animation: blink .8s steps(2) infinite; }
+.prompt-ring { display: none; position: absolute; left: 0; right: 0; bottom: 180px; z-index: 5; text-align: center; font: 600 30px/1 var(--head); letter-spacing: .3em; color: var(--g); text-transform: uppercase; animation: blink .8s steps(2) infinite; }
+body[data-s="ring"] .prompt-ring { display: block; }
+</style>
+</head>
+<body data-s="ring">
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Codec call</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Ring again</button><span class="grow"></span>
+  <span class="hint">Click or Space for the next line</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="cg"></div>
+
+  <div class="bars-t"><span class="tag a l" id="tag">Codec · incoming call</span></div>
+
+  <div class="pt l off a l" id="pL" style="--d:.2s"><div class="ph"><div class="halftone"><img src="operative.png" alt=""></div><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span></div><div class="nm"><span data-es="Operativo">Operative</span></div></div>
+  <div class="pt r on a r" id="pR" style="--d:.3s"><div class="ph"><div class="halftone"><img src="handler.png" alt=""></div><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span></div><div class="nm">Metis</div></div>
+
+  <div class="mid a" style="--d:.4s">
+    <div class="fq num">140.85</div>
+    <div class="un">CODEC · MHZ</div>
+    <div class="wave" id="wave"></div>
+  </div>
+
+  <div class="sub a" style="--d:.5s"><span class="blk"></span><div class="who" id="who"></div><div class="tx" id="tx"></div>
+    <div class="st"><span class="n num" id="cnt"></span><span class="key sm">LMB</span><span data-es="Siguiente">Next</span></div></div>
+  <div class="bars-b"></div>
+  <div class="prompt-ring"><span class="key sm">LMB</span> <span data-es="Responder">Answer</span></div>
+  <div class="static"></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+document.getElementById('wave').innerHTML = '<i></i>'.repeat(34);
+const LINES = [
+  ['m', 'Next is the Radio Relay Station. Everything the island says to the world goes through it.', 'Lo siguiente es la Estación de relé. Todo lo que la isla dice al mundo pasa por ella.'],
+  ['o', 'And Aigis knows I like the quiet way.', 'Y Aigis sabe que me gusta la vía silenciosa.'],
+  ['m', 'It does. Pallas has been rewriting the patrol logic since your last run. Expect cameras where there were none.', 'Lo sabe. Pallas ha reescrito la lógica de patrullas desde tu última misión. Espera cámaras donde no había.'],
+  ['o', 'Then I change what it sees.', 'Entonces cambio lo que ve.'],
+  ['m', 'Spoof a call, move a patrol, take the keys from the garage. Use the radio; it listens to everything.', 'Suplanta una llamada, mueve una patrulla, toma las llaves del garaje. Usa la radio: lo escucha todo.'],
+  ['m', 'The Relay Chief is ill. He comes out alive or not at all. Good luck out there.', 'El jefe del relé está enfermo. Sale vivo o no sale. Suerte ahí fuera.'],
+];
+document.querySelectorAll('.pt .halftone').forEach(h => { const j = h.querySelector('img').cloneNode(); j.className = 'jaw'; h.insertBefore(j, h.querySelector('img').nextSibling); });
+const $ = id => document.getElementById(id);
+let i = 0, last = null, ring = null;
+const burst = () => { GL.stage.classList.remove('burst'); void GL.stage.offsetWidth; GL.stage.classList.add('burst'); GL.tone(300, 70, .03); };
+function show() {
+  const [w, en, es] = LINES[i], L = GL.es ? 1 : 0;
+  if (last !== null && last !== w) burst();
+  last = w;
+  $('pL').className = 'pt l ' + (w === 'o' ? 'on' : 'off');
+  $('pR').className = 'pt r ' + (w === 'm' ? 'on' : 'off');
+  $('who').textContent = w === 'm' ? 'METIS' : (L ? 'OPERATIVO' : 'OPERATIVE');
+  const t = $('tx'), s = [en, es][L]; let k = 0;
+  clearInterval(show.t); t.textContent = ''; GL.stage.classList.add('talking');
+  show.t = setInterval(() => { t.textContent = s.slice(0, ++k); if (k % 3 === 0) GL.tick(); if (k >= s.length) { clearInterval(show.t); GL.stage.classList.remove('talking'); } }, 22);
+  $('cnt').textContent = (i + 1) + ' / ' + LINES.length;
+}
+function startRing() {
+  clearInterval(ring); clearInterval(show.t); GL.stage.classList.remove('talking');
+  document.body.dataset.s = 'ring'; $('tag').textContent = GL.es ? 'Códec · llamada entrante' : 'Codec · incoming call';
+  $('tx').textContent = ''; $('who').textContent = ''; last = null; i = 0; GL.play();
+  ring = setInterval(() => GL.beep(), 900);
+}
+function answer() {
+  clearInterval(ring); document.body.dataset.s = 'call';
+  $('tag').textContent = GL.es ? 'Códec · llamada en curso' : 'Codec · call in progress';
+  GL.play(); burst(); show();
+}
+const next = () => { if (document.body.dataset.s === 'ring') return answer(); i = (i + 1) % LINES.length; show(); };
+window.onLang = () => { if (document.body.dataset.s === 'ring') startRing(); else { $('tag').textContent = GL.es ? 'Códec · llamada en curso' : 'Codec · call in progress'; show(); } };
+addEventListener('click', e => { if (!e.target.closest('.mockbar')) next(); });
+addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); next(); } });
+$('t-replay').addEventListener('click', startRing);
+startRing();
+</script>
+</body>
+</html>

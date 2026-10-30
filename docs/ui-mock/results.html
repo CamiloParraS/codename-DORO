@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.stage { background: #0b0d0e; }
+.mt { position: absolute; left: 80px; top: 56px; display: flex; align-items: center; gap: 26px; }
+.mt .tt { padding: 12px 34px 10px 22px; background: var(--ink); color: #0a0d0f; font: 700 54px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 0 100%); }
+.mt .sub { font: 500 26px/1.15 var(--head); letter-spacing: .24em; color: var(--ink-2); text-transform: uppercase; }
+.mt .sub b { display: block; color: var(--ink); font-weight: 600; }
+.table { position: absolute; left: 80px; top: 200px; width: 1180px; }
+.tr { display: flex; align-items: center; height: 64px; padding: 0 26px; font: 600 28px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1px solid rgba(236, 235, 227, .14); }
+.tr .v { margin-left: auto; font: 500 34px/1 var(--head); letter-spacing: .08em; color: var(--ink); }
+.tr .par { margin-left: 22px; font: 500 18px/1 var(--head); letter-spacing: .2em; color: var(--ink-3); }
+.tr.hl { background: var(--ink); color: #0a0d0f; }
+.tr.hl .v { color: #0a0d0f; }
+.tr .bad { color: var(--red-hi); }
+.tr.seg { background: rgba(236, 235, 227, .08); color: var(--ink); font-weight: 700; }
+.tr.seg .v { font-size: 22px; letter-spacing: .24em; color: var(--ink-3); }
+.clear { position: relative; display: flex; align-items: center; height: 92px; margin-top: 22px; padding: 0 30px; background: linear-gradient(90deg, #14130d 0%, #34301b 45%, var(--gold) 100%); color: var(--ink); font: 700 38px/1 var(--head); letter-spacing: .2em; text-transform: uppercase; }
+.clear .rk { margin-left: auto; font: 700 96px/1 var(--head); color: #0a0d0f; letter-spacing: 0; transform-origin: right; }
+.rank-label { position: absolute; right: 80px; top: 200px; width: 500px; height: 560px; display: flex; flex-direction: column; justify-content: flex-end; }
+.stamp { font: 700 400px/.8 var(--head); color: var(--gold); text-align: center; margin-bottom: 64px; transform-origin: center; opacity: 0; }
+.in .stamp { animation: stamp .5s steps(1, end) 1.4s both; }
+@keyframes stamp { 0% { opacity: 0; transform: scale(1.5); } 16% { opacity: 1; transform: none; } 30% { transform: translate(-8px, 5px); } 46% { transform: translate(6px, -4px); } 62%, 100% { opacity: 1; transform: none; } }
+.in .flash { --d: 1.4s; }
+.callsign { text-align: center; font: 600 40px/1 var(--head); letter-spacing: .7em; padding-left: .7em; border-top: 3px solid var(--ink); padding-top: 18px; text-transform: uppercase; }
+.rec { position: absolute; right: 80px; top: 800px; width: 500px; display: flex; align-items: center; gap: 22px; }
+.rec svg { width: 48px; height: 54px; color: var(--ink); }
+.rec .n { font: 700 78px/1 var(--head); }
+.rec .t { font: 600 22px/1.2 var(--head); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); }
+.bon { position: absolute; left: 80px; top: 840px; display: flex; gap: 10px; }
+.bon > span { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px; border: 1px solid var(--line); font: 600 20px/1 var(--head); letter-spacing: .2em; color: var(--ink-3); text-transform: uppercase; }
+.bon > span.ok { background: var(--gold); border-color: var(--gold); color: #0a0d0f; }
+.bon svg { width: 20px; height: 20px; }
+.next { position: absolute; right: 80px; bottom: 100px; }
+.slab.big { height: 64px; font-size: 32px; padding-right: 60px; }
+.ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; display: flex; align-items: center; background: #000; font: 500 22px/1 var(--body); color: var(--ink-2); }
+.ticker .tg { height: 100%; display: grid; place-items: center; padding: 0 30px; margin-right: 26px; background: var(--red); color: var(--ink); font: 700 18px/1 var(--head); letter-spacing: .3em; }
+body[data-s="learn"] .sc-rank { display: none; }
+body[data-s="rank"] .sc-learn { display: none; }
+.lrn { position: absolute; left: 80px; right: 80px; top: 200px; }
+.lrn .cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-top: 30px; }
+.lrn .card { padding: 28px 30px 30px; background: rgba(14, 20, 24, .74); border-top: 3px solid var(--cyan); min-height: 300px; }
+.lrn .card .lab { color: var(--cyan); }
+.lrn .card h3 { margin-top: 18px; font: 700 48px/1 var(--head); letter-spacing: .06em; text-transform: uppercase; }
+.lrn .card p { margin-top: 18px; font: 400 23px/1.4 var(--body); color: var(--ink-2); }
+.lrn .card svg { width: 58px; height: 58px; color: var(--cyan); margin-top: 28px; }
+.lrn .ar { margin-top: 26px; display: flex; align-items: center; gap: 18px; font: 600 24px/1 var(--head); letter-spacing: .2em; text-transform: uppercase; }
+.lrn .ar .lv { display: flex; gap: 5px; } .lrn .ar .lv i { width: 28px; height: 10px; background: rgba(236, 235, 227, .2); } .lrn .ar .lv i.on { background: var(--gold); }
+.lrn .ar b { color: var(--gold); font-weight: 600; }
+</style>
+</head>
+<body data-s="rank">
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Results</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="b-rank" aria-pressed="true">Rank</button>
+  <button id="b-learn" aria-pressed="false">Aigis has learned</button>
+  <button id="t-replay">Replay</button><span class="grow"></span>
+  <span class="hint">Any key advances</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene dim" style="opacity:.55"></div>
+  <div class="vig"></div>
+
+  <div class="mt a l"><div class="tt" data-es="Resultado de misión">Mission result</div><div class="sub"><b data-es="Misión 1 · Puerto">Mission 1 · Harbour</b><span data-es="Infiltración · superada">Infiltration · complete</span></div></div>
+
+  <div class="sc-rank">
+    <div class="table">
+      <div class="tr seg a l" style="--d:.1s"><span data-es="Estadísticas de la misión">Mission statistics</span><span class="v" data-es="HECHO">DONE</span></div>
+      <div class="tr hl a l" style="--d:.2s"><span data-es="Tiempo">Clear time</span><span class="v num" data-t="412" data-time>0:06:52</span><span class="par" style="color:#555">PAR 8:00</span></div>
+      <div class="tr a l" style="--d:.3s"><span data-es="Bajas">Kills</span><span class="v num" data-t="0">000</span></div>
+      <div class="tr a l" style="--d:.4s"><span data-es="Alertas">Alerts</span><span class="v num bad" data-t="1">001</span></div>
+      <div class="tr a l" style="--d:.5s"><span data-es="Guardias caídos hallados">Down guards found</span><span class="v num bad" data-t="1">001</span></div>
+      <div class="tr a l" style="--d:.6s"><span data-es="Continuaciones">Continues</span><span class="v num" data-t="0">000</span></div>
+      <div class="clear a w" style="--d:.8s"><span data-es="Rango">Clear rank</span><span class="rk">B</span></div>
+    </div>
+    <div class="bon a" style="--d:1.2s"><span class="ok"><svg><use href="#i-check"/></svg><span data-es="Sin bajas">No kills</span></span><span><svg><use href="#i-cross"/></svg><span data-es="Sin alertas">No alerts</span></span><span><svg><use href="#i-cross"/></svg><span data-es="Invisible">Unseen</span></span></div>
+    <div class="rank-label"><div class="stamp">B</div><div class="callsign a f" style="--d:1.9s" data-es="Chacal">Jackal</div></div>
+    <div class="rec a r" style="--d:1.6s"><svg><use href="#i-recruit"/></svg><div class="n num" data-t="5" data-plain>5</div><div class="t" data-es="Reclutas firmados<br>Gástalos en Requisición">Recruits signed<br>Spend them at Requisition</div></div>
+  </div>
+
+  <div class="sc-learn lrn">
+    <div class="sec-t a l" style="--d:.1s;display:flex;align-items:center;gap:14px;font:700 34px/1 var(--head);letter-spacing:.24em;text-transform:uppercase;padding-bottom:14px;border-bottom:3px solid var(--cyan);color:var(--cyan)"><svg style="width:34px;height:34px"><use href="#emblem"/></svg><span data-es="Aigis ha aprendido">Aigis has learned</span></div>
+    <div class="cols">
+      <div class="card a r" style="--d:.3s"><div class="lab">Pallas</div><h3 data-es="Sigilo ▲">Stealth ▲</h3><p data-es="Elegiste la vía silenciosa tres veces seguidas. Aigis lo anotó.">You took the quiet way three times running. Aigis wrote it down.</p><svg><use href="#h-stealth"/></svg><div class="ar"><span data-es="Nivel">Level</span><span class="lv"><i class="on"></i><i class="on"></i><i class="on"></i></span><b>+1</b></div></div>
+      <div class="card a r" style="--d:.45s"><div class="lab">Glaukopis</div><h3 data-es="Cámaras">Cameras</h3><p data-es="Las cámaras vigilarán los rincones silenciosos de la próxima misión.">Cameras will cover the quiet corners in the next Mission.</p><svg><use href="#i-eye"/></svg><div class="ar"><span data-es="Contramedida">Countermeasure</span><b data-es="NUEVA">NEW</b></div></div>
+      <div class="card a r" style="--d:.6s"><div class="lab">Pallas</div><h3 data-es="Derribos ▲">Takedowns ▲</h3><p data-es="Los guardias mirarán atrás con más frecuencia antes de girar.">Guards will check behind them more often before they turn.</p><svg><use href="#h-takedowns"/></svg><div class="ar"><span data-es="Nivel">Level</span><span class="lv"><i class="on"></i><i class="on"></i><i></i></span><b>+1</b></div></div>
+    </div>
+  </div>
+
+  <div class="next a r" style="--d:2s"><span class="slab red big"><span class="key sm">Any</span><span data-es="Siguiente">Next</span></span></div>
+  <div class="ticker"><span class="tg">METIS</span><span data-es="El hombre del muelle que mandaste arriba firmó con nosotros. Gástalos bien.">Every dock hand you sent up signed with us. Spend them well.</span></div>
+  <div class="flash"></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+// tally: each stat counts up in steps with a tick, then the rank is stamped with a thump
+const fmt = (el, n) => el.textContent = el.hasAttribute('data-time') ? `${Math.floor(n / 3600)}:${String(Math.floor(n % 3600 / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}` : el.hasAttribute('data-plain') ? n : String(n).padStart(3, '0');
+let tl = [];
+window.onPlay = () => {
+  tl.forEach(clearTimeout); tl = [];
+  document.querySelectorAll('[data-t]').forEach((el, k) => {
+    const end = +el.dataset.t, steps = Math.min(end, 14) || 1, t0 = 300 + k * 140;
+    fmt(el, 0);
+    for (let s = 1; s <= steps; s++) tl.push(setTimeout(() => { fmt(el, Math.round(end * s / steps)); GL.tick(); }, t0 + s * 28));
+  });
+  tl.push(setTimeout(() => GL.thump(), 1400));
+};
+const set = s => { document.body.dataset.s = s; b('rank', s === 'rank'); b('learn', s === 'learn'); GL.play(); };
+const b = (k, on) => document.getElementById('b-' + k).setAttribute('aria-pressed', on);
+document.getElementById('b-rank').onclick = () => set('rank');
+document.getElementById('b-learn').onclick = () => set('learn');
+addEventListener('keydown', e => { if (e.target.tagName !== 'BUTTON') set(document.body.dataset.s === 'rank' ? 'learn' : 'rank'); });
+</script>
+</body>
+</html>

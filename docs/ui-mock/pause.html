@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Pause</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.scene.p { filter: grayscale(.9) brightness(.17) contrast(1.1) blur(2px); transform: scale(1.04); }
+.band { position: absolute; left: 0; right: 0; height: 110px; background: #000; }
+.band.t { top: 0; } .band.b { bottom: 0; }
+.ptt { position: absolute; left: 0; top: 150px; padding: 16px 80px 14px 100px; background: var(--ink); color: #0a0d0f; font: 700 84px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 34px) 100%, 0 100%); }
+.obj { position: absolute; left: 100px; top: 296px; width: 760px; }
+.obj .lab { color: var(--gold); }
+.obj .t { margin-top: 12px; font: 600 34px/1.15 var(--head); letter-spacing: .08em; text-transform: uppercase; }
+.menu { position: absolute; left: 100px; top: 450px; width: 760px; }
+.menu .row { height: 70px; font-size: 32px; }
+.menu .row.danger[aria-selected="true"] { background: var(--red); color: var(--ink); }
+.side { position: absolute; right: 100px; top: 150px; width: 600px; }
+.st { border-top: 3px solid var(--ink); }
+.st div { display: flex; align-items: center; height: 62px; border-bottom: 1px solid var(--line); font: 600 24px/1 var(--head); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); }
+.st div b { margin-left: auto; font: 500 36px/1 var(--head); letter-spacing: .06em; color: var(--ink); }
+.ctl { margin-top: 44px; }
+.ctl .h { font: 700 26px/1 var(--head); letter-spacing: .26em; padding-bottom: 12px; border-bottom: 2px solid var(--ink); text-transform: uppercase; }
+.ctl .g { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 30px; margin-top: 20px; }
+.ctl .g span { display: flex; align-items: center; gap: 14px; font: 600 20px/1 var(--head); letter-spacing: .16em; color: var(--ink-2); text-transform: uppercase; }
+.conf { position: absolute; inset: 0; display: none; place-items: center; background: rgba(0, 0, 0, .66); z-index: 5; }
+body[data-s="confirm"] .conf { display: grid; }
+.conf .box { width: 1000px; background: #0a0d0f; border-top: 6px solid var(--red); padding: 50px 60px 56px; }
+.conf .q { font: 700 52px/1.1 var(--head); letter-spacing: .06em; text-transform: uppercase; }
+.conf .row { height: 66px; margin-top: 8px; }
+.conf .rows { margin-top: 36px; width: 420px; }
+</style>
+</head>
+<body data-s="pause">
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Pause</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="b-pause" aria-pressed="true">Pause</button>
+  <button id="b-confirm" aria-pressed="false">Quit confirm</button>
+  <button id="t-replay">Replay</button><span class="grow"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene p"></div>
+  <div class="vig"></div>
+  <div class="band t a" style="--d:0s"></div><div class="band b a" style="--d:0s"></div>
+
+  <div class="ptt a l" style="--d:.1s" data-es="Pausa">Paused</div>
+  <div class="obj a l" style="--d:.25s"><div class="lab" data-es="Objetivo">Objective</div><div class="t" data-es="2 · Sabotea la consola del relé">2 · Sabotage the relay console</div></div>
+  <div class="menu rows">
+    <div class="row a l" style="--d:.3s" aria-selected="true"><span data-es="Reanudar">Resume</span></div>
+    <div class="row a l" style="--d:.35s"><span data-es="Reiniciar desde el punto de control">Restart from checkpoint</span></div>
+    <div class="row a l" style="--d:.4s"><span data-es="Abandonar misión">Abort mission</span></div>
+    <div class="row a l" style="--d:.45s"><span data-es="Ajustes">Settings</span></div>
+    <div class="row a l danger" style="--d:.5s" id="quit"><span data-es="Salir al menú">Quit to menu</span></div>
+  </div>
+
+  <div class="side a r" style="--d:.4s">
+    <div class="lab" style="margin-bottom:16px"><span data-es="Misión 2 · Estación de relé">Mission 2 · Radio Relay Station</span></div>
+    <div class="st"><div><span data-es="Tiempo">Time</span><b class="num">04:18</b></div><div><span data-es="Alertas">Alerts</span><b class="num">0</b></div><div><span data-es="Continuaciones">Continues</span><b class="num">0</b></div><div><span data-es="Reclutas en camino">Recruits lifted</span><b class="num">2</b></div></div>
+    <div class="ctl"><div class="h" data-es="Controles">Controls</div>
+      <div class="g"><span><span class="key sm">WASD</span><span data-es="Mover">Move</span></span><span><span class="key sm">E</span><span data-es="Interactuar">Interact</span></span><span><span class="key sm">G</span><span>Fulton</span></span><span><span class="key sm">R</span><span data-es="Radio">Radio</span></span><span><span class="key sm">Tab</span><span data-es="Objetos">Items</span></span><span><span class="key sm">F3</span><span data-es="Depurar">Debug</span></span></div></div>
+  </div>
+
+  <div class="conf"><div class="box"><div class="q" data-es="¿Salir al menú? Se pierde la misión.">Quit to menu? The mission is lost.</div><div class="rows rows"><div class="row" aria-selected="true"><span data-es="Sí">Yes</span></div><div class="row"><span data-es="No">No</span></div></div></div></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+const set = s => { document.body.dataset.s = s; ['pause', 'confirm'].forEach(k => document.getElementById('b-' + k).setAttribute('aria-pressed', k === s)); };
+document.getElementById('b-pause').onclick = () => set('pause'); document.getElementById('b-confirm').onclick = () => set('confirm');
+document.getElementById('quit').onclick = () => set('confirm');
+document.querySelectorAll('.menu .row, .conf .row').forEach(r => { r.addEventListener('mouseenter', () => { r.parentElement.querySelectorAll('.row').forEach(x => x.removeAttribute('aria-selected')); r.setAttribute('aria-selected', 'true'); }); });
+addEventListener('keydown', e => { if (e.key === 'Escape') set(document.body.dataset.s === 'pause' ? 'confirm' : 'pause'); });
+</script>
+</body>
+</html>

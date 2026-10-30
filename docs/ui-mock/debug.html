@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Debug Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.scene.d { filter: brightness(.7) contrast(1.05); }
+.pan { position: absolute; top: 60px; bottom: 60px; background: rgba(4, 8, 10, .86); border-top: 3px solid var(--cyan); padding: 26px 32px; font: 500 20px/1 var(--head); letter-spacing: .08em; }
+.pan.l { left: 60px; width: 920px; } .pan.r { right: 60px; width: 800px; }
+.pan h3 { display: flex; align-items: center; gap: 14px; font: 700 22px/1 var(--head); letter-spacing: .3em; color: var(--cyan); text-transform: uppercase; margin: 0 0 14px; }
+.pan h3 small { margin-left: auto; font: 500 16px/1 var(--head); letter-spacing: .2em; color: var(--ink-3); }
+.pan .sp { height: 26px; }
+.t { width: 100%; border-collapse: collapse; }
+.t td { height: 40px; line-height: 1.3; border-bottom: 1px solid rgba(236, 235, 227, .12); color: var(--ink-2); text-transform: uppercase; letter-spacing: .12em; padding-right: 14px; white-space: nowrap; }
+.t td:first-child { color: var(--ink); width: 190px; }
+.t td.n { text-align: right; font-variant-numeric: tabular-nums; width: 80px; color: var(--ink); }
+.t td.g { color: var(--gold); }
+.bar { position: relative; height: 12px; background: rgba(236, 235, 227, .12); min-width: 160px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink-2); }
+.bar.cy i { background: var(--cyan); }
+.tag { display: inline-block; padding: 3px 8px 2px; background: rgba(236, 235, 227, .14); font: 700 14px/1 var(--head); letter-spacing: .14em; color: var(--ink); }
+.tag.r { background: var(--red); } .tag.c { background: var(--cyan); color: #031013; }
+.why { color: var(--ink-2); text-transform: none; letter-spacing: .02em; font: 400 19px/1 var(--body); }
+.lt { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.lt .scale { position: relative; flex: 1; height: 18px; background: linear-gradient(90deg, #2c6aa3, #8a8a86 50%, var(--red)); }
+.lt .scale::after { content: ""; position: absolute; left: var(--r); top: -8px; width: 6px; height: 34px; background: var(--ink); }
+.lt b { font: 700 32px/1 var(--head); letter-spacing: .06em; }
+</style>
+</head>
+<body>
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Debug overlay</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Replay</button><span class="grow"></span><span class="hint">F3 on every screen · illustrative values</span>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene d"></div><div class="vig"></div>
+  <div class="pan l a l" style="--d:.1s">
+    <h3><svg style="width:26px;height:26px"><use href="#emblem"/></svg>Profile<small>Mission index 1 · cap 3</small></h3>
+    <table class="t">
+      <tr><td>Stealth</td><td class="n">24 pts</td><td class="g">L3</td><td><div class="bar"><i style="width:90%"></i></div></td><td>unlocked 3 · deployed 3</td><td class="g">+2 now</td></tr>
+      <tr><td>Combat</td><td class="n">0 pts</td><td class="g">L0</td><td><div class="bar"><i style="width:0%"></i></div></td><td>unlocked 0 · deployed 0</td><td></td></tr>
+      <tr><td>Headshots</td><td class="n">5 pts</td><td class="g">L1</td><td><div class="bar"><i style="width:30%"></i></div></td><td>unlocked 1 · deployed 1</td><td></td></tr>
+      <tr><td>Takedowns</td><td class="n">14 pts</td><td class="g">L2</td><td><div class="bar"><i style="width:62%"></i></div></td><td>unlocked 2 · deployed 2</td><td class="g">+1 now</td></tr>
+      <tr><td>Downs</td><td class="n">6 pts</td><td class="g">L1</td><td><div class="bar"><i style="width:32%"></i></div></td><td>unlocked 1 · deployed 1</td><td></td></tr>
+      <tr><td>Spoofing</td><td class="n">0 pts</td><td class="g">L0</td><td><div class="bar"><i style="width:0%"></i></div></td><td>unlocked 0 · deployed 0</td><td></td></tr>
+    </table>
+    <div class="sp"></div>
+    <h3>Voices<small>dominant Pallas</small></h3>
+    <table class="t">
+      <tr><td>Pallas</td><td class="n">4.1</td><td colspan="2"><div class="bar cy"><i style="width:82%"></i></div></td></tr>
+      <tr><td>Glaukopis</td><td class="n">2.4</td><td colspan="2"><div class="bar cy"><i style="width:48%"></i></div></td></tr>
+      <tr><td>Promachos</td><td class="n">1.5</td><td colspan="2"><div class="bar cy"><i style="width:30%"></i></div></td></tr>
+      <tr><td>Nike</td><td class="n">1.2</td><td colspan="2"><div class="bar cy"><i style="width:24%"></i></div></td></tr>
+      <tr><td>Gorgo</td><td class="n">0.8</td><td colspan="2"><div class="bar cy"><i style="width:16%"></i></div></td></tr>
+    </table>
+    <div class="sp"></div>
+    <h3>Lethality<small>raw 0 / 3</small></h3>
+    <div class="lt"><b class="num">0.00</b><div class="scale" style="--r:2%"></div><span class="tag c">Band: spared</span></div>
+    <div class="why" style="margin-top:12px">With this Mission: raw 0 / 5 · ratio 0.00 · projected ending: spared</div>
+  </div>
+  <div class="pan r a r" style="--d:.2s">
+    <h3>Field<small>guards 6 · cameras 2</small></h3>
+    <table class="t">
+      <tr><td>Guard 1</td><td><span class="tag">PATROL</span></td><td class="why">Route B, looks behind every 4 s (Takedowns L2)</td></tr>
+      <tr><td>Guard 2</td><td><span class="tag r">ALERT</span></td><td class="why">Saw the Operative at 11 m, call pending</td></tr>
+      <tr><td>Guard 3</td><td><span class="tag">POST</span></td><td class="why">Holds the garage door</td></tr>
+      <tr><td>Guard 4</td><td><span class="tag">DOWN</span></td><td class="why">Asleep, not yet found</td></tr>
+      <tr><td>Guard 5</td><td><span class="tag">PATROL</span></td><td class="why">Smoke break, splits at the bridge door</td></tr>
+      <tr><td>Camera A</td><td><span class="tag c">GLAUKOPIS</span></td><td class="why">Added by Stealth L3 to the quiet corner</td></tr>
+      <tr><td>Camera B</td><td><span class="tag c">GLAUKOPIS</span></td><td class="why">Covers the crate lane</td></tr>
+    </table>
+    <div class="sp"></div>
+    <h3>Glaukopis<small>last judgement</small></h3>
+    <div class="why" style="font-size:22px;line-height:1.5;color:var(--ink)">Spoofed call from Guard 3 at 04:02. Voiceprint match 0.62: below threshold, treated as suspicious.</div>
+  </div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.list { position: absolute; left: 80px; top: 200px; width: 1100px; }
+.list .row { height: 86px; cursor: default; }
+.ctrl { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+.sl { position: relative; width: 420px; height: 14px; background: rgba(236, 235, 227, .18); }
+.sl i { position: absolute; left: 0; top: 0; bottom: 0; background: currentColor; }
+.sl::after { content: ""; position: absolute; top: -9px; left: var(--v); width: 8px; height: 32px; margin-left: -4px; background: currentColor; }
+.sl::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 41px, rgba(0, 0, 0, .55) 41px 42px); z-index: 1; }
+.pct { width: 76px; text-align: right; font: 500 34px/1 var(--head); }
+.tg { display: flex; }
+.tg span { padding: 8px 22px; border: 2px solid currentColor; font: 600 24px/1 var(--head); letter-spacing: .14em; opacity: .5; }
+.tg span.on { opacity: 1; background: currentColor; }
+.tg span.on b { color: #0a0d0f; font-weight: 600; }
+.row[aria-selected="true"] .tg span.on b { color: var(--ink); }
+.aside { position: absolute; right: 80px; top: 200px; width: 520px; }
+.aside .t { font: 700 30px/1 var(--head); letter-spacing: .26em; padding-bottom: 14px; border-bottom: 3px solid var(--ink); text-transform: uppercase; }
+.aside p { margin-top: 22px; font: 400 23px/1.5 var(--body); color: var(--ink-2); }
+.aside .ic { margin-top: 36px; width: 280px; height: 280px; color: var(--ink); opacity: .9; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: square; stroke-linejoin: miter; }
+.aside .ic .f { fill: currentColor; stroke: none; }
+.aside .ic.sw { animation: icin .26s steps(7) both; }
+@keyframes icin { from { clip-path: inset(0 100% 0 0); opacity: 1; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Settings</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="t-replay">Replay</button><span class="grow"></span><span class="hint">↑ ↓ pick · ← → change</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="scene dim"></div>
+  <div class="vig"></div>
+  <div class="hdr"><div class="t a l"><svg class="em"><use href="#emblem"/></svg><span data-es="Ajustes">Settings</span></div><div class="rule a w" style="--d:.2s"></div></div>
+
+  <div class="list rows" id="list"></div>
+  <div class="aside a r" style="--d:.4s"><div class="t" id="at"></div><p id="ap"></p><svg class="ic" id="ai" viewBox="0 0 64 64" aria-hidden="true"></svg></div>
+  <div class="prompts"><span><span class="key sm dark">↑↓</span><span data-es="Elegir">Select</span></span><span><span class="key sm dark">←→</span><span data-es="Cambiar">Change</span></span><span class="r"><span class="key sm dark">Esc</span><span data-es="Atrás">Back</span></span></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+const S = [
+  { k: 'lang', en: 'Language', es: 'Idioma', t: 'tg', opts: ['English', 'Español'], v: 0, d: ['The language of every screen, Codec call and subtitle.', 'El idioma de cada pantalla, llamada de códec y subtítulo.'] },
+  { k: 'vol', en: 'Master volume', es: 'Volumen general', t: 'sl', v: 80, d: ['Everything at once. Music and effects follow it.', 'Todo a la vez. La música y los efectos lo siguen.'] },
+  { k: 'sens', en: 'Sensitivity', es: 'Sensibilidad', t: 'sl', v: 50, d: ['How fast the camera turns with the mouse or the right stick.', 'Qué tan rápido gira la cámara con el ratón o el stick derecho.'] },
+  { k: 'inv', en: 'Invert Y', es: 'Invertir Y', t: 'tg', opts: ['Off', 'On'], optsEs: ['No', 'Sí'], v: 0, d: ['Push up to look down.', 'Empuja hacia arriba para mirar hacia abajo.'] },
+  { k: 'fs', en: 'Fullscreen', es: 'Pantalla completa', t: 'tg', opts: ['Off', 'On'], optsEs: ['No', 'Sí'], v: 1, d: ['The game always draws at 1920 × 1080 and scales to fit.', 'El juego siempre dibuja a 1920 × 1080 y se escala.'] },
+];
+const ICON = {
+  lang: '<circle cx="32" cy="32" r="26"/><ellipse cx="32" cy="32" rx="11" ry="26"/><path d="M6 32h52M10 19h44M10 45h44"/>',
+  vol: '<path d="M8 25h10l15-13v40L18 39H8z"/><path d="M41 23a13 13 0 0 1 0 18M47 15a24 24 0 0 1 0 34M53 8a35 35 0 0 1 0 48"/>',
+  sens: '<path d="M7 47a26 26 0 1 1 50 0"/><path d="M32 45L45 21"/><circle class="f" cx="32" cy="45" r="4"/><path d="M13 33l4 2M32 14v5M51 33l-4 2"/>',
+  inv: '<path d="M20 54V10M9 21l11-11 11 11M44 10v44M33 43l11 11 11-11"/>',
+  fs: '<path d="M7 21V7h14M43 7h14v14M57 43v14H43M21 57H7V43"/><rect x="20" y="22" width="24" height="20"/>',
+};
+let sel = 0, lastIcon = null; const L = () => GL.es ? 1 : 0;
+function render() {
+  document.getElementById('list').innerHTML = S.map((s, i) => `<div class="row" data-i="${i}" ${i === sel ? 'aria-selected="true"' : ''}><span>${[s.en, s.es][L()]}</span><div class="ctrl">${s.t === 'sl'
+    ? `<div class="sl" style="--v:${s.v}%;color:inherit"><i style="width:${s.v}%"></i></div><span class="pct num">${s.v}</span>`
+    : `<div class="tg">${s.opts.map((o, j) => `<span class="${j === s.v ? 'on' : ''}"><b>${L() && s.optsEs ? s.optsEs[j] : o}</b></span>`).join('')}</div>`}</div></div>`).join('');
+  document.getElementById('at').textContent = [S[sel].en, S[sel].es][L()];
+  document.getElementById('ap').textContent = S[sel].d[L()];
+  const ai = document.getElementById('ai'); if (lastIcon !== S[sel].k) { ai.innerHTML = ICON[S[sel].k]; ai.classList.remove('sw'); void ai.getBoundingClientRect(); ai.classList.add('sw'); lastIcon = S[sel].k; }
+  document.querySelectorAll('.list .row').forEach(r => r.onmouseenter = () => { sel = +r.dataset.i; render(); });
+}
+window.onLang = render; render();
+addEventListener('keydown', e => {
+  const s = S[sel];
+  if (e.key === 'ArrowDown') sel = Math.min(S.length - 1, sel + 1); else if (e.key === 'ArrowUp') sel = Math.max(0, sel - 1);
+  else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const d = e.key === 'ArrowRight' ? 1 : -1; if (s.t === 'sl') s.v = Math.max(0, Math.min(100, s.v + d * 10)); else s.v = (s.v + 1) % s.opts.length; if (s.k === 'lang') { GL.lang(s.v === 1); } } else return; render();
+});
+</script>
+</body>
+</html>

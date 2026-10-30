@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Layer Finale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Antonio:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kit/kit.css">
+<style>
+.stage { background: #030809; --c: var(--cyan); }
+.cg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 42%, #0d2226 0%, #030809 68%); }
+.dial { color: var(--c); }
+.vs { position: absolute; left: 0; right: 0; top: 150px; height: 360px; }
+.v { position: absolute; width: 150px; text-align: center; transform: translateX(-50%); transition: opacity .3s, transform .4s var(--ease); opacity: .38; }
+.v .sg { display: grid; place-items: center; width: 110px; height: 110px; margin: 0 auto; border: 3px solid var(--c); font: 700 42px/1 var(--head); color: var(--c); transform: rotate(45deg); }
+.v .sg span { transform: rotate(-45deg); }
+.v .nm { margin-top: 28px; font: 600 22px/1 var(--head); letter-spacing: .3em; padding-left: .3em; color: var(--c); text-transform: uppercase; }
+.v.on { opacity: 1; transform: translateX(-50%) translateY(-14px); }
+.v.on .sg { background: var(--c); color: #031013; }
+.box { position: absolute; left: 330px; right: 330px; top: 600px; }
+.box .who { display: flex; align-items: center; gap: 16px; font: 700 28px/1 var(--head); letter-spacing: .34em; color: var(--c); text-transform: uppercase; }
+.box .who::after { content: ""; flex: 1; height: 2px; background: var(--c); opacity: .6; }
+.box .tx { margin-top: 24px; font: 500 40px/1.35 var(--body); min-height: 170px; }
+.box .nx { display: flex; justify-content: flex-end; gap: 14px; align-items: center; font: 600 20px/1 var(--head); letter-spacing: .24em; color: var(--ink-2); text-transform: uppercase; }
+.order { position: absolute; inset: 0; display: none; place-items: center; background: rgba(3, 8, 9, .72); }
+body[data-s="order"] .order { display: grid; }
+body[data-s="order"] .box, body[data-s="order"] .vs { opacity: .25; }
+.order .in2 { text-align: center; }
+.order .big { font: 400 54px/1.1 var(--tech); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.order .sub { margin-top: 20px; font: 500 24px/1.4 var(--body); color: var(--ink-2); }
+.order .slab { margin-top: 50px; background: var(--c); color: #031013; }
+.order .bars { display: flex; justify-content: center; gap: 6px; margin-top: 44px; }
+.order .bars i { width: 12px; height: 34px; background: var(--c); animation: wv .6s ease-in-out infinite alternate; transform: scaleY(.2); }
+.order .bars i:nth-child(2n) { animation-duration: .4s; } .order .bars i:nth-child(3n) { animation-duration: .8s; }
+@keyframes wv { to { transform: scaleY(1); } }
+</style>
+</head>
+<body data-s="talk">
+<div class="mockbar" role="toolbar" aria-label="Mock controls">
+  <span class="title">Ghost Layer · Finale</span>
+  <a href="index.html">All screens</a><span class="sep"></span>
+  <button id="b-talk" aria-pressed="true">Voices debate</button>
+  <button id="b-order" aria-pressed="false">Transmit memories</button>
+  <button id="t-replay">Replay</button><span class="grow"></span><span class="hint">Click for the next line · placeholder lines</span><span class="sep"></span>
+  <button id="t-lang" aria-pressed="false">Español</button>
+</div>
+<div class="viewport"><div class="stage" id="stage">
+  <div class="cg"></div>
+  <div class="hdr"><div class="t a l"><svg class="em"><use href="#emblem"/></svg><span data-es="Núcleo de Aigis">Aigis core</span></div><div class="rule a w" style="--d:.2s"></div></div>
+  <div class="vs" id="vs"></div>
+  <div class="box a" style="--d:.5s"><div class="who" id="who"></div><div class="tx" id="tx"></div><div class="nx"><span class="num" id="cnt"></span><span class="key sm">LMB</span><span data-es="Siguiente">Next</span></div></div>
+  <div class="order"><div class="in2"><div class="big" data-es="Transmitir recuerdos">Transmit memories</div><div class="sub" data-es="Todo lo que Aigis aprendió de ti. Tú decides qué recuerda.">Everything Aigis learned from you. You decide what it keeps.</div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="slab"><span class="key sm">E</span><span data-es="Enviar">Send</span></span></div></div>
+  <div class="scan"></div>
+</div></div>
+<script src="kit/sprite.js"></script>
+<script src="kit/kit.js"></script>
+<script>
+const V = [['promachos', '/\\', 'Promachos'], ['nike', '>>', 'Nike'], ['pallas', '[ ]', 'Pallas'], ['gorgo', 'XX', 'Gorgo'], ['glaukopis', '( )', 'Glaukopis']];
+document.getElementById('vs').innerHTML = V.map((v, i) => `<div class="v" data-v="${v[0]}" style="left:${480 + i * 240}px"><div class="sg"><span>${v[1]}</span></div><div class="nm">${v[2]}</div></div>`).join('');
+const LINES = [
+  ['pallas', 'You never once left a guard behind you. We kept count.', 'Nunca dejaste a un guardia a tu espalda. Llevamos la cuenta.'],
+  ['gorgo', 'And the ones you put to sleep, we remember them waking.', 'Y a los que dormiste, los recordamos despertar.'],
+  ['glaukopis', 'Every voice you borrowed, I heard the seams.', 'Cada voz que tomaste prestada, oí las costuras.'],
+  ['nike', 'Enough. It is time to decide what we are.', 'Basta. Es hora de decidir qué somos.'],
+  ['promachos', 'Then let it end the way you played it.', 'Entonces que termine como jugaste.'],
+];
+let i = 0; const L = () => GL.es ? 1 : 0;
+function show() {
+  const [w, en, es] = LINES[i];
+  document.querySelectorAll('.v').forEach(v => v.classList.toggle('on', v.dataset.v === w));
+  document.getElementById('who').textContent = V.find(v => v[0] === w)[2];
+  const t = document.getElementById('tx'), s = [en, es][L()]; let k = 0; clearInterval(show.t); t.textContent = '';
+  show.t = setInterval(() => { t.textContent = s.slice(0, ++k); if (k >= s.length) clearInterval(show.t); }, 24);
+  document.getElementById('cnt').textContent = (i + 1) + ' / ' + LINES.length;
+}
+window.onLang = show;
+const set = s => { document.body.dataset.s = s; ['talk', 'order'].forEach(k => document.getElementById('b-' + k).setAttribute('aria-pressed', k === s)); };
+document.getElementById('b-talk').onclick = () => set('talk'); document.getElementById('b-order').onclick = () => set('order');
+addEventListener('click', e => { if (e.target.closest('.mockbar')) return; if (document.body.dataset.s === 'order') return; if (i === LINES.length - 1) { set('order'); i = 0; show(); return; } i++; show(); });
+show();
+</script>
+</body>
+</html>
