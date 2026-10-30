@@ -193,6 +193,7 @@ func _physics_process(delta: float) -> void:
 				var why := alert.check_down(down_guard.dead)
 				voice.say(&"partner")
 				if not down_guard.dead:
+					SessionLog.current.note("%s woke %s" % [name, down_guard.name])
 					get_tree().call_group("mission_tally", "event", "woken")
 					down_guard.wake(global_position)  # a Caution trigger
 				_changed(why)

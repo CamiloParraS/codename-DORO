@@ -203,6 +203,7 @@ func _judge(who: String, line: String, extra: Dictionary) -> Dictionary:
 	glaukopis.single_use = Deployment.single_use_voiceprints(deployed)
 	var j := glaukopis.judge(facts)
 	get_tree().call_group("radio_log", "say", who, line)
+	SessionLog.current.note("radio as %s: \"%s\"%s" % [who, line, " (exposed)" if j.exposed else ""])
 	get_tree().call_group("mission_tally", "event", "spoof")
 	if j.exposed:
 		get_tree().call_group("mission_tally", "event", "spoof_exposed")
@@ -246,6 +247,7 @@ func _callback(speaker: String, from: Vector3, up: Array, sent: Dictionary, judg
 	if judge != glaukopis or s == null or s.is_down():
 		return
 	judge.deny(speaker)
+	SessionLog.current.note("%s answered the callback: the Spoof is exposed" % speaker)
 	sent.accepted = []  # exposed after all: nobody counts as having taken the order
 	get_tree().call_group("mission_tally", "event", "spoof_exposed")
 	_search(up.filter(func(r): return is_instance_valid(r) and not r.is_down()), tr("radio.never_called").format({who = speaker}), from)

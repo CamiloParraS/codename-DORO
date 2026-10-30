@@ -111,3 +111,66 @@ func test_the_runs_shape_first_spotted_encounters_alerts_and_tips() -> void:
 
 func test_never_spotted_says_so() -> void:
 	assert_contains(_log().to_text(), "first spotted never")
+
+
+func test_spotted_notes_who_and_where_once() -> void:
+	var l := _log()
+	l.tick(4.0, false)
+	l.spotted("GuardB2", "(12, 46, 3)")
+	l.spotted("GuardB3", "(30, 40, 3)")
+	assert_eq(l.missions[0].notes, [[4.0, "first spotted by GuardB2, Operative at (12, 46, 3)"]])
+
+
+func test_notes_sit_in_time_order_with_the_encounters() -> void:
+	var l := _log()
+	l.tick(5.0, false)
+	l.note("held up GuardA2")
+	l.tick(5.0, false)
+	l.enter_encounter(2, "LadderWest")
+	var text := l.to_text()
+	assert_true(text.find("5 s: held up GuardA2") < text.find("10 s: encounter 2 (left by LadderWest)"), text)
+
+
+func test_the_trail_keeps_one_place_every_ten_seconds() -> void:
+	var l := _log()
+	for i in 25:
+		l.place(Vector3(i, 2, 3), 1)
+		l.tick(1.0, false)
+	assert_eq(l.missions[0].trail.map(func(p: Array) -> float: return p[0]), [0.0, 10.0, 20.0])
+	assert_contains(l.to_text(), "10: 10 2 3 E1")
+
+
+func test_write_appends_each_finished_mission_once() -> void:
+	var path := "user://test_session_log.txt"
+	DirAccess.remove_absolute(path)
+	var l := SessionLog.new()
+	l.start_mission(1, "RelayStation, campaign")
+	l.finish_mission()
+	l.write(path)
+	l.write(path)  # quit after the end writes again: nothing new
+	var other := SessionLog.new()  # the next game run
+	other.start_mission(2, "ResearchAnnex, free mode")
+	other.finish_mission()
+	other.write(path)
+	var text := FileAccess.get_file_as_string(path)
+	DirAccess.remove_absolute(path)
+	assert_eq(text.count("mission 1 time"), 1)
+	assert_eq(text.count("mission 2 time"), 1)
+	assert_contains(text, "RelayStation, campaign")
+
+
+func test_a_live_file_left_by_a_crash_is_recovered_into_the_log() -> void:
+	var live := "user://test_session_log_live.txt"
+	var path := "user://test_session_log.txt"
+	DirAccess.remove_absolute(path)
+	var l := SessionLog.new()
+	l.start_mission(1, "RelayStation, free mode")
+	l.tick(12.0, false)
+	l.note("held up GuardA2")
+	l.write_live(live)  # then the game dies: no finish, no write
+	SessionLog.recover(live, path)
+	var text := FileAccess.get_file_as_string(path)
+	DirAccess.remove_absolute(path)
+	assert_false(FileAccess.file_exists(live))
+	assert_contains(text, "12 s: held up GuardA2")
+	assert_contains(text, "the game stopped here")

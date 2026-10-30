@@ -23,7 +23,9 @@ const SCREEN := preload("res://ui/post_mission/post_mission.gd")
 const GAME_OVER := preload("res://ui/game_over/game_over.gd")
 const MENU := "res://ui/main_menu/main_menu.tscn"
 
-const LOG_PATH := "user://session_log.txt"  # rewritten at each Mission's end; the observer opens it
+const LOG_PATH := "user://session_log.txt"  # each Mission appended at its end; the observer opens it
+const LIVE_PATH := "user://session_log_live.txt"  # the running Mission, every trail point: a crash leaves it
+const DIAGRAM_ORIGIN := 40.0  # tools/area_builder.gd _p: the log writes places in the builders' metres
 ## Tally events that count as doing a tutorial verb.
 const TEACH_EVENTS := {dart = "tranq", spoof = "radio", takedown = "takedown", fulton = "fulton"}
 const EXIT_NEAR := 5.0  # metres from an encounter_exit marker that name the way the Operative left
@@ -41,6 +43,8 @@ var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame
 var _items := {}                   # Scanner charges and Magazines last frame: a drop is a use
 var _holding := false              # some guard was held up last frame
+var _carried: Node                 # what the Operative carried last frame, for the log
+var _carried_name := ""
 var step := 0                      # objective steps done
 var ended := false
 var hints := HintTracker.new()     # Metis's Hints for the current step
@@ -62,7 +66,9 @@ func _ready() -> void:
 	for i in get_tree().get_nodes_in_group("intel"):
 		i.reached.connect(_on_intel.bind(i))
 	_show_intel.call_deferred()  # once the Extraction point has added its beacon
-	SessionLog.current.start_mission(record.mission)
+	if _logs():
+		SessionLog.recover(LIVE_PATH, LOG_PATH)
+	SessionLog.current.start_mission(record.mission, "%s, %s" % [get_parent().name, "campaign" if campaign else "replay" if replay else "free mode"])
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
 	if not intro.is_empty() and not campaign:  # a title card holds play (and the clock) for its 2.3 s; the campaign's came before the Codec call (Briefing)
@@ -113,6 +119,7 @@ func restore_checkpoint() -> void:
 	if ended or _checkpoint.is_empty():
 		return
 	rank.continues += 1
+	SessionLog.current.note("checkpoint restored at step %d (continue %d)" % [_checkpoint.step, rank.continues])
 	if _game_over:
 		_game_over.get_parent().queue_free()
 		_game_over = null
@@ -162,6 +169,7 @@ static func copy(o: Object) -> Object:
 func game_over() -> void:
 	if ended or _game_over:
 		return
+	SessionLog.current.note("died at %s" % _where(get_tree().get_first_node_in_group("operative").global_position))
 	_game_over = GAME_OVER.new()
 	_game_over.continues = rank.continues
 	_game_over.continued.connect(restore_checkpoint)
@@ -202,6 +210,8 @@ func alive_target_bonus() -> int:
 func event(name_: String) -> void:
 	if not ended:
 		SessionLog.current.count(name_)  # the log is a playtest record: a Checkpoint restore doesn't roll it back
+		if name_ not in ["dart", "rifle", "spoof", "spoof_exposed", "woken"]:  # counted; their own lines say who (radio.gd, guard.gd)
+			SessionLog.current.note(name_.replace("_", " "))
 		tally.add(name_)
 		if TEACH_EVENTS.has(name_):
 			_metis_line(tutorial.done(TEACH_EVENTS[name_], record.mission, campaign))
@@ -220,12 +230,15 @@ func _physics_process(delta: float) -> void:
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
+			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", _where(g.global_position)])
 			if g.target:
 				if g.dead:
 					_say_objective()
 				for e in get_tree().get_nodes_in_group("extraction"):  # the Operative may already stand in it
 					if e.standing():
 						_on_extraction()
+		elif not d and _down.get(g, false):
+			SessionLog.current.note("%s up again at %s" % [g.name, _where(g.global_position)])
 		_down[g] = d
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
@@ -249,8 +262,10 @@ func _run_chain(delta: float) -> void:
 		if g.seen_rate > 0.0:
 			spotter = g
 	var cam_sees := get_tree().get_nodes_in_group("cameras").any(func(c: SecurityCamera) -> bool: return c.seeing)
-	if spotter:
-		SessionLog.current.spotted()
+	if spotter or cam_sees:
+		var op: Node3D = get_tree().get_first_node_in_group("operative")
+		var by := str(spotter.name) if spotter else "a camera"
+		SessionLog.current.spotted(by, _where(op.global_position) if op else "?")
 	var ev := chain.tick(delta, spotter != null or cam_sees)
 	match ev:
 		&"alert", &"realert":
@@ -258,6 +273,7 @@ func _run_chain(delta: float) -> void:
 				tally.add("alert")
 				rank.alerts += 1
 				SessionLog.current.alert(_enc_now)
+				SessionLog.current.note("alert called by %s" % (str(chain.caller.name) if chain.caller is Node else "a camera or HQ"))
 			var pos := chain.call_pos if ev == &"alert" or not spotter else spotter.alert.last_known
 			var who := str(chain.caller.name) if ev == &"alert" and chain.caller is Node else "HQ"
 			for g: Guard in guards:
@@ -316,6 +332,15 @@ func _teach() -> void:
 		SessionLog.current.enter_encounter(enc, _exit_near(op.global_position) if _enc_now > 0 else "")
 		_enc_now = enc
 	var world := {guard = INF, down = INF, spot = INF, holdup = INF, fulton = op.fulton_ready(), enc = enc}
+	var points: int = SessionLog.current.missions.back().trail.size()
+	SessionLog.current.place(_diagram(op.global_position), enc)
+	if _logs() and SessionLog.current.missions.back().trail.size() > points:
+		SessionLog.current.write_live(LIVE_PATH)
+	var carried: Node = op.carrying
+	if carried != _carried:
+		SessionLog.current.note("picked up %s" % carried.name if carried else "put down %s" % _carried_name)
+		_carried = carried
+		_carried_name = str(carried.name) if carried else ""
 	var holding := false
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
@@ -323,6 +348,8 @@ func _teach() -> void:
 			world[key] = minf(world[key], _flat(op, g))
 		if key == "guard" and g.holdup_answer != "":
 			world.holdup = minf(world.holdup, _flat(op, g))
+		if g.held_up and not _holding:
+			SessionLog.current.note("held up %s" % g.name)
 		holding = holding or g.held_up
 	for s: Node3D in get_tree().get_nodes_in_group("eavesdrop_spot"):
 		world.spot = minf(world.spot, _flat(op, s))
@@ -365,6 +392,16 @@ func encounter_at(pos: Vector3) -> int:
 		if d.x >= 0.0 and d.z >= 0.0 and d.x <= size.x and d.z <= size.y:
 			return m.get_meta("id")
 	return 0
+
+
+## A world position as the Area builders write it: [x, y, h] in diagram metres.
+static func _diagram(p: Vector3) -> Vector3:
+	return Vector3(p.x + DIAGRAM_ORIGIN, p.z + DIAGRAM_ORIGIN, p.y)
+
+
+static func _where(p: Vector3) -> String:
+	var d := _diagram(p)
+	return "(%d, %d, %d)" % [d.x, d.y, d.z]
 
 
 static func _flat(a: Node3D, b: Node3D) -> float:
@@ -445,6 +482,7 @@ func _on_intel(intel: Node) -> void:
 	if ended or step >= _steps().size() or intel.name != _steps()[step].intel:
 		return
 	get_tree().call_group("codec_live", "live_call", _steps()[step].call)
+	SessionLog.current.note("step %d done (%s)" % [step + 1, intel.name])
 	step += 1
 	hints.new_step()
 	_show_intel()
@@ -455,6 +493,7 @@ func _on_intel(intel: Node) -> void:
 func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
+	SessionLog.current.note("extracted")
 	_finish()
 	var after := Aigis.complete_mission(record, tally.counts)
 	var par := Rank.par(record.mission)
@@ -503,6 +542,8 @@ func save_slot() -> void:
 
 ## Quit or abort: nothing is applied.
 func abort() -> void:
+	if not ended:
+		SessionLog.current.note("left the Mission at step %d" % step)
 	_finish()
 	tally = MissionTally.new()
 
@@ -511,10 +552,18 @@ func abort() -> void:
 func _finish() -> void:
 	ended = true
 	SessionLog.current.finish_mission()
-	SessionLog.current.write(LOG_PATH)
+	if _logs():
+		SessionLog.current.write(LOG_PATH)
+		DirAccess.remove_absolute(LIVE_PATH)
+
+
+## Only a played window keeps the log: the suite and the headless playthroughs build MissionRuns too.
+static func _logs() -> bool:
+	return DisplayServer.get_name() != "headless"
 
 
 ## Quitting (or leaving the scene) mid-Mission still writes the log.
 func _exit_tree() -> void:
 	if not ended:
+		SessionLog.current.note("quit at step %d" % step)
 		_finish()
