@@ -10,13 +10,14 @@ uniform bool band_on = false;
 uniform sampler2D backdrop : source_color, filter_linear;
 uniform bool use_backdrop = false;
 uniform float drift = 0.0;
+uniform vec4 tint : source_color = vec4(1.0);
 
 void fragment() {
 	vec4 c = vec4(0.0);
 	if (use_backdrop) {
 		float k = 1.0 + drift * 0.04 * fract(TIME / 40.0);
 		vec2 uv = (UV - 0.5) / k + 0.5 + vec2(drift * 0.01 * fract(TIME / 40.0), 0.0);
-		c = texture(backdrop, uv);
+		c = texture(backdrop, uv) * tint;
 	}
 	float dark = mod(FRAGCOORD.y, line_period) < 1.0 ? line_strength : 0.0;
 	c.rgb *= 1.0 - dark;

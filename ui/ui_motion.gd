@@ -35,7 +35,7 @@ static func wipe(control: Control, from_left := true, steps := 8, secs := 0.3, o
 	mat.shader = WIPE_SHADER
 	mat.set_shader_parameter("from_left", from_left)
 	mat.set_shader_parameter("progress", 0.0)
-	var r := control.get_global_rect()
+	var r: Rect2 = control.get_global_transform() * Rect2(Vector2.ZERO, control.size)  # canvas space, scale included
 	mat.set_shader_parameter("span", Vector2(r.position.x, maxf(r.size.x, 1.0)))
 	var kids := _share_material(control)
 	control.material = mat

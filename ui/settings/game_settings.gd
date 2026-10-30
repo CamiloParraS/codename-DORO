@@ -5,7 +5,7 @@ extends RefCounted
 
 const PATH := "user://settings.json"
 const LANGUAGES := ["en", "es"]
-const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0}
+const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false}
 const SENS_RANGE := Vector2(0.0005, 0.008)
 
 static var current: Dictionary = DEFAULTS.duplicate()
@@ -24,6 +24,8 @@ static func load_file(path := PATH) -> Dictionary:
 			out.language = d.language
 		if d.get("fullscreen") is bool:
 			out.fullscreen = d.fullscreen
+		if d.get("reduce_motion") is bool:
+			out.reduce_motion = d.reduce_motion
 		if d.get("volume") is float:
 			out.volume = clampf(d.volume, 0.0, 1.0)
 	return out

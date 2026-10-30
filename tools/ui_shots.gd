@@ -76,8 +76,13 @@ func _run() -> void:
 	if all:
 		await scene(MENU)
 		await wait(0.6)
-		await shoot("main_menu")
+		await shoot("title")
 		var menu: Node = get_tree().current_scene
+		menu._on_title = false
+		menu._press.hide()
+		menu._main()
+		await wait(0.8)
+		await shoot("main_menu")
 		var slot := {record = _record(2), gear = Requisition.new(), missions = {
 			"0": {pre = _record(0), best = {rank = "A", time = 412.0, kills = 0, alerts = 1}},
 			"1": {pre = _record(1), best = {rank = "S", time = 355.0, kills = 0, alerts = 0}}}}

@@ -317,6 +317,9 @@ ui.menu.mission_select,MISSION SELECT,SELECCIÓN DE MISIÓN
 ui.menu.free_mode,FREE MODE,MODO LIBRE
 ui.menu.settings,SETTINGS,AJUSTES
 ui.menu.quit,QUIT,SALIR
+ui.menu.press_any,Press any key,Pulsa cualquier tecla
+ui.menu.protocol,Aigis Protocol,Protocolo Aigis
+ui.menu.recruits,Recruits,Reclutas
 ui.menu.pick_new,NEW GAME: PICK A SLOT,NUEVA PARTIDA: ELIGE RANURA
 ui.menu.pick_select,MISSION SELECT: PICK A SLOT,SELECCIÓN: ELIGE RANURA
 ui.menu.overwrite,OVERWRITE SLOT {n}?,¿SOBRESCRIBIR LA RANURA {n}?
