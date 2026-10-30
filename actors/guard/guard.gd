@@ -603,6 +603,16 @@ func answer(op: Node3D) -> void:
 	radio_say(tr("holdup." + what))
 
 
+## Searched while Down: what a Hold-up would have got out of him is on the body (his scripted answer; a
+## guard without one has nothing to give).
+func frisk(_op: Node3D) -> void:
+	if answered:
+		return
+	answered = true
+	if holdup_answer != "":
+		get_tree().call_group("radio_log", "say", "INTEL", tr("search." + holdup_answer))
+
+
 ## Can a Fulton take it: Neutralized (darted, choked) or kneeling at gunpoint; never the dead.
 func can_be_fultoned() -> bool:
 	return fulton_state_ok() and not carry_only

@@ -90,40 +90,52 @@ const RAMPS := [
 ]
 
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat.
-## 9 posts, 10 guards as spawned (B1 is a chatting pair), plus the chief's escort.
+## 6 posts, 7 guards as spawned (B1 is a chatting pair), plus the chief and his escort. `enc` is the Encounter (ENCOUNTERS).
 const GUARD_POSTS := [
-	["PostA1", [36, 60, 0], 270, {role = "patroller"}, [[24, 60, {hold = 4.0, f = 310}], [36, 73, {}]]],  # motor pool loop
-	["PostA2", [52, 68, 0], 270, {scan = 60.0, role = "observer"}, []],                                    # garage, on the crate
-	["PostA3", [73, 63, 0], 260, {scan = 60.0, role = "gatekeeper"}, []],                                    # foot of the road ramp
-	["PostB1", [67, 44, 3], 0, {chat = true, role = "investigator"}, []],                                      # the pair by the road: eavesdrop spot
-	["PostB2", [12, 52, 3], 90, {role = "patroller"}, [[44, 52, {hold = 5.0, f = 180}]]],                 # barracks terrace walk
-	["PostB3", [32, 37, 3], 270, {scan = 60.0, role = "gatekeeper"}, []],                                    # barracks north mouth, sweeps the scree line
-	["PostC1", [44, 26, 6], 220, {scan = 60.0, role = "observer"}, []],                                    # summit, over the console
-	["PostC2", [66, 15, 6], 300, {scan = 60.0, role = "observer"}, []],                                    # office east
-	["PostC3", [16, 20, 6], 90, {role = "patroller"}, [[50, 26, {hold = 4.0, f = 90}], [28, 16, {}]]],     # summit loop past the helipad
+	["PostA1", [32, 60, 0], 270, {role = "patroller", enc = 1}, [[20, 60, {hold = 4.0, f = 315}]]],  # motor pool: the north strip, a 24 m loop; his west turn faces the Ladder foot
+	["PostA2", [52, 68, 0], 270, {scan = 60.0, role = "observer", enc = 1, holdup = "keys"}, []],           # garage, facing the west door: the Hold-up is from the east door, behind him
+	["PostB1", [79, 44, 3], 90, {chat = true, role = "investigator", enc = 3}, []],  # the pair in the road gate, seated N-S facing each other across it, 29 m from the Chief
+	["PostB3", [32, 36, 3], 0, {scan = 60.0, role = "gatekeeper", enc = 3}, []],    # barracks north mouth, looking up at the summit: his back to the west carry line
+	["PostC1", [44, 26, 6], 220, {scan = 60.0, role = "observer", enc = 2}, []],                                  # summit, over the console
+	["PostC3", [16, 20, 6], 90, {role = "patroller", enc = 2}, [[34, 20, {hold = 4.0, f = 90}]]],     # summit: a 36 m loop; his hold faces the console from 6 m
 ]
 const EXTRA_POSTS := [
 	["PostExtra1", [24, 53, 3], 0, {role = "patroller"}, [[27, 51.5, {hold = 3.0, f = 0}], [8, 49, {hold = 3.0, f = 0}]]],  # Stealth L2: barracks mouth, then up the scree
 	["PostExtra2", [70, 29, 6], 180, {hold = 5.0, role = "interceptor"}, []],  # Combat L2: summit ramp top
 	["PostExtra3", [52, 22, 6], 0, {hold = 5.0, role = "interceptor"}, []],    # Combat L2: office south door
 ]
-const TARGET_POSTS := [  # the relay chief: the mess door, then looking up at the summit
-	["TargetPost1", [50, 41, 3], 90, {hold = 6.0}, [[34, 40, {hold = 6.0, f = 0}]]],
+const TARGET_POSTS := [  # the relay chief: the mess door, then his lookout on the terrace
+	["TargetPost1", [50, 41, 3], 90, {hold = 6.0, enc = 3}, [[46, 46, {hold = 6.0, f = 0}]]],
 ]
 const SENTRIES := [
 	["SentryMast", [37, 11, 18], 180, {scan = 120.0}],
 	["SentryOffice", [57, 12, 10], 250, {scan = 90.0}],
 ]
-## Camera mounts: [name, [x, y, h], facing, pole base h]. All four stand in the open, on poles.
+## Camera mounts: [name, [x, y, h], facing, pole base h]. All three stand in the open, on poles.
 const CAMERAS := [
-	["CamLadderWest", [23, 54, 4.5], 270, 3.0], ["CamBarracks", [33, 38, 4.5], 250, 3.0],
-	["CamScree", [10, 30, 7.5], 200, 6.0], ["CamRoad", [72, 61, 4], 270, 0.0],
-]
+	["CamLadderWest", [23, 54, 4.5], 90, 3.0], ["CamBarracks", [33, 38, 4.5], 250, 3.0], ["CamRoad", [72, 61, 4], 330, 0.0],
+]  # CamRoad sweeps 265..35 degrees: the ramp landing, never the garage east door (232 degrees, 16.4 m)
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [82, 44, 3], Extraction = [9, 14, 6],
 	ResupplyCrate = [50, 64, 1], SafeRoom = [60, 12, 6], RelayConsole = [40, 20, 6],
 }
-const INTEL := {IntelGarage = [55, 67, 0], IntelMess = [58, 42, 3]}  # the console is the middle step
+## The three Encounters, one per objective step: [id, name, problem, rect]. The Barracks terrace also holds the
+## Ladder-top and scree-foot transits between the Motor pool and the Summit.
+const ENCOUNTERS := [
+	[1, "Motor pool", "timing", [4, 56, 72, 20]],
+	[2, "Summit", "manipulation", [4, 4, 72, 28]],
+	[3, "Barracks terrace", "positioning", [4, 32, 84, 24]],
+]
+## Where the Operative leaves an Encounter: the session log names the one taken.
+const EXITS := {RoadRamp1 = [60, 58, 1.5], LadderWest = [20, 55.5, 3], ScreeTop = [6.5, 32, 6], RoadRamp2 = [60, 34, 4.5], RoadGate = [74, 44, 3]}
+## No-Fulton rooms: [name, rect, h0, h1]. Everything else is open sky.
+const ROOMS := [["Garage", [44, 62, 14, 10], 0, 5], ["MessHut", [52, 38, 12, 8], 3, 6.5], ["Office", [50, 8, 14, 10], 6, 9.7], ["BarracksCrawl", [22, 40, 10, 10], 3, 4.2]]
+## Mission 2's steps (Campaign data names them). watch (objective_watch.gd): a guard's Hold-up answer; walk-in (intel_pickup.gd); the console is the middle step.
+const INTEL := {IntelMess = [58, 42, 3]}
+const OBJECTIVES := {IntelGarage = {at = [54, 68, 0], watch = "answer", guards = ["GuardA2"]}}
+## Where to eavesdrop the road pair: [x, y, h]. The gate mouth, square to the pair: 4.6 m from each and
+## 102 degrees off both facings, outside the 60 degree side cones.
+const EAVESDROP := {EavesdropSpot = [74.5, 44, 3]}
 const START_FACING := 45
 ## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, the Crawlspace mouths, Ladders and ramp landings.
@@ -147,9 +159,9 @@ const DRESS := [
 	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 0], ["chair", [61, 11.2, 6], 180],
 	["locker", [53, 8.65, 6], 180], ["ceiling_lamp", [57, 13, 9.5], 0],
 	# the relay's dishes on the summit, either side of the mast
-	["sat_dish", [29.5, 6.6, 6], 200], ["sat_dish", [46, 6.4, 6], 160],
+	["sat_dish", [29.5, 6.6, 6], 200], ["sat_dish", [62.5, 9.5, 10], 160],  # the east one on the office roof: the lane behind the office stays open
 	# a checkpoint at the road gate
-	["jersey_barrier", [84, 40.6, 3], 0], ["jersey_barrier", [84, 47.4, 3], 0], ["sandbags", [78.6, 41.2, 3], 0],
+	["jersey_barrier", [84, 40.6, 3], 0], ["jersey_barrier", [84, 47.4, 3], 0], ["sandbags", [86.5, 41.2, 3], 0],
 	# drifts against the rails, the retaining walls and the cliffs (low: no collider)
 	["mound", [18, 74.6, 0], 0, 0.42, "ground", SNOW], ["mound", [40, 74.8, 0], 20, 0.42, "ground", SNOW],
 	["mound", [52, 74.6, 0], 0, 0.42, "ground", SNOW], ["mound", [44, 33.3, 3], 0, 0.42, "ground", SNOW],
@@ -179,19 +191,21 @@ const ROAD_POLES := [[92, 38.7], [112, 38.7], [132, 38.7], [152, 38.7], [172, 38
 const PEAKS := [["mountain_a", [-20, -60], 0, 1.0], ["mountain_b", [60, -68], 40, 1.1], ["mountain_a", [140, -40], 120, 0.9],
 	["mountain_b", [-70, 20], 90, 0.9], ["mountain_b", [160, 100], 200, 0.9]]
 
-const SPOOFS := {SpoofGarage = [47, 60, 0], SpoofMess = [50, 44, 3], SpoofHelipad = [12, 16, 6], SpoofMast = [44, 15, 6]}
+const SPOOFS := {SpoofGarage = [47, 60, 0], SpoofTerrace = [38, 52, 3], SpoofHelipad = [12, 16, 6], SpoofMast = [44, 15, 6], SpoofRoof = [60, 27, 6]}
 
 ## What the navmesh must reach from the start: every terrace, the office roof, the catwalk, and every objective.
 const REACH := {
 	MotorPool = [30, 74, 0], BarracksTerrace = [40, 54, 3], Summit = [28, 26, 6], OfficeRoof = [58, 12, 10],
 	Catwalk = [45, 10.8, 10], Helipad = [9, 14, 6], Console = [40, 20, 6], SafeRoom = [60, 12, 6],
-	ChiefMess = [50, 41, 3], IntelGarage = [55, 67, 0], IntelMess = [58, 42, 3], ChiefLookout = [34, 40, 3], ScreeTop = [6.5, 31, 6],
+	ChiefMess = [50, 41, 3], IntelGarage = [54, 68, 0], IntelMess = [58, 42, 3], ChiefLookout = [46, 46, 3], ScreeTop = [6.5, 31, 6],
+	BackLane = [52, 6, 6], Eavesdrop = [74.5, 44, 3],
 }
 ## The two carry routes, chief to helipad, as waypoints the shortest path is forced through. The scree
 ## route is pinned to the barracks' north side: left free, the path query can take the long way round.
 const CARRY := {
 	"West, up the scree" = [[34, 40, 3], [27, 39, 3], [6.5, 47, 3], [9, 14, 6]],
 	"East, up the summit ramp" = [[50, 41, 3], [50, 34, 3], [69, 30, 6], [9, 14, 6]],
+	"East, behind the office" = [[50, 41, 3], [50, 34, 3], [69, 30, 6], [68, 22, 6], [66, 6, 6], [42, 6, 6], [33, 6.5, 6], [30, 10, 6], [9, 14, 6]],
 }
 
 
@@ -251,6 +265,20 @@ func _build() -> void:
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y += 1.5
 	_intel(INTEL)
+	var encounters := _group(_root, "Encounters")  # MissionRun reads which one the Operative is in
+	for e in ENCOUNTERS:
+		_marker(encounters, "Encounter%d" % e[0], [e[3][0], e[3][1], 0], 0, {id = e[0], size = Vector2(e[3][2], e[3][3])}, "encounter")
+	for n in EXITS:
+		_marker(encounters, n, EXITS[n], 0, {}, "encounter_exit")
+	var eavesdrops := _group(_root, "EavesdropSpots")
+	for n in EAVESDROP:
+		_marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
+	_rooms(ROOMS)
+	for n in OBJECTIVES:
+		var o: Dictionary = OBJECTIVES[n]
+		var w := _area(_root.get_node("Intel"), n, [o.at[0], o.at[1], o.at[2] + 1.5], Vector3(1, 1, 1), "res://areas/objective_watch.gd")
+		w.set("verb", o.watch)
+		w.set("guards", PackedStringArray(o.guards))
 	var intel: Node3D = _root.get_node("Intel")
 	var console := _area(intel, "RelayConsole", SPOTS.RelayConsole, Vector3(5, 3, 5), "res://areas/relay_station/relay_console.gd")
 	console.position.y += 1.5

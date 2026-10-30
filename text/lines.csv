@@ -215,6 +215,9 @@ requisition.metis.m2,The relay crew took our contract. Palladion trained them; w
 requisition.metis.m3,"Annex guards, hired. Metis grows with every balloon.","Guardias del Anexo, contratados. Metis crece con cada globo."
 requisition.signed,RECRUITS SIGNED: {n},RECLUTAS FIRMADOS: {n}
 holdup.lift_code,Don't shoot! The lift code is four-one-seven-seven. The panel's in operations.,¡No dispares! El código es cuatro-uno-siete-siete. El panel está en operaciones.
+search.lift_code,A note in his pocket: the lift code is four-one-seven-seven. The panel's in operations.,Una nota en su bolsillo: el código del montacargas es cuatro-uno-siete-siete. El panel está en operaciones.
+holdup.keys,"Don't shoot! The keys are on my belt. Take them, I never saw you!","¡No dispares! Las claves están en mi cinturón. ¡Tómalas, no te vi!"
+search.keys,"Taped inside his sleeve: the relay's encryption keys.","Pegadas en su manga: las claves de cifrado de la estación."
 holdup.objective,"Don't shoot! What you're after? It's that way, I swear!","¡No dispares! ¿Lo que buscas? ¡Está por allí, lo juro!"
 holdup.scan,"Don't shoot! The others? They're all around, everywhere!",¡No dispares! ¿Los otros? ¡Están por todas partes!
 holdup.voiceprint,"Don't shoot! I'm only on watch, I swear!","¡No dispares! ¡Solo estoy de guardia, lo juro!"

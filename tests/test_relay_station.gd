@@ -14,7 +14,7 @@ func suite_name() -> String:
 
 func test_marker_counts() -> void:
 	var a: Node = load(SCENE).instantiate()
-	var counts := {"spot": 5, "sentry_high_point": 2, "camera_mount": 4, "spoof_place": 4, "guard_post": 9,
+	var counts := {"spot": 5, "sentry_high_point": 2, "camera_mount": 3, "spoof_place": 5, "guard_post": 6,
 		"guard_post_extra": 3, "resupply_crate": 1, "extraction": 1, "target_post": 1}
 	for g in counts:
 		var n := 0
