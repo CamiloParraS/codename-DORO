@@ -16,8 +16,24 @@ const CLIPS := {
 	# the guard reactions it shares through guard.gd: held up, startled, shot, searching, calling, killed
 	"kneel": [SRC + "Taken Hostage - Victim.fbx", false], "startle": [SRC + "Surprised.fbx", false],
 	"hit": ["_raw/work/mx_packs/Basic Shooter Pack/hit reaction.fbx", false], "look": [SRC + "Look Around.fbx", false],
-	"hand_to_ear": [SRC + "Talking On Phone.fbx", false], "dead": ["_raw/work/mx_packs/Pro Rifle Pack/death from the front.fbx", false],
+	"hand_to_ear": [SRC + "Talking On Phone.fbx", false],
+	"argue": [SRC + "Standing Arguing.fbx", false], "phone": [SRC + "Talking On Phone.fbx", false],
+	"point": [SRC + "Pointing.fbx", false], "look_nervous": [SRC + "Nervously Look Around.fbx", false], "dead": ["_raw/work/mx_packs/Pro Rifle Pack/death from the front.fbx", false],
 }
+
+
+## A looping clip's forward travel goes, or the model glides ahead and snaps back at each loop; the speed it was made
+## at stays as the "speed" meta so CharacterModel.play() can pace the feet to the body.
+func _strip_drift(a: Animation, track: int) -> void:
+	var last := a.track_get_key_count(track) - 1
+	var first: Vector3 = a.track_get_key_value(track, 0)
+	var drift: Vector3 = a.track_get_key_value(track, last) - first
+	drift.y = 0.0
+	var pace := Vector2(drift.x, drift.z).length() / a.length
+	if pace > 0.3:  # slower is an idle's sway, not a stride
+		a.set_meta("speed", pace)
+	for n in last + 1:
+		a.track_set_key_value(track, n, a.track_get_key_value(track, n) - drift * (a.track_get_key_time(track, n) / a.length))
 
 
 func _initialize() -> void:
@@ -41,6 +57,8 @@ func _run() -> void:
 			if a.track_get_type(i) == Animation.TYPE_POSITION_3D:
 				for n in a.track_get_key_count(i):
 					a.track_set_key_value(i, n, a.track_get_key_value(i, n) * k)
+				if CLIPS[clip][1]:
+					_strip_drift(a, i)
 		a.loop_mode = Animation.LOOP_LINEAR if CLIPS[clip][1] else Animation.LOOP_NONE
 		lib.add_animation(clip, a)
 		scene.free()

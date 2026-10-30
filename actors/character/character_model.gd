@@ -26,7 +26,9 @@ const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
 ## takes: the loose Hit Reaction flinches at kneeling height); carry_idle is the fireman hold standing still;
 ## kneel is a held-up guard with its hands up (it raises them, then holds); takedown is the choke grip, looped;
 ## dead falls on its back and holds the last frame; climb, use (a console) and the fulton kneel are operative_clip()
-## tasks; throw and pick_up are one-shots for the Magazine and a resupply crate.
+## tasks; throw and pick_up are one-shots for the Magazine and a resupply crate. look_nervous is the scan of an Evasion
+## search, point a guard sent to check a place, argue a heated turn in the Target's chat and phone a check-in at a stop
+## (argue and phone are long clips; phone is the standing call, as the pacing one walks the body off its spot, played from their start at normal speed).
 const MIXAMO_CLIPS := {
 	"idle": "pro_idle", "walk": "pro_walk_forward", "run": "pro_run_forward",
 	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching", "crouch_aim": "pro_idle_crouching_aiming",
@@ -36,6 +38,8 @@ const MIXAMO_CLIPS := {
 	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
 	"talk": "talking", "talk_b": "talking_1",  # gestures for react() while a guard speaks
 	"hand_to_ear": "talking_on_phone", "dead": "pro_death_from_the_front",
+	"look_nervous": "nervously_look_around", "point": "pointing", "argue": "standing_arguing",
+	"phone": "talking_on_phone",
 	"climb": "climbing_ladder", "use": "button_pushing", "throw": "throw", "pick_up": "picking_up",
 }
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire,
@@ -82,6 +86,8 @@ const GUNS := {
 }
 const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
 const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
+const GAZE_LIMIT := deg_to_rad(70.0)   # how far the head turns off the body's heading, sideways and up or down
+const GAZE_BLEND := 6.0                # per second, how fast the head comes onto a point or back to the clip
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
 
 @export var kind := Kind.GUARD
@@ -92,6 +98,10 @@ var _clip := ""
 var _since_step := 0.0
 var _busy := 0.0     # seconds left of a react() one-shot, which play() must not interrupt
 var _home: Node3D    # where the model lives while it rides someone's shoulder
+var _look: LookAtModifier3D  # turns the head to _gaze, weighted by _gaze_w
+var _gaze := Marker3D.new()
+var _gaze_w := 0.0
+var _gaze_on := false
 var _gun: Node3D     # the weapon in the right hand
 var _weapon := ""    # the name it was hold()n with, which picks the clip set
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
@@ -144,10 +154,53 @@ func _ready() -> void:
 		_part("Nikita").material_override = tint
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
 			_part(part).visible = part in DRESS[kind]
+	_add_look_at()
 	play("idle")
 
 
+## A LookAtModifier3D on the head bone, aimed at the _gaze marker. Its axes come from the head's rest pose, since
+## the rigs disagree on which way a bone points.
+func _add_look_at() -> void:
+	var head := skeleton.find_bone("Head")
+	if head < 0:
+		for i in skeleton.get_bone_count():
+			if skeleton.get_bone_name(i).to_lower().ends_with("head"):
+				head = i
+				break
+	if head < 0:
+		return
+	_gaze.top_level = true
+	add_child(_gaze)
+	var rest := skeleton.get_bone_global_rest(head).basis.orthonormalized()
+	_look = LookAtModifier3D.new()
+	skeleton.add_child(_look)
+	_look.bone_name = skeleton.get_bone_name(head)
+	_look.target_node = _look.get_path_to(_gaze)
+	_look.forward_axis = _bone_axis(rest.inverse() * Vector3.BACK)  # the rig faces +Z
+	_look.primary_rotation_axis = _bone_axis(rest.inverse() * Vector3.UP) / 2 as Vector3.Axis  # yaw, about the bone's own up
+	_look.use_angle_limitation = true
+	_look.primary_limit_angle = GAZE_LIMIT
+	_look.secondary_limit_angle = GAZE_LIMIT / 2.0
+	_look.influence = 0.0
+
+
+## The BoneAxis (+X, -X, +Y, -Y, +Z, -Z) a bone-local direction points along most.
+static func _bone_axis(v: Vector3) -> int:
+	var a := v.abs().max_axis_index()
+	return a * 2 + (1 if v[a] < 0.0 else 0)
+
+
+## Turns the head to `point` (world space), or back to what the clip does for null. Eased in and out.
+func gaze(point: Variant) -> void:
+	_gaze_on = point != null
+	if _gaze_on:
+		_gaze.global_position = point
+
+
 func _process(delta: float) -> void:
+	if _look:
+		_gaze_w = move_toward(_gaze_w, 1.0 if _gaze_on else 0.0, GAZE_BLEND * delta)
+		_look.influence = _gaze_w
 	_busy -= delta
 	_since_step += delta
 	if _since_step >= STEP:

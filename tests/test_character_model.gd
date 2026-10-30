@@ -168,3 +168,18 @@ func test_a_radio_call_puts_the_hand_at_the_ear_without_a_spasm() -> void:
 	var hand := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("hand_r")).origin
 	assert_true(hand.distance_to(head) < 0.3, "right hand at the ear when the call ends (%.2f m)" % hand.distance_to(head))
 	m.free()
+
+
+func test_bone_axis_picks_the_axis_a_direction_follows() -> void:
+	assert_eq(CharacterModel._bone_axis(Vector3(0.9, 0.1, 0)), 0, "+X")
+	assert_eq(CharacterModel._bone_axis(Vector3(-0.9, 0.1, 0)), 1, "-X")
+	assert_eq(CharacterModel._bone_axis(Vector3(0.1, 0.8, 0.2)), 2, "+Y")
+	assert_eq(CharacterModel._bone_axis(Vector3(0, 0.1, -1)), 5, "-Z")
+
+
+func test_a_guard_gets_a_head_look_at_that_starts_off() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	assert_true(m._look != null, "a LookAtModifier3D on the head")
+	assert_eq(m._look.influence, 0.0)
+	m.free()

@@ -20,6 +20,7 @@ const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal 
 const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
+const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
@@ -157,6 +158,7 @@ func _physics_process(delta: float) -> void:
 	if flat > 1.0 and not is_down() and _step_left <= 0.0:  # footsteps, for the Radar: faster when running
 		_step_left = 0.3 if flat > 3.0 else 0.5
 		ping()
+	model.gaze(_gaze_point())
 	model.play("kneel" if held_up else CharacterModel.guard_clip(is_down(), flat, _fell), flat)
 	_agent.velocity = Vector3.ZERO  # stands still unless the tree walks it this frame
 	_voice_tick(delta)
@@ -273,6 +275,8 @@ func _check_in(delta: float) -> void:
 	_chatter(delta)
 	if checkin.tick(delta):
 		get_tree().call_group("radio_log", "say", name, tr(Checkin.LINES.pick_random()))
+		if _pause > 0.5 and alert.state == GuardAlert.State.PATROL and not held_up:  # at a stop: the call is on the phone
+			model.react("phone", _pause, 1.0)
 	if chat and chat_seat == 0:
 		var line := chat.tick(delta)
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
@@ -295,13 +299,30 @@ func _target_chat(delta: float) -> void:
 	if not line.is_empty():
 		var who: Guard = self if line.seat == 0 else chat_partner
 		who.say_line(line.key)
-		who.speak_gesture(TargetChatter.TURN)
+		who.speak_gesture(TargetChatter.TURN, true)
+
+
+## Where the head turns, or null to leave it to the clip: the spot a suspicious or alerted guard is on, a chat
+## partner, or an Operative in view and close by (a glance; it doesn't fill the detection meter).
+func _gaze_point() -> Variant:
+	if is_down() or held or held_up:
+		return null
+	match alert.state:
+		GuardAlert.State.SUSPICION, GuardAlert.State.ALERT:
+			return alert.last_known + Vector3.UP * EYE
+		GuardAlert.State.PATROL:
+			if (chat != null or target_chat != null) and partner_calm():
+				return chat_partner.global_position + Vector3.UP * EYE
+			if operative and _flat_dist(operative.global_position) <= GLANCE_RANGE and can_see(operative):
+				return operative.global_position + Vector3.UP * EYE
+	return null
 
 
 ## Talks with its hands for one line of `seconds`; react() leaves it standing in idle after.
-func speak_gesture(seconds: float) -> void:
+func speak_gesture(seconds: float, heated := false) -> void:
 	if not is_down() and not held_up:
-		model.react(gesture.next(), seconds)
+		var clip := gesture.next(heated)
+		model.react(clip, seconds, 1.0 if clip == Gesture.LONG else 0.0)
 
 
 ## Every CHATTER_EVERY s on patrol, a warning or confirmation about a Habit, as a subtitle, only when
@@ -912,6 +933,8 @@ func obey(kind: String, pos: Vector3, who: String) -> bool:
 	if is_down() or alert.state == GuardAlert.State.ALERT:
 		return false
 	_changed(alert.stand_down(who, kind))
+	if kind == "go":
+		model.react("point", 1.2)
 	order = {kind = kind, pos = pos, time = 0.0}
 	_bt.restart()
 	return true
@@ -1038,7 +1061,7 @@ func search(delta: float, speed: float, sweep: float) -> void:
 		face(search_spot(), delta)  # at a Ladder's foot, watching the roof
 	else:
 		if not _looked and alert.state == GuardAlert.State.EVASION:
-			model.react("look", LOOK_CLIP, 1.0)
+			model.react("look_nervous", LOOK_CLIP, 1.0)  # Evasion: the jittery scan
 			_looked = true  # one sweep per arrival
 		rotation.y += sin(_clock * 1.1) * sweep * delta
 
