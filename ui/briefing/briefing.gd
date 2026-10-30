@@ -1,5 +1,5 @@
 ## The Briefing: the next campaign Mission's title, Aigis's Voices on what it noticed and what it deployed
-## (a transcript: the Voice's glyph and name in Aigis's cyan, then its line in VT323, typed out with its
+## (a transcript: the Voice's glyph and name in Aigis's cyan, then its line in Barlow, typed out with its
 ## beeps), then the objectives; any key opens the Mission's Codec call, which starts it. Past the Core it
 ## shows the ending's band, and any key goes back to the main scene. Group "mission_plan": F3 shows the
 ## plan table. After a first clear with something to buy the Requisition screen opens over it first;
@@ -31,7 +31,7 @@ func _ready() -> void:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] == "voice" else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
-	var scan := UiScan.make(HudPalette.BACKDROP, true, true, Color(0.4, 0.4, 0.45))
+	var scan := UiScan.make(HudPalette.BACKDROP, true, true, HudPalette.BACKDROP_DIM)
 	scan.show_behind_parent = true  # under the page's own drawing
 	add_child(scan)
 	HudPalette.fade(self)

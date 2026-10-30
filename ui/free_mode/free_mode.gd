@@ -7,7 +7,6 @@
 extends Control
 
 const MENU := "res://ui/main_menu/main_menu.tscn"
-const GOLD := Color("cbb26b")
 
 var preset: String = Aigis.PRESETS.keys()[0]   # or "custom"
 var custom_levels := {}
@@ -31,10 +30,10 @@ func _ready() -> void:
 	bg.color = HudPalette.INK
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	add_child(UiScan.make(HudPalette.BACKDROP, false, true, Color(0.4, 0.4, 0.45)))
+	add_child(UiScan.make(HudPalette.BACKDROP, false, true, HudPalette.BACKDROP_DIM))
 	_stage.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(_stage)
-	theme = _make_theme()
+	theme = HudPalette.theme()  # the 1 px slider with a square grabber
 	var title := _text(tr("ui.menu.free_mode").to_upper(), 64, 0.14, HudPalette.LIGHT)
 	title.position = Vector2(80, 50)
 	_stage.add_child(title)
@@ -77,7 +76,7 @@ func _ready() -> void:
 		return "%.2f" % v)
 	var sum := PanelContainer.new()
 	var sbox := StyleBoxFlat.new()
-	sbox.bg_color = Color(0.055, 0.078, 0.094, 0.74)
+	sbox.bg_color = Color(HudPalette.GLASS, 0.74)
 	sbox.border_width_top = 3
 	sbox.border_color = HudPalette.CYAN
 	sbox.content_margin_left = 30
@@ -118,14 +117,6 @@ func _layout() -> void:
 	var k := size.y / HudPalette.DESIGN_H
 	_stage.scale = Vector2(k, k)
 	_stage.size = size / k
-
-
-func _make_theme() -> Theme:
-	var t := HudPalette.theme()  # the 1 px slider with a square grabber
-	t.default_font = HudPalette.tracked(HudPalette.DISPLAY, 24, 0.1)
-	t.default_font_size = 24
-	return t
-
 
 func _text(s: String, fs: int, em: float, col: Color) -> Label:
 	var l := Label.new()
@@ -183,7 +174,7 @@ func _pick_preset(p: String) -> void:
 	_custom.visible = p == "custom"
 	var presets: Array = Aigis.PRESETS.keys() + ["custom"]
 	for i in _preset_rows.size():  # the chosen Preset reads gold
-		_preset_rows[i].add_theme_color_override("font_color", GOLD if presets[i] == p else HudPalette.LIGHT)
+		_preset_rows[i].add_theme_color_override("font_color", HudPalette.SAND if presets[i] == p else HudPalette.LIGHT)
 	_refresh()
 
 

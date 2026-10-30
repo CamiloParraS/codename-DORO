@@ -1,45 +1,29 @@
-## The UI kit every screen pulls from: one colour per meaning, the two faces, the outlined text, word wrap,
-## the panel fade and the menu Theme.
-## Colour: chrome is the Operative's own information; cyan is only ever Aigis; red is danger or empty;
-## amber marks EVASION and nothing else. Type: Press Start 2P (HEADING) for labels and headings at 8 or 16 px,
-## VT323 (BODY) for running text at 16 px; both are integer sizes of their pixel grids.
+## The UI kit every screen pulls from: one colour per meaning, the faces, the outlined HUD text, word wrap,
+## the panel fade and the slider Theme (DESIGN.md).
+## Colour: sand is the Operative's own information and selection; cyan is only ever Aigis; red is danger.
+## Type: Barlow, Barlow Condensed and Antonio, drawn on a 1080 px design canvas as wide as the window's aspect.
 class_name HudPalette
 extends RefCounted
 
-const WHITE := Color.WHITE  # a live or highlighted value
-const CHROME := Color(0.86, 0.88, 0.86)  # Operative info: life, ammo, stance, labels
-const CHROME_DIM := Color(0.86, 0.88, 0.86, 0.8)  # reserve counts, speaker names, secondary labels
-const HINT := Color(0.86, 0.88, 0.86, 0.55)  # key prompts in footers, an idle portrait
-const EMPTY := Color(0.86, 0.88, 0.86, 0.2)  # empty pips, the life bar's track
-const AIGIS := Color("2bd4f5")  # detection arcs, Voice tags, habit ticks
-const AIGIS_DIM := Color(0.17, 0.83, 0.96, 0.35)  # a barely-there arc
-const DANGER := Color(1, 0.22, 0.2)  # ALERT, low life, empty magazine, edge flash
-const EVASION := Color(1, 0.69, 0.1)  # EVASION chip and bar
-const SHADE := Color(0, 0, 0, 0.55)  # card backing
-const SCRIM := Color(0, 0, 0, 0.9)  # a full-screen panel over play
 const INK := Color.BLACK  # outlines and full-screen backgrounds
+const SCRIM := Color(0, 0, 0, 0.9)  # a full-screen panel over play
 const STILL := Color(0.55, 0.55, 0.6)  # a finale still dimmed under running text
 const BACKDROP: Texture2D = preload("res://ui/main_menu/backdrop.png")
 
-const HEADING: FontFile = preload("res://assets/fonts/press_start_2p_regular.ttf")
-const BODY: FontFile = preload("res://assets/fonts/vt323_regular.ttf")
-const HEADING_SIZE := 8
-const TITLE_SIZE := 16
-const BODY_SIZE := 16
-const COLUMN := 400.0  # px, the width running text wraps to (live call, subtitles, briefing)
-
-# The revamp's HUD kit (DESIGN.md), drawn on a design canvas 1080 px tall and as wide as the window's
-# aspect. Ported screens use these; the ones still on the 640x360 look keep the constants above.
 const DESIGN_H := 1080.0
 const LIGHT := Color("ecebe3")  # ink on the HUD: values, pictograms, marks
 const LIGHT_2 := Color("f2f4f3bd")
 const LIGHT_3 := Color("f2f4f38f")  # reserve counts, secondary labels
 const SMOKE := Color("16191b8c")  # panel fill over the scene
+const GLASS := Color(0.035, 0.05, 0.058)  # the dark teal under every translucent plate; set the alpha at the call
+const GROUND := Color("0a0d0f")  # the near-black under full-screen menus
+const SOFT := Color(0.81, 0.83, 0.82)  # the main menu dial and its rings
+const BACKDROP_DIM := Color(0.4, 0.4, 0.45)  # the backdrop under a menu page
 const SMOKE_HI := Color("16191bb8")  # the prompt's action disc
 const HAIRLINE := Color("f2f4f342")
 const SAND := Color("d4bc8a")  # the Operative's own readouts: brackets, gear names, life, the Radar's arrow
 const SAND_DIM := Color("d4bc8a80")
-const GOLD := Color("cbb26b")  # the Radar arrow and level pips (the mock gold)
+const MINT := Color("8fd9c0")  # the live call card and the Codec
 const CYAN := Color("a9d6dc")  # Aigis, and nothing else
 const DMG := Color("c42032")  # ALERT, a calling guard, life lost
 const MARK_RED := Color("e0423a")  # the ! over a guard
@@ -54,6 +38,7 @@ const DISPLAY: FontFile = preload("res://assets/fonts/antonio.ttf")  # the revam
 const LABEL_BOLD: FontFile = preload("res://assets/fonts/barlow_condensed_bold.ttf")
 const LABEL_MED: FontFile = preload("res://assets/fonts/barlow_condensed_medium.ttf")
 const HALO := Color(0, 0, 0, 0.55)  # the dark legibility halo under text on the scene
+const FADE := UiMotion.T_MOMENT  # s, every full-screen panel in and out (the post-Mission screen's)
 static var _tracked := {}  # [font, px] -> FontVariation
 
 
@@ -76,25 +61,27 @@ static func hud_label(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Col
 	hud_text(ci, pos, s.to_upper(), fs, col, tracked(font, fs, em), align, halo)
 
 
-## HUD text in any face over a dark halo (the Dark Halo rule: black, never a glow).
 ## The smallest a design-px size may be on the real screen, so low-resolution windows stay readable.
-const MIN_PX := 11.0
+const MIN_PX := 15.0  # on the real screen
+const MIN_DESIGN := 20  # and never below this on the 1080 canvas, so labels hold up at any window size
 
 
-## `fs` (1080-tall design px) raised until it is at least MIN_PX tall in the actual window.
+## `fs` (1080-tall design px) raised until it is at least MIN_DESIGN, and MIN_PX tall in the actual window.
 static func legible(ci: CanvasItem, fs: int) -> int:
 	var win := ci.get_window()
-	var per_design: float = (win.size.y if win else DESIGN_H) / DESIGN_H
-	return maxi(fs, ceili(MIN_PX / maxf(per_design, 0.01)))
+	var per_design: float = (float(win.size.y) if win else DESIGN_H) / DESIGN_H
+	return maxi(maxi(fs, MIN_DESIGN), ceili(MIN_PX / maxf(per_design, 0.01)))
 
 
+## HUD text in any face over a dark halo (the Dark Halo rule: black, never a glow).
 static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Color, font: Font = FIGURE, align := 0, halo := true) -> void:
 	fs = legible(ci, fs)
 	if align != 0:
 		var w := font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		pos.x -= w if align == 2 else w / 2
 	if halo:
-		ci.draw_string_outline(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, maxi(4, fs / 4), Color(HALO, HALO.a * col.a))
+		var outline := maxi(4, roundi(fs * 0.25))
+		ci.draw_string_outline(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, outline, Color(HALO, HALO.a * col.a))
 	ci.draw_string(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
@@ -108,8 +95,8 @@ static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a
 		_key_box.shadow_size = 8
 		_key_box.shadow_offset = Vector2(0, 3)
 		_key_box.anti_aliasing = true
-	var side := 30.0 if small else 42.0
-	var fs := 14 if small else 20
+	var side := 34.0 if small else 42.0
+	var fs := legible(ci, 14 if small else 20)
 	var w := maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16)
 	_key_box.set_corner_radius_all(4 if small else 6)
 	_key_box.bg_color = Color(LIGHT, a)
@@ -128,15 +115,13 @@ static func hud_panel(ci: CanvasItem, r: Rect2) -> void:
 	var b := r.end + Vector2(3, 3)
 	ci.draw_polyline(PackedVector2Array([a + Vector2(0, 10), a, a + Vector2(10, 0)]), SAND, 2.0)
 	ci.draw_polyline(PackedVector2Array([b - Vector2(0, 10), b, b - Vector2(10, 0)]), SAND, 2.0)
-const FADE := 0.4  # s, every full-screen panel in and out (the post-Mission screen's)
-const MARKER := 12  # px left of a menu button's text, where ">" marks focus
 
 
-## Greedy word wrap of `text` to `width` px in `font` at `fs`; "\n" starts a new line. A word wider
+## Greedy word wrap of `body` to `width` px in `font` at `fs`; "\n" starts a new line. A word wider
 ## than the width gets a line of its own.
-static func wrap(text: String, width: float, font: Font = BODY, fs := BODY_SIZE) -> PackedStringArray:
+static func wrap(body: String, width: float, font: Font = FIGURE_MED, fs := 24) -> PackedStringArray:
 	var out := PackedStringArray()
-	for para in text.split("\n"):
+	for para in body.split("\n"):
 		var line := ""
 		for w in para.split(" ", false):
 			var t := w if line == "" else line + " " + w
@@ -150,18 +135,6 @@ static func wrap(text: String, width: float, font: Font = BODY, fs := BODY_SIZE)
 	return out
 
 
-## Text with the HUD's 4-way black outline (it replaces card backings), from inside `ci`'s _draw().
-static func text(ci: CanvasItem, pos: Vector2, s: String, col: Color, font: Font = HEADING, fs := HEADING_SIZE) -> void:
-	for o in [Vector2(1, 1), Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1)]:
-		ci.draw_string(font, pos + o, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(INK, col.a))
-	ci.draw_string(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
-
-
-## Outlined text centred on x.
-static func centered(ci: CanvasItem, x: float, y: float, s: String, col: Color, font: Font = HEADING, fs := HEADING_SIZE) -> void:
-	text(ci, Vector2(roundf(x - font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x / 2), y), s, col, font, fs)
-
-
 ## Fades `c` in from clear (on) or out to clear, over FADE, through pauses and slowed time. A new fade
 ## replaces one still running, so a quick close-and-reopen never ends hidden.
 static func fade(c: CanvasItem, on := true) -> Tween:
@@ -171,100 +144,39 @@ static func fade(c: CanvasItem, on := true) -> Tween:
 		c.modulate.a = 0.0
 	var t := c.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_ignore_time_scale()
 	c.set_meta(&"fade", t)
-	t.tween_property(c, "modulate:a", 1.0 if on else 0.0, FADE).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	UiMotion.ease_out(t).tween_property(c, "modulate:a", 1.0 if on else 0.0, FADE)
 	return t
 
 
-## The menu Theme: bare chrome text, white with a ">" when focused or hovered, a 1 px slider with a square grabber.
+## The Theme: bare chrome text, light with a dark face when focused, a 1 px slider with a square grabber.
 static func theme() -> Theme:
 	var t := Theme.new()
-	t.default_font = HEADING
-	t.default_font_size = HEADING_SIZE
+	t.default_font = tracked(DISPLAY, 24, 0.1)
+	t.default_font_size = 24
 	var bare := StyleBoxEmpty.new()
-	bare.content_margin_left = MARKER
 	bare.content_margin_top = 3
 	bare.content_margin_bottom = 3
 	for s in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
 		t.set_stylebox(s, "Button", bare)
-	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
-	t.set_color("font_color", "Button", CHROME)
+	t.set_color("font_color", "Button", LIGHT_2)
 	for c in ["font_hover_color", "font_focus_color", "font_pressed_color", "font_hover_pressed_color"]:
-		t.set_color(c, "Button", WHITE)
-	t.set_color("font_disabled_color", "Button", EMPTY)
-	t.set_color("font_color", "Label", CHROME)
+		t.set_color(c, "Button", LIGHT)
+	t.set_color("font_disabled_color", "Button", Color(LIGHT, 0.3))
+	t.set_color("font_color", "Label", LIGHT_2)
 	var track := StyleBoxLine.new()
-	track.color = CHROME_DIM
+	track.color = LIGHT_3
 	track.thickness = 1
 	var lit := StyleBoxLine.new()
-	lit.color = WHITE
+	lit.color = LIGHT
 	lit.thickness = 1
 	t.set_stylebox("slider", "HSlider", track)
 	t.set_stylebox("grabber_area", "HSlider", lit)
 	t.set_stylebox("grabber_area_highlight", "HSlider", lit)
-	t.set_icon("grabber", "HSlider", _square(CHROME))
-	t.set_icon("grabber_highlight", "HSlider", _square(WHITE))
-	t.set_icon("grabber_disabled", "HSlider", _square(EMPTY))
+	t.set_icon("grabber", "HSlider", _square(LIGHT_2))
+	t.set_icon("grabber_highlight", "HSlider", _square(LIGHT))
+	t.set_icon("grabber_disabled", "HSlider", _square(Color(LIGHT, 0.3)))
 	t.set_stylebox("focus", "HSlider", lit)  # a focused slider lights its whole track
 	return t
-
-
-## A menu row: the Theme's button that takes focus on hover and draws ">" while focused, so mouse and
-## keyboard share one highlight. `caption` may be a text key (it translates itself).
-static func menu_button(caption: String, on_press := Callable()) -> Button:
-	var b := Button.new()
-	b.text = caption
-	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.mouse_entered.connect(func() -> void:
-		if not b.disabled:
-			b.grab_focus())
-	b.focus_entered.connect(b.queue_redraw)
-	b.focus_exited.connect(b.queue_redraw)
-	b.draw.connect(func() -> void:
-		if b.has_focus():
-			var y := (b.size.y + HEADING.get_ascent(HEADING_SIZE) - HEADING.get_descent(HEADING_SIZE)) / 2
-			b.draw_string(HEADING, Vector2(0, roundf(y)), ">", HORIZONTAL_ALIGNMENT_LEFT, -1, HEADING_SIZE, WHITE))
-	if on_press.is_valid():
-		b.pressed.connect(on_press)
-	return b
-
-
-## The Harbour at dusk (shot by tools/shots.gd, set "menu") behind a full-screen page, dimmed to `dim`,
-## drifting slowly, with a shade down the left so text reads over it. `behind`: drawn under the page's own _draw.
-static func backdrop(page: Control, dim := Color(0.6, 0.6, 0.65), behind := false) -> void:
-	var art := TextureRect.new()
-	art.texture = BACKDROP
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	art.modulate = dim
-	art.pivot_offset = page.get_viewport_rect().size * Vector2(0.7, 0.4)
-	var grad := Gradient.new()
-	grad.set_color(0, Color(INK, 0.9))
-	grad.set_color(1, Color(INK, 0.0))
-	var shade_tex := GradientTexture2D.new()
-	shade_tex.gradient = grad
-	shade_tex.fill_to = Vector2(1, 0)
-	var shade := TextureRect.new()
-	shade.texture = shade_tex
-	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	for r: TextureRect in [art, shade]:
-		r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		r.show_behind_parent = behind
-		page.add_child(r)
-	shade.anchor_right = 0.65
-	var drift := art.create_tween().set_loops().set_trans(Tween.TRANS_SINE)
-	drift.tween_property(art, "scale", Vector2.ONE * 1.08, 30.0)
-	drift.tween_property(art, "scale", Vector2.ONE, 30.0)
-
-
-## A label in the Theme: `fs` 8 for rows, 16 for a screen's title.
-static func label(s: String, fs := HEADING_SIZE, col := CHROME) -> Label:
-	var l := Label.new()
-	l.text = s
-	l.add_theme_font_size_override("font_size", fs)
-	l.add_theme_color_override("font_color", col)
-	return l
 
 
 static func _square(c: Color) -> ImageTexture:

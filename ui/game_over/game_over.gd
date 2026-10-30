@@ -9,8 +9,10 @@ signal quit
 const LINES := ["gameover.01", "gameover.02", "gameover.03", "gameover.04", "gameover.05", "gameover.06"]
 const MICHROMA: FontFile = preload("res://assets/fonts/michroma_regular.ttf")
 const INK := Color("f1dcd4")
-const RED := Color("e0423a")
+const RED := HudPalette.MARK_RED
 const BAR := Color("cbb3a8")
+const GROUND := Color("0a0506")
+const INK_HI := Color("f6e6df")
 const GRAIN := preload("res://ui/game_over/grain.gdshader")
 
 var continues := 0
@@ -24,7 +26,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	var bg := ColorRect.new()
-	bg.color = Color("0a0506")
+	bg.color = GROUND
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	_stage.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -72,7 +74,7 @@ func _ready() -> void:
 	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(fade)
 	var ft := create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	ft.tween_property(fade, "color:a", 0.0, 1.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	ft.tween_property(fade, "color:a", 0.0, 1.4).set_trans(UiMotion.TRANS).set_ease(UiMotion.EASE)
 	ft.tween_callback(fade.queue_free)
 	_slide(title, -70.0, 0.5)
 	_slide(said, -70.0, 0.7)
@@ -124,7 +126,7 @@ func _slide(n: Control, dx: float, delay: float) -> void:
 	n.position = to + Vector2(dx, 0.0)
 	n.modulate.a = 0.0
 	var t := create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_parallel()
-	t.tween_property(n, "position", to, 0.7).set_delay(delay).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(n, "position", to, 0.7).set_delay(delay).set_trans(UiMotion.TRANS).set_ease(UiMotion.EASE)
 	t.tween_property(n, "modulate:a", 1.0, 0.7).set_delay(delay)
 
 
@@ -138,8 +140,8 @@ func _option(box: Control, text: String, on_press: Callable) -> Button:
 	b.add_theme_font_override("font", HudPalette.tracked(MICHROMA, 32, 0.06))
 	b.add_theme_font_size_override("font_size", 32)
 	b.add_theme_color_override("font_color", Color(INK, 0.55))
-	b.add_theme_color_override("font_focus_color", Color("f6e6df"))
-	b.add_theme_color_override("font_hover_color", Color("f6e6df"))
+	b.add_theme_color_override("font_focus_color", INK_HI)
+	b.add_theme_color_override("font_hover_color", INK_HI)
 	var bare := StyleBoxEmpty.new()
 	bare.content_margin_left = 150
 	for s in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
@@ -154,7 +156,7 @@ func _option(box: Control, text: String, on_press: Callable) -> Button:
 	b.add_child(bar)
 	b.focus_entered.connect(func() -> void:
 		Mixer.play(&"tick")
-		create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(bar, "scale:x", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT))
+		create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(bar, "scale:x", 1.0, UiMotion.T_ENTER).set_trans(UiMotion.TRANS).set_ease(UiMotion.EASE))
 	b.focus_exited.connect(func() -> void: bar.scale.x = 0.0)
 	b.mouse_entered.connect(b.grab_focus)
 	b.pressed.connect(Mixer.click)

@@ -8,7 +8,6 @@ extends Control
 
 signal committed
 
-const GOLD := Color("cbb26b")
 const FIRST := 0.3  # s before the first row
 const ROW_GAP := 0.14  # s between rows starting
 const COUNT_STEP := 0.028  # s per count-up step (at most COUNT_STEPS of them)
@@ -17,6 +16,8 @@ const STAMP_AT := 1.4  # s in: the rank letter stamps
 const STAMP_SECS := 0.5
 const DONE_AT := 2.4  # s in: the tally and stamp are over; a press now advances
 const CARD := 0.14  # s between learned cards landing
+const GRADE_EDGE := Color("14130d")  # the clear-rank bar fades from these into sand
+const GRADE_MID := Color("34301b")
 const FADE := HudPalette.FADE  # s from clear to the dimmed screen
 
 var strip: Array = []   # MissionTally.strip()
@@ -124,7 +125,7 @@ func _draw() -> void:
 	var k := _k()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
-	draw_rect(Rect2(Vector2.ZERO, d), Color("0b0d0e"))
+	draw_rect(Rect2(Vector2.ZERO, d), HudPalette.GROUND)
 	draw_rect(Rect2(Vector2.ZERO, d), Color(0, 0, 0, 0.25))
 	_header(Vector2(80, 56), tr("ui.post.learned" if page == 1 else "ui.post.title").to_upper(), mission_name.to_upper(), HudPalette.CYAN if page == 1 else HudPalette.LIGHT)
 	if page == 0:
@@ -154,22 +155,24 @@ func _draw_rank(d: Vector2) -> void:
 	var vf := HudPalette.tracked(HudPalette.DISPLAY, 34, 0.08)
 	var y := 200.0
 	for i in rows.size():
-		var born := FIRST + i * ROW_GAP
-		if _age < born:
+		var row_born := FIRST + i * ROW_GAP
+		if _age < row_born:
 			break
 		var hl := i == 0
 		var r := Rect2(80, y, 1180, 64)
-		var a := clampf((_age - born) / 0.1, 0.0, 1.0)
+		var a := clampf((_age - row_born) / 0.1, 0.0, 1.0)
 		if hl:
 			draw_rect(r, Color(HudPalette.LIGHT, a))
 		draw_line(r.position + Vector2(0, 64), r.end, Color(HudPalette.LIGHT, 0.14 * a), 1.0)
 		var ink := HudPalette.DARK_INK if hl else HudPalette.LIGHT_2
 		HudPalette.hud_text(self, r.position + Vector2(26, 43), String(rows[i][0]).to_upper(), 28, Color(ink, a), tf, 0, false)
 		var n := shown_at(i, rows[i][1], _age)
+		@warning_ignore("integer_division")
 		var text := "%d:%02d" % [n / 60, n % 60] if rows[i][2] else "%03d" % n
 		var bad: bool = not hl and i in [2, 3] and rows[i][1] > 0
 		HudPalette.hud_text(self, r.position + Vector2(r.size.x - 26, 44), text, 34, Color(HudPalette.DMG if bad else (HudPalette.DARK_INK if hl else HudPalette.LIGHT), a), vf, 2, false)
 		if hl and par > 0.0:
+			@warning_ignore("integer_division")
 			var ps := "PAR %d:%02d" % [int(par) / 60, int(par) % 60]
 			HudPalette.hud_text(self, r.position + Vector2(r.size.x - 210, 41), ps, 18, Color(HudPalette.DARK_INK, 0.55 * a), HudPalette.tracked(HudPalette.DISPLAY, 18, 0.2), 2, false)
 		y += 64.0
@@ -178,7 +181,7 @@ func _draw_rank(d: Vector2) -> void:
 	if _age >= born:  # the gold clear-rank bar
 		var bar := Rect2(80, y + 22, 1180, 92)
 		var pts := PackedVector2Array([bar.position, Vector2(bar.position.x + bar.size.x * 0.45, bar.position.y), Vector2(bar.end.x, bar.position.y), bar.end, Vector2(bar.position.x + bar.size.x * 0.45, bar.end.y), Vector2(bar.position.x, bar.end.y)])
-		draw_polygon(pts, PackedColorArray([Color("14130d"), Color("34301b"), GOLD, GOLD, Color("34301b"), Color("14130d")]))
+		draw_polygon(pts, PackedColorArray([GRADE_EDGE, GRADE_MID, HudPalette.SAND, HudPalette.SAND, GRADE_MID, GRADE_EDGE]))
 		HudPalette.hud_text(self, bar.position + Vector2(30, 59), tr("ui.post.rank").to_upper(), 38, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.2), 0, false)
 		if _age >= STAMP_AT:
 			HudPalette.hud_text(self, bar.position + Vector2(bar.size.x - 40, 78), grade, 96, HudPalette.DARK_INK, HudPalette.DISPLAY, 2, false)
@@ -204,7 +207,7 @@ func _chips(at: Vector2) -> void:
 		var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 36
 		var r := Rect2(x, at.y, w, 46)
 		if ok:
-			draw_rect(r, GOLD)
+			draw_rect(r, HudPalette.SAND)
 		else:
 			draw_rect(r, Color(HudPalette.LIGHT, 0.3), false, 1.0)
 		HudPalette.hud_text(self, r.position + Vector2(18, 31), label, 20, HudPalette.DARK_INK if ok else HudPalette.LIGHT_3, f, 0, false)
@@ -215,7 +218,7 @@ func _chips(at: Vector2) -> void:
 func _stamp(d: Vector2, grade: String) -> void:
 	var t := _age - STAMP_AT
 	var frame := int(t / (STAMP_SECS / 6.0))
-	var scale := 1.5 if frame == 0 else 1.0
+	var pop := 1.5 if frame == 0 else 1.0
 	var shake := Vector2.ZERO
 	if frame == 1:
 		shake = Vector2(-8, 5)
@@ -223,8 +226,8 @@ func _stamp(d: Vector2, grade: String) -> void:
 		shake = Vector2(6, -4)
 	var c := Vector2(d.x - 80 - 250, 440) + shake
 	var k := _k()
-	draw_set_transform(c * k, 0.0, Vector2(k, k) * scale)
-	HudPalette.hud_text(self, Vector2(0, 150), grade, 400, GOLD, HudPalette.DISPLAY, 1, false)
+	draw_set_transform(c * k, 0.0, Vector2(k, k) * pop)
+	HudPalette.hud_text(self, Vector2(0, 150), grade, 400, HudPalette.SAND, HudPalette.DISPLAY, 1, false)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	if t < 0.08 and not _was_skipped:  # two frames of white
 		draw_rect(Rect2(Vector2.ZERO, d), Color(1, 1, 1, 0.5 if t < 0.04 else 0.25))
@@ -247,14 +250,15 @@ func _draw_aigis(d: Vector2) -> void:
 			continue
 		var e: Dictionary = changed[i]
 		var x := 80.0 + (i % cols) * (w + gap) + (1.0 - clampf((_age - born) / 0.1, 0.0, 1.0)) * 36.0
+		@warning_ignore("integer_division")
 		var y := 230.0 + (i / cols) * 340.0
-		draw_rect(Rect2(x, y, w, 300), Color(0.055, 0.078, 0.094, 0.74))
+		draw_rect(Rect2(x, y, w, 300), Color(HudPalette.GLASS, 0.74))
 		draw_rect(Rect2(x, y, w, 3), HudPalette.CYAN)
 		HabitGlyphs.draw(self, e.habit, Vector2(x + 30, y + 40), HudPalette.CYAN, 4.0)
 		var arrow: int = e.arrow
 		HudPalette.hud_text(self, Vector2(x + 30, y + 160), tr("ui.habit." + e.habit).to_upper() + (" ▲" if arrow > 0 else " ▼"), 48, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 48, 0.06), 0, false)
 		for p in 3:  # level pips, filled up to the level
-			draw_rect(Rect2(x + 30 + p * 33, y + 214, 28, 10), GOLD if p < int(e.level) else Color(HudPalette.LIGHT, 0.2))
+			draw_rect(Rect2(x + 30 + p * 33, y + 214, 28, 10), HudPalette.SAND if p < int(e.level) else Color(HudPalette.LIGHT, 0.2))
 		var pts := PackedVector2Array([Vector2(x + w - 50, y + 230 - 14 * arrow), Vector2(x + w - 70, y + 230 + 14 * arrow), Vector2(x + w - 30, y + 230 + 14 * arrow)])
 		if arrow > 0:
 			draw_colored_polygon(pts, HudPalette.CYAN)

@@ -7,7 +7,6 @@ extends Control
 
 const SettingsPanel := preload("res://ui/settings/settings_panel.gd")
 const MENU := "res://ui/main_menu/main_menu.tscn"
-const GOLD := Color("cbb26b")
 ## [action, verb key], in the order a player learns them; keys are read from the InputMap.
 const CONTROLS := [
 	["walk", "ui.ctl.walk"], ["crouch", "ui.ctl.crouch"], ["aim", "ui.ctl.aim"], ["fire", "ui.ctl.fire"],
@@ -61,7 +60,7 @@ func _ready() -> void:
 	var title := _text("ui.pause.title", 84, 0.14, HudPalette.DARK_INK)
 	slab.add_child(title)
 	_stage.add_child(slab)
-	var obj_head := _text("ui.pause.objective", 22, 0.3, GOLD)
+	var obj_head := _text("ui.pause.objective", 22, 0.3, HudPalette.SAND)
 	obj_head.position = Vector2(100, 296)
 	_stage.add_child(obj_head)
 	_objective = _text("", 34, 0.08, HudPalette.LIGHT)
@@ -134,7 +133,7 @@ func _controls() -> void:
 func _build_confirm() -> void:
 	_confirm_box.visible = false
 	var box := StyleBoxFlat.new()
-	box.bg_color = Color("0a0d0f")
+	box.bg_color = HudPalette.GROUND
 	box.border_width_top = 6
 	box.border_color = HudPalette.DMG
 	box.content_margin_left = 60

@@ -3,7 +3,7 @@
 class_name UiDial
 extends Control
 
-var color := Color(0.81, 0.83, 0.82, 0.34)
+var color := Color(HudPalette.SOFT, 0.34)
 var secs_outer := 120.0
 var secs_inner := 120.0
 var _t := 0.0

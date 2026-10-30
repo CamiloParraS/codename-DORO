@@ -15,8 +15,10 @@ signal finished
 const FREQUENCY := "140.85"
 const PORTRAITS := "res://ui/codec/portraits/%s_0.png"
 const FRAME := "res://ui/codec/portraits/%s_%d.png"
-const GREEN := Color("8fd9c0")
-const GREEN_DIM := Color(0.56, 0.85, 0.75, 0.45)
+const GREEN := HudPalette.MINT
+const CRT_GROUND := Color("040b0b")
+const CRT_DARK := Color("02100d")  # dark legends on the green fills
+const GREEN_DIM := Color(GREEN, 0.45)
 const BAR := 120.0         # the black bars top and bottom
 const PORTRAIT := Vector2(370, 340)
 const PORTRAIT_Y := 200.0
@@ -97,6 +99,7 @@ func _process(delta: float) -> void:
 		_ticked = 0
 	var p := talk.advance(delta)
 	if not p.is_empty():
+		@warning_ignore("integer_division")
 		var due := talk.shown().length() / 3
 		if due > _ticked:  # a tick every third character
 			_ticked = due
@@ -138,7 +141,7 @@ func _draw() -> void:
 	var k := _k()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
-	draw_rect(Rect2(Vector2.ZERO, d), Color("040b0b"))
+	draw_rect(Rect2(Vector2.ZERO, d), CRT_GROUND)
 	_grid(d)
 	_left.visible = false
 	_right.visible = false
@@ -198,7 +201,7 @@ func _portrait(node: TextureRect, at: Vector2, id: String, speaking: bool, typin
 	node.size = (PORTRAIT - Vector2(28, 28)) * k
 	node.modulate = Color(GREEN, 1.0 if speaking else 0.42)
 	node.visible = true
-	draw_rect(Rect2(at, PORTRAIT), Color("02100d"), true)
+	draw_rect(Rect2(at, PORTRAIT), CRT_DARK, true)
 	draw_rect(Rect2(at, PORTRAIT), GREEN if speaking else GREEN_DIM, false, 2.0)
 
 
@@ -213,11 +216,12 @@ func _slab(at: Vector2, label: String, right: bool, on: bool) -> void:
 	else:
 		pts[2].x -= 20
 	draw_colored_polygon(pts, GREEN if on else GREEN_DIM)
-	HudPalette.hud_text(self, Vector2(x + 24, at.y + 37), label, 28, Color("02100d"), f, 0, false)
+	HudPalette.hud_text(self, Vector2(x + 24, at.y + 37), label, 28, CRT_DARK, f, 0, false)
 
 
 ## Bars that step (never ease) only while someone talks.
 func _wave(c: Vector2, talking: bool) -> void:
+	@warning_ignore("integer_division")
 	var step := int(Time.get_ticks_msec() / 160)
 	for i in WAVE_BARS:
 		var h := 12.0

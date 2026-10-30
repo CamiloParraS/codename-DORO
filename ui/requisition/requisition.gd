@@ -12,7 +12,7 @@ const PAPER := Color("c5c6bf")
 const SHEET := Color("f4f4f1")
 const DARK := Color("14181a")
 const MUTED := Color("555a5b")
-const RED := Color("c4202f")
+const RED := HudPalette.DMG
 const ROW_H := 112.0
 const BOARD := Vector2(80, 230)
 const CELL := Vector2(122, 92)
@@ -169,7 +169,7 @@ func _draw() -> void:
 	HudPalette.hud_text(self, Vector2(55, d.y - 84), "METIS", 18, HudPalette.LIGHT, _f(18, 0.3), 1, false)
 	if line != "":
 		HudPalette.hud_text(self, Vector2(136, d.y - 83), line, 21, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-	draw_rect(Rect2(0, d.y - 64, d.x, 64), Color("0a0d0f"))
+	draw_rect(Rect2(0, d.y - 64, d.x, 64), HudPalette.GROUND)
 	HudPalette.hud_text(self, Vector2(80, d.y - 24), tr("ui.req.footer"), 20, HudPalette.LIGHT_2, _f(20, 0.16), 0, false)
 
 
@@ -255,29 +255,31 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	HudPalette.hud_text(self, r.position + Vector2(r.size.x - 30, 530), v, 56, DARK, _f(56, 0.02), 2, false)
 	var can: bool = g.can_buy(id)
 	var bar := Rect2(r.position + Vector2(30, r.size.y - 94), Vector2(r.size.x - 60, 68))
-	draw_rect(bar, DARK if can else Color("8a8e8d"))
+	draw_rect(bar, DARK if can else Color(DARK, 0.1))
+	if not can:
+		draw_rect(bar, Color(DARK, 0.35), false, 2.0)  # a dim bar, not just a pale one: it reads as unavailable by shape too
 	var label := tr("ui.req.max") if left <= 0 else tr("ui.req.price").format({n = u.price})
-	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else Color("d5d6d0"), _f(28, 0.2), 1, false)
+	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else MUTED, _f(28, 0.2), 1, false)
 
 
 ## A flat pictogram of the upgrade about 350 px wide, drawn only left of `clip_x` (the wipe).
 func _icon(id: String, c: Vector2, s: float, col: Color, clip_x: float) -> void:
 	var rects: Array[Rect2] = []
 	var circles: Array = []  # [center, radius]
-	var lines: Array = []    # [from, to, width]
+	var strokes: Array = []    # [from, to, width]
 	match id:
 		"scanner":
 			rects = [Rect2(-120, -60, 150, 120), Rect2(40, -30, 30, 60), Rect2(90, -50, 14, 100), Rect2(120, -70, 14, 140)]
 		"magazines":
 			rects = [Rect2(-110, -70, 70, 140), Rect2(-30, -70, 70, 140), Rect2(50, -70, 70, 140)]
-			lines = [[Vector2(-110, -30), Vector2(-40, -30), 4.0], [Vector2(-30, -30), Vector2(40, -30), 4.0], [Vector2(50, -30), Vector2(120, -30), 4.0]]
+			strokes = [[Vector2(-110, -30), Vector2(-40, -30), 4.0], [Vector2(-30, -30), Vector2(40, -30), 4.0], [Vector2(50, -30), Vector2(120, -30), 4.0]]
 		"fultons":
 			circles = [[Vector2(0, -60), 80.0]]
-			lines = [[Vector2(0, 20), Vector2(0, 80), 5.0]]
+			strokes = [[Vector2(0, 20), Vector2(0, 80), 5.0]]
 			rects = [Rect2(-30, 80, 60, 50)]
 		"darts":
 			for i in 3:
-				lines.append([Vector2(-130 + i * 10, -70 + i * 70), Vector2(100 + i * 10, -70 + i * 70), 10.0])
+				strokes.append([Vector2(-130 + i * 10, -70 + i * 70), Vector2(100 + i * 10, -70 + i * 70), 10.0])
 				circles.append([Vector2(120 + i * 10, -70 + i * 70), 14.0])
 	for r in rects:
 		var x0 := c.x + r.position.x * s
@@ -287,6 +289,6 @@ func _icon(id: String, c: Vector2, s: float, col: Color, clip_x: float) -> void:
 	for ci: Array in circles:
 		if c.x + ci[0].x * s < clip_x:
 			draw_circle(c + ci[0] * s, ci[1] * s, col)
-	for l: Array in lines:
+	for l: Array in strokes:
 		if c.x + l[0].x * s < clip_x:
 			draw_line(c + l[0] * s, c + l[1] * s, col, l[2])

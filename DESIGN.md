@@ -3,7 +3,7 @@ name: Ghost Layer
 description: In-game UI for a short stealth game; an MGSV-craft tactical HUD on the Peace Walker layout, and Peace Walker grey-paper menus.
 colors:
   # HUD (over the 3D scene). Hex with alpha is #RRGGBBAA, which Godot's Color.html() reads directly.
-  ink: "#f2f4f3"
+  ink: "#ecebe3"
   ink-2: "#f2f4f3bd"
   ink-3: "#f2f4f38f"
   smoke: "#16191b8c"
@@ -12,7 +12,7 @@ colors:
   sand: "#d4bc8a"
   sand-dim: "#d4bc8a80"
   aigis-cyan: "#a9d6dc"
-  damage-red: "#c9302a"
+  damage-red: "#c42032"
   alert-mark-red: "#e0423a"
   slp-blue: "#2c6aa3"
   dark-ink: "#0c0e0f"
@@ -20,7 +20,7 @@ colors:
   radio-backing: "#0c0e0f99"
   jam-ground: "#150a0b"
   # Menus (Requisition and every between-Mission screen)
-  menu-ground: "#cdcec9"
+  menu-ground: "#c5c6bf"
   menu-ground-hi: "#d8d9d4"
   menu-ground-lo: "#b9bab5"
   menu-paper: "#e4e4df"
@@ -33,6 +33,7 @@ colors:
   menu-line: "#2a2c2d47"
   menu-line-strong: "#2a2c2d80"
   menu-select-red: "#c42032"
+  dark-plate: "#06090ba8"
   menu-strip: "#2f3132"
   menu-strip-deep: "#232526"
   menu-strip-hover: "#45484a"
@@ -103,6 +104,18 @@ typography:
     fontSize: "20px"
     fontWeight: 700
     lineHeight: 1
+  display-menu-row:
+    fontFamily: "Antonio, Barlow Condensed, sans-serif"
+    fontSize: "30px"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "0.06em"
+  display-card-title:
+    fontFamily: "Antonio, Barlow Condensed, sans-serif"
+    fontSize: "96px"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "0.2em"
   menu-title:
     fontFamily: "Barlow Condensed, sans-serif"
     fontSize: "30px"
@@ -337,7 +350,7 @@ Ghost Layer's UI has two materials. In play, information sits on smoked glass: c
 
 Both materials are quiet by default and loud only when the game state is. The HUD stays near-monochrome while sneaking; ALERT is the one moment a solid red plate sits at top-centre and the Radar fills with red static. The UI renders at full resolution (1920x1080 logical) over the 854x480 3D render and never imitates the PSX look: no pixel fonts, no dithered chrome. It also refuses neon sci-fi: no glows, no scanline overlays on panels, no saturated cyan chrome.
 
-All tokens are px values on the 1920x1080 logical canvas, ready for a Godot Theme and `ui/hud/hud_palette.gd`. The HTML mocks in `docs/ui-mock/` are the reference renders.
+All tokens are px values on the 1920x1080 logical canvas, ready for a Godot Theme and `ui/hud/hud_palette.gd`. The HTML mocks in `docs/ui-mock/` (kit in `docs/ui-mock/kit/`) are the reference renders; where this file and the mocks disagree, the mocks' `kit.css` wins.
 
 **Key Characteristics:**
 - Smoked translucent panels with 1px hairlines and two sand corner brackets (top-left and bottom-right only).
@@ -392,10 +405,12 @@ The HUD is near-monochrome ink on smoke with one muted sand accent. Signal colou
 
 ## Typography
 
-**Display / Figure Font:** Barlow (sans-serif fallback), weights 400 to 700.
-**Label Font:** Barlow Condensed (sans-serif fallback), weights 400 to 700.
+**Display Font:** Antonio, 400, tracked uppercase: menu rows, page titles, mission cards, the Codec and the finale.
+**Figure Font:** Barlow (sans-serif fallback), weights 500 and 600 shipped: numbers and running sentences.
+**Label Font:** Barlow Condensed (sans-serif fallback), weights 500 to 700: every small tracked label.
+**Exceptions:** Michroma (game over title only) and the system monospace (Cascadia Mono, Consolas, then DejaVu Sans Mono) in the F3 debug overlay, where columns have to line up. Press Start 2P and VT323 are no longer used by the UI.
 
-**Character:** a plain, engineered grotesque. Barlow carries numbers and sentences; Barlow Condensed carries every label in tracked uppercase, which is what makes the UI read as military kit rather than app chrome. Both are OFL and need to be shipped in `assets/fonts/`.
+**Character:** a plain, engineered grotesque. Antonio is the one tall voice for titles and menu rows; Barlow carries numbers and sentences; Barlow Condensed carries every label in tracked uppercase, which is what makes the UI read as military kit rather than app chrome. All are OFL and ship in `assets/fonts/`.
 
 ### Hierarchy
 - **Mark** (Barlow 700, 60px; `!` at 72px): the `?` and `!` over a guard's head.
@@ -417,6 +432,10 @@ The HUD is near-monochrome ink on smoke with one muted sand accent. Signal colou
 - **Menu body** (Barlow 400, 18px, 1.5, max 54ch): gear descriptions.
 - **Menu label / caption** (Barlow Condensed 500, 15px at 0.14em / 14px at 0.1em, uppercase): box labels, effect labels, cell captions, the ticker tag.
 - **Drafting annotation** (Barlow Condensed 600, 17px, 2px tracking, uppercase): dimensions and callouts inside the drawings.
+
+- **Menu row** (Antonio 400, 30px, 0.06em, uppercase): a plate's name in `UiMenu`; the description under the list is Barlow Condensed 600 22px at 0.14em in Ink 2.
+- **Card title** (Antonio 400, 96px, 0.2em): the first line of a mission card; its later lines are Antonio 28px at 0.3em in Ink 2.
+- **Debug overlay** (system monospace, 22px design, line spacing 2): two columns at x 32 and x 1000 on a 92% dark-ink page under a 2px cyan rule.
 
 ### Named Rules
 **The Condensed Labels Rule.** Labels are Barlow Condensed, uppercase, tracked 0.1em or wider. Figures and sentences are Barlow, never tracked. A label set in Barlow, or a number set in Condensed (rank numerals aside), is off-system.
@@ -541,10 +560,25 @@ A key drawn as a key.
 ### Ticker
 - A 52px menu-strip band across the bottom edge. The tag block (strip-deep, 72px left inset) names the speaker in Menu label style; the line runs in Menu ticker style, scrolling at 30s per pass after a 2s hold.
 
+### Dark page and menu list
+- **Page:** a dimmed backdrop (the Harbour at dusk, drifting 8% over 60s) under a black shade down the left, then the plates. Full-screen pages carry one scan layer (`UiScan`: faint static scanlines and an optional slow light band) that sits above the page and never on the HUD or on panels. Reduced motion turns the band and drift off.
+- **Plate list (`UiMenu`):** 560px wide, 58px rows 8px apart under a 1px Ink 45% rule. Each plate is a slanted dark plate (dark-plate, the right edge leaning in 20px) with a line icon and its name in Menu row style at Ink 80%. The selected plate slides 26px left, turns light with dark-ink text and takes a red tab. Its one-line description shows under the list, then the key hints. Focus drives selection and the mouse takes focus on hover.
+- **Save slots:** `EMPTY`, `COMPLETE` or the next Mission, then `YYYY-MM-DD HH:MM`.
+- **Settings:** the list on the left and one 420px icon on the right that wipes in over 7 steps when the highlighted option changes; values apply live.
+- **Game over:** the one screen with its own look: near-black red ground, a slowly turning red dial, animated grain, Michroma title, one Metis line and CONTINUES n.
+
 ### Motion
-- One easing for everything that settles: `cubic-bezier(.16, 1, .3, 1)`. State elements fade over 220ms; the scene dims for the radio over 350ms; the tilt follows over 500ms; the life fill moves over 500ms and the lost segment over 1.2s after 400ms.
-- Feedback motions: the `!` pops from 40% scale over 280ms with a slight overshoot (`cubic-bezier(.34, 1.56, .64, 1)`); a calling blip flashes on a 300ms step; the jam bands roll every 1.2s and the static reseeds every 0.4s; the codec waveform pulses on 0.9s.
-- With reduced motion, every animation and transition is off.
+- Two registers. **Big moments** (a page opening, the icon in settings, the plates arriving) use hard stepped motion: wipes of 7 to 8 steps over about 0.3s and 0.24s flicker cuts (0, 1, 0, 1, 0.4, 1), staggered 35 to 45ms between plates. **Small things** (selection, tabs, fades, rises) use one easing, exponential ease-out: slide 14px in over 0.18s (`UiMotion.T_FEEDBACK`), fade up from 8px over 0.32s (`T_ENTER`), selection over 0.16s, a thin rule growing from the left over 0.45s (`T_MOMENT`), a "press any key" line breathing on 1.4s.
+- Every UI tween ignores time scale (the radio slows the world) and runs through pauses. Full-screen panels fade in and out over `T_MOMENT` (0.45s). All eased motion uses `UiMotion.TRANS` and `EASE`; do not set a curve inline.
+- HUD: the `!` pops from 40% scale over 280ms with a slight overshoot; the radio scales in stepped; the life fill moves over 500ms and the lost segment follows after 400ms; a calling blip flashes on a 300ms step; the jam bands roll every 1.2s and the static reseeds every 0.4s; the codec waveform pulses on 0.9s. Left-corner HUD tilt and the parallax follow the camera over 500ms.
+- **Reduced motion** is a setting (Settings, Reduce motion), not only an OS flag. With it on, wipes and cuts land at once, scan band and drift are off, and eased moves are instant.
+- Named UI sounds: `click` on press, `tick` on focus change.
+
+### Grid
+The HTML mocks are canonical, so their spacing wins over a 4px grid: 14, 26, 30, 34, 50, 86 and 150px appear in the mocks and in the Godot menus as drawn. New spacing that has no mock counterpart sits on 4px steps.
+
+### Colour tokens
+No colour literal outside `hud_palette.gd` except a screen's own named `const` (Game Over's red-tinted ground, the Codec's CRT greens, the Requisition paper). Translucent dark plates are `Color(HudPalette.GLASS, alpha)`. Sand is the only gold; the old `gold` token is gone.
 
 ## Do's and Don'ts
 
@@ -553,7 +587,7 @@ A key drawn as a key.
 - **Do** draw HUD panels as smoke (55%) with a 1px hairline (26%) and the two sand corner brackets, at 0 radius.
 - **Do** pair every coloured state with a shape, word, size or motion cue (ALERT plate with word and timer, JAMMED static, the taller selected slot, the offset red outline).
 - **Do** set labels in Barlow Condensed, uppercase, tracked 0.1em or more, and every changing number in tabular figures.
-- **Do** make contextual prompts a keycap plus a pictogram disc, and make every keycap legend the bound input's real name.
+- **Do** make contextual prompts a keycap plus a pictogram disc, and make every keycap legend the bound input's real name. The text prompts in `Prompts` (`[E] CARRY`) are for the tutorial and hints, where words are intended.
 - **Do** check that English and Spanish both fit (ALERT / ALERTA, JAMMED / BLOQUEADO, Tranq pistol / Pistola tranq.).
 - **Do** draw every emblem, portrait, pictogram and gear drawing originally.
 
@@ -562,7 +596,7 @@ A key drawn as a key.
 - **Don't** signal state by hue alone.
 - **Don't** use Aigis Cyan for anything that is not Aigis: not Metis, not the Handler, not the player's gear, not focus rings.
 - **Don't** ship Konami assets: no MGS portraits, MSF logo, item icons, button art or screen captures.
-- **Don't** use neon, glows, coloured shadows, bloom or scanline overlays on panels and text; the only shadows are black. The jammed Radar's rolling bands are the one banded surface, because they depict signal loss.
-- **Don't** imitate the PSX look in the UI: no pixel fonts, no dithered chrome, no low-res UI textures.
+- **Don't** use neon, glows, coloured shadows, bloom or scanline overlays on panels and text; the only shadows are black. Two banded surfaces exist: the jammed Radar's rolling bands (they depict signal loss) and the full-screen `UiScan` layer on dark pages.
+- **Don't** imitate the PSX look in the UI: no pixel fonts, no dithered chrome, no low-res UI textures. Grain is allowed only on the game-over screen.
 - **Don't** let anything show through the jammed Radar.
 - **Don't** use pure black text on the menu grey; use Menu Ink.
