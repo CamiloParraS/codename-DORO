@@ -31,7 +31,7 @@ const COLUMN := 400.0  # px, the width running text wraps to (live call, subtitl
 # The revamp's HUD kit (DESIGN.md), drawn on a design canvas 1080 px tall and as wide as the window's
 # aspect. Ported screens use these; the ones still on the 640x360 look keep the constants above.
 const DESIGN_H := 1080.0
-const LIGHT := Color("f2f4f3")  # ink on the HUD: values, pictograms, marks
+const LIGHT := Color("ecebe3")  # ink on the HUD: values, pictograms, marks
 const LIGHT_2 := Color("f2f4f3bd")
 const LIGHT_3 := Color("f2f4f38f")  # reserve counts, secondary labels
 const SMOKE := Color("16191b8c")  # panel fill over the scene
@@ -39,8 +39,9 @@ const SMOKE_HI := Color("16191bb8")  # the prompt's action disc
 const HAIRLINE := Color("f2f4f342")
 const SAND := Color("d4bc8a")  # the Operative's own readouts: brackets, gear names, life, the Radar's arrow
 const SAND_DIM := Color("d4bc8a80")
+const GOLD := Color("cbb26b")  # the Radar arrow and level pips (the mock gold)
 const CYAN := Color("a9d6dc")  # Aigis, and nothing else
-const DMG := Color("c9302a")  # ALERT, a calling guard, life lost
+const DMG := Color("c42032")  # ALERT, a calling guard, life lost
 const MARK_RED := Color("e0423a")  # the ! over a guard
 const SLP := Color("2c6aa3")
 const DARK_INK := Color("0c0e0f")  # legends on keycaps, keylines

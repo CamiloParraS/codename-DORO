@@ -4,9 +4,9 @@ class_name RadarModel
 extends RefCounted
 
 const RANGE := 30.0  # metres from the Operative to the Radar's edge
-const HALF := 150.0  # px, the disc's radius
-const MARGIN := 64.0  # px from the canvas's right edge
-const TOP := 48.0  # px from the canvas's top edge
+const HALF := 155.0  # px, the disc's radius
+const MARGIN := 70.0  # px from the canvas's right edge
+const TOP := 52.0  # px from the canvas's top edge
 
 
 ## Offset from the Operative in metres (x, z) -> disc coords (length <= 1), pinned to the rim.

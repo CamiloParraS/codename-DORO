@@ -233,24 +233,15 @@ func _edge_flash(d: Vector2) -> void:
 	_canvas.draw_rect(Rect2(d.x - w, 0, w, d.y), c)
 
 
-## Bottom-left: the stance figure over a 12x300 well with a continuous sand fill and the red lost segment.
+## Bottom-left: a 14x340 gauge, 70 px from the edges: ink fill, the red lost segment behind it, a 1 px frame.
 func _life(d: Vector2) -> void:
 	var c := _canvas
-	var well := Rect2(64, d.y - 64 - 300, 12, 300)
-	c.draw_rect(well, HudPalette.WELL)
-	c.draw_rect(well, HudPalette.HAIRLINE, false, 1.0)
-	var inner := well.grow(-2)
+	var well := Rect2(70, d.y - 70 - 340, 14, 340)
+	c.draw_rect(well, Color(0.03, 0.043, 0.051, 0.62))
+	c.draw_rect(well, Color(HudPalette.LIGHT, 0.5), false, 1.0)
+	var inner := well.grow(-1)
 	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * _lost, inner.size.x, inner.size.y * _lost), HudPalette.DMG)
-	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * life, inner.size.x, inner.size.y * life), HudPalette.SAND)
-	_stance(Vector2(well.position.x + 6, well.position.y - 14))
-
-
-## Standing or crouched, feet at `foot`.
-func _stance(foot: Vector2) -> void:
-	var h := 26.0 if _operative.crouching else 40.0
-	var col := Color(HudPalette.LIGHT, 0.85)
-	_canvas.draw_circle(foot + Vector2(0, -h + 4), 4.5, col)
-	_canvas.draw_rect(Rect2(foot.x - 4, foot.y - h + 10, 8, h - 10), col)
+	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * life, inner.size.x, inner.size.y * life), HudPalette.LIGHT)
 
 
 ## Top-right disc, north-up: range rings and compass ticks in sand, guards as triangles on their facing
@@ -264,13 +255,15 @@ func _radar(d: Vector2) -> void:
 	if RadarModel.jammed(_phase_name):
 		_jammed(o, rad)
 		return
-	c.draw_circle(o, rad, HudPalette.SMOKE)
-	c.draw_arc(o, rad, 0, TAU, 96, HudPalette.HAIRLINE, 1.5, true)
-	for ring in [rad * 0.32, rad * 0.64]:
-		c.draw_arc(o, ring, 0, TAU, 72, Color(HudPalette.SAND, 0.28), 1.0, true)
-	for dir: Vector2 in [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]:
-		c.draw_line(o + dir * (rad - 6), o + dir * (rad - 20), Color(HudPalette.SAND, 0.7), 2.0)
-	HudPalette.hud_label(c, o + Vector2(8, -rad + 30), "N", 16, Color(HudPalette.SAND, 0.8), 0.06, HudPalette.LABEL, 0, false)
+	c.draw_circle(o, rad, Color(0.036, 0.06, 0.07, 0.8))
+	c.draw_arc(o, rad - 1, 0, TAU, 96, Color(HudPalette.LIGHT, 0.85), 2.0, true)
+	for ring in [rad * 0.32, rad * 0.645]:  # range rings at 50 and 100 of 155
+		c.draw_arc(o, ring, 0, TAU, 72, Color(HudPalette.LIGHT, 0.25), 1.0, true)
+	for dir: Vector2 in [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]:  # dashed cross and edge ticks
+		for n in 25:
+			c.draw_line(o + dir * (n * 6.0 + 4.0), o + dir * (n * 6.0 + 7.0), Color(HudPalette.LIGHT, 0.25), 1.0)
+		c.draw_line(o + dir * rad, o + dir * (rad - 12), Color(HudPalette.LIGHT, 0.9), 2.0)
+	HudPalette.hud_text(c, o + Vector2(0, -rad + 29), "N", 17, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 17, 0.12), 1, false)
 	var origin := RadarModel.flat(_operative.global_position)
 	var sweep := fmod(Time.get_ticks_msec() / 1000.0, SWEEP_SECS) / SWEEP_SECS * TAU - PI / 2
 	for w in 8:  # a faint wedge trailing the line
@@ -302,7 +295,7 @@ func _radar(d: Vector2) -> void:
 			c.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT)
 	var f := RadarModel.facing(_operative.global_basis)
 	var arrow := PackedVector2Array([o + f * 17, o + f.rotated(2.55) * 14, o - f * 5, o + f.rotated(-2.55) * 14])
-	c.draw_colored_polygon(arrow, HudPalette.SAND)
+	c.draw_colored_polygon(arrow, HudPalette.GOLD)
 	arrow.append(arrow[0])
 	c.draw_polyline(arrow, HudPalette.DARK_INK, 1.5, true)
 
@@ -343,8 +336,9 @@ func _voiceprints(d: Vector2) -> void:
 		HudPalette.hud_label(_canvas, Vector2(x, y + 24 + 22 * i), rows[i], 17, HudPalette.LIGHT_2, 0.12, HudPalette.LABEL, 2)
 
 
-## Top-centre: ALERT is a solid red plate with the timer behind a divider; EVASION a smoke plate edged in
-## sand; CAUTION a quiet smoke plate. The word and the plate's shape carry the phase, not hue alone.
+## Top-centre, 56 px down: ALERT is a red slab with a slanted foot and the timer on a dark slab beside it;
+## EVASION the same with a dark word slab over a red underline; CAUTION a quiet dark plate. The word and the
+## plate's shape carry the phase, not hue alone.
 func _phase(d: Vector2) -> void:
 	var ph := HudModel.phase(AlertChain.area)
 	if ph[0] != _phase_name:
@@ -356,27 +350,31 @@ func _phase(d: Vector2) -> void:
 	var word: String = tr("ui.phase." + String(ph[0]).to_lower()).to_upper()
 	var whole := ceili(ph[1])
 	var secs := "%d:%02d" % [floori(whole / 60.0), whole % 60]
-	var wf := HudPalette.tracked(HudPalette.LABEL_BOLD, 26, 0.4)
-	var ww := wf.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
-	var tw := HudPalette.FIGURE.get_string_size(secs, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
-	var r := Rect2(0, 52, 24 + ww + 8 + 18 + tw + 22, 46)
-	r.position.x = roundf((d.x - r.size.x) / 2)
+	var wf := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.5)
+	var tf := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.1)
+	var ww := wf.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, 28).x
+	var tw := tf.get_string_size(secs, HORIZONTAL_ALIGNMENT_LEFT, -1, 28).x
+	var h := 50.0
+	var wslab := 36.0 + ww + 26.0
+	var tslab := 22.0 + tw + 30.0
+	var x0 := roundf((d.x - (wslab + tslab - 14.0)) / 2.0)
 	var alert: bool = ph[0] == "ALERT"
 	var evasion: bool = ph[0] == "EVASION"
-	for i in 3:  # the plate's lift
-		c.draw_rect(Rect2(r.position + Vector2(0, 4), r.size).grow(2 + i * 4), Color(0, 0, 0, 0.1))
-	if alert:  # two hard flickers on arrival, in step with the edge flash
-		var lit: bool = _phase_age > 0.32 or int(_phase_age * 12.5) % 2 == 0
-		c.draw_rect(r, HudPalette.DMG if lit else HudPalette.DMG.darkened(0.6))
-	else:
-		c.draw_rect(r, HudPalette.SMOKE_HI)
-		c.draw_rect(r, HudPalette.SAND if evasion else HudPalette.HAIRLINE, false, 1.5 if evasion else 1.0)
-	var ink := HudPalette.LIGHT if alert else (HudPalette.SAND if evasion else HudPalette.LIGHT_2)
-	var x := r.position.x + 24
-	HudPalette.hud_text(c, Vector2(x, r.position.y + 33), word, 26, ink, wf, 0, false)
-	x += ww + 8
-	c.draw_line(Vector2(x, r.position.y), Vector2(x, r.end.y), Color(ink, 0.45), 1.0)
-	HudPalette.hud_text(c, Vector2(x + 18, r.position.y + 33), secs, 26, ink, HudPalette.FIGURE, 0, false)
+	var dark := Color(0.031, 0.043, 0.051, 0.86)
+	var red := HudPalette.DMG
+	if alert and _phase_age <= 0.32 and int(_phase_age * 12.5) % 2 != 0:  # two hard flickers on arrival
+		red = red.darkened(0.6)
+	var y := 56.0
+	var word_col := red if alert else dark
+	c.draw_colored_polygon(PackedVector2Array([Vector2(x0, y), Vector2(x0 + wslab, y), Vector2(x0 + wslab - 18, y + h), Vector2(x0, y + h)]), word_col)
+	if evasion:
+		c.draw_rect(Rect2(x0, y + h - 3, wslab - 18, 3), HudPalette.DMG)
+	var tx := x0 + wslab - 14.0
+	c.draw_colored_polygon(PackedVector2Array([Vector2(tx + 14, y), Vector2(tx + tslab, y), Vector2(tx + tslab, y + h), Vector2(tx, y + h)]), dark)
+	c.draw_rect(Rect2(tx, y + h - 3, tslab, 3), HudPalette.DMG if (alert or evasion) else Color(HudPalette.LIGHT, 0.3))
+	var word_ink := HudPalette.LIGHT if alert else Color("e23a4c") if evasion else HudPalette.LIGHT_2
+	HudPalette.hud_text(c, Vector2(x0 + 36, y + 36), word, 28, word_ink, wf, 0, false)
+	HudPalette.hud_text(c, Vector2(tx + 22, y + 36), secs, 28, HudPalette.LIGHT, tf, 0, false)
 
 
 ## Top-left, from Mission 2 on: the Dominant Voice, then the six Habits with their 0-3 levels as pips. The one
@@ -385,12 +383,12 @@ func _aigis_cue() -> void:
 	if _aigis <= 0.0 or _voice == "":
 		return
 	var c := _canvas
-	var at := Vector2(64, 52)
+	var at := Vector2(70, 56)
 	var eye := at + Vector2(13, 13)
 	c.draw_arc(eye, 12, 0, TAU, 32, HudPalette.CYAN, 2.0, true)
 	c.draw_arc(eye + Vector2(-4, -1), 3.2, 0, TAU, 16, HudPalette.CYAN, 2.0, true)
 	c.draw_arc(eye + Vector2(4, -1), 3.2, 0, TAU, 16, HudPalette.CYAN, 2.0, true)
-	HudPalette.hud_label(c, at + Vector2(36, 21), _voice, 22, Color(HudPalette.CYAN, 0.92), 0.26)
+	HudPalette.hud_text(c, at + Vector2(38, 22), _voice, 22, HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.34), 0)
 	var lit := _tick if _tick_age < TICK_TIME else ""
 	for i in Aigis.HABITS.size():
 		var h: String = Aigis.HABITS[i]
@@ -403,70 +401,84 @@ func _aigis_cue() -> void:
 			c.draw_colored_polygon(PackedVector2Array([p + Vector2(36, -6), p + Vector2(41, 3), p + Vector2(31, 3)]), HudPalette.CYAN)
 		for j in 3:
 			var pip := Rect2(p + Vector2(3 + j * 10, 38), Vector2(8, 3))
-			c.draw_rect(pip, HudPalette.SAND if j < int(_levels.get(h, 0)) else Color(HudPalette.LIGHT, 0.25))
+			c.draw_rect(pip, HudPalette.GOLD if j < int(_levels.get(h, 0)) else Color(HudPalette.LIGHT, 0.3))
 
 
-## Bottom-right: the item card (with the Fulton balloons beside it) over the weapon card.
+## Geometry of the two cards (design px): the mock's 400 px column, 70 px from the right, 66 from the bottom.
+func _weapon_rect(d: Vector2) -> Rect2:
+	return Rect2(d.x - 70 - 376, d.y - 84 - 150, 376, 150)
+
+
+func _item_rect(d: Vector2) -> Rect2:
+	return Rect2(d.x - 70 - 330, d.y - 84 - 150 - 14 - 98, 330, 98)
+
+
+## A card: smoke fill and a 1 px ink frame at 50%.
+func _card(r: Rect2) -> void:
+	_canvas.draw_rect(r, Color(0.04, 0.055, 0.063, 0.66))
+	_canvas.draw_rect(r, Color(HudPalette.LIGHT, 0.5), false, 1.0)
+
+
+## Bottom-right: the item card (with the Fulton balloons beside it) over the weapon card and its rounds bar.
 func _gear(d: Vector2) -> void:
-	var xr := d.x - 64
-	var yb := d.y - 64
 	var gun: Gun = _operative.gun()
-	var wr := Rect2(xr - 320, yb - 118, 320, 118)
-	HudPalette.hud_panel(_canvas, wr)
-	var name_w := _card_name(wr.position + Vector2(16, 30), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
+	var wr := _weapon_rect(d)
+	_card(wr)
+	var name_w := _card_name(wr.position + Vector2(12, 29), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
 	var chip := "LTH" if gun.lethal else "SLP"
-	_chip(Vector2(wr.position.x + 16 + name_w + 8, wr.position.y + 14), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
-	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(16, 112), 0.72 if gun == _operative.rifle else 0.78, HudPalette.LIGHT)
+	_chip(Vector2(wr.position.x + 12 + name_w + 8, wr.position.y + 11), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
+	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(50, 122), 0.83 if gun == _operative.rifle else 1.0, HudPalette.LIGHT)
 	if gun.suppressor_max >= 0:  # shots left on the suppressor
-		var sx := wr.position.x + 16
-		HudPalette.hud_label(_canvas, Vector2(sx, wr.position.y + 54), "SUP", 13, HudPalette.LIGHT_3, 0.12, HudPalette.LABEL, 0, false)
+		var sx := wr.position.x + 12
 		for i in gun.suppressor_max:
 			var col := HudPalette.LIGHT if i < gun.suppressor else Color(HudPalette.LIGHT, 0.2)
-			_canvas.draw_rect(Rect2(sx + 32 + i * 12, wr.position.y + 44, 9, 9), HudPalette.DMG if gun.suppressor <= 0 else col)
+			_canvas.draw_rect(Rect2(sx + i * 12, wr.position.y + 40, 9, 9), HudPalette.DMG if gun.suppressor <= 0 else col)
 	var count := str(gun.loaded)
-	var res := "/ %d" % gun.reserve
-	var rw := HudPalette.FIGURE_MED.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 14), res, 20, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, HudPalette.FIGURE_MED, 2, false)
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw - 6, wr.end.y - 12), count, 46, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, HudPalette.FIGURE, 2, false)
-	var track := Rect2(wr.position.x + 16, wr.end.y + 12, wr.size.x - 32, 6)  # rounds left, loaded and reserve
+	var res := " / %d" % gun.reserve
+	var cf := HudPalette.tracked(HudPalette.DISPLAY, 48, 0.04)
+	var rf := HudPalette.DISPLAY
+	var rw := rf.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 14, wr.end.y - 10), res, 24, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, rf, 2, false)
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 14 - rw, wr.end.y - 10), count, 48, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	var track := Rect2(wr.position.x, wr.end.y + 12, wr.size.x, 6)  # rounds left, loaded and reserve
 	_canvas.draw_rect(track, Color(HudPalette.LIGHT, 0.22))
 	var left := float(gun.loaded + gun.reserve) / maxf(gun.total, 1.0)
 	_canvas.draw_rect(Rect2(track.position, Vector2(track.size.x * clampf(left, 0.0, 1.0), track.size.y)), HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT)
 	var it: Items = _operative.items
-	var ir := Rect2(xr - 220, wr.position.y - 12 - 84, 220, 84)
-	HudPalette.hud_panel(_canvas, ir)
+	var ir := _item_rect(d)
+	_card(ir)
 	var live: bool = it.scanning() or _operative.throwing
-	_card_name(ir.position + Vector2(16, 30), tr("ui.gear.scanner" if it.selected == Items.Kind.SCANNER else "ui.gear.magazine"), HudPalette.LIGHT if live else HudPalette.SAND)
-	_sil(&"scanner" if it.selected == Items.Kind.SCANNER else &"magazine", ir.position + Vector2(16, 76), 0.8, HudPalette.LIGHT)
-	HudPalette.hud_text(_canvas, Vector2(ir.end.x - 16, ir.end.y - 12), str(it.count()), 34, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.FIGURE, 2, false)
+	_card_name(ir.position + Vector2(12, 29), tr("ui.gear.scanner" if it.selected == Items.Kind.SCANNER else "ui.gear.magazine"), HudPalette.LIGHT)
+	_sil(&"scanner" if it.selected == Items.Kind.SCANNER else &"magazine", ir.position + Vector2(30, 86), 1.1 if it.selected == Items.Kind.SCANNER else 1.4, HudPalette.LIGHT if live else Color(HudPalette.LIGHT, 0.86))
+	HudPalette.hud_text(_canvas, Vector2(ir.end.x - 14, ir.end.y - 10), str(it.count()), 38, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.04), 2, false)
 	if it.scanning():
-		_canvas.draw_rect(Rect2(ir.position.x + 1, ir.end.y - 4, (ir.size.x - 2) * it.scan_left / it.scan_time, 3), HudPalette.SAND)
+		_canvas.draw_rect(Rect2(ir.position.x + 1, ir.end.y - 4, (ir.size.x - 2) * it.scan_left / it.scan_time, 3), HudPalette.LIGHT)
 	if not (_select == "item" and _select_left > 0.0):  # the open strip takes the balloons' place
-		_balloons(Rect2(xr - 320, ir.position.y, 88, 84))
+		_balloons(Rect2(ir.position.x - 6 - 88, ir.position.y, 88, 98))
 
 
-func _card_name(p: Vector2, s: String, col := HudPalette.SAND) -> float:
-	var f := HudPalette.tracked(HudPalette.LABEL, 19, 0.1)
-	HudPalette.hud_text(_canvas, p, s.to_upper(), 19, col, f, 0, false)
-	return f.get_string_size(s.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 19).x
+func _card_name(p: Vector2, s: String, col := HudPalette.LIGHT) -> float:
+	var f := HudPalette.tracked(HudPalette.DISPLAY, 20, 0.14)
+	HudPalette.hud_text(_canvas, p, s.to_upper(), 20, col, f, 0, false)
+	return f.get_string_size(s.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
 
 
 func _chip(p: Vector2, s: String, bg: Color) -> void:
-	var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 13, 0.1)
+	var f := HudPalette.tracked(HudPalette.DISPLAY, 13, 0.1)
 	var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
-	_canvas.draw_rect(Rect2(p, Vector2(w + 10, 18)), bg)
-	HudPalette.hud_text(_canvas, p + Vector2(5, 14), s, 13, HudPalette.LIGHT, f, 0, false)
+	_canvas.draw_rect(Rect2(p, Vector2(w + 12, 20)), bg)
+	HudPalette.hud_text(_canvas, p + Vector2(6, 15), s, 13, HudPalette.LIGHT, f, 0, false)
 
 
 ## Fulton balloons left: a balloon and the count, red at none, blinking light while one could go up now.
 func _balloons(r: Rect2) -> void:
-	HudPalette.hud_panel(_canvas, r)
+	_card(r)
 	var n: int = _operative.fultons
 	var ready: bool = n > 0 and _operative.fulton_ready()
 	var blink := ready and int(Time.get_ticks_msec() / 250) % 2 == 0
 	var col := HudPalette.DMG if n == 0 else (HudPalette.LIGHT if blink else HudPalette.SAND)
-	_sil(&"balloon", r.position + Vector2(12, 70), 0.9, col)
-	HudPalette.hud_text(_canvas, Vector2(r.end.x - 12, r.end.y - 14), str(n), 30, col, HudPalette.FIGURE, 2, false)
+	_sil(&"balloon", r.position + Vector2(12, 82), 0.9, col)
+	HudPalette.hud_text(_canvas, Vector2(r.end.x - 12, r.end.y - 12), str(n), 32, col, HudPalette.tracked(HudPalette.DISPLAY, 32, 0.04), 2, false)
 
 
 ## A short strip that grows leftward from the card it changes: icon and count only, the selected slot (white,
@@ -487,10 +499,7 @@ func _selector(d: Vector2) -> void:
 		slots.append(["ui.gear.scanner", &"scanner", str(it.charges), it.selected == Items.Kind.SCANNER])
 		slots.append(["ui.gear.magazine", &"magazine", str(it.magazines), it.selected == Items.Kind.MAGAZINE])
 	slots.sort_custom(func(x: Array, y: Array) -> bool: return x[3] and not y[3])  # the selected one first
-	var xr := d.x - 64
-	var yb := d.y - 64
-	var wr := Rect2(xr - 320, yb - 118, 320, 118)
-	var card := wr if _select == "weapon" else Rect2(xr - 220, wr.position.y - 96, 220, 84)
+	var card := _weapon_rect(d) if _select == "weapon" else _item_rect(d)
 	var x := card.position.x - 6
 	var line := Color(HudPalette.LIGHT, 0.16 * a)
 	var step := floorf(clampf(_select_age / SELECT_WIPE, 0.0, 1.0) * 6.0) / 6.0  # the strip's wipe, outward from the card
