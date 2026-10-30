@@ -13,7 +13,7 @@ func suite_name() -> String:
 
 func test_marker_counts() -> void:
 	var a: Node = load(SCENE).instantiate()
-	var counts := {"spot": 5, "sentry_high_point": 2, "camera_mount": 4, "spoof_place": 4, "guard_post": 9,
+	var counts := {"spot": 5, "sentry_high_point": 2, "camera_mount": 3, "spoof_place": 5, "guard_post": 7,
 		"guard_post_extra": 3, "resupply_crate": 1, "extraction": 1, "target_post": 1}
 	for g in counts:
 		var n := 0
@@ -42,11 +42,16 @@ func test_route_spots_doorways_and_towers_are_on_the_navmesh() -> void:
 		points.append(post.transform * wp.position)
 	for s in ["SafeRoom", "OperativeStart", "ResearchFiles", "Extraction"]:
 		points.append((a.get_node("Spots/" + s) as Marker3D).position)
-	# the corridor's doorways to N1, the office, the lab, the vault, the lobby, the Archive and the hall
-	for x in [13, 25, 37, 49]:
-		points.append(Vector3(x - 40, 0, 2))
-	for x in [11, 31, 45]:
-		points.append(Vector3(x - 40, 0, 5))
+	# the ring: the north row's and the south row's doorways, the middle block's, the room-to-room doors
+	for x in [13, 25, 38, 51]:
+		points.append(Vector3(x - 40, 0, 28 - 40))
+	for x in [15, 32, 47]:
+		points.append(Vector3(x - 40, 0, 31 - 40))
+	for x in [23, 36]:
+		points.append(Vector3(x - 40, 0, 41 - 40))
+	for x in [11, 31, 47]:
+		points.append(Vector3(x - 40, 0, 44 - 40))
+	points.append_array([Vector3(32 - 40, 0, 22 - 40), Vector3(30 - 40, 0, 34.5 - 40), Vector3(40 - 40, 0, 38 - 40), Vector3(9 - 40, 0, 36 - 40)])
 	points.append_array([Vector3(-5, 5, -34), Vector3(5, 5, 35)])  # gate and yard tower tops
 	var nm: NavigationMesh = (a.get_node("NavRegion") as NavigationRegion3D).navigation_mesh
 	for p in points:
@@ -82,6 +87,17 @@ func test_mission_3_plays_here_with_the_research_files_as_its_step_and_the_resea
 	var a: Node = load(SCENE).instantiate()
 	var files: Area3D = a.get_node("Intel/" + m.steps[-1].intel)
 	assert_true(files.get_script().resource_path.ends_with("intel_pickup.gd"), "an intel pickup: MissionRun treats it as the step")
+	a.free()
+
+
+## Each Encounter's guards, and E2 and E3 never share a shout (the map's rule: 15 m apart through any wall).
+func test_three_encounters_and_step_1_is_the_dock_guards_hold_up() -> void:
+	var a: Node = load(SCENE).instantiate()
+	assert_eq(a.get_node("Encounters").get_children().filter(func(n: Node) -> bool: return n.is_in_group("encounter")).size(), 3)
+	var w: Area3D = a.get_node("Intel/" + Campaign.MISSIONS[2].steps[0].intel)
+	assert_eq(w.get("verb"), "answer")
+	assert_eq(Array(w.get("guards")), ["GuardA9"])
+	assert_eq((a.get_node("GuardPosts/PostA9") as Marker3D).get_meta("holdup"), "code")
 	a.free()
 
 

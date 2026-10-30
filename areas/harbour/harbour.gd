@@ -75,18 +75,22 @@ func _spawn_targets(guards: Array) -> void:
 	$MissionRun.tally.add("targets", names.size())
 
 
-## Caution detours: every guard of an Encounter gets the other route points of its Encounter's posts.
+## Caution detours: every guard gets the other route points of its group's posts. The group is the post's
+## `detour` meta when it has one (the Research annex splits its north strip from its core, both E2), else its
+## Encounter; a guard without a post of its own (an escort) uses its Encounter.
 func _set_detours(guards: Array) -> void:
-	var points := {}  # Encounter -> [Vector3]
+	var points := {}  # group -> [Vector3]
+	var group_of := {}  # post name -> group
 	for post: Marker3D in $GuardPosts.get_children():
-		var enc: int = post.get_meta("enc", 0)
-		if enc:
-			var at: Array = points.get_or_add(enc, [])
+		var group: Variant = post.get_meta("detour", post.get_meta("enc", 0))
+		group_of[post.name] = group
+		if group:
+			var at: Array = points.get_or_add(group, [])
 			at.append(post.global_position)
 			for wp: Marker3D in post.get_children():
 				at.append(wp.global_position)
 	for g: Guard in guards:
-		for p: Vector3 in points.get(g.encounter, []):
+		for p: Vector3 in points.get(group_of.get(String(g.name).replace("Guard", "Post"), g.encounter), []):
 			if g.route.all(func(r: Vector3) -> bool: return r.distance_to(p) > Guard.REACHED * 2.0):
 				g.detours.append(p)
 

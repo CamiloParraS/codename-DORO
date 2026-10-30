@@ -36,7 +36,7 @@ const MISSIONS := [
 	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, encounters = 3, targets = ["LEAD RESEARCHER"], carry_only = true,
 		open = [["analyst", "live.m3.open.01"]],
 		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03", "researcher"], ["analyst", "codec.m3.04", "researcher"],
-			["handler", "codec.m3.05"], ["handler", "codec.m3.06"], ["analyst", "codec.m3.07"]], steps = [
+			["handler", "codec.m3.05"], ["handler", "codec.m3.08"], ["handler", "codec.m3.06"], ["analyst", "codec.m3.07"]], steps = [
 		{intel = "IntelOffice", objective = "objective.m3.s1", call = [["analyst", "live.m3.s1.01"], ["analyst", "intel.m3.authority"]], hint = ["hint.m3.s1.1", "hint.m3.s1.2"]},
 		{intel = "IntelVault", objective = "objective.m3.s2", call = [["analyst", "live.m3.s2.01"]], hint = ["hint.m3.s2.1", "hint.m3.s2.2"]},
 		{intel = "ResearchFiles", objective = "objective.m3.s3", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]], hint = ["hint.m3.s3.1", "hint.m3.s3.2"]},

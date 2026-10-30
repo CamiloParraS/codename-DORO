@@ -22,9 +22,10 @@ codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where
 codec.m3.02,Is the lead researcher a threat?,¿La investigadora jefa es una amenaza?
 codec.m3.03,"She is the key. She built Aigis's memory, and she hasn't left the annex in twelve months.",Ella es la clave. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
 codec.m3.04,"Palladion keeps her close. Whatever Aigis is, she made it.","Palladion la tiene vigilada. Sea lo que sea Aigis, ella lo hizo."
-codec.m3.05,"Access logs from the office first. They open the vault; the research files are past it, in the Archive.","Primero los registros de acceso de la oficina. Abren la bóveda; los archivos están detrás, en el Archivo."
+codec.m3.05,"The dock guard carries the vault code. The vault is in the heart of the lab; the research files are past it, in the Archive.","El guardia del muelle lleva el código de la bóveda. La bóveda está en el corazón del laboratorio; los archivos están detrás, en el Archivo."
 codec.m3.06,"Kill her or carry her out, and take the files. She is ill, a Fulton would kill her, so on foot. Alive pays extra.","Elimínala o sácala de allí, y llévate los archivos. Está enferma y el Fulton la mataría, así que a pie. Viva paga extra."
 codec.m3.07,Those files should explain what Aigis really is.,Esos archivos deberían explicar qué es Aigis en realidad.
+codec.m3.08,Inside the core it's one net. Drop a guard there and the others hear it.,"Dentro del núcleo es una sola red. Si derribas a un guardia allí, los demás lo oyen."
 codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about to give Aigis full authority.","Es aquí. El Núcleo está bajo el Puerto, y Palladion va a darle a Aigis plena autoridad."
 codec.m4.02,What is the plan?,¿Cuál es el plan?
 codec.m4.03,Back into the operations building. The lift code still works.,De vuelta al edificio de operaciones. El código del montacargas sigue funcionando.
@@ -64,8 +65,8 @@ live.m2.s2.01,Relay is down. Every guard on the island will be looking for the c
 live.m2.s2.02,Its broadcasts were machine-made news. Aigis manufactures the crises it is hired to fix.,Sus emisiones eran noticias generadas por máquina. Aigis fabrica las crisis que lo contratan para resolver.
 intel.m2.inflation,Synthetic Content Inflation: flood the news until a crisis is real enough to sell.,Inflación de Contenido Sintético: inundar las noticias hasta que una crisis sea lo bastante real para venderla.
 live.m2.s3.01,The chief's orders are signed by Aigis. Find the chief and finish it.,Las órdenes del jefe están firmadas por Aigis. Encuentra al jefe y termina esto.
-live.m3.s1.01,Access logs copied. The vault is at the end of the corridor.,Registros de acceso copiados. La bóveda está al final del pasillo.
-intel.m3.authority,The logs show a board vote next week. Palladion is giving Aigis full authority over its defence networks.,Los registros muestran una votación de la junta la semana que viene. Palladion va a darle a Aigis plena autoridad sobre sus redes de defensa.
+live.m3.s1.01,Code confirmed. The vault is in the middle of the lab.,Código confirmado. La bóveda está en el centro del laboratorio.
+intel.m3.authority,His duty roster mentions a board vote next week. Palladion is giving Aigis full authority over its defence networks.,Su hoja de servicio menciona una votación de la junta la semana que viene. Palladion va a darle a Aigis plena autoridad sobre sus redes de defensa.
 live.m3.s2.01,The vault is open. The files are back in the Archive.,"La bóveda está abierta. Los archivos están más adentro, en el Archivo."
 live.m3.s3.01,Files secured. Aigis was built from the memories of dead commanders.,Archivos asegurados. Aigis se construyó con los recuerdos de comandantes muertos.
 live.m3.s3.02,And the Core is under the Harbour. That's where we finish this.,Y el Núcleo está bajo el Puerto. Ahí terminamos esto.
@@ -218,6 +219,8 @@ holdup.lift_code,Don't shoot! The lift code is four-one-seven-seven. The panel's
 search.lift_code,A note in his pocket: the lift code is four-one-seven-seven. The panel's in operations.,Una nota en su bolsillo: el código del montacargas es cuatro-uno-siete-siete. El panel está en operaciones.
 holdup.keys,"Don't shoot! The keys are on my belt. Take them, I never saw you!","¡No dispares! Las claves están en mi cinturón. ¡Tómalas, no te vi!"
 search.keys,"Taped inside his sleeve: the relay's encryption keys.","Pegadas en su manga: las claves de cifrado de la estación."
+holdup.code,"Don't shoot! The vault code is on my roster, in my pocket. Take it!","¡No dispares! El código de la bóveda está en mi hoja de servicio, en el bolsillo. ¡Tómalo!"
+search.code,Folded in his pocket: a duty roster with the vault code on it.,Doblada en su bolsillo: una hoja de servicio con el código de la bóveda.
 holdup.objective,"Don't shoot! What you're after? It's that way, I swear!","¡No dispares! ¿Lo que buscas? ¡Está por allí, lo juro!"
 holdup.scan,"Don't shoot! The others? They're all around, everywhere!",¡No dispares! ¿Los otros? ¡Están por todas partes!
 holdup.voiceprint,"Don't shoot! I'm only on watch, I swear!","¡No dispares! ¡Solo estoy de guardia, lo juro!"
@@ -231,7 +234,7 @@ holdup.where.6,{m} m west,{m} m al oeste
 holdup.where.7,{m} m north-west,{m} m al noroeste
 live.m1.open.01,"The smoke break is at the freighter's stern, behind the bridge. Listen in.","La pausa para fumar es en la popa del carguero, detrás del puente. Escucha."
 live.m2.open.01,First the garage. We need the encryption keys.,Primero el garaje. Necesitamos las claves de cifrado.
-live.m3.open.01,The office first. Download the access logs.,Primero la oficina. Descarga los registros de acceso.
+live.m3.open.01,The dock guard first. Get the vault code out of him.,Primero el guardia del muelle. Sácale el código de la bóveda.
 live.m4.open.01,"The operations building, by the west cliff. The lift is inside.","El edificio de operaciones, junto al acantilado oeste. El montacargas está dentro."
 hint.m1.s1.1,"The two deck hands smoke behind the bridge, at the freighter's stern.","Los dos marineros fuman detrás del puente, en la popa del carguero."
 hint.m1.s1.2,Move aft along the deck while the look-out faces away. Stand at the bridge corner and record them.,Avanza hacia popa por la cubierta mientras el vigía mira a otro lado. Ponte en la esquina del puente y grábalos.
@@ -245,12 +248,12 @@ hint.m2.s2.1,The relay console is up on the summit.,"La consola de la estación 
 hint.m2.s2.2,"Take the path up the scree. Sabotage takes five seconds, so make sure nobody can see you.","Sube por el pedregal. El sabotaje tarda cinco segundos, así que asegúrate de que nadie te vea."
 hint.m2.s3.1,The mess hut is in the middle of the station.,El comedor está en el centro de la estación.
 hint.m2.s3.2,"The chief's escort sees the door. A Spoof can send the escort away, or you can go in through the back.","La escolta del jefe ve la puerta. Un Spoof puede alejar a la escolta, o puedes entrar por detrás."
-hint.m3.s1.1,The office is in the middle of the annex.,La oficina está en el centro del anexo.
-hint.m3.s1.2,Use the side door from the yard and keep out of the corridor's line of sight.,Usa la puerta lateral del patio y evita la línea de visión del pasillo.
-hint.m3.s2.1,The vault is at the east end of the corridor.,La bóveda está en el extremo este del pasillo.
-hint.m3.s2.2,"Time your steps to the guard's turn. The corridor is long, but he only looks away for a few seconds.","Calcula tus pasos con el giro del guardia. El pasillo es largo, pero solo mira a otro lado unos segundos."
-hint.m3.s3.1,"The research files are in the Archive, past the lobby.","Los archivos de investigación están en el Archivo, pasado el vestíbulo."
-hint.m3.s3.2,"The lobby guard blocks the way. Record the pair chatting, then Spoof him out. Or go around by the crawlspace.",El guardia del vestíbulo bloquea el paso. Graba a la pareja que charla y luego mándalo lejos con un Spoof. O rodea por el conducto.
+hint.m3.s1.1,The dock guard stands under the floodlight at the east end of the yard.,"El guardia del muelle está bajo el foco, en el extremo este del patio."
+hint.m3.s1.2,"Follow the south fence while the yard patrol looks away, then hold him up from behind.",Sigue la valla sur mientras la patrulla del patio mira a otro lado y luego encañónalo por detrás.
+hint.m3.s2.1,"The vault is in the middle of the lab. It has a back door, through the clean room.","La bóveda está en el centro del laboratorio. Tiene una puerta trasera, por la sala limpia."
+hint.m3.s2.2,"Wait for the corridor guard's turn at the front door, or for the researcher to leave the clean room.","Espera a que el guardia del pasillo se gire en la puerta principal, o a que la investigadora salga de la sala limpia."
+hint.m3.s3.1,"The research files are in the Archive, next to the loading hall.","Los archivos de investigación están en el Archivo, junto a la nave de carga."
+hint.m3.s3.2,The Archive guard watches both doors. Record a guard's voice and Spoof him out to the loading hall.,El guardia del Archivo vigila las dos puertas. Graba la voz de un guardia y mándalo a la nave de carga con un Spoof.
 hint.m4.s1.1,"The operations building is on the west side of the yard, by the cliff.","El edificio de operaciones está al oeste del patio, junto al acantilado."
 hint.m4.s1.2,The guards are on alert for you and the north door is sealed. Keep to cover and come in by the south door.,Los guardias están alerta por ti y la puerta norte está sellada. Usa las coberturas y entra por la puerta sur.
 hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the cliff.","El montacargas está al fondo de la sala, contra el acantilado."
@@ -263,8 +266,8 @@ objective.m1.s3,ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING,I
 objective.m2.s1,RECOVER THE ENCRYPTION KEYS FROM THE GARAGE,RECUPERA LAS CLAVES DE CIFRADO DEL GARAJE
 objective.m2.s2,SABOTAGE THE RELAY CONSOLE: HOLD E FOR 5 SECONDS,SABOTEA LA CONSOLA DE RETRANSMISIÓN: MANTÉN E 5 SEGUNDOS
 objective.m2.s3,SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS,BUSCA LAS ÓRDENES DEL JEFE EN EL COMEDOR
-objective.m3.s1,DOWNLOAD THE ACCESS LOGS FROM THE OFFICE,DESCARGA LOS REGISTROS DE ACCESO DE LA OFICINA
-objective.m3.s2,OPEN THE VAULT AT THE END OF THE CORRIDOR,ABRE LA BÓVEDA AL FINAL DEL PASILLO
+objective.m3.s1,GET THE VAULT CODE FROM THE DOCK GUARD,CONSIGUE EL CÓDIGO DE LA BÓVEDA DEL GUARDIA DEL MUELLE
+objective.m3.s2,OPEN THE VAULT IN THE HEART OF THE LAB,ABRE LA BÓVEDA EN EL CORAZÓN DEL LABORATORIO
 objective.m3.s3,EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE,EXTRAE LOS ARCHIVOS DE INVESTIGACIÓN QUE REVELAN EL NÚCLEO
 objective.m4.s1,REACH THE OPERATIONS BUILDING,LLEGA AL EDIFICIO DE OPERACIONES
 objective.m4.s2,TAKE THE FREIGHT LIFT DOWN,BAJA EN EL MONTACARGAS
