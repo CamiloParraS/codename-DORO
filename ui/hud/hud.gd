@@ -1,8 +1,8 @@
 ## The in-game HUD (DESIGN.md), drawn by hand on `_canvas` in design px: 1080 tall, as wide as the window's
 ## aspect, scaled to the window and smoothly filtered. Corners: Aigis top-left, the phase plate top-centre, the
 ## Radar top-right, life bottom-left, item and weapon cards bottom-right (the selector opens beside them when
-## either changes), the live call and radio lines middle-left, the text-free action prompt lower-middle, and
-## the detection arcs round the screen centre. Only the crosshair stays on the 640x360 logical canvas, so its
+## either changes), the live call and radio lines middle-left, and the text-free action prompt lower-middle.
+## Only the crosshair stays on the 640x360 logical canvas, so its
 ## pixel art keeps its grid. Lives on CanvasLayer 1 so the banding pass on layer 0 does not touch it.
 extends Control
 
@@ -11,13 +11,15 @@ const TICK_TIME := 6.0  # s a Habit Aigis just logged stays lit on the strip
 const TIP_TIME := 6.0
 const VP_SHOWN := 3  # Voiceprint names listed before "+n"
 const SELECT_TIME := 1.4  # s the selector stays open after the last change
-const ARC_RADIUS := 260.0
-const ARC_SPAN := 0.32  # radians either side of a guard's bearing
+const SELECT_WIPE := 0.2  # s the strip takes to open, in 6 hard steps
+const SLOT_STAGGER := 0.035
+const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
+const MINT := Color("8fd9c0")  # the live call card's tint
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
-const CALL := Vector2(64, 400)  # the live call's corner
-const CALL_W := 560.0
-const FACE := 84.0
+const CALL := Vector2(64, 410)  # the live call card's corner
+const CALL_W := 430.0
+const FACE := 76.0
 const PORTRAIT := "res://ui/codec/portraits/%s_%d.png"
 
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
@@ -42,6 +44,7 @@ var _tip_left := 0.0
 var _live: CodecCall  # the live Codec call in progress, if any
 var _select := ""  # "weapon" or "item" while the selector is open
 var _select_left := 0.0
+var _select_age := 0.0  # s since the selector opened (unscaled), for its wipe
 var _last_gun: Gun
 var _last_item := -1
 var _canvas := Control.new()  # the design-px layer
@@ -77,6 +80,7 @@ func _process(delta: float) -> void:
 	_phase_age += delta
 	_tick_age += delta
 	_select_left = maxf(_select_left - delta, 0.0)
+	_select_age += delta / maxf(Engine.time_scale, 0.05)
 	_read_run()
 	if _operative and _operative.aiming:
 		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
@@ -158,12 +162,17 @@ func _track_lost(now: float, delta: float) -> void:
 func _track_selection() -> void:
 	var g: Gun = _operative.gun()
 	var it: int = _operative.items.selected
+	var changed := ""
 	if _last_gun and g != _last_gun:
-		_select = "weapon"
-		_select_left = SELECT_TIME
+		changed = "weapon"
 	elif _last_item >= 0 and it != _last_item:
-		_select = "item"
+		changed = "item"
+	if changed != "":
+		if _select_left <= 0.0 or _select != changed:
+			_select_age = 0.0  # a fresh opening wipes in; a change while open just moves the highlight
+		_select = changed
 		_select_left = SELECT_TIME
+		Mixer.play(&"tick")
 	_last_gun = g
 	_last_item = it
 
@@ -198,8 +207,6 @@ func _draw_design() -> void:
 	var radio_open: bool = radio != null and radio.menu != null  # the radial owns the screen while it is open
 	life = _operative.health.life()
 	_edge_flash(d)
-	var cam: Camera3D = _operative.camera
-	_arcs(d, Vector3(-cam.global_basis.z.x, 0, -cam.global_basis.z.z).normalized(), Vector3(cam.global_basis.x.x, 0, cam.global_basis.x.z).normalized())
 	_life(d)
 	_radar(d)
 	_voiceprints(d)
@@ -226,24 +233,7 @@ func _edge_flash(d: Vector2) -> void:
 	_canvas.draw_rect(Rect2(d.x - w, 0, w, d.y), c)
 
 
-## One arc per noticing guard on a ring round the screen centre, on the guard's bearing: a faint track, a fill
-## that grows along it with the guard's meter, solid red while he sees you in ALERT.
-func _arcs(d: Vector2, fwd: Vector3, right: Vector3) -> void:
-	for g in get_tree().get_nodes_in_group("guards"):
-		var fill := HudModel.deceive(HudModel.arc_fill(g.alert, g.seen_rate > 0.0), _voice if _aigis > 0.0 else "")
-		if fill < 0.0:
-			continue
-		var ang := HudModel.screen_angle(g.global_position - _operative.global_position, fwd, right)
-		var alerted: bool = g.alert.state == GuardAlert.State.ALERT
-		var col := HudModel.arc_color(fill, alerted, _aigis)
-		if alerted:
-			_canvas.draw_arc(d / 2, ARC_RADIUS, ang - ARC_SPAN, ang + ARC_SPAN, 32, col, 14.0, true)
-			continue
-		_canvas.draw_arc(d / 2, ARC_RADIUS, ang - ARC_SPAN, ang + ARC_SPAN, 32, Color(HudPalette.LIGHT, 0.28), 2.0, true)
-		_canvas.draw_arc(d / 2, ARC_RADIUS, ang - ARC_SPAN, ang - ARC_SPAN + 2.0 * ARC_SPAN * fill, 32, col, 10.0, true)
-
-
-## Bottom-left: the stance figure, a 12x300 well with a sand fill and the red lost segment, OPERATIVE beside it.
+## Bottom-left: the stance figure over a 12x300 well with a continuous sand fill and the red lost segment.
 func _life(d: Vector2) -> void:
 	var c := _canvas
 	var well := Rect2(64, d.y - 64 - 300, 12, 300)
@@ -253,10 +243,6 @@ func _life(d: Vector2) -> void:
 	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * _lost, inner.size.x, inner.size.y * _lost), HudPalette.DMG)
 	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * life, inner.size.x, inner.size.y * life), HudPalette.SAND)
 	_stance(Vector2(well.position.x + 6, well.position.y - 14))
-	var k := _k()
-	c.draw_set_transform(Vector2(well.end.x + 42, well.end.y) * k, -PI / 2, Vector2(k, k))
-	HudPalette.hud_label(c, Vector2.ZERO, tr("ui.hud.operative"), 22, HudPalette.SAND, 0.3)
-	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 
 
 ## Standing or crouched, feet at `foot`.
@@ -286,6 +272,10 @@ func _radar(d: Vector2) -> void:
 		c.draw_line(o + dir * (rad - 6), o + dir * (rad - 20), Color(HudPalette.SAND, 0.7), 2.0)
 	HudPalette.hud_label(c, o + Vector2(8, -rad + 30), "N", 16, Color(HudPalette.SAND, 0.8), 0.06, HudPalette.LABEL, 0, false)
 	var origin := RadarModel.flat(_operative.global_position)
+	var sweep := fmod(Time.get_ticks_msec() / 1000.0, SWEEP_SECS) / SWEEP_SECS * TAU - PI / 2
+	for w in 8:  # a faint wedge trailing the line
+		c.draw_arc(o, rad * 0.5, sweep - 0.5 + w * 0.0625, sweep - 0.5 + (w + 1) * 0.0625, 4, Color(HudPalette.LIGHT, 0.02 * (w + 1)), rad, true)
+	c.draw_line(o, o + Vector2.from_angle(sweep) * (rad - 2), Color(HudPalette.LIGHT, 0.5), 1.5, true)
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		if g.is_down():
 			continue
@@ -438,6 +428,10 @@ func _gear(d: Vector2) -> void:
 	var rw := HudPalette.FIGURE_MED.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
 	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 14), res, 20, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, HudPalette.FIGURE_MED, 2, false)
 	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw - 6, wr.end.y - 12), count, 46, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, HudPalette.FIGURE, 2, false)
+	var track := Rect2(wr.position.x + 16, wr.end.y + 12, wr.size.x - 32, 6)  # rounds left, loaded and reserve
+	_canvas.draw_rect(track, Color(HudPalette.LIGHT, 0.22))
+	var left := float(gun.loaded + gun.reserve) / maxf(gun.total, 1.0)
+	_canvas.draw_rect(Rect2(track.position, Vector2(track.size.x * clampf(left, 0.0, 1.0), track.size.y)), HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT)
 	var it: Items = _operative.items
 	var ir := Rect2(xr - 220, wr.position.y - 12 - 84, 220, 84)
 	HudPalette.hud_panel(_canvas, ir)
@@ -447,7 +441,8 @@ func _gear(d: Vector2) -> void:
 	HudPalette.hud_text(_canvas, Vector2(ir.end.x - 16, ir.end.y - 12), str(it.count()), 34, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.FIGURE, 2, false)
 	if it.scanning():
 		_canvas.draw_rect(Rect2(ir.position.x + 1, ir.end.y - 4, (ir.size.x - 2) * it.scan_left / it.scan_time, 3), HudPalette.SAND)
-	_balloons(Rect2(xr - 320, ir.position.y, 88, 84))
+	if not (_select == "item" and _select_left > 0.0):  # the open strip takes the balloons' place
+		_balloons(Rect2(xr - 320, ir.position.y, 88, 84))
 
 
 func _card_name(p: Vector2, s: String, col := HudPalette.SAND) -> float:
@@ -474,47 +469,67 @@ func _balloons(r: Rect2) -> void:
 	HudPalette.hud_text(_canvas, Vector2(r.end.x - 12, r.end.y - 14), str(n), 30, col, HudPalette.FIGURE, 2, false)
 
 
-## Peace Walker's selector, scaled down: vertical slots left of the gear, the one in hand solid sand, open for
-## SELECT_TIME after the weapon or item changes, fading out over its last 0.3 s.
+## A short strip that grows leftward from the card it changes: icon and count only, the selected slot (white,
+## larger) touching the card with its name in a tag above. Empty slots are dashed. Open for SELECT_TIME after the
+## weapon or item changes; opens in six hard steps with a stagger per slot, fades out over its last 0.3 s.
 func _selector(d: Vector2) -> void:
 	if _select_left <= 0.0:
 		return
 	var a := clampf(_select_left / 0.3, 0.0, 1.0)
 	var slots: Array = []  # [name key, silhouette, count, selected]
-	var keys: Array = []
 	if _select == "weapon":
 		var g: Gun = _operative.gun()
 		for pair in [[_operative.tranq, "ui.gear.tranq", &"tranq"], [_operative.rifle, "ui.gear.rifle", &"rifle"]]:
 			var gun: Gun = pair[0]
-			slots.append([pair[1], pair[2], "%d/%d" % [gun.loaded, gun.reserve], gun == g])
-		keys = [Prompts.key("weapon_tranq"), Prompts.key("weapon_rifle")]
+			slots.append([pair[1], pair[2], "%d" % gun.loaded, gun == g])
 	else:
 		var it: Items = _operative.items
 		slots.append(["ui.gear.scanner", &"scanner", str(it.charges), it.selected == Items.Kind.SCANNER])
 		slots.append(["ui.gear.magazine", &"magazine", str(it.magazines), it.selected == Items.Kind.MAGAZINE])
-		keys = [Prompts.key("item_prev"), Prompts.key("item_next")]
-	var c := _canvas
-	var x := d.x - 64 - 336
+	slots.sort_custom(func(x: Array, y: Array) -> bool: return x[3] and not y[3])  # the selected one first
+	var xr := d.x - 64
 	var yb := d.y - 64
-	var k := _k()
-	for i in range(slots.size() - 1, -1, -1):
-		var s: Array = slots[i]
-		var h := 260.0 if s[3] else 240.0
-		var r := Rect2(x - 72, yb - h, 72, h)
-		var ink := HudPalette.DARK_INK if s[3] else HudPalette.LIGHT
-		c.draw_rect(r, Color(HudPalette.SAND, a) if s[3] else Color(HudPalette.SMOKE, HudPalette.SMOKE.a * a))
-		if not s[3]:
-			c.draw_rect(r, Color(HudPalette.HAIRLINE, HudPalette.HAIRLINE.a * a), false, 1.0)
-		c.draw_line(Vector2(r.position.x, r.end.y - 28), Vector2(r.end.x, r.end.y - 28), Color(ink, 0.25 * a), 1.0)
-		HudPalette.hud_text(c, Vector2(r.get_center().x, r.end.y - 8), s[2], 15, Color(ink, a), HudPalette.FIGURE, 1, false)
-		c.draw_set_transform(Vector2(r.position.x + 26, r.position.y + 10) * k, PI / 2, Vector2(k, k))
-		HudPalette.hud_label(c, Vector2.ZERO, tr(s[0]), 15, Color(ink, a), 0.12, HudPalette.LABEL, 0, false)
-		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
-		_sil(s[1], Vector2(r.position.x + 50, r.end.y - 36), 0.3, Color(ink, a), -PI / 2)
-		x -= 78
-	var kx := x + 72
-	for key: String in keys:
-		kx += _keycap(Vector2(kx, yb + 10), key, true, a) + 6
+	var wr := Rect2(xr - 320, yb - 118, 320, 118)
+	var card := wr if _select == "weapon" else Rect2(xr - 220, wr.position.y - 96, 220, 84)
+	var x := card.position.x - 6
+	var line := Color(HudPalette.LIGHT, 0.16 * a)
+	var step := floorf(clampf(_select_age / SELECT_WIPE, 0.0, 1.0) * 6.0) / 6.0  # the strip's wipe, outward from the card
+	var reach := card.position.x - 6 - (step * 5.0 * 84.0)
+	for i in 5:
+		var s: Array = slots[i] if i < slots.size() else []
+		var on: bool = not s.is_empty() and s[3]
+		var w := 92.0 if on else 78.0
+		var h := 112.0 if on else 98.0
+		var r := Rect2(x - w, card.end.y - h, w, h)
+		x -= w + 6
+		if _select_age < i * SLOT_STAGGER or r.position.x < reach - 84.0:
+			continue
+		if s.is_empty():
+			_dashed(r, Color(HudPalette.LIGHT, 0.14 * a))
+			continue
+		var ink := HudPalette.DARK_INK if on else HudPalette.LIGHT
+		_canvas.draw_rect(r, Color(HudPalette.LIGHT, a) if on else Color(HudPalette.SMOKE, HudPalette.SMOKE.a * a))
+		_canvas.draw_rect(r, Color(HudPalette.LIGHT, a) if on else line, false, 1.0)
+		var big := 0.46 if on else 0.4
+		_sil(s[1], r.get_center() + Vector2(0, 28 if s[1] in [&"tranq", &"rifle"] else 22) * (1.0 if on else 0.9) - Vector2(0, 8), big if s[1] in [&"scanner", &"magazine"] else big * 0.7, Color(ink, a))
+		HudPalette.hud_text(_canvas, Vector2(r.end.x - 8, r.end.y - 8), s[2], 20, Color(ink, a), HudPalette.FIGURE, 2, false)
+		if on:
+			var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 20, 0.14)
+			var name := tr(s[0]).to_upper()
+			var nw := f.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+			var tag := Rect2(r.end.x - nw - 24, r.position.y - 34, nw + 24, 28)
+			_canvas.draw_rect(tag, Color(HudPalette.LIGHT, a))
+			HudPalette.hud_text(_canvas, tag.position + Vector2(12, 21), name, 20, Color(HudPalette.DARK_INK, a), f, 0, false)
+
+
+func _dashed(r: Rect2, col: Color) -> void:
+	for edge in [[r.position, Vector2(r.end.x, r.position.y)], [Vector2(r.position.x, r.end.y), r.end], [r.position, Vector2(r.position.x, r.end.y)], [Vector2(r.end.x, r.position.y), r.end]]:
+		var from: Vector2 = edge[0]
+		var to: Vector2 = edge[1]
+		var n := int(from.distance_to(to) / 8.0)
+		for k in n:
+			if k % 2 == 0:
+				_canvas.draw_line(from.lerp(to, float(k) / n), from.lerp(to, float(k + 1) / n), col, 1.0)
 
 
 ## The gear drawn as solid silhouettes, feet at `foot`, scaled by `s` and turned by `rot`.
@@ -653,9 +668,9 @@ func _pictogram(icon: String, o: Vector2, col: Color) -> void:
 			poly.call([14, 29, 26, 29, 29, 36, 11, 36])
 
 
-## Middle-left, Peace Walker style: the speaker's halftone portrait, then CALL >> NAME over a small live
-## waveform, then the line, typed on. The whole line is wrapped first, so the text never reflows as it
-## types. Returns where the radio lines start below it.
+## Middle-left, a narrow card: the speaker's green-tinted halftone portrait, the name in spaced capitals with
+## three small bars that move only while the line types, and the line below, typed on. The whole line is wrapped
+## first, so the text never reflows as it types. Returns where the radio lines start below it.
 func _live_call(dim: float) -> float:
 	if not _live:
 		return CALL.y
@@ -664,29 +679,34 @@ func _live_call(dim: float) -> float:
 	var who := "handler" if _live.speaker() == "operative" else _live.portrait()
 	var frame := 1 if _live.typing() and int(Time.get_ticks_msec() / 160) % 2 == 0 else 0
 	var tex := _portrait(who, frame)
+	var tx := CALL.x + 12 + FACE + 16
+	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - CALL.x) - 18, HudPalette.FIGURE_MED, 24)
+	var rows := mini(full.size(), 4)
+	var box := Rect2(CALL, Vector2(CALL_W, maxf(FACE + 26, 62 + rows * 32)))
+	c.draw_rect(box, Color(0.024, 0.035, 0.043, 0.74 * dim))
+	c.draw_rect(Rect2(box.position, Vector2(box.size.x, 2)), Color(MINT, dim))
 	if tex:
 		_face.texture = tex
-		_face.position = CALL * k
+		_face.position = (CALL + Vector2(12, 14)) * k
 		_face.size = Vector2.ONE * FACE * k
-		_face.modulate.a = dim
+		_face.modulate = Color(MINT, dim)
 		_face.visible = true
-		c.draw_rect(Rect2(CALL, Vector2.ONE * FACE), Color(HudPalette.HAIRLINE, HudPalette.HAIRLINE.a * dim), false, 1.0)
-	var tx := CALL.x + FACE + 16
-	for i in 4:  # the live waveform
-		var hgt := 4.0 + 10.0 * absf(sin(Time.get_ticks_msec() / 140.0 + i * 1.7)) if _live.typing() else 4.0
-		c.draw_rect(Rect2(tx + i * 5, CALL.y + 12 - hgt / 2, 3, hgt), Color(HudPalette.LIGHT_2, dim))
-	var tag_f := HudPalette.tracked(HudPalette.LABEL, 16, 0.16)
-	var tag := tr("ui.hud.call") + " "
-	HudPalette.hud_text(c, Vector2(tx + 28, CALL.y + 18), tag, 16, Color(HudPalette.LIGHT_2, dim), tag_f)
-	HudPalette.hud_text(c, Vector2(tx + 28 + tag_f.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x, CALL.y + 18), _live.speaker_name().to_upper(), 16, Color(HudPalette.SAND, dim), tag_f)
-	var full := HudPalette.wrap(_live.text(), CALL_W - FACE - 16, HudPalette.FIGURE_MED, 24)
+		c.draw_rect(Rect2(CALL + Vector2(12, 14), Vector2.ONE * FACE), Color(MINT, 0.6 * dim), false, 1.0)
+	var name_f := HudPalette.tracked(HudPalette.LABEL_BOLD, 18, 0.3)
+	var nm := _live.speaker_name().to_upper()
+	HudPalette.hud_text(c, Vector2(tx, CALL.y + 34), nm, 18, Color(MINT, dim), name_f, 0, false)
+	var bx := tx + name_f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x + 14
+	for i in 3:  # three bars that step only while text is typing
+		var hgt := 4.0 + 10.0 * float(int((absf(sin(Time.get_ticks_msec() / 130.0 + i * 1.7))) * 3.0) + 1) / 3.0 if _live.typing() else 4.0
+		c.draw_rect(Rect2(bx + i * 5, CALL.y + 27 - hgt / 2, 3, hgt), Color(MINT, dim))
 	var left := _live.shown().length()
-	var y := CALL.y + 54
-	for l in full:
+	var y := CALL.y + 66
+	for i in rows:
+		var l: String = full[i]
 		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 24, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
 		left -= l.length() + 1
-		y += 34
-	return maxf(y, CALL.y + FACE) + 24
+		y += 32
+	return box.end.y + 24
 
 
 func _portrait(who: String, frame: int) -> Texture2D:

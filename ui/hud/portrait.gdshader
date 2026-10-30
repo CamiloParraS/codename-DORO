@@ -10,5 +10,5 @@ void fragment() {
 	g = clamp((g - 0.5) * contrast + 0.52, 0.0, 1.0);
 	vec2 cell = fract(FRAGCOORD.xy / dot_px) - 0.5;
 	g *= 1.0 - smoothstep(0.34, 0.2, length(cell)) * 0.3;
-	COLOR = vec4(vec3(g), c.a * COLOR.a);
+	COLOR = vec4(vec3(g) * COLOR.rgb, c.a * COLOR.a);  // modulate tints it (the live call card is mint)
 }
