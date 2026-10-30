@@ -55,6 +55,8 @@ var _killing := false      # the grip in progress is a kill (X), not a choke (E)
 var _victim_down := false  # it was already Down when the kill began
 var _yaw := 0.0
 var _pitch := -0.25
+var look_basis: Basis:  # where the camera looks (the body itself never turns), for the Radar's arrow
+	get: return Basis(Vector3.UP, _yaw)
 var _recoil := 0.0
 var ping_range := 0.0  # metres of the last noise made, for the Radar's ring
 var ping_age := 99.0   # s since it
@@ -352,7 +354,7 @@ func restore(s: Dictionary) -> void:
 	_apply_crouch()
 	tranq = MissionRun.copy(s.tranq)
 	rifle = MissionRun.copy(s.rifle)
-	_gun = rifle if s.rifle_in_hand else tranq
+	_gun = rifle as Gun if s.rifle_in_hand else tranq as Gun
 	model.hold("rifle" if s.rifle_in_hand else "tranq")
 	voiceprints = MissionRun.copy(s.voiceprints)
 	items = MissionRun.copy(s.items)

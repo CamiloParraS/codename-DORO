@@ -315,7 +315,7 @@ func _radar(d: Vector2) -> void:
 			c.draw_circle(p, 4, HudPalette.LIGHT)
 		else:
 			c.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT)
-	var f := RadarModel.facing(_operative.global_basis)
+	var f := RadarModel.facing(_operative.look_basis)
 	var arrow := PackedVector2Array([o + f * 17, o + f.rotated(2.55) * 14, o - f * 5, o + f.rotated(-2.55) * 14])
 	c.draw_colored_polygon(arrow, HudPalette.SAND)
 	arrow.append(arrow[0])
@@ -580,11 +580,11 @@ func _dashed(r: Rect2, col: Color) -> void:
 ## The gear icons (assets/ui/icons/*.svg, white, designed in docs/ui-mock/icons.html): the SVG's own size, so `s`
 ## 1.0 is the size the shape was drawn at. The third value evens out the boxes so the weapons read at one scale.
 const GEAR := {
-	&"rifle": [preload("res://assets/ui/icons/rifle.svg"), Vector2(200, 72), 1.0],
-	&"tranq": [preload("res://assets/ui/icons/tranq.svg"), Vector2(160, 72), 1.25],
+	&"rifle": [preload("res://assets/ui/icons/rifle.svg"), Vector2(199.5, 59.5), 1.0],
+	&"tranq": [preload("res://assets/ui/icons/tranq.svg"), Vector2(133, 63), 1.0],
 	&"scanner": [preload("res://assets/ui/icons/scanner.svg"), Vector2(80, 72), 1.0],
 	&"magazine": [preload("res://assets/ui/icons/magazine.svg"), Vector2(80, 72), 1.0],
-	&"balloon": [preload("res://assets/ui/icons/balloon.svg"), Vector2(60, 80), 1.0],
+	&"balloon": [preload("res://assets/ui/icons/balloon.svg"), Vector2(31.5, 78), 1.0],
 }
 
 
