@@ -1,11 +1,14 @@
 ## What the items draw in the world: the Scanner's cone decals (through walls, white/grey, red for alerted
-## guards and cameras) and the Magazine's throw arc. Rebuilt every frame while either is showing.
+## guards and cameras) and the Magazine's throw arc (dotted). Rebuilt every frame while either is showing.
 class_name ItemView
 extends MeshInstance3D
 
-const FRONT := Color(1, 1, 1, 0.3)
-const SIDE := Color(0.7, 0.7, 0.7, 0.2)
-const ALERTED := Color(1, 0.2, 0.2, 0.35)
+const FRONT := Color(1, 1, 1, 0.2)
+const SIDE := Color(0.7, 0.7, 0.7, 0.12)
+const ALERTED := Color(1, 0.2, 0.2, 0.24)
+const RIM_FILL := 0.2  # a fan's alpha at its far edge, as a share of its alpha at the guard's feet
+const RIM_WIDTH := 0.14  # metres, the brighter line along a fan's far edge
+const BREATH := 0.12  # how far the whole scan swells and ebbs, a slow breath
 const SEGMENTS := 10
 const LIFT := 0.05  # metres above the floor, so a decal does not z-fight it
 
@@ -21,6 +24,8 @@ func _ready() -> void:
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.no_depth_test = true  # through walls
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	m.use_point_size = true  # the Magazine's arc is square pixels
+	m.point_size = 4.0
 	m.render_priority = 10
 	material_override = m
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -41,7 +46,7 @@ func show_items(at: Vector3, scan: bool, arc_points: PackedVector3Array) -> void
 				_cones(c, at, c.alert.state == GuardAlert.State.ALERT, false)
 		_mesh.surface_end()
 	if arc_points.size() > 1:
-		_mesh.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
+		_mesh.surface_begin(Mesh.PRIMITIVE_POINTS)  # a dotted line of square pixels
 		for p in arc_points:
 			_mesh.surface_set_color(Color.WHITE)
 			_mesh.surface_add_vertex(p)
@@ -67,14 +72,29 @@ func _floor_under(p: Vector3, fallback: float) -> float:
 	return hit.position.y if hit else fallback
 
 
+## A fan fading from the origin out to a faint edge, with a soft line along the edge; the whole scan breathes.
 func _fan(origin: Vector3, facing: Vector3, half: float, reach: float, col: Color) -> void:
 	var yaw := atan2(-facing.x, -facing.z)
+	var breath := 1.0 + BREATH * sin(Time.get_ticks_msec() / 1000.0 * 1.8)
+	var near := Color(col, col.a * breath)
+	var far := Color(col, col.a * breath * RIM_FILL)
+	var edge := Color(col, minf(col.a * breath * 2.2, 1.0))
 	var prev := origin
+	var prev_in := origin
 	for i in SEGMENTS + 1:
 		var a := yaw + lerpf(-half, half, i / float(SEGMENTS))
-		var p := origin + Vector3(-sin(a), 0, -cos(a)) * reach
+		var dir := Vector3(-sin(a), 0, -cos(a))
+		var p := origin + dir * reach
+		var q := origin + dir * (reach - RIM_WIDTH)
 		if i > 0:
-			for v in [origin, prev, p]:
-				_mesh.surface_set_color(col)
-				_mesh.surface_add_vertex(v)
+			_tri([origin, prev_in, q], [near, far, far])
+			_tri([prev_in, prev, p], [far, edge, edge])
+			_tri([prev_in, p, q], [far, edge, far])
 		prev = p
+		prev_in = q
+
+
+func _tri(vs: Array, cols: Array) -> void:
+	for k in 3:
+		_mesh.surface_set_color(cols[k])
+		_mesh.surface_add_vertex(vs[k])

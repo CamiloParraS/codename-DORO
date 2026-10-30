@@ -28,7 +28,7 @@ func test_puff_is_a_one_shot_burst_that_frees_itself() -> void:
 func test_the_balloon_starts_small_inflates_and_hangs_on_a_cable() -> void:
 	var b := Fx.balloon()
 	assert_true(b.scale.x < 0.2, "starts deflated")
-	assert_eq(b.get_child_count(), 1, "one cable")
+	assert_eq(b.get_child_count(), 2, "a cable and the pixel balloon")
 	assert_true(b.get_child(0).mesh.height >= 3.0, "reaches the guard")
 	b.free()
 

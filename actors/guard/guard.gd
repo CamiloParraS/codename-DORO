@@ -33,6 +33,10 @@ const WHIZ_RANGE := 2.0        # metres: a miss passing this close to the Operat
 const RISE_TIME := 4.0          # seconds a Fultoned guard takes to rise out of sight
 const BALLOON_TIME := 6.0       # seconds after launch that guards can see the balloon
 const BALLOON_SEEN := 20.0      # flat metres from the spot within which a guard who sees it comes to look
+const SLEEP_ICON := preload("res://assets/ui/icons/sleep.svg")
+const MARK_ICONS := preload("res://assets/ui/icons/marks.svg")  # frames, in the order of MARK_FRAMES
+const HANDS_UP_SCALE := 0.6  # the kneeling figure is a bigger glyph than a ? or !, so it is drawn smaller
+const MARK_FRAMES := {"?": 0, "!": 1, "hands up": 2, "!>": 3, "((?))": 4, "((·))": 5}
 const MARKS := ["", "?", "!", "?"]
 const MARK_COLORS := [HudPalette.LIGHT, HudPalette.LIGHT, HudPalette.MARK_RED, HudPalette.SAND]  # the shape (? or !) carries the state; hue backs it
 
@@ -116,6 +120,8 @@ var _glint: Node3D             # a red radio glint at the head while on the Radi
 var _vest: Node3D              # an amber vest light while the Area is in Caution
 @onready var _agent: NavigationAgent3D = $NavAgent
 @onready var _mark: Label3D = $Mark
+var _sleep: Sprite3D  # the asleep mark, see _sleep_mark()
+var _mark_art: Sprite3D  # the pixel art for what _mark says, see _sync_mark()
 @onready var _bt: BTPlayer = $BTPlayer
 @onready var model: CharacterModel = $Model
 
@@ -418,18 +424,57 @@ func partner_calm() -> bool:
 	return is_instance_valid(chat_partner) and not chat_partner.is_down() and chat_partner.alert.state == GuardAlert.State.PATROL
 
 
+## The pixel "zZz" over a knocked-out guard, built on first use; small, so it reads as a hint and not a label.
+func _sleep_mark() -> Sprite3D:
+	if _sleep == null:
+		_sleep = Sprite3D.new()
+		_sleep.texture = SLEEP_ICON
+		_sleep.pixel_size = 0.0035
+		_sleep.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_sleep.no_depth_test = true
+		_sleep.shaded = false
+		_sleep.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		_sleep.position = _mark.position
+		add_child(_sleep)
+	return _sleep
+
+
 func _refresh_mark() -> void:
+	_set_mark()
+	_sync_mark()
+
+
+## Shows the pixel art for the Label3D's text (which stays the state of record); no art for an empty or unknown text.
+func _sync_mark() -> void:
+	if _mark_art == null:
+		_mark_art = Fx.pixel_sprite(MARK_ICONS, 0.045)
+		_mark_art.hframes = MARK_FRAMES.size()
+		_mark_art.no_depth_test = true
+		_mark_art.render_priority = 5
+		_mark_art.position = _mark.position
+		add_child(_mark_art)
+		_mark.visible = false
+	_mark_art.visible = MARK_FRAMES.has(_mark.text)
+	if _mark_art.visible:
+		_mark_art.frame = MARK_FRAMES[_mark.text]
+		_mark_art.scale = Vector3.ONE * (HANDS_UP_SCALE if _mark.text == "hands up" else 1.0)
+		_mark_art.modulate = _mark.modulate
+
+
+func _set_mark() -> void:
+	if _sleep != null:
+		_sleep.visible = false
 	if dead:  # no symbol: zZz is only for the knocked out
 		_mark.text = ""
 		return
 	if neutral_left > 0.0:  # asleep, and it wears off
-		_mark.text = "zZz"
-		_mark.modulate = Color.WHITE
+		_mark.text = ""
+		_sleep_mark().visible = true
 		return
 	var talk := on_air()
 	if _tele_left > 0.0 and (alert.state == GuardAlert.State.PATROL or _tele_icon == Telegraph.FLANK_ICON):
 		_mark.text = _tele_icon
-		_mark.modulate = HudPalette.AIGIS
+		_mark.modulate = HudPalette.CYAN
 		return
 	var bang := alert.calling or alert.rushing  # "!" before the Alert: a spotter calling, a responder running
 	var state := GuardAlert.State.ALERT if bang else alert.state
@@ -627,6 +672,7 @@ func hold_up() -> void:
 	model.react("startle", GuardAlert.FLINCH)
 	_mark.text = "hands up"
 	_mark.modulate = MARK_COLORS[GuardAlert.State.SUSPICION]
+	_sync_mark()
 
 
 ## Freed (out of range, aim lost, an Alert, a partner saw it): "?", it grabs its gun and starts a
@@ -687,6 +733,7 @@ func fulton_state_ok() -> bool:
 func fulton() -> void:
 	held_up = false
 	_mark.text = ""
+	_sync_mark()
 	_balloon_left = BALLOON_TIME
 	Mix.sfx_at(self, &"fulton_launch")
 	var lift := Mix.sfx_at(self, &"fulton_lift")
@@ -809,7 +856,10 @@ func on_drop(who: Guard) -> void:
 static func broadcast(tree: SceneTree, pos: Vector3, radius: float, what: String, except: Guard = null, alarming := false) -> void:
 	for g in tree.get_nodes_in_group("guards"):
 		if g != except and GuardAlert.in_earshot(g.global_position, pos, radius):
-			g.on_shot(pos) if alarming else g.on_noise(pos, what)
+			if alarming:
+				g.on_shot(pos)
+			else:
+				g.on_noise(pos, what)
 
 
 ## A guard that went "!" (alert.calling) and isn't on the radio yet starts its Radio call and shouts to
