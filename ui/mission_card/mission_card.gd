@@ -38,17 +38,20 @@ func _ready() -> void:
 	_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	_box.add_theme_constant_override("separation", 10)
 	add_child(_box)
+	var k := get_viewport_rect().size.y / HudPalette.DESIGN_H  # sized from the 1080 design
 	for i in lines.size():
 		var l := Label.new()
 		l.text = lines[i]
 		l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size.x = HudPalette.COLUMN
-		l.add_theme_font_size_override("font_size", HudPalette.TITLE_SIZE if i == 0 else HudPalette.HEADING_SIZE)
-		l.add_theme_color_override("font_color", HudPalette.WHITE if i == 0 else HudPalette.CHROME_DIM)
-		if i == lines.size() - 1 and i > 0 and not intro:
-			l.add_theme_font_override("font", HudPalette.BODY)
+		l.custom_minimum_size.x = 1300.0 * k
+		var fs := roundi((96 if i == 0 else 28) * k)
+		var last_line := i == lines.size() - 1 and i > 0 and not intro
+		var font: Font = HudPalette.FIGURE_MED if last_line else HudPalette.tracked(HudPalette.DISPLAY, fs, 0.2 if i == 0 else 0.3)
+		l.add_theme_font_override("font", font)
+		l.add_theme_font_size_override("font_size", roundi(32 * k) if last_line else fs)
+		l.add_theme_color_override("font_color", HudPalette.LIGHT if i == 0 else HudPalette.LIGHT_2)
 		_box.add_child(l)
 	_apply()
 

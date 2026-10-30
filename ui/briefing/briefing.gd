@@ -31,7 +31,9 @@ func _ready() -> void:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] == "voice" else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
-	HudPalette.backdrop(self, Color(0.4, 0.4, 0.45), true)
+	var scan := UiScan.make(HudPalette.BACKDROP, true, true, Color(0.4, 0.4, 0.45))
+	scan.show_behind_parent = true  # under the page's own drawing
+	add_child(scan)
 	HudPalette.fade(self)
 	if Campaign.gear.due:
 		Campaign.gear.due = false
@@ -116,38 +118,53 @@ func _build_lines() -> Array:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(HudPalette.INK, 0.55))  # over the backdrop
-	var y := 40.0
-	var body_w := size.x - MARGIN * 2 - TAG
+	var k := size.y / HudPalette.DESIGN_H
+	var d := size / k
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	draw_rect(Rect2(Vector2.ZERO, d), Color(HudPalette.INK, 0.55))  # over the backdrop
+	var y := 110.0
+	var x := 110.0
+	var body_w := minf(d.x - x * 2 - TAG, 1300.0)
+	var disp := HudPalette.DISPLAY
 	for i in _lines.size():
 		var kind: String = _lines[i][0]
 		var s := _blips[i].shown()
 		match kind:
 			"title":
-				draw_string(HudPalette.HEADING, Vector2(MARGIN, y), s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.TITLE_SIZE, HudPalette.WHITE)
-				y += 12
+				var f := HudPalette.tracked(disp, 64, 0.12)
+				var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 64).x + 56
+				draw_colored_polygon(PackedVector2Array([Vector2(0, y - 70), Vector2(x - 40 + w, y - 70), Vector2(x - 40 + w - 22, y + 20), Vector2(0, y + 20)]), HudPalette.LIGHT)
+				HudPalette.hud_text(self, Vector2(x, y), s, 64, HudPalette.DARK_INK, f, 0, false)
+				y += 70
 			"gap":
-				y += 10
-			"head":
-				draw_string(HudPalette.HEADING, Vector2(MARGIN, y), s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.CHROME_DIM)
-				y += 16
-			"band":  # the ending: its Voice, large
-				draw_string(HudPalette.HEADING, Vector2(MARGIN, y + 8), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1])],
-					HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.TITLE_SIZE, HudPalette.AIGIS)
 				y += 24
+			"head":
+				HudPalette.hud_text(self, Vector2(x, y), s.to_upper(), 24, HudPalette.LIGHT_2, HudPalette.tracked(disp, 24, 0.26), 0, false)
+				draw_rect(Rect2(x, y + 12, 400, 2), Color(HudPalette.LIGHT, 0.5))
+				y += 52
+			"band":  # the ending: its Voice, large
+				HudPalette.hud_text(self, Vector2(x, y + 20), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1]).to_upper()], 64, HudPalette.CYAN, HudPalette.tracked(disp, 64, 0.1), 0, false)
+				y += 80
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
-				var w := StoryMotion.draw_glyph(self, HudPalette.HEADING, Vector2(MARGIN, y - 2), GLYPHS[who], _line_t if i == _typing_i and not _blips[i].done() else 99.0, HudPalette.AIGIS, HudPalette.HEADING_SIZE)
-				draw_string(HudPalette.HEADING, Vector2(MARGIN + w + 8, y - 2), tr("ui.voice." + who), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.AIGIS)
-				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w)
+				var glyph: String = GLYPHS[who]
+				var gf := HudPalette.tracked(disp, 26, 0.0)
+				var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
+				var pk := StoryMotion.pulse(_line_t if i == _typing_i and not _blips[i].done() else 99.0)
+				draw_set_transform((Vector2(x, y - 2) + Vector2(w / 2, -13)) * k, 0.0, Vector2(k, k) * pk)  # the glyph's pulse
+				draw_string(gf, Vector2(-w / 2, 13), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, HudPalette.CYAN)
+				draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+				HudPalette.hud_text(self, Vector2(x + w + 10, y - 2), tr("ui.voice." + who).to_upper(), 26, HudPalette.CYAN, HudPalette.tracked(disp, 26, 0.2), 0, false)
+				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w, HudPalette.FIGURE_MED, 28)
 				var left := s.length()
 				for l in full:
-					draw_string(HudPalette.BODY, Vector2(MARGIN + TAG, y), l.left(maxi(left, 0)), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.BODY_SIZE, HudPalette.WHITE)
+					HudPalette.hud_text(self, Vector2(x + TAG + 90, y), l.left(maxi(left, 0)), 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					left -= l.length() + 1
-					y += 14
+					y += 38
+				y += 14
 			"objective":
-				for l in HudPalette.wrap("- " + s, size.x - MARGIN * 2, HudPalette.HEADING, HudPalette.HEADING_SIZE):
-					draw_string(HudPalette.HEADING, Vector2(MARGIN, y), l, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.CHROME)
-					y += 12
+				for l in HudPalette.wrap("- " + s, d.x - x * 2, HudPalette.FIGURE_MED, 28):
+					HudPalette.hud_text(self, Vector2(x, y), l, 28, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
+					y += 38
 	var foot := tr("ui.brief.any_key") if Campaign.done() else "%s   [R] %s" % [tr("ui.brief.any_key"), tr("ui.brief.requisition")]  # R is the briefing's own key
-	draw_string(HudPalette.HEADING, Vector2(MARGIN, size.y - 24), foot, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.HEADING_SIZE, HudPalette.HINT)
+	HudPalette.hud_text(self, Vector2(x, d.y - 60), foot.to_upper(), 22, HudPalette.LIGHT_3, HudPalette.tracked(disp, 22, 0.24), 0, false)
