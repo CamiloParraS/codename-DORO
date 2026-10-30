@@ -409,6 +409,7 @@ ui.step.spoofing.2,RADIO CALLBACK,DEVOLUCIÓN DE LLAMADA
 ui.step.spoofing.3,SINGLE-USE VOICEPRINTS,HUELLAS DE VOZ DE UN SOLO USO
 ui.req.title,REQUISITION,REQUISICIÓN
 ui.req.points,POINTS: {n},PUNTOS: {n}
+ui.req.recruits,RECRUITS,RECLUTAS
 ui.req.price,{n} PTS,{n} PTS
 ui.req.max,MAX,MÁX
 ui.req.items,S-RANK ITEMS,OBJETOS DE RANGO S
