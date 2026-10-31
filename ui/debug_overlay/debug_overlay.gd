@@ -36,6 +36,40 @@ func _ready() -> void:
 func _input(e: InputEvent) -> void:
 	if e.is_action_pressed("debug_overlay"):
 		visible = not visible
+	elif e.is_action_pressed("debug_mark"):
+		_mark()
+
+
+## F4: a screenshot of the game view and a session-log line with where the Operative and the camera are, in the
+## builders' diagram metres, so "something looks wrong here" arrives as coordinates.
+func _mark() -> void:
+	var shown := visible
+	visible = false
+	await RenderingServer.frame_post_draw
+	var path := "user://marks/%s.png" % Time.get_datetime_string_from_system().replace(":", "-")
+	DirAccess.make_dir_recursive_absolute("user://marks")
+	get_viewport().get_texture().get_image().save_png(path)
+	visible = shown
+	var line := "mark, shot %s" % ProjectSettings.globalize_path(path)
+	var op := get_tree().get_first_node_in_group("operative") as Node3D
+	if op:
+		line += ", Operative at %s" % _diagram(op.global_position)
+	var cam := get_viewport().get_camera_3d()
+	if cam:
+		var fwd := -cam.global_basis.z
+		line += ", camera at %s bearing %d pitch %d" % [_diagram(cam.global_position), wrapi(roundi(rad_to_deg(atan2(fwd.x, -fwd.z))), 0, 360),
+			roundi(rad_to_deg(asin(clampf(fwd.y, -1, 1))))]
+	print(line)
+	if SessionLog.current.missions.is_empty() or not SessionLog.current.missions.back().open:
+		SessionLog.append(MissionRun.LOG_PATH, line + "\n")
+	else:
+		SessionLog.current.note(line)
+		SessionLog.current.write_live(MissionRun.LIVE_PATH)
+
+
+static func _diagram(p: Vector3) -> String:
+	var d := MissionRun._diagram(p)
+	return "(%.1f, %.1f, %.1f)" % [d.x, d.y, d.z]
 
 
 func _process(_delta: float) -> void:
