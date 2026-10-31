@@ -183,3 +183,60 @@ func test_a_guard_gets_a_head_look_at_that_starts_off() -> void:
 	assert_true(m._look != null, "a LookAtModifier3D on the head")
 	assert_eq(m._look.influence, 0.0)
 	m.free()
+
+
+func _bone_layers(m: CharacterModel) -> Array:
+	return m.skeleton.find_children("*", "PhysicalBone3D", true, false).map(func(b): return b.collision_layer)
+
+
+func test_a_flinch_is_not_a_fall() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.flinch(Vector3(0, 0, 2), "Head")
+	assert_eq(m._ragdoll._mode, Ragdoll.Mode.FLINCH)
+	assert_eq(m.ragdoll_center(), Vector3.INF, "a flinching guard is still standing")
+	assert_true(_bone_layers(m).all(func(l): return l == 0), "a bullet still hits the guard, not its bones")
+	m.free()
+
+
+func test_a_flinch_simulates_only_the_bones_near_the_hit() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.flinch(Vector3(0, 0, 2), "thigh_l")
+	var simulated := m.skeleton.find_children("*", "PhysicalBone3D", true, false).filter(func(b): return b.is_simulating_physics())
+	assert_eq(simulated.map(func(b): return b.name).size(), 2, "thigh and calf of the hit leg")
+	m.free()
+
+
+func test_a_drop_overrides_a_flinch_and_getting_up_frees_the_bones() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.flinch(Vector3.ZERO, "spine_02")
+	m.drop()
+	assert_true(m._ragdoll.active())
+	assert_true(_bone_layers(m).all(func(l): return l == Ragdoll.LAYER), "lying, the bodies take a bullet")
+	m.get_up(0.0)
+	assert_false(m._ragdoll.active())
+	assert_true(_bone_layers(m).all(func(l): return l == 0))
+	m.free()
+
+
+func test_getting_up_blends_from_the_lying_pose_and_ends() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.drop()
+	m.get_up(0.5)
+	assert_true(m._ragdoll._left > 0.0, "the clip is taking the body back")
+	for i in 120:
+		m._ragdoll.blend(0.05)
+	assert_eq(m._ragdoll._left, 0.0)
+	m.free()
+
+
+func test_secondary_motion_and_foot_ik_are_on_the_guard_rig() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	assert_true(m._spring != null, "neck spring")
+	assert_eq(m._feet.size(), 1, "one TwoBoneIK3D")
+	assert_eq(m._feet[0].setting_count, 2, "a leg each")
+	m.free()
