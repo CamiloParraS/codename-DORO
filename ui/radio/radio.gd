@@ -287,7 +287,7 @@ func _guard(guard_name: String) -> Node3D:
 	return null
 
 
-# --- Drawing: on the HUD's design canvas (DESIGN.md Radio) ------------------------------------------
+# --- Drawing: on the HUD's design canvas (docs/DESIGN.md Radio) ------------------------------------------
 
 const RING_IN := 72.0  # design px; the hover logic keeps R_IN / R_OUT in logical px
 const RING_OUT := 156.0

@@ -1,5 +1,5 @@
 ## The UI kit every screen pulls from: one colour per meaning, the faces, the outlined HUD text, word wrap,
-## the panel fade and the slider Theme (DESIGN.md).
+## the panel fade and the slider Theme (docs/DESIGN.md).
 ## Colour: sand is the Operative's own information and selection; cyan is only ever Aigis; red is danger.
 ## Type: Barlow, Barlow Condensed and Antonio, drawn on a 1080 px design canvas as wide as the window's aspect.
 class_name HudPalette
@@ -88,7 +88,7 @@ static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Colo
 static var _key_box: StyleBoxFlat
 
 
-## A key drawn as a key (DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
+## A key drawn as a key (docs/DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
 static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a := 1.0) -> float:
 	if not _key_box:
 		_key_box = StyleBoxFlat.new()
@@ -106,7 +106,7 @@ static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a
 	return w
 
 
-## A smoke panel with its hairline and the two sand corner brackets (DESIGN.md Panel).
+## A smoke panel with its hairline and the two sand corner brackets (docs/DESIGN.md Panel).
 static func hud_panel(ci: CanvasItem, r: Rect2) -> void:
 	ci.draw_rect(r, SMOKE)
 	ci.draw_rect(Rect2(r.position, Vector2(r.size.x, r.size.y * 0.4)), Color(LIGHT, 0.05))

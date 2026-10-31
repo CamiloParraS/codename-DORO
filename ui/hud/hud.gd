@@ -1,4 +1,4 @@
-## The in-game HUD (DESIGN.md), drawn by hand on `_canvas` in design px: 1080 tall, as wide as the window's
+## The in-game HUD (docs/DESIGN.md), drawn by hand on `_canvas` in design px: 1080 tall, as wide as the window's
 ## aspect, scaled to the window and smoothly filtered. Corners: Aigis top-left, the phase plate top-centre, the
 ## Radar top-right, life bottom-left, item and weapon cards bottom-right (the selector opens beside them when
 ## either changes), the live call and radio lines middle-left, and the text-free action prompt lower-middle.

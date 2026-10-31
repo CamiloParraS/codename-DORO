@@ -1,6 +1,6 @@
 # Mechanics map
 
-Which file owns which mechanic. Terms are the `GLOSSARY.md` ones. Rules live in node-free scripts under `ai/` and `actors/*/` modules (testable); scenes and nodes only gather inputs and apply results. Each row names the test suite that pins it.
+Which file owns which mechanic. Terms are the `docs/GLOSSARY.md` ones. Rules live in node-free scripts under `ai/` and `actors/*/` modules (testable); scenes and nodes only gather inputs and apply results. Each row names the test suite that pins it.
 
 ## Operative
 

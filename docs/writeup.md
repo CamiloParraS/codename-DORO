@@ -156,7 +156,7 @@ Reading: the same four Habits produce different responses depending on the domin
 
 ## 10. References
 
-- Project: `docs/adr/0001-aigis-plans-only-between-missions.md`, `GLOSSARY.md`, `docs/deployment-tables.md`, the revenge-system and profile design notes (kept in the author's local, git-ignored `.scratch/` folder, not part of the repo).
+- Project: `docs/adr/0001-aigis-plans-only-between-missions.md`, `docs/GLOSSARY.md`, `docs/deployment-tables.md`, the revenge-system and profile design notes (kept in the author's local, git-ignored `.scratch/` folder, not part of the repo).
 - LimboAI, behaviour trees and state machines for Godot (MIT license): https://github.com/limbonaut/limboai
 - Godot Engine 4.x: https://godotengine.org
 - `TODO(human)`: add the academic or course references the class requires.

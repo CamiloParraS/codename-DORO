@@ -39,7 +39,7 @@ The UI is where Aigis's adaptation becomes visible: the Briefing where the Voice
 - Requisition spends Recruit points (one per Fultoned guard, first clears only) on permanent gear upgrades.
 - Codec portraits exist for analyst, chief, director, handler, operative, researcher (two frames each, `ui/codec/portraits/`).
 - No voice acting: text plus radio beeps. English first, Spanish translation later.
-- Glossary terms in `GLOSSARY.md` are binding (Operative, Aigis, Voice, Mission, Briefing, Codec call, Requisition, Recruit, Radar, etc.).
+- Glossary terms in `docs/GLOSSARY.md` are binding (Operative, Aigis, Voice, Mission, Briefing, Codec call, Requisition, Recruit, Radar, etc.).
 - Current fonts (Press Start 2P, VT323, both OFL, `assets/fonts/`) are not binding for the revamp.
 - No Konami assets ship: no MGS portraits, MSF logo, item icons or screen captures. Every emblem, portrait and icon is original.
 

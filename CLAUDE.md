@@ -16,7 +16,7 @@ Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `
 
 ### Domain docs
 
-Single-context: one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Single-context: `docs/GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.
 
 ## Project layout
 
@@ -40,7 +40,7 @@ After adding a `class_name` run `godot --headless --path . --import` before the 
 `docs/GUIDE.md` has the asset flow and full folder tree.
 
 - Raw downloads go in `_raw/` (ignored by git and Godot); copy only the files you use into `assets/`.
-- Every third-party asset gets a line in `CREDITS.md`: name, author, link, license.
+- Every third-party asset gets a line in `docs/CREDITS.md`: name, author, link, license.
 
 ## Commits
 

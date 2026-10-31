@@ -7,7 +7,7 @@ Bar: `.scratch/polish/issues/07-polish-bar.md`. Checked = verified by tests or a
 - [x] Footstep, knock, ambience, music and three sting files exist in `assets/audio/` and are credited
 - [ ] Listened to: stings distinct by sound alone, nothing horror-toned, "!" plays at normal pitch during the hit-stop (needs ears)
 - [ ] Codec ducking in play: **known issue**, nothing calls `Mixer.codec_call(bool)` (no live Codec player exists). Only `VoiceBlip` text blips in the Briefing use the UI bus, and they do not duck.
-- [ ] Music and footsteps are Kenney CC0 stand-ins; swap for real tracks (see `CREDITS.md`)
+- [ ] Music and footsteps are Kenney CC0 stand-ins; swap for real tracks (see `docs/CREDITS.md`)
 
 ## 2. Feedback (Countermeasure telegraphs, via Free mode Presets)
 - [x] Share, flank point, radio-check, head-check, Metis once-per-kind call and Briefing key logic: `tests/test_telegraph.gd`

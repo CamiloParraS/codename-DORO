@@ -9,7 +9,7 @@ Personal reference: how this project is planned and built, where things live, an
 | Planning map (destination, decisions, fog) | `.scratch/ghost-layer/map.md` |
 | Decision tickets | `.scratch/ghost-layer/issues/NN-*.md` |
 | Research reports | `.scratch/ghost-layer/research/*.md` |
-| Project vocabulary | `GLOSSARY.md` |
+| Project vocabulary | `docs/GLOSSARY.md` |
 | Hard-to-reverse decisions | `docs/adr/` (created when the first one comes up) |
 | Agent instructions | `CLAUDE.md`, `docs/agents/` |
 | Raw downloads (not imported, not committed) | `_raw/` |
@@ -20,7 +20,7 @@ Personal reference: how this project is planned and built, where things live, an
 
 1. Download into `_raw/<source>/` (the zip, the FBX, whatever arrives).
 2. Copy **only what you'll use** into `assets/...` (see structure). Godot imports it from there.
-3. Add a line to `CREDITS.md` right away: name, author, link, license.
+3. Add a line to `docs/CREDITS.md` right away: name, author, link, license.
 
 `_raw/` is ignored by both Godot and git. That keeps the import fast and keeps Mixamo/Quaternius raw files out of the repo (their licenses forbid redistributing them).
 
