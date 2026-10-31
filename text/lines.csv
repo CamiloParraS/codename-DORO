@@ -337,10 +337,13 @@ ui.menu.d.quit,Close the game,Cierra el juego
 ui.menu.press_any,Press any key,Pulsa cualquier tecla
 ui.menu.protocol,Aigis Protocol,Protocolo Aigis
 ui.menu.recruits,Recruits,Reclutas
+ui.menu.col.rank,RANK,RANGO
+ui.menu.col.time,TIME,TIEMPO
+ui.menu.col.kills,KILLS,MUERTES
+ui.menu.col.alerts,ALERTS,ALERTAS
 ui.menu.pick_new,NEW GAME: PICK A SLOT,NUEVA PARTIDA: ELIGE RANURA
 ui.menu.pick_select,MISSION SELECT: PICK A SLOT,SELECCIÓN: ELIGE RANURA
 ui.menu.overwrite,OVERWRITE SLOT {n}?,¿SOBRESCRIBIR LA RANURA {n}?
-ui.menu.record,{mission}  {rank}  {time}  KILLS {kills}  ALERTS {alerts},{mission}  {rank}  {time}  MUERTES {kills}  ALERTAS {alerts}
 ui.slot.empty,EMPTY,VACÍA
 ui.slot.complete,COMPLETE,COMPLETADA
 ui.mission.0,MISSION 1: HARBOUR,MISIÓN 1: PUERTO
@@ -425,9 +428,10 @@ ui.step.spoofing.1,GLAUKOPIS THRESHOLD 40 -> 25,UMBRAL DE GLAUKOPIS 40 -> 25
 ui.step.spoofing.2,RADIO CALLBACK,DEVOLUCIÓN DE LLAMADA
 ui.step.spoofing.3,SINGLE-USE VOICEPRINTS,HUELLAS DE VOZ DE UN SOLO USO
 ui.req.title,REQUISITION,REQUISICIÓN
-ui.req.points,POINTS: {n},PUNTOS: {n}
+ui.req.points,RECRUITS: {n},RECLUTAS: {n}
 ui.req.recruits,RECRUITS,RECLUTAS
-ui.req.price,{n} PTS,{n} PTS
+ui.req.price,{n} RECRUITS,{n} RECLUTAS
+ui.req.price_one,{n} RECRUIT,{n} RECLUTA
 ui.req.max,MAX,MÁX
 ui.req.items,S-RANK ITEMS,OBJETOS DE RANGO S
 ui.req.unlocked,UNLOCKED,DESBLOQUEADO
@@ -465,6 +469,8 @@ ui.codec.answer,[{key}] ANSWER,[{key}] RESPONDER
 ui.post.rank,RANK,RANGO
 ui.post.title,MISSION RESULT,RESULTADO DE MISIÓN
 ui.post.nothing,NOTHING NEW,SIN NOVEDADES
+ui.post.eases,AIGIS EASES OFF,AIGIS RELAJA
+ui.post.no_answer,NO ANSWER YET,SIN RESPUESTA AÚN
 ui.post.learned,AIGIS HAS LEARNED,AIGIS HA APRENDIDO
 ui.post.time,CLEAR TIME,TIEMPO
 ui.post.kills,KILLS,MUERTES

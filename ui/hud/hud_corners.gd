@@ -179,10 +179,13 @@ func _voiceprints(d: Vector2) -> void:
 		return
 	var x := d.x - 64
 	var y := RadarModel.TOP + RadarModel.HALF * 2 + 32
-	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_3, 0.16, HudPalette.LABEL, 2)
 	var rows: Array = held.slice(0, VP_SHOWN).map(func(n: String) -> String: return n)
 	if held.size() > VP_SHOWN:
 		rows.append("+%d" % (held.size() - VP_SHOWN))
+	var plate := Rect2(x - 150, y - 22, 164, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
+	_canvas.draw_rect(plate, Color(HudPalette.GLASS, 0.62))
+	_canvas.draw_rect(plate, Color(HudPalette.LIGHT, 0.26), false, 1.0)
+	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 2)
 	for i in rows.size():
 		HudPalette.hud_label(_canvas, Vector2(x, y + 24 + 22 * i), rows[i], 17, HudPalette.LIGHT_2, 0.12, HudPalette.LABEL, 2)
 

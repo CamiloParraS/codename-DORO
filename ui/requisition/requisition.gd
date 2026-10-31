@@ -119,7 +119,7 @@ func lines() -> Array:
 		var u: Dictionary = Requisition.UPGRADES[ids[i]]
 		var left: int = u.buys - g.bought.get(ids[i], 0)
 		var what := "%s %d" % [tr("ui.upgrade.%s.effect" % ids[i]), g.value(ids[i])] + (" -> %d" % (g.value(ids[i]) + u.step) if left > 0 else "")
-		var price := tr("ui.req.price").format({n = u.price}) if left > 0 else tr("ui.req.max")
+		var price := _price(u.price) if left > 0 else tr("ui.req.max")
 		out.append("%s %s %s  %s" % [">" if row == i else " ", _pad(tr("ui.upgrade.%s" % ids[i]), 18), _pad(price, 6), what])
 	out.append_array(["", tr("ui.req.items")])
 	for k in Requisition.ITEMS.size():
@@ -229,7 +229,7 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 				draw_rect(cell.grow(7), RED, false, 4.0)
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 8), Vector2(44, 34)), MUTED if poor else DARK, INF)
 			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 8), str(value), 38, MUTED if poor else DARK, _f(38, 0.02), 2, false)
-			HudPalette.hud_text(self, Vector2(cell.position.x + 10, cell.end.y - 8), tr("ui.req.price").format({n = u.price}).to_upper(), 16, RED, _f(18, 0.1), 0, false)
+			HudPalette.hud_text(self, Vector2(cell.position.x + 10, cell.end.y - 8), _price(u.price).to_upper(), 16, RED, _f(18, 0.1), 0, false)
 		else:  # far
 			_dashed(cell, Color(DARK, 0.3))
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), Color(DARK, 0.3), INF)
@@ -270,7 +270,7 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	draw_rect(bar, DARK if can else Color(DARK, 0.1))
 	if not can:
 		draw_rect(bar, Color(DARK, 0.35), false, 2.0)  # a dim bar, not just a pale one: it reads as unavailable by shape too
-	var label := tr("ui.req.max") if left <= 0 else tr("ui.req.price").format({n = u.price})
+	var label := tr("ui.req.max") if left <= 0 else _price(u.price)
 	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else MUTED, _f(28, 0.2), 1, false)
 
 
@@ -307,3 +307,8 @@ func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) ->
 			draw_rect(pip, RED, false, 3.0)
 	if more > 0 and c.x + 280 < clip_x:
 		HudPalette.hud_text(self, c + Vector2(300, -110), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
+
+
+## A cost in Recruits, singular for one.
+func _price(n: int) -> String:
+	return tr("ui.req.price_one" if n == 1 else "ui.req.price").format({n = n})

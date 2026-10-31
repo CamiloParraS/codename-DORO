@@ -254,15 +254,17 @@ func _select_slot() -> void:
 
 func _missions(slot: int, s: Dictionary) -> void:
 	_menu.clear("ui.menu.mission_select")
+	_menu.add_columns_header([tr("ui.menu.col.rank"), tr("ui.menu.col.time"), tr("ui.menu.col.kills"), tr("ui.menu.col.alerts")])
 	for k in Campaign.MISSIONS.size():
 		var m: Dictionary = s.missions.get(str(k), {})
 		if m.is_empty():
 			continue
 		var b: Dictionary = m.best
 		@warning_ignore("integer_division")
-		var row := tr("ui.menu.record").format({mission = tr("ui.mission.%d" % k), rank = b.rank,
-			time = "%d:%02d" % [int(b.time) / 60, int(b.time) % 60], kills = b.kills, alerts = b.alerts})
-		_row(row, func() -> void:
+		var time := "%d:%02d" % [int(b.time) / 60, int(b.time) % 60]
+		var row := _menu.add_row(tr("ui.mission_short.%d" % k).to_upper(), Callable(), false, "", tr("ui.mission.%d" % k), [b.rank, time, str(b.kills), str(b.alerts)])
+		row.pressed.connect(Mixer.click)
+		row.pressed.connect(func() -> void:
 				Campaign.record = s.record
 				Campaign.missions = s.missions
 				Campaign.gear = s.gear

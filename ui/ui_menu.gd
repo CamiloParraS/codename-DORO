@@ -18,6 +18,7 @@ const ROW_STAGGER := 0.045
 const REST := Color(0.95, 0.96, 0.95, 0.8)  # an unselected row's name
 const PLATE := Color(HudPalette.GLASS, 0.66)
 const ICONS := "res://assets/ui/icons/%s.svg"
+const COLS: Array[float] = [52.0, 96.0, 60.0, 68.0]  # widths of the right-aligned stat columns a row may carry, rightmost last
 
 var _rows := VBoxContainer.new()
 var _rule := ColorRect.new()
@@ -76,7 +77,7 @@ func clear(heading := "") -> void:
 
 ## One plate. `icon` names an SVG in assets/ui/icons (none: the name starts further left); `desc` is the line
 ## shown under the list while the row is selected. Pressing plays no sound of its own.
-func add_row(text: String, on_press := Callable(), danger := false, icon := "", desc := "") -> Button:
+func add_row(text: String, on_press := Callable(), danger := false, icon := "", desc := "", cols: Array = []) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -112,16 +113,25 @@ func add_row(text: String, on_press := Callable(), danger := false, icon := "", 
 		glyph.size = Vector2(36, 36)
 		glyph.modulate = REST
 		b.add_child(glyph)
+	var cells: Array[Label] = []
+	for i in cols.size():
+		var cell := _cell(String(cols[i]), i, 26, REST)
+		b.add_child(cell)
+		cells.append(cell)
 	b.focus_entered.connect(func() -> void:
 		Mixer.play(&"tick")
 		_desc.text = desc
 		plate.select(true, SELECT_SECS)
 		if glyph:
-			glyph.modulate = HudPalette.DARK_INK)
+			glyph.modulate = HudPalette.DARK_INK
+		for cell in cells:
+			cell.add_theme_color_override("font_color", HudPalette.DARK_INK))
 	b.focus_exited.connect(func() -> void:
 		plate.select(false, SELECT_SECS)
 		if glyph:
-			glyph.modulate = REST if not b.disabled else Color(HudPalette.LIGHT, 0.3))
+			glyph.modulate = REST if not b.disabled else Color(HudPalette.LIGHT, 0.3)
+		for cell in cells:
+			cell.add_theme_color_override("font_color", REST))
 	b.mouse_entered.connect(func() -> void:
 		if not b.disabled:
 			b.grab_focus())
@@ -129,6 +139,35 @@ func add_row(text: String, on_press := Callable(), danger := false, icon := "", 
 		b.pressed.connect(on_press)
 	_rows.add_child(b)
 	return b
+
+
+## A small dim line naming the stat columns of the rows below it, aligned with them.
+func add_columns_header(labels: Array) -> void:
+	var row := Control.new()
+	row.custom_minimum_size.y = 30
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for i in labels.size():
+		row.add_child(_cell(String(labels[i]).to_upper(), i, 16, HudPalette.LIGHT_3))
+	_rows.add_child(row)
+
+
+## Column `i` of a row: right-aligned in its slot, which counts back from the plate's right margin.
+func _cell(text: String, i: int, fs: int, col: Color) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, fs, 0.06))
+	l.add_theme_font_size_override("font_size", fs)
+	l.add_theme_color_override("font_color", col)
+	var behind := 0.0
+	for j in range(i + 1, COLS.size()):
+		behind += COLS[j]
+	l.size = Vector2(COLS[i], ROW_H if fs > 20 else 30.0)
+	l.position = Vector2(_width - 30.0 - behind - COLS[i], 0)
+	return l
 
 
 ## Focus the first enabled row; `last` focuses the last one instead (NO, on a confirm).

@@ -42,7 +42,8 @@ func _process(delta: float) -> void:
 	if _operative and _operative.aiming:
 		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
 	_subs.tick(delta)
-	_tip_left = maxf(_tip_left - delta, 0.0)
+	if _subs.lines.size() < Subtitles.SHOWN:  # two radio lines own the lower middle: the tip waits, its clock too
+		_tip_left = maxf(_tip_left - delta, 0.0)
 	if _live:
 		var p := _live.advance(delta, true)
 		if not p.is_empty():
@@ -341,8 +342,60 @@ func _subtitles(d: Vector2, dim: float) -> float:
 func _tutorial_tip(d: Vector2, above: float) -> void:
 	if _tip_left <= 0.0:
 		return
+	if _subs.lines.size() >= Subtitles.SHOWN:
+		return
 	var a := minf(clampf(_tip_left, 0.0, 1.0), clampf((TIP_TIME - _tip_left) / 0.25, 0.0, 1.0))
+	var parts := _tip_parts(_tip)
+	if _tip_width(parts) <= SUB_W:  # one line of keycaps and words: each [KEY] drawn as a key, a double space as a gap
+		var x := d.x / 2 - _tip_width(parts) / 2
+		var top := above - 16 - 34
+		for part: Array in parts:
+			match part[0]:
+				"key":
+					x += HudPalette.keycap(_canvas, Vector2(x, top), part[1], true, a) + 8
+				"gap":
+					x += 30
+				_:
+					HudPalette.hud_text(_canvas, Vector2(x, top + 26), part[1], 26, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED)
+					x += HudPalette.FIGURE_MED.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x + 8
+		return
 	var rows := HudPalette.wrap(_tip, SUB_W, HudPalette.FIGURE_MED, 26)
 	var y := above - 16 - rows.size() * 34
 	for i in rows.size():
 		HudPalette.hud_text(_canvas, Vector2(d.x / 2, y + 26 + i * 34), rows[i], 26, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED, 1)
+
+
+## A tip split into ["key", "RMB"], ["text", "AIM FROM BEHIND"] and ["gap", ""] parts: `[KEY]` tokens, the words
+## between them, and the double spaces the tutorial lines use to separate their steps.
+static func _tip_parts(tip: String) -> Array:
+	var out: Array = []
+	for chunk: String in tip.split("  "):
+		if not out.is_empty():
+			out.append(["gap", ""])
+		var rest := chunk
+		while rest != "":
+			var open := rest.find("[")
+			var close := rest.find("]")
+			var piece := rest
+			if open == 0 and close > 0:
+				piece = rest.left(close + 1)
+				out.append(["key", piece.trim_prefix("[").trim_suffix("]")])
+			elif open > 0:
+				piece = rest.left(open)
+			if not piece.begins_with("[") and piece.strip_edges() != "":
+				out.append(["text", piece.strip_edges()])
+			rest = rest.substr(piece.length())
+	return out
+
+
+static func _tip_width(parts: Array) -> float:
+	var w := 0.0
+	for part: Array in parts:
+		match part[0]:
+			"key":
+				w += maxf(34.0, HudPalette.FIGURE.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 16) + 8
+			"gap":
+				w += 30
+			_:
+				w += HudPalette.FIGURE_MED.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x + 8
+	return w

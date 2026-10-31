@@ -239,31 +239,46 @@ func _stamp(d: Vector2, grade: String) -> void:
 
 func _draw_aigis(d: Vector2) -> void:
 	var changed := strip.filter(func(e: Dictionary) -> bool: return e.arrow != 0)
-	var cols := 3
-	var gap := 40.0
-	var w := (d.x - 160 - gap * (cols - 1)) / cols
 	if changed.is_empty():
 		HudPalette.hud_text(self, Vector2(80, 260), tr("ui.post.nothing").to_upper(), 34, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.2), 0, false)
+	var gap := 24.0
+	var h := clampf((d.y - 64.0 - 230.0 - 90.0 - gap * (changed.size() - 1)) / maxf(changed.size(), 1), 130.0, 230.0)
+	var w := d.x - 160.0
 	for i in changed.size():
 		var born := FIRST + i * CARD
 		if _age < born:
 			continue
 		var e: Dictionary = changed[i]
-		var x := 80.0 + (i % cols) * (w + gap) + (1.0 - clampf((_age - born) / 0.1, 0.0, 1.0)) * 36.0
-		@warning_ignore("integer_division")
-		var y := 230.0 + (i / cols) * 340.0
-		draw_rect(Rect2(x, y, w, 300), Color(HudPalette.GLASS, 0.74))
-		draw_rect(Rect2(x, y, w, 3), HudPalette.CYAN)
-		HabitGlyphs.draw(self, e.habit, Vector2(x + 30, y + 40), HudPalette.CYAN, 4.0)
-		var arrow: int = e.arrow
-		HudPalette.hud_text(self, Vector2(x + 30, y + 160), tr("ui.habit." + e.habit).to_upper() + (" ▲" if arrow > 0 else " ▼"), 48, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 48, 0.06), 0, false)
-		for p in 3:  # level pips, filled up to the level
-			draw_rect(Rect2(x + 30 + p * 33, y + 214, 28, 10), HudPalette.SAND if p < int(e.level) else Color(HudPalette.LIGHT, 0.2))
-		var pts := PackedVector2Array([Vector2(x + w - 50, y + 230 - 14 * arrow), Vector2(x + w - 70, y + 230 + 14 * arrow), Vector2(x + w - 30, y + 230 + 14 * arrow)])
-		if arrow > 0:
-			draw_colored_polygon(pts, HudPalette.CYAN)
-		else:
-			draw_polyline(pts + PackedVector2Array([pts[0]]), HudPalette.LIGHT_3, 2.0)
+		var x := 80.0 + (1.0 - clampf((_age - born) / 0.1, 0.0, 1.0)) * 36.0
+		_aigis_row(Rect2(x, 230.0 + i * (h + gap), w, h), e)
 	if _age >= FIRST + changed.size() * CARD + 0.4:
 		var ak := tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(self, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)
+
+
+## One Habit the Profile moved on, as cause then effect: its glyph, name, arrow and pips on the left, and on the
+## right the Voice that answers and what it does (the same line the Briefing speaks), or that Aigis eases off.
+func _aigis_row(r: Rect2, e: Dictionary) -> void:
+	var arrow: int = e.arrow
+	var level: int = e.level
+	var mid := r.position.y + r.size.y / 2.0
+	draw_rect(r, Color(HudPalette.GLASS, 0.74))
+	draw_rect(Rect2(r.position, Vector2(r.size.x, 3)), HudPalette.CYAN)
+	HabitGlyphs.draw(self, e.habit, Vector2(r.position.x + 34, mid - 20), HudPalette.CYAN, 4.0)
+	var nx := r.position.x + 110
+	HudPalette.hud_text(self, Vector2(nx, mid + 2), tr("ui.habit." + e.habit).to_upper() + (" ▲" if arrow > 0 else " ▼"), 48, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 48, 0.06), 0, false)
+	for p in 3:  # level pips, filled up to the level
+		draw_rect(Rect2(nx + p * 33, mid + 24, 28, 10), HudPalette.SAND if p < level else Color(HudPalette.LIGHT, 0.2))
+	var cx := r.position.x + 610
+	var tri := PackedVector2Array([Vector2(cx, mid - 14), Vector2(cx + 20, mid), Vector2(cx, mid + 14)])
+	if arrow > 0:
+		draw_colored_polygon(tri, HudPalette.CYAN)
+	else:
+		draw_polyline(tri + PackedVector2Array([tri[0]]), HudPalette.LIGHT_3, 2.0)
+	var sponsor: String = Aigis.LADDERS[e.habit][level - 1][0] if level > 0 else ""
+	var head := tr("ui.post.eases") if arrow < 0 else tr("ui.voice." + sponsor) if level > 0 else tr("ui.post.no_answer")
+	var lines := HudPalette.wrap(tr("brief.%s.hint.%s.%d" % [sponsor, e.habit, level]), r.size.x - 690.0 - 40.0, HudPalette.FIGURE_MED, 34) if level > 0 else PackedStringArray()
+	var ty := mid - (34.0 + lines.size() * 44.0) / 2.0 + 24.0
+	HudPalette.hud_text(self, Vector2(r.position.x + 690, ty), head.to_upper(), 24, HudPalette.LIGHT_3 if arrow < 0 or level == 0 else HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.3), 0, false)
+	for j in lines.size():
+		HudPalette.hud_text(self, Vector2(r.position.x + 690, ty + 44.0 + j * 44.0), lines[j], 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
