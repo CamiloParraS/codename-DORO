@@ -101,3 +101,5 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Characters PSX `Character_21_Police`, `Character_23_Firefighter`, `Character_25_Doctor`, `Character_27_HM` textures (guard skins, `assets/models/characters/guard/`) by Elbolilloduro, CC0 1.0, baked onto Nikita's UVs (`_raw/work/bake/bake.py`).
 - Operative skin (`assets/models/characters/operative.png`): self-made, painted on Nikita's UV layout (`assets/textures/characters/nikita_uv_labeled.png`).
 - Quaternius Universal Animation Library `Hit_Chest` clip, CC0, baked into `clips.res` as `hit` (`tools/bake_clips.gd`).
+
+- Phantom Camera 0.11.0.4, Ramokz, https://github.com/ramokz/phantom-camera, MIT (addons/phantom_camera/).
