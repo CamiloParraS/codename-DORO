@@ -196,8 +196,38 @@ func _save(out: String) -> void:
 	var err := packed.pack(_root)
 	if err == OK:
 		err = ResourceSaver.save(packed, out)
+	if err == OK:
+		_stable_ids(out)
 	print("saved ", out, ": ", error_string(err))
 	_root.free()
+
+
+## Godot gives every node a random unique_id on each save, so a rebuild rewrites every node header. Each id becomes a
+## hash of the node's path, and a rebuild changes only what the data changed.
+func _stable_ids(out: String) -> void:
+	var text := FileAccess.get_file_as_string(out)
+	var taken := {}
+	var root_name := ""
+	var rx := RegEx.create_from_string(r'(?m)^\[node name="([^"]*)"([^\]]*?)unique_id=(\d+)')
+	var par := RegEx.create_from_string(r'parent="([^"]*)"')
+	var result := ""
+	var at := 0
+	for m in rx.search_all(text):
+		var path := m.get_string(1)
+		var pm := par.search(m.get_string(2))
+		if not pm:
+			root_name = path
+		else:
+			path = "%s/%s" % [root_name if pm.get_string(1) == "." else root_name + "/" + pm.get_string(1), path]
+		var id := path.hash() & 0x7fffffff
+		while taken.has(id):
+			id += 1
+		taken[id] = true
+		result += text.substr(at, m.get_start(3) - at) + str(id)
+		at = m.get_end(3)
+	result += text.substr(at)
+	var f := FileAccess.open(out, FileAccess.WRITE)
+	f.store_string(result)
 
 
 # --- builders ---------------------------------------------------------------------------------
@@ -332,6 +362,11 @@ func _row(b: Node3D, size: Vector3, key: String) -> void:
 ## skin tint], each standing on its base at h. Call it before the bake: anything DRESS_SOLID_H or taller is a
 ## StaticBody3D whose box collider (layer 1) the navmesh routes round, centred on the body like _box's so
 ## _check_markers sees it. Backdrop dressing passes solid = false: nothing out there is touched.
+## A map coordinate as a node-name part: -7.5 -> "m7p5".
+func _coord(v: float) -> String:
+	return str(snappedf(v, 0.01)).replace("-", "m").replace(".", "p")
+
+
 func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 	var g := _group(parent, "Dressing")
 	for it in items:
@@ -350,7 +385,7 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 		if skin:
 			m = _bare(m, _mat(skin[0], skin[1]))
 		var b: Node3D = StaticBody3D.new() if solid else Node3D.new()
-		b.name = "%s%d" % [key.to_pascal_case(), g.get_child_count()]
+		b.name = "%s_%s_%s" % [key.to_pascal_case(), _coord(it[1][0]), _coord(it[1][1])]  # by place, so an insertion renames nothing else
 		b.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(-it[2])), _p(it[1]) + Vector3.UP * size.y / 2)
 		g.add_child(b)
 		if solid:
