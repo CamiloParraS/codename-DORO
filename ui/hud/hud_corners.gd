@@ -11,6 +11,8 @@ const SELECT_WIPE := 0.2  # s the strip takes to open, in 6 hard steps
 const SLOT_STAGGER := 0.035
 const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
 const MINT := HudPalette.MINT  # the live call card's tint
+const WEAPON_FADE := 18  # dither pixels in the weapon card's fade, longer than the other plates'
+const WEAPON_INSET := 76.0  # px the weapon card's content starts in from its edge
 const CARD_INSET := 46.0  # px a gear card's content starts in from its edge
 const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corners are cut by
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
@@ -296,7 +298,7 @@ func _aigis_cue() -> void:
 
 ## Geometry of the two cards (design px): the mock's 400 px column, 70 px from the right, 66 from the bottom.
 func _weapon_rect(d: Vector2) -> Rect2:
-	return Rect2(d.x - 70 - 450, d.y - 84 - 180, 450, 180)
+	return Rect2(d.x - 70 - 450, d.y - 84 - 150, 450, 150)
 
 
 func _item_rect(d: Vector2) -> Rect2:
@@ -305,20 +307,20 @@ func _item_rect(d: Vector2) -> Rect2:
 
 
 ## A card: a borderless smoke plate that rises in opacity toward the screen edge and dithers away on its inner side.
-func _card(r: Rect2) -> void:
-	HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.35, 0.92)
+func _card(r: Rect2, cells := HudPalette.DITHER_BAND) -> void:
+	HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.35, 0.92, true, 0.0, cells)
 
 
 ## Bottom-right: the item card (with the Fulton balloons beside it) over the weapon card and its rounds bar.
 func _gear(d: Vector2) -> void:
 	var gun: Gun = _operative.gun()
 	var wr := _weapon_rect(d)
-	_card(wr)
-	wr = Rect2(wr.position.x + CARD_INSET, wr.position.y, wr.size.x - CARD_INSET, wr.size.y)  # the content sits clear of the fade
+	_card(wr, WEAPON_FADE)
+	wr = Rect2(wr.position.x + WEAPON_INSET, wr.position.y, wr.size.x - WEAPON_INSET, wr.size.y)  # the content sits clear of the fade
 	var name_w := _card_name(wr.position + Vector2(20, 34), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
 	var chip := "LTH" if gun.lethal else "SLP"
 	_chip(Vector2(wr.position.x + 20 + name_w + 8, wr.position.y + 13), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
-	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(72, 160), 1.0, HudPalette.LIGHT)
+	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(42, 134), 1.0, HudPalette.LIGHT)
 	if gun.suppressor_max >= 0:  # shots left on the suppressor
 		var sx := wr.position.x + 20
 		for i in gun.suppressor_max:

@@ -158,9 +158,9 @@ const FADE_W := DITHER_BAND * DITHER_PX  # a plate's dithered edge, which conten
 
 ## A borderless plate: `tint` rising from alpha `a0` at the dithered edge to `a1` at the far one, the dithered edge
 ## (`fade_left`: the left one) crumbling away in an ordered-dither band whose pixels crawl slowly, as if fading out.
-## `cut` slants two opposite corners (the dithered edge's top and the far edge's bottom) by that many px, on a 45 degree line.
-static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true, cut := 0.0) -> void:
-	var band := DITHER_BAND * DITHER_PX
+## `cells` widens the dithered edge. `cut` slants two opposite corners (the dithered edge's top and the far edge's bottom) by that many px, on a 45 degree line.
+static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true, cut := 0.0, cells := DITHER_BAND) -> void:
+	var band := cells * DITHER_PX
 	var body := Rect2(r.position.x + band, r.position.y, r.size.x - band, r.size.y) if fade_left else Rect2(r.position, Vector2(r.size.x - band, r.size.y))
 	var lo := Color(tint, a0)  # the body starts here and the dither pixels are this strong
 	var hi := Color(tint, a1)
@@ -179,8 +179,8 @@ static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, f
 		ci.draw_polygon(poly, cols)
 	var t := int(Time.get_ticks_msec() / 700.0)  # the pattern crawls a cell every 700 ms
 	var rows := ceili(r.size.y / DITHER_PX)
-	for cx in DITHER_BAND:
-		var dens := (cx + 0.5) / DITHER_BAND  # 0 at the dying edge, 1 where it meets the body
+	for cx in cells:
+		var dens := (cx + 0.5) / cells  # 0 at the dying edge, 1 where it meets the body
 		var x := r.position.x + cx * DITHER_PX if fade_left else r.end.x - (cx + 1) * DITHER_PX
 		for ry in rows:
 			if (BAYER[((ry + t) & 3) * 4 + ((cx + t * 3) & 3)] + 0.5) / 16.0 < dens:
