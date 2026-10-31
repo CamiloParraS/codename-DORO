@@ -127,6 +127,8 @@ func _end() -> void:
 	SessionLog.current.note(CineLogic.log_line(_key, skipped, _at))
 	_player.animation_finished.disconnect(_on_finished)
 	_player.stop(true)
+	if _op and not fade_out:
+		_op.snap_view()  # a take may have moved the body far; the gameplay camera must not fly after it
 	if fade_out:
 		_overlay.black = 1.0
 		_overlay.third = 0.0

@@ -55,6 +55,11 @@ var cine_face := 0.0:  # a take's heading for the body, radians (the body itself
 		if model:
 			model.rotation.y = v
 
+var cine_view := 0.0:  # a take's heading for the camera rig, radians: where the player looks once control returns
+	set(v):
+		cine_view = v
+		_yaw = v
+
 var _knock_left := 0.0
 var _step_left := 0.0
 var _choke_left := 0.0
