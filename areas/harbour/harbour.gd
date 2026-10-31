@@ -12,6 +12,8 @@ extends Node3D
 const GUARD := preload("res://actors/guard/guard.tscn")
 
 var _waves := Reinforcements.new()
+const ARRIVAL_DELAY := 30.0  # seconds from the call being answered to the squad appearing
+var _arrivals: Array[Array] = []  # [squad size, seconds left]
 var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
 
 
@@ -97,11 +99,18 @@ func _set_detours(guards: Array) -> void:
 
 ## Reinforcements: a squad once per completed Radio call (Reinforcements), from the entry nearest the
 ## Operative (the road, or the freighter's bridge for the deck); they leave when Caution ends.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var alive := get_tree().get_nodes_in_group("reinforcements").filter(func(g: Guard) -> bool: return not g.is_down()).size()
 	var n := _waves.tick(AlertChain.area.alerts, alive, Deployment.squad_size($MissionRun.plan.deployed))
 	if n > 0:
-		_send(n)
+		_arrivals.append([n, ARRIVAL_DELAY])
+	if Reinforcements.leaves(AlertChain.area.phase):
+		_arrivals.clear()  # Caution ended before they set out
+	for a: Array in _arrivals:
+		a[1] -= delta
+		if a[1] <= 0.0:
+			_send(a[0])
+	_arrivals = _arrivals.filter(func(a: Array) -> bool: return a[1] > 0.0)
 	_dismiss()
 	_leave()
 
@@ -113,7 +122,9 @@ func _send(n: int) -> void:
 		_reinforcements += 1
 		var g := spawn_guard(entry)
 		g.name = "GuardRoad%d" % _reinforcements
+		@warning_ignore("integer_division")
 		g.global_position += Vector3((i % 3 - 1) * 1.5, 0, i / 3 * 2.0)
+		g.reset_physics_interpolation()
 		g.post = g.global_transform
 		g.add_to_group("reinforcements")
 		_equip(g)

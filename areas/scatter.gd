@@ -9,6 +9,7 @@ extends MultiMeshInstance3D
 
 func _ready() -> void:
 	var t := transforms
+	@warning_ignore("integer_division")
 	multimesh.instance_count = t.size() / 12
 	for i in multimesh.instance_count:
 		var k := i * 12

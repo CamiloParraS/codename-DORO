@@ -11,7 +11,7 @@ const CORE := "res://areas/core/core.tscn"
 ## title; area: the Area scene; encounters: how many (par is 2 min each); targets: Target names (each is killed or carried to Extraction); carry_only: the Targets are ill, a Fulton would kill them, so they are carried out on foot (alive pays Requisition.ALIVE_TARGET_BONUS); steps, in order:
 ## {intel: the node in group "intel" whose `reached` completes it (a pickup, a console, an objective watch),
 ## objective: what the pause screen shows, call: the live Codec call it triggers, hint: Metis's two Hints, a
-## direction then the route}. open: the live call that states step 1 as the Mission starts. codec: the full-screen
+## direction then the route}; optional: the next step's intel can be done first and this one is skipped. open: the live call that states step 1 as the Mission starts. codec: the full-screen
 ## Codec call before the Mission. intro / outro (optional, text keys): the title card on entering the Area
 ## {name, area, stamp} and the extraction card {title, line}; a Mission without them plays straight in and straight to the post-Mission screen. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
 const MISSIONS := [
@@ -21,7 +21,7 @@ const MISSIONS := [
 		open = [["analyst", "live.m1.open.01"]],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["operative", "codec.m1.05"],
 			["handler", "codec.m1.06"], ["analyst", "codec.m1.07"], ["handler", "codec.m1.08"]], steps = [
-		{intel = "IntelSmokeBreak", objective = "objective.m1.s1", call = [["analyst", "live.m1.s1.01"]], hint = ["hint.m1.s1.1", "hint.m1.s1.2"]},
+		{intel = "IntelSmokeBreak", optional = true, objective = "objective.m1.s1", call = [["analyst", "live.m1.s1.01"]], hint = ["hint.m1.s1.1", "hint.m1.s1.2"]},
 		{intel = "IntelForeman", objective = "objective.m1.s2", call = [["analyst", "live.m1.s2.01"]], hint = ["hint.m1.s2.1", "hint.m1.s2.2"]},
 		{intel = "IntelLiftPanel", objective = "objective.m1.s3", call = [["analyst", "intel.m1.manifest"], ["handler", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
 	]},

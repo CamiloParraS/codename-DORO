@@ -80,6 +80,11 @@ func test_eavesdrop_step_completes_on_the_pairs_voiceprint() -> void:
 	op.free()
 
 
+func test_the_smoke_break_step_is_optional() -> void:
+	assert_true(Campaign.MISSIONS[0].steps[0].get("optional", false))
+	assert_false(Campaign.MISSIONS[0].steps[1].get("optional", false), "the foreman is not")
+
+
 ## The Foreman's step: his answer, his body searched, or him gone up on a balloon.
 func test_holdup_step_completes_on_the_answer_the_body_or_a_fulton() -> void:
 	var op := _operative()
@@ -97,8 +102,12 @@ func test_holdup_step_completes_on_the_answer_the_body_or_a_fulton() -> void:
 	assert_false(w.done(), "dead, but the Operative isn't over him")
 	g.global_position = Vector3(1, 0, 0)
 	assert_true(w.done(), "the code is on the body")
-	g.remove_from_group("guards")
+	g.answered = false
 	g.dead = false
+	g.neutral_left = 30.0
+	assert_true(w.done(), "knocked out: the code is on the body too")
+	g.neutral_left = 0.0
+	g.remove_from_group("guards")
 	assert_true(w.done(), "Fultoned: gone from the Area")
 	g.free()
 	w.free()

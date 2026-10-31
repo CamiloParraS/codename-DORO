@@ -49,6 +49,15 @@ const SHOTS := {
 		water = [Vector3(55, 1.5, 10), Vector3(20, 6, -10)],
 	}],
 	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
+	## World = diagram metres - 40, floor h up. The set dressing pass: Garage, yard, mess, office, summit.
+	relay_tour = ["res://areas/relay_station/relay_station.tscn", {
+		garage_out = [Vector3(-8, 2.5, 21), Vector3(4, 1.5, 27)],
+		garage_in = [Vector3(5, 2.6, 23.5), Vector3(11, 1, 29.5)],
+		yard = [Vector3(-26, 3, 32), Vector3(-10, 1, 29)],
+		mess = [Vector3(14, 6, 2.5), Vector3(16, 4.2, -2)],
+		summit = [Vector3(-12, 9, -2), Vector3(-4, 8, -25)],
+		office = [Vector3(28, 12, -10), Vector3(20, 8, -28)],
+	}],
 	relay_edges = ["res://areas/relay_station/relay_station.tscn", {
 		south_drop = [Vector3(-10, 2.5, 30), Vector3(-5, -8, 60)],
 		road_out = [Vector3(38, 5.5, 4), Vector3(70, 3, 4)],
@@ -60,12 +69,28 @@ const SHOTS := {
 		mast = [Vector3(-20, 9, -12), Vector3(-3, 18, -29)],
 	}],
 	research_annex = ["res://areas/research_annex/research_annex.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
+	## The ring-shaped lab (level-pass, ticket 22): one shot per room or route the map names.
+	annex_tour = ["res://areas/research_annex/research_annex.tscn", {
+		start = [Vector3(-35, 2.6, 35.5), Vector3(17, 1.5, 22)],  # behind the Operative, the dock guard under his floodlight
+		dock = [Vector3(10, 2.5, 28), Vector3(17, 1.5, 22)],
+		front_door = [Vector3(-26, 2, 20), Vector3(-26, 1.2, 14)],
+		crawl = [Vector3(-8, 1.2, 29), Vector3(-8, 0.6, 16)],
+		north_corridor = [Vector3(-30, 1.7, -10.5), Vector3(13, 1.2, -10.5)],
+		south_corridor = [Vector3(12, 1.7, 2.5), Vector3(-31, 1.2, 2.5)],
+		clean_room = [Vector3(-7, 1.8, -6), Vector3(1, 1, -2)],
+		vault = [Vector3(4, 1.8, -4), Vector3(10, 1, -6)],
+		security = [Vector3(5, 1.8, -16), Vector3(11, 1, -19)],
+		archive = [Vector3(-2, 1.8, 7), Vector3(-13, 1, 10)],
+		hall = [Vector3(14, 1.8, 12), Vector3(2, 1, 6)],
+		strip = [Vector3(-32, 2.2, -30), Vector3(20, 1, -30)],
+		extraction = [Vector3(20, 2.5, -22), Vector3(30, 0.5, -16)],
+	}],
 	annex_edges = ["res://areas/research_annex/research_annex.tscn", {
 		road_out = [Vector3(0, 2.5, -28), Vector3(0, 0, -70)],
-		quarry = [Vector3(15, 3, -2), Vector3(35, -10, 25)],
-		west = [Vector3(-28, 2.5, 10), Vector3(-70, 0, 10)],
+		quarry = [Vector3(19, 3, -2), Vector3(35, -10, 25)],
+		west = [Vector3(-35, 2.5, 5), Vector3(-70, 0, 5)],
 		south = [Vector3(-20, 2.5, 30), Vector3(-20, 0, 70)],
-		north_strip = [Vector3(-30, 2.5, -20), Vector3(30, 0, -36)],
+		north_strip = [Vector3(-32, 2.5, -27), Vector3(30, 0, -32)],
 		yard = [Vector3(-30, 2.5, 30), Vector3(10, 0, 28)],
 		sky_north = [Vector3(0, 12, -30), Vector3(0, 25, -160)],
 		pit = [Vector3(25, 6, -12), Vector3(60, -14, 40)],

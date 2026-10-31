@@ -464,6 +464,18 @@ func _step_intel() -> Node3D:
 	return null
 
 
+## The index of the step whose intel is `intel_name` if it can be done now (the current step, or one past
+## steps marked `optional`), else -1.
+func _doable(intel_name: String) -> int:
+	var steps := _steps()
+	for at in range(step, steps.size()):
+		if steps[at].intel == intel_name:
+			return at
+		if not steps[at].get("optional", false):
+			break
+	return -1
+
+
 func _steps() -> Array:
 	return Campaign.MISSIONS[mission].steps
 
@@ -471,8 +483,8 @@ func _steps() -> Array:
 ## Only the current step's intel is shown, and the Extraction beacon only once every step is done.
 func _show_intel() -> void:
 	for i: Node3D in get_tree().get_nodes_in_group("intel"):
-		i.visible = step < _steps().size() and i.name == _steps()[step].intel
-		i.set_deferred("monitoring", i.visible)  # a hidden pickup is inert: it can't open the Core's lift early
+		i.visible = _doable(i.name) == step
+		i.set_deferred("monitoring", i.visible or _doable(i.name) > step)  # a hidden pickup is inert: it can't open the Core's lift early
 	for e in get_tree().get_nodes_in_group("extraction"):
 		var beacon: Node3D = e.get_node_or_null("Beacon")
 		if beacon:
@@ -481,11 +493,12 @@ func _show_intel() -> void:
 
 ## The current step's intel reached: the step is done, and that's a Checkpoint.
 func _on_intel(intel: Node) -> void:
-	if ended or step >= _steps().size() or intel.name != _steps()[step].intel:
+	var at := _doable(intel.name)
+	if ended or at < step:
 		return
-	get_tree().call_group("codec_live", "live_call", _steps()[step].call)
-	SessionLog.current.note("step %d done (%s)" % [step + 1, intel.name])
-	step += 1
+	get_tree().call_group("codec_live", "live_call", _steps()[at].call)
+	SessionLog.current.note("step %d done (%s)" % [at + 1, intel.name])
+	step = at + 1
 	hints.new_step()
 	_show_intel()
 	_say_objective()

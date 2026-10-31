@@ -50,7 +50,7 @@ const SOLID := [
 	# summit
 	["Mast", [34, 8, 6, 6], 6, 18, "concrete", Color(0.8, 0.8, 0.78)],
 	["Antenna", [36, 10, 2, 2], 18, 34, "metal", Color(0.85, 0.3, 0.25)],
-	["GeneratorShed", [16, 4, 6, 4], 6, 9, "brick", Color.WHITE],
+	["GeneratorShed", [16, 4, 6, 4], 6, 9, "corrugated", Color(0.85, 0.85, 0.8)],
 	["ConsoleDesk", [39, 17.5, 2, 1], 6, 7.1, "metal", Color(0.4, 0.45, 0.5)],
 	# motor pool
 	["Container1", [26, 62, 3, 8], 0, 2.6, "metal", Color(0.42, 0.32, 0.27)],
@@ -66,10 +66,10 @@ const LOW := [
 ]
 ## Enterable buildings: [name, rect, height, doors [[side, centre]], tint, base].
 const BUILDINGS := [
-	["Garage", [44, 62, 14, 10], 5.0, [["W", 67.0], ["E", 67.0]], Color(0.85, 0.85, 0.85), 0.0],
-	["FuelHut", [66, 66, 6, 6], 3.0, [["W", 69.0]], Color.WHITE, 0.0],
-	["MessHut", [52, 38, 12, 8], 3.5, [["S", 58.0], ["W", 42.0]], Color.WHITE, 3.0],
-	["Office", [50, 8, 14, 10], 3.7, [["W", 15.0], ["S", 52.0]], Color(0.85, 0.85, 0.8), 6.0],  # roof top at 10, level with the catwalk
+	["Garage", [44, 62, 14, 10], 5.0, [["W", 67.0, 3.0], ["E", 67.0]], Color(0.9, 0.85, 0.8), 0.0, "corrugated"],  # the west door is the vehicle bay, the east one a personnel door
+	["FuelHut", [66, 66, 6, 6], 3.0, [["W", 69.0]], Color(0.8, 0.8, 0.8), 0.0, "concrete"],
+	["MessHut", [52, 38, 12, 8], 3.5, [["S", 58.0], ["W", 42.0]], Color(0.9, 0.82, 0.7), 3.0, "planks"],
+	["Office", [50, 8, 14, 10], 3.7, [["W", 15.0], ["S", 52.0]], Color(0.85, 0.88, 0.9), 6.0, "panels"],  # roof top at 10, level with the catwalk
 ]
 ## The stilted barracks: a 10 m Crawlspace under it, north to south.
 const CRAWLSPACES := [
@@ -148,7 +148,16 @@ const DRESS := [
 	# garage inside
 	["cabinet_b", [46.5, 62.55, 0], 180], ["cabinet_a", [48, 62.55, 0], 180], ["ceiling_lamp", [51, 67, 4.8], 0],
 	["cardboard_box", [56.5, 71, 0], 10],
+	["van", [48.5, 70.2, 0], 90], ["shelf", [51, 62.6, 0], 180], ["shelf", [52, 62.6, 0], 180], ["table", [55, 63.1, 0], 180],
+	["pc", [55, 63.1, 0.96], 180], ["barrel_b", [57, 62.9, 0], 0], ["jerrycan", [56.8, 63.9, 0], 20], ["ceiling_lamp", [47, 66.5, 4.8], 0],
+	["ceiling_lamp", [55, 67, 4.8], 0], ["bollard", [42.4, 65.2, 0], 0], ["bollard", [42.4, 68.8, 0], 0],  # bay door posts
+	# fuel hut: a riser tank behind it; the second van waits in the yard
+	["tank_tall", [74.5, 69, 0], 0], ["van", [22, 69, 0], 0], ["sandbags", [26, 73.5, 0], 0],
+	# mess hut inside
+	["table", [56, 44.3, 3], 0], ["chair", [56, 43.2, 3], 0], ["vending_machine", [53, 38.7, 3], 180],
+	["locker", [63.2, 38.7, 3], 180], ["ceiling_lamp", [58, 41, 6.3], 0],
 	# barracks terrace
+	["water_tower", [12, 38, 3], 0],
 	["crate_wide", [14, 33.2, 3], 0], ["barrel_b", [16, 33, 3], 0], ["drum", [65.5, 39, 3], 0],
 	["jerrycan", [57, 46.6, 3], 0], ["lamp_post", [46, 32.6, 3], 180], ["vent_unit", [58, 42, 6.8], 90],
 	# summit: generator by its shed, the console's screens, floodlight over the helipad
@@ -158,6 +167,12 @@ const DRESS := [
 	# office inside
 	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 0], ["chair", [61, 11.2, 6], 180],
 	["locker", [53, 8.65, 6], 180], ["ceiling_lamp", [57, 13, 9.5], 0],
+	["shelf", [55.5, 8.55, 6], 180], ["cabinet_a", [57.5, 8.6, 6], 180], ["vent_cowl", [62.8, 12.8, 10], 0], ["vent_cowl", [62.8, 16.5, 10], 0],
+	# the mast's base: risers and a switch cabinet; the shed's exhausts and a second tank
+	["pipe_riser", [33.3, 9, 6], 0], ["pipe_riser", [33.3, 13, 6], 0], ["cabinet_b", [36, 14.6, 6], 0],
+	["vent_cowl", [18, 6, 9.3], 0], ["vent_cowl", [20.5, 6, 9.3], 0], ["tank_tall", [27.5, 6, 6], 0], ["lamp_post", [13.8, 18, 6], 270],
+	# the gate's bollards
+	["bollard", [86, 42.3, 3], 0], ["bollard", [86, 45.7, 3], 0],
 	# the relay's dishes on the summit, either side of the mast
 	["sat_dish", [29.5, 6.6, 6], 200], ["sat_dish", [62.5, 9.5, 10], 160],  # the east one on the office roof: the lane behind the office stays open
 	# a checkpoint at the road gate
@@ -171,10 +186,14 @@ const DRESS := [
 ]
 ## Paint, white: the helipad's H and square on the summit, the road's centre line. [rect, dash, floor h, colour].
 const PAINT := Color(0.95, 0.95, 0.92)
+const HAZARD := Color(0.9, 0.72, 0.1)
+const STAIN := Color(0.1, 0.09, 0.09)
 const MARKINGS := [
 	[[7.4, 12, 0.4, 4], 0, 6, PAINT], [[10.2, 12, 0.4, 4], 0, 6, PAINT], [[7.8, 13.8, 2.4, 0.4], 0, 6, PAINT],
 	[[5, 10, 8, 0.2], 0, 6, PAINT], [[5, 17.8, 8, 0.2], 0, 6, PAINT], [[5, 10.2, 0.2, 7.6], 0, 6, PAINT], [[12.8, 10.2, 0.2, 7.6], 0, 6, PAINT],
 	[[76, 43.9, 134, 0.2], 2.0, 3, PAINT],
+	[[43.2, 65.5, 0.6, 3], 0, 0, HAZARD], [[44.4, 65.5, 0.4, 3], 0, 0, HAZARD],  # the bay door's threshold
+	[[48, 66.2, 3.2, 1.8], 0, 0, STAIN], [[53, 64.5, 2.2, 1.4], 0, 0, STAIN],
 ]
 ## Beyond the rails: the ground (_ground_h), the road on east, forests, rocks, a pylon line across the valley,
 ## telegraph poles along the road and the peaks behind the north ridge.
