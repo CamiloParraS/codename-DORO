@@ -470,7 +470,7 @@ The HUD is flat glass and gets its depth from translucency and perspective, not 
 
 ### Shadow Vocabulary
 - **Plate lift** (`0 4px 16px rgba(0,0,0,.35)`): the ALERT plate.
-- **Keycap lift (HUD)** (`0 3px 8px rgba(0,0,0,.5)`): HUD keycaps over the scene.
+- **Keycap lift (HUD)** (`0 3px 6px rgba(0,0,0,.65)`): HUD keycaps over the scene, dense enough to read over a dark one. A held key's outline gets a slight drop of its own (`0 2px 0 rgba(0,0,0,.45)`).
 - **Keycap skirt (menu)** (`0 2px 0 rgba(0,0,0,.25), inset 0 -2px 0 rgba(42,44,45,.18)`): the visible lower edge of a physical key. Only on menu keycaps.
 - **Paper lift** (`0 2px 6px rgba(0,0,0,.12)` to `.18`): title plate, recruits box, Continue button.
 - **Cell lift** (`0 2px 5px rgba(0,0,0,.2)`): own rank cells. **Button lift** (`0 3px 8px rgba(0,0,0,.2)`): the Requisition button. **Plate float** (`0 2px 10px rgba(0,0,0,.08)`): the drafting plate.
@@ -484,7 +484,7 @@ The HUD is flat glass and gets its depth from translucency and perspective, not 
 
 ## Shapes
 
-The HUD is square. Panels, slots, chips and plates have 0 radius, and their corners are marked by brackets instead of rounding: two 10x10px L-shapes in 2px sand at the top-left and bottom-right corners, offset 3px outside the hairline border. The only round forms in play are the ones that are round as objects: the Radar disc, the prompt's action disc, keycaps (6px, or 4px when small), and the radio ring. Radio referent brackets are 22px L-shapes in 2px ink on the targeted guard. Menus soften slightly: 2px on plates and the recruits box, 3px on cells, buttons, tabs (top corners only) and the drafting plate, 5px on keycaps. Empty and out-of-reach things are drawn with dashed borders: empty selector slots, far rank cells, the disabled Requisition button.
+The HUD is square. Panels, slots, chips and plates have 0 radius, and their corners are marked by brackets instead of rounding: two 10x10px L-shapes in 2px sand at the top-left and bottom-right corners, offset 3px outside the hairline border. The only round forms in play are the ones that are round as objects: the Radar disc, the prompt's action disc, keycaps (6px, or 4px when small) and the outline round a held key (10px, following the keycap 4px out), and the radio ring. Radio referent brackets are 22px L-shapes in 2px ink on the targeted guard. Menus soften slightly: 2px on plates and the recruits box, 3px on cells, buttons, tabs (top corners only) and the drafting plate, 5px on keycaps. Empty and out-of-reach things are drawn with dashed borders: empty selector slots, far rank cells, the disabled Requisition button.
 
 ## Components
 

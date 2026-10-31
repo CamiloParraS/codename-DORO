@@ -113,13 +113,14 @@ func _update_prompt() -> void:
 		prompt_parts = [part("interact", "drop")]
 	elif _choking:
 		prompt = tr("ui.prompt.killing" if _killing else "ui.prompt.choking")
-		prompt_parts = [part("", "kill" if _killing else "choke", false, "busy")]
+		prompt_parts = [part("", "kill", false, "busy")] if _killing else \
+				[part("interact", "choke", true, "", 1.0 - _choke_left / maxf(choke_time, 0.01))]
 	elif _fultoning:
 		prompt = tr("ui.prompt.fultoning")
-		prompt_parts = [part("", "fulton", false, "busy")]
+		prompt_parts = [part("fulton", "fulton", true, "", 1.0 - _fulton_left / maxf(fulton_time, 0.01))]
 	elif held_up and not held_up.answered:
 		prompt = _join(tr("ui.prompt.questioning") if _ask > 0.0 else Prompts.hold("interact", "ui.prompt.question"), _fulton_hint())
-		prompt_parts = [part("", "question", false, "busy") if _ask > 0.0 else part("interact", "question", true), fulton]
+		prompt_parts = [part("interact", "question", true, "", _ask / Holdup.ASK_TIME), fulton]
 	elif not held_up and _holdup_target():
 		prompt = Prompts.verb("interact", "ui.prompt.hold_up")
 		prompt_parts = [part("interact", "hold_up")]
@@ -142,14 +143,15 @@ func _update_prompt() -> void:
 		var line: String = c.prompt_for(self) if c.has_method("prompt_for") else ""
 		prompt = _join(prompt, line)
 		if line != "":
-			prompt_parts.append(part("interact", "console", true))
+			prompt_parts.append(part("interact", "console", true, "", float(c.get("held")) / maxf(float(c.get("hold_time")), 0.01)))
 	prompt_parts = prompt_parts.filter(func(p: Dictionary) -> bool: return not p.is_empty())
 
 
 ## One choice of the HUD's text-free prompt: the action whose key to show ("" = none, the move is under
 ## way), the pictogram, whether the key is held, and a state: "" offered, "busy" under way, "warn" barred.
-static func part(action: String, icon: String, hold := false, state := "") -> Dictionary:
-	return {action = action, icon = icon, hold = hold, state = state}
+## progress is how far a held key has filled its outline, 0..1.
+static func part(action: String, icon: String, hold := false, state := "", progress := 0.0) -> Dictionary:
+	return {action = action, icon = icon, hold = hold, state = state, progress = clampf(progress, 0.0, 1.0)}
 
 
 ## _fulton_hint as a prompt part: offered, barred (no open sky, or a Target too ill to fly), or none.
