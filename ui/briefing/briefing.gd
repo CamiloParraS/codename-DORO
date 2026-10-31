@@ -153,7 +153,7 @@ func _draw() -> void:
 			"title":
 				var f := HudPalette.tracked(disp, 64, 0.12)
 				var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 64).x + 56
-				draw_colored_polygon(PackedVector2Array([Vector2(0, y - 70), Vector2(x - 40 + w, y - 70), Vector2(x - 40 + w - 22, y + 20), Vector2(0, y + 20)]), HudPalette.LIGHT)
+				PixelKit.stair_fill(self, Rect2(0, y - 70, x - 40 + w, 90), HudPalette.LIGHT, 22.0)
 				HudPalette.hud_text(self, Vector2(x, y), s, 64, HudPalette.DARK_INK, f, 0, false)
 				y += 70
 			"gap":

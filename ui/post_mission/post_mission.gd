@@ -20,8 +20,6 @@ const STAMP_AT := 1.4  # s in: the rank letter stamps
 const STAMP_SECS := 0.5
 const DONE_AT := 2.4  # s in: the tally and stamp are over; a press now advances
 const CARD := 0.14  # s between learned cards landing
-const GRADE_EDGE := Color("14130d")  # the clear-rank bar fades from these into sand
-const GRADE_MID := Color("34301b")
 const FADE := HudPalette.FADE  # s from clear to the dimmed screen
 
 var strip: Array = []   # MissionTally.strip()
@@ -169,7 +167,7 @@ func _draw() -> void:
 func _header(at: Vector2, title: String, sub: String, col: Color) -> void:
 	var f := HudPalette.tracked(HudPalette.DISPLAY, 54, 0.08)
 	var w := f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, 54).x + 56
-	draw_colored_polygon(PackedVector2Array([at, at + Vector2(w, 0), at + Vector2(w - 22, 76), at + Vector2(0, 76)]), col)
+	PixelKit.stair_fill(self, Rect2(at, Vector2(w, 76)), col, 22.0)
 	HudPalette.hud_text(self, at + Vector2(22, 60), title, 54, HudPalette.DARK_INK, f, 0, false)
 	if sub != "":
 		HudPalette.hud_text(self, at + Vector2(w + 26, 58), sub, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.24), 0, false)
@@ -189,7 +187,7 @@ func _draw_rank(d: Vector2) -> void:
 		var a := clampf((_age - row_born) / 0.1, 0.0, 1.0)
 		if hl:
 			draw_rect(r, Color(HudPalette.LIGHT, a))
-		draw_line(r.position + Vector2(0, 64), r.end, Color(HudPalette.LIGHT, 0.14 * a), 1.0)
+		PixelKit.dashes(self, r.position + Vector2(0, 63), r.size.x, Color(HudPalette.LIGHT, 0.16 * a), 1, 1)
 		var ink := HudPalette.DARK_INK if hl else HudPalette.LIGHT_2
 		HudPalette.hud_text(self, r.position + Vector2(26, 43), String(rows[i][0]).to_upper(), 28, Color(ink, a), tf, 0, false)
 		var n := shown_at(i, rows[i][1], _age)
@@ -206,8 +204,7 @@ func _draw_rank(d: Vector2) -> void:
 	var grade := rank.grade(par)
 	if _age >= born:  # the gold clear-rank bar
 		var bar := Rect2(80, y + 22, 1180, 92)
-		var pts := PackedVector2Array([bar.position, Vector2(bar.position.x + bar.size.x * 0.45, bar.position.y), Vector2(bar.end.x, bar.position.y), bar.end, Vector2(bar.position.x + bar.size.x * 0.45, bar.end.y), Vector2(bar.position.x, bar.end.y)])
-		draw_polygon(pts, PackedColorArray([GRADE_EDGE, GRADE_MID, HudPalette.SAND, HudPalette.SAND, GRADE_MID, GRADE_EDGE]))
+		PixelKit.ramp(self, Rect2(bar.position.x + 190, bar.position.y, bar.size.x - 190, bar.size.y), HudPalette.SAND, 50)  # the gold fades in from the left in a dither band, clear of the RANK label
 		HudPalette.hud_text(self, bar.position + Vector2(30, 59), tr("ui.post.rank").to_upper(), 38, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.2), 0, false)
 		if _age >= STAMP_AT:
 			HudPalette.hud_text(self, bar.position + Vector2(bar.size.x - 40, 82), grade, 84, HudPalette.DARK_INK, HudPalette.DISPLAY, 2, false)  # Antonio's caps are 0.83 em: this centres them in the 92 px bar
@@ -233,9 +230,9 @@ func _chips(at: Vector2) -> void:
 		var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 36
 		var r := Rect2(x, at.y, w, 46)
 		if ok:
-			draw_rect(r, HudPalette.SAND)
+			PixelKit.stair_fill(self, r, HudPalette.SAND, 8.0)
 		else:
-			draw_rect(r, Color(HudPalette.LIGHT, 0.3), false, 1.0)
+			PixelKit.frame(self, r, Color(HudPalette.LIGHT, 0.3), 3)
 		HudPalette.hud_text(self, r.position + Vector2(18, 31), label, 20, HudPalette.DARK_INK if ok else HudPalette.LIGHT_3, f, 0, false)
 		x += w + 10
 

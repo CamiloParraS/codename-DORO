@@ -1,7 +1,7 @@
 ## The revamp's menu list: a stack of slanted plates, each with a line icon and its name in Antonio. The selected
 ## plate slides out toward the screen's middle, turns light with dark text and takes a red tab; its one-line
 ## description shows under the list and the key hints under that. Focus drives selection (the mouse takes focus on
-## hover) and plays `tick`. Plates fade up in a stagger when the page opens, and the selection eases in over 0.16 s.
+## hover) and plays `tick`. Plates fade up in a stagger when the page opens, and the selection wipes in over 0.11 s.
 ## Used by the main menu and the pause menu; design px, so put it under a scaled stage.
 class_name UiMenu
 extends PanelContainer
@@ -12,7 +12,7 @@ const WIDTH := 560.0
 const FONT_SIZE := 30
 const SLANT := 20.0       # px the plate's right edge leans in
 const REACH := 26.0       # px the selected plate slides left
-const SELECT_SECS := 0.16
+const SELECT_SECS := 0.11
 const OPEN_SECS := 0.45
 const ROW_STAGGER := 0.045
 const REST := Color(0.95, 0.96, 0.95, 0.8)  # an unselected row's name
@@ -108,7 +108,7 @@ func add_row(text: String, on_press := Callable(), danger := false, icon := "", 
 		glyph.texture = load(ICONS % icon)
 		glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		glyph.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		glyph.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # pixel art: keep its edges hard
 		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		glyph.position = Vector2(30, 11)
 		glyph.size = Vector2(36, 36)
@@ -225,12 +225,12 @@ class _Plate extends Control:
 			queue_redraw(), t, 1.0 if on else 0.0, secs)
 
 	func _draw() -> void:
-		var x := -UiMenu.REACH * t
-		var w := size.x + UiMenu.REACH * t
-		var h := size.y
-		var pts := PackedVector2Array([Vector2(x, 0), Vector2(x + w, 0), Vector2(x + w - UiMenu.SLANT, h), Vector2(x, h)])
+		var q := t  # the wipe moves a grid cell at a time on its own; quantising t as well made it stutter
+		var x := -snappedf(UiMenu.REACH * q, PixelKit.PX)
+		var r := Rect2(x, 0, size.x - x, size.y)
 		var lit := HudPalette.DMG if danger else HudPalette.LIGHT
-		draw_colored_polygon(pts, UiMenu.PLATE.lerp(lit, t * 0.95))
-		if t < 1.0:  # the resting plate's hairline along its slanted edge
-			draw_polyline(PackedVector2Array([Vector2(x + w, 0), Vector2(x + w - UiMenu.SLANT, h)]), Color(HudPalette.LIGHT, 0.25 * (1.0 - t)), 1.0)
-		draw_rect(Rect2(x, 0, 6, h), Color(HudPalette.MARK_RED if danger else HudPalette.DMG, 0.35 + 0.65 * t))
+		PixelKit.stair_fill(self, r, UiMenu.PLATE, UiMenu.SLANT)
+		PixelKit.stair_fill(self, r, Color(lit, 0.95), UiMenu.SLANT, q)  # the light plate wipes in, its edge dithered
+		if q < 1.0:  # the resting plate's stair along its slanted edge
+			PixelKit.stair_edge(self, r, Color(HudPalette.LIGHT, 0.25 * (1.0 - q)), UiMenu.SLANT)
+		draw_rect(Rect2(x, 0, 6, size.y), Color(HudPalette.MARK_RED if danger else HudPalette.DMG, 0.35 + 0.65 * q))

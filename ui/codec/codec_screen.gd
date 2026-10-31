@@ -212,7 +212,7 @@ func _portrait(node: TextureRect, at: Vector2, id: String, speaking: bool, typin
 	node.modulate = Color(GREEN, 1.0 if speaking else 0.42)
 	node.visible = true
 	draw_rect(Rect2(at, PORTRAIT), CRT_DARK, true)
-	draw_rect(Rect2(at, PORTRAIT), GREEN if speaking else GREEN_DIM, false, 2.0)
+	PixelKit.frame(self, PixelKit.snap(Rect2(at, PORTRAIT)), GREEN if speaking else GREEN_DIM, 3)
 
 
 ## The speaker's name as a slanted slab under its portrait: cut on the outer-bottom corner.
@@ -220,12 +220,10 @@ func _slab(at: Vector2, label: String, right: bool, on: bool) -> void:
 	var f := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.12)
 	var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 28)).x + 46  # measured at the size hud_text draws
 	var x := at.x + PORTRAIT.x - w if right else at.x
-	var pts := PackedVector2Array([Vector2(x, at.y), Vector2(x + w, at.y), Vector2(x + w, at.y + 52), Vector2(x, at.y + 52)])
+	var slab := Rect2(x, at.y, w, 52)
 	if right:
-		pts[0].x += 20
-	else:
-		pts[2].x -= 20
-	draw_colored_polygon(pts, GREEN if on else GREEN_DIM)
+		slab = Rect2(x + 20, at.y, w - 20, 52)
+	PixelKit.cut_fill(self, PixelKit.snap(slab), GREEN if on else GREEN_DIM, 6)
 	HudPalette.hud_text(self, Vector2(x + 24, at.y + 37), label, 28, CRT_DARK, f, 0, false)
 
 

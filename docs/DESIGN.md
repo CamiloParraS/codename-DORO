@@ -348,7 +348,7 @@ components:
 
 Ghost Layer's UI has two materials. In play, information sits on smoked glass: charcoal panels at about half opacity over the PSX-era 3D, white Barlow type, hairline borders, and a muted sand accent on the corner brackets, the selection and the Operative's own readouts. The four corners of the screen each hold one kind of information, in fixed places, so the player knows where to look before they notice the style. Between Missions, the UI turns into grey paper: Peace Walker's light grey ground, charcoal plates, a red selection outline, and engineering drawings of the gear on a drafting grid.
 
-Both materials are quiet by default and loud only when the game state is. The HUD stays near-monochrome while sneaking; ALERT is the one moment a solid red plate sits at top-centre and the Radar fills with red static. The UI renders at full resolution (1920x1080 logical) over the 854x480 3D render (the banding pass sits on canvas layer -1, under every UI, so no screen picks up its dither or fringe) and never imitates the PSX look: no pixel fonts, no dithered chrome. It also refuses neon sci-fi: no glows, no scanline overlays on panels, no saturated cyan chrome.
+Both materials are quiet by default and loud only when the game state is. The HUD stays near-monochrome while sneaking; ALERT is the one moment a solid red plate sits at top-centre and the Radar fills with red static. The UI renders at full resolution (1920x1080 logical) over the 854x480 3D render (the banding pass sits on canvas layer -1, under every UI, so no screen picks up its dither or fringe) and never imitates the PSX look's blur or fringe. Its chrome is pixel and dither, though (see Pixel Chrome): plates fade out in ordered-dither bands, shapes sit on a 3 px grid and slants are stairs, while all type stays clean (no pixel fonts). It also refuses neon sci-fi: no glows, no scanline overlays on panels, no saturated cyan chrome.
 
 All tokens are px values on the 1920x1080 logical canvas, ready for a Godot Theme and `ui/hud/hud_palette.gd`. The HTML mocks in `docs/ui-mock/` (kit in `docs/ui-mock/kit/`) are the reference renders; where this file and the mocks disagree, the mocks' `kit.css` wins.
 
@@ -567,6 +567,16 @@ A key drawn as a key.
 - **Settings:** the list on the left and one 420px icon on the right that wipes in over 7 steps when the highlighted option changes; values apply live.
 - **Game over:** the one screen with its own look: near-black red ground, a slowly turning red dial, animated grain, Michroma title, one Metis line and CONTINUES n.
 
+### Pixel Chrome
+The HUD's chrome language, shared by every screen through `HudPalette.plate()`, its `px_*` helpers and `ui/pixel_kit.gd` (`PixelKit`).
+- **Grid:** one chrome pixel is 3 px (`PixelKit.PX`); the dither cell is 6 px (`HudPalette.DITHER_PX`). Shapes, gauges and icons snap to it; corners are cut on a stair, never rounded or anti-aliased.
+- **Edges:** plates are borderless. A plate rises in opacity toward the screen edge and dies on its inner side in a 4x4 Bayer band whose cells crawl every 700 ms. Content keeps clear of that band (`FADE_W`). A hairline, where one stays, is a column of grid pixels (`stair_edge`).
+- **Transitions:** a fill arrives as a wipe with a dithered leading edge (`stair_fill`), moving a grid cell at a time, over 0.11 s for hover. Don't also quantise the progress: it reads as low frame rate. `PixelKit.stepped` is for whole-panel fades only. No smooth colour ramps on chrome.
+- **Icons:** pixel-art SVGs (`shape-rendering="crispEdges"`) drawn with nearest-neighbour filtering at an integer scale.
+- **Type:** Barlow, Barlow Condensed and Antonio stay smooth; only chrome is pixels.
+- **Motion:** the crawl and the stepped wipes freeze under the reduced-motion toggle.
+- **Paper:** the grey menu ground keeps Peace Walker's light grey; the dither carries the style (frames, ghost tiers as flat `tone` fills, stepped selection bracket), not a dark palette.
+
 ### Motion
 - Two registers. **Big moments** (a page opening, the icon in settings, the plates arriving) use hard stepped motion: wipes of 7 to 8 steps over about 0.3s and 0.24s flicker cuts (0, 1, 0, 1, 0.4, 1), staggered 35 to 45ms between plates. **Small things** (selection, tabs, fades, rises) use one easing, exponential ease-out: slide 14px in over 0.18s (`UiMotion.T_FEEDBACK`), fade up from 8px over 0.32s (`T_ENTER`), selection over 0.16s, a thin rule growing from the left over 0.45s (`T_MOMENT`), a "press any key" line breathing on 1.4s.
 - Every UI tween ignores time scale (the radio slows the world) and runs through pauses. Full-screen panels fade in and out over `T_MOMENT` (0.45s). All eased motion uses `UiMotion.TRANS` and `EASE`; do not set a curve inline.
@@ -612,6 +622,6 @@ The game ships five screen families on purpose; the Overview's two materials (sm
 - **Don't** use Aigis Cyan for anything that is not Aigis: not Metis, not the Handler, not the player's gear, not focus rings.
 - **Don't** ship Konami assets: no MGS portraits, MSF logo, item icons, button art or screen captures.
 - **Don't** use neon, glows, coloured shadows, bloom or scanline overlays on panels and text; the only shadows are black. Two banded surfaces exist: the jammed Radar's rolling bands (they depict signal loss) and the full-screen `UiScan` layer on dark pages.
-- **Don't** imitate the PSX look in the UI: no pixel fonts, no dithered chrome, no low-res UI textures. Grain is allowed only on the game-over screen.
+- **Don't** imitate the PSX look's artefacts in the UI: no pixel fonts, no low-res UI textures, no blur or colour fringe. Pixel and dither chrome is the house style (Pixel Chrome); keep it to edges, fades and transitions, never behind body text, and never mix in a smooth gradient or a second cell size. Grain is allowed only on the game-over screen until it moves to the ordered dither.
 - **Don't** let anything show through the jammed Radar.
 - **Don't** use pure black text on the menu grey; use Menu Ink.

@@ -15,7 +15,7 @@ const MUTED := Color("555a5b")
 const RED := HudPalette.DMG
 const ROW_H := 112.0
 const BOARD := Vector2(80, 230)
-const CELL := Vector2(122, 92)
+const CELL := Vector2(123, 93)  # whole chrome pixels
 const WIPE_SECS := 0.3
 ## The in-game gear icons (small, in the rank cells) and their large copies (the drawing panel), by upgrade.
 const GEAR_ICONS := {
@@ -34,7 +34,6 @@ var _age := 0.0  # since the picked row changed (real time)
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	add_child(UiScan.make())
 	HudPalette.fade(self)
 
 
@@ -169,7 +168,7 @@ func _draw() -> void:
 		HudPalette.hud_text(self, Vector2(BOARD.x + 1000, iy + 20), state.to_upper(), 18, RED if have else MUTED, _f(18, 0.14), 2, false)
 	var cr := Rect2(BOARD.x, _continue_y(), 400, 56)
 	var cont := row == ids.size()
-	draw_rect(cr, RED if cont else DARK)
+	PixelKit.cut_fill(self, PixelKit.snap(cr), RED if cont else DARK, 3)
 	HudPalette.hud_text(self, cr.position + Vector2(24, 39), tr("ui.menu.continue").to_upper(), 30, HudPalette.LIGHT, _f(30, 0.14), 0, false)
 	_panel(d, ids, g)
 	var line := metis()
@@ -191,7 +190,7 @@ func _draw() -> void:
 func _title() -> void:
 	var t := tr("ui.req.title").to_upper()
 	var w := _f(52, 0.1).get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 52).x + 150
-	draw_colored_polygon(PackedVector2Array([Vector2(0, 52), Vector2(w, 52), Vector2(w - 24, 132), Vector2(0, 132)]), DARK)
+	PixelKit.stair_fill(self, Rect2(0, 52, w, 80), DARK, 24.0)
 	HudPalette.hud_text(self, Vector2(80, 112), t, 52, HudPalette.LIGHT, _f(52, 0.1), 0, false)
 
 
@@ -199,10 +198,11 @@ func _points(d: Vector2, n: int) -> void:
 	var label := tr("ui.req.recruits").to_upper()
 	var lw := _f(20, 0.26).get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 44
 	var x := d.x - 80 - 200 - lw
-	draw_rect(Rect2(x, 56, lw, 74), DARK)
+	PixelKit.cut_fill(self, PixelKit.snap(Rect2(x, 56, lw, 74)), DARK, 2)
 	HudPalette.hud_text(self, Vector2(x + 22, 103), label, 20, HudPalette.LIGHT, _f(20, 0.26), 0, false)
-	draw_rect(Rect2(x + lw, 56, 200, 74), SHEET)
-	draw_rect(Rect2(x + lw, 56, 200, 74), DARK, false, 3.0)
+	var box := PixelKit.snap(Rect2(x + lw, 56, 200, 74))
+	PixelKit.cut_fill(self, box, SHEET, 2)
+	PixelKit.frame(self, box, DARK, 2)
 	HudPalette.hud_text(self, Vector2(x + lw + 176, 114), str(n), 56, DARK, _f(56, 0.02), 2, false)
 
 
@@ -221,40 +221,42 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 		var cell := Rect2(BOARD.x + 250 + c * 150, y + 4, CELL.x, CELL.y)
 		var value: int = Requisition.BASE[u.stat] + u.step * (c + 1)
 		if c < bought:  # owned
-			draw_rect(cell, DARK)
+			PixelKit.cut_fill(self, cell, DARK)
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), HudPalette.LIGHT, INF)
 			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 14), str(value), 38, HudPalette.LIGHT, _f(38, 0.02), 2, false)
 		elif c == bought:  # next: white with its cost under it, dashed when out of reach
 			var poor: bool = g.points < u.price
-			draw_rect(cell, SHEET)
+			PixelKit.cut_fill(self, cell, SHEET)
 			if poor:
-				_dashed(cell, MUTED)
+				_ghost(cell, MUTED, 0.0)
 			else:
-				draw_rect(cell, DARK, false, 3.0)
-			if on and not poor:
-				draw_rect(cell.grow(7), RED, false, 4.0)
+				PixelKit.frame(self, cell, DARK, 3)
+			if on and not poor:  # the pick: a pixel bracket that blinks in steps
+				var pulse := RED if int(Time.get_ticks_msec() / 450.0) % 2 == 0 else Color(RED, 0.45)
+				PixelKit.frame(self, Rect2(cell.position - Vector2(9, 9), cell.size + Vector2(18, 18)), pulse, 4)
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 8), Vector2(44, 34)), MUTED if poor else DARK, INF)
 			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 8), str(value), 38, MUTED if poor else DARK, _f(38, 0.02), 2, false)
 			HudPalette.hud_text(self, Vector2(cell.position.x + 10, cell.end.y - 8), _price(u.price).to_upper(), 16, RED, _f(18, 0.1), 0, false)
 		else:  # far
-			_dashed(cell, Color(DARK, 0.3))
+			_ghost(cell, Color(DARK, 0.3), 0.14)
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), Color(DARK, 0.3), INF)
 			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 14), str(value), 38, Color(DARK, 0.3), _f(38, 0.02), 2, false)
 
 
-func _dashed(r: Rect2, col: Color) -> void:
-	for e: Array in [[r.position, Vector2(r.end.x, r.position.y)], [Vector2(r.position.x, r.end.y), r.end], [r.position, Vector2(r.position.x, r.end.y)], [Vector2(r.end.x, r.position.y), r.end]]:
-		var n := int(e[0].distance_to(e[1]) / 10.0)
-		for j in n:
-			if j % 2 == 0:
-				draw_line(e[0].lerp(e[1], float(j) / n), e[0].lerp(e[1], float(j + 1) / n), col, 3.0)
+## A cell that isn't owned or in reach: a pixel frame, and a faint dithered tone inside when it is a later tier.
+func _ghost(r: Rect2, col: Color, tone: float) -> void:
+	PixelKit.cut_fill(self, r, PAPER)  # the row's rule runs under a cell, not through it
+	PixelKit.frame(self, r, col, 3)
+	if tone > 0.0:
+		PixelKit.tone(self, r.grow(-3), Color(DARK, 0.5), tone)
 
 
 ## The drawing panel: the picked upgrade's name, a flat icon, effect and the buy bar.
 func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	var r := Rect2(d.x - 80 - 700, 150, 700, 790)
-	draw_rect(r, Color(SHEET, 0.93))
-	draw_rect(r, DARK, false, 3.0)
+	r = PixelKit.snap(r)
+	PixelKit.cut_fill(self, r, Color(SHEET, 0.93), 6)
+	PixelKit.frame(self, r, DARK, 6)
 	if row >= ids.size():
 		return
 	var id: String = ids[row]
@@ -273,9 +275,10 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	HudPalette.hud_text(self, r.position + Vector2(r.size.x - 30, 530), v, 56, DARK, _f(56, 0.02), 2, false)
 	var can: bool = g.can_buy(id)
 	var bar := Rect2(r.position + Vector2(30, r.size.y - 94), Vector2(r.size.x - 60, 68))
-	draw_rect(bar, DARK if can else Color(DARK, 0.1))
+	bar = PixelKit.snap(bar)
+	PixelKit.cut_fill(self, bar, DARK if can else Color(DARK, 0.1), 4)
 	if not can:
-		draw_rect(bar, Color(DARK, 0.35), false, 2.0)  # a dim bar, not just a pale one: it reads as unavailable by shape too
+		PixelKit.frame(self, bar, Color(DARK, 0.35), 4)  # a dim bar, not just a pale one: it reads as unavailable by shape too
 	var label := tr("ui.req.max") if left <= 0 else _price(u.price)
 	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else MUTED, _f(28, 0.2), 1, false)
 
@@ -304,13 +307,13 @@ func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) ->
 	var step := 30.0
 	var x0 := c.x - (have + more) * step / 2.0 + 4.0
 	for n in have + more:
-		var pip := Rect2(x0 + n * step, c.y + 120, 22, 22)
+		var pip := Rect2(x0 + n * step, c.y + 120, 21, 21)
 		if pip.end.x > clip_x:
 			break
 		if n < have:
 			draw_rect(pip, col)
 		else:
-			draw_rect(pip, RED, false, 3.0)
+			PixelKit.frame(self, pip, RED, 0)
 	if more > 0 and c.x + 280 < clip_x:
 		HudPalette.hud_text(self, c + Vector2(300, -110), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
 
