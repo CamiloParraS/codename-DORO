@@ -436,6 +436,7 @@ func _build() -> void:
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y = 1.5
 	_objectives()
+	_takes()
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(OUT)
@@ -444,6 +445,14 @@ func _build() -> void:
 
 
 # --- Harbour-only builders ---------------------------------------------------------------------
+
+## The Harbour's takes under $Cine (tools/cine/harbour.gd): the outro "Gap in the Fog".
+func _takes() -> void:
+	var cine := AreaCine.root(_root)
+	cine.owner = _root
+	HarbourCine.outro(cine)
+	_own(cine)
+
 
 ## Mission 1's OBJECTIVES under $Intel, where MissionRun finds every step.
 func _objectives() -> void:

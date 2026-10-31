@@ -94,7 +94,7 @@ func _process(delta: float) -> void:
 		return
 	var len := _player.get_animation(CLIP).length
 	var t := _player.current_animation_position
-	_overlay.third = CineLogic.lower_third(t, len)
+	_overlay.third = CineLogic.lower_third(t, len, float(_player.get_meta("third_at", CineLogic.LOWER_THIRD_AT)))
 	if fade_out:
 		_overlay.black = CineLogic.black(t, len)
 	var down := Input.is_action_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
