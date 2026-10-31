@@ -41,7 +41,7 @@ const PROPS := {
 	LiftPanel = "control_panel", CoreConsole = "core_console",
 }
 ## Boxes with no mesh of their own: a dress model draws them (the freighter_hull shell over the hull and bow).
-const SHELLED := ["Hull", "Bow", "BowTip"]
+const SHELLED := ["Hull", "Bow", "BowTip", "GapSeal"]
 ## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
 ## equal share of the length and the full height; its depth scales with its height.
 const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock", Cabinets = "low_cabinets", Crates = "crate_wide"}  # low cover indoors, on deck
