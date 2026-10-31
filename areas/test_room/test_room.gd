@@ -16,6 +16,7 @@ func _ready() -> void:
 	var op: CharacterBody3D = load("res://actors/operative/operative.tscn").instantiate()
 	op.position = Vector3(0, 0.1, 8)
 	add_child(op)
+	_take()
 
 
 func _box(pos: Vector3, size: Vector3, texture: String) -> void:
@@ -34,3 +35,11 @@ func _box(pos: Vector3, size: Vector3, texture: String) -> void:
 	m.material_override = mat
 	b.add_child(m)
 	add_child(b)
+
+
+## A 3 s rail that arcs round the Operative and settles behind its shoulder: the Cine framework's fixture (tests/test_cine.gd).
+func _take() -> void:
+	var points: Array[Vector3] = [Vector3(7, 3.5, 12), Vector3(3, 2.6, 13), Vector3(0.6, 2.0, 11.2)]
+	var looks: Array[Vector3] = [Vector3(0, 1.5, 6), Vector3(0, 1.5, 7), Vector3(0, 1.5, 6)]
+	var times: Array[float] = [0.0, 1.5, 3.0]
+	AreaCine.rail(AreaCine.root(self), "CineTest", points, looks, times, {min_s = 2.0, max_s = 6.0})

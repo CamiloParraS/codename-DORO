@@ -13,7 +13,9 @@ const CORE := "res://areas/core/core.tscn"
 ## objective: what the pause screen shows, call: the live Codec call it triggers, hint: Metis's two Hints, a
 ## direction then the route}; optional: the next step's intel can be done first and this one is skipped. open: the live call that states step 1 as the Mission starts. codec: the full-screen
 ## Codec call before the Mission. intro / outro (optional, text keys): the title card on entering the Area
-## {name, area, stamp} and the extraction card {title, line}; a Mission without them plays straight in and straight to the post-Mission screen. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
+## {name, area, stamp} and the extraction card {title, line}; a Mission without them plays straight in and straight to the post-Mission screen.
+## cine (optional): {intro: <node under the Area's Cine>, outro: <same>}, a take (cinematics/cine.gd) that replaces that card: the intro plays once the Area
+## has loaded, after the Codec call, with the intro card's text as a lower-third; the outro ends on black into the post-Mission screen. A call is [[speaker, key], ...]; a third entry puts that face in the far portrait (a dossier).
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, encounters = 3, targets = [],
 		intro = {name = "intro.m1.name", area = "intro.m1.area", stamp = "intro.m1.stamp"},
@@ -49,6 +51,11 @@ const MISSIONS := [
 		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"], ["analyst", "intel.m4.plan"], ["analyst", "live.m4.s2.02"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
 	]},
 ]
+
+## The takes Mission k declares ({intro, outro}, either optional): none for a Mission without `cine`.
+static func cine_of(k: int) -> Dictionary:
+	return MISSIONS[k].get("cine", {})
+
 
 ## The campaign being played. Only a committed post-Mission screen moves it on (MissionRun).
 static var record := Aigis.new_record()

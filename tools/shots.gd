@@ -3,7 +3,15 @@
 ##   godot --path . --script tools/shots.gd -- harbour
 ## `-- <area> reach` instead shoots every reach spot the Area's last build wrote (user://reach/<area>.json), each
 ## from a few metres back along the Operative's path: what the player sees on arriving.
+## `-- <area>_cine` (test_room, harbour, relay_station, research_annex, core) seeks every take under the Area's Cine node to
+## 0, 25, 50, 75 and 100% and shoots each through the Operative's camera: user://shots/<area>_cine_<take>_<pct>.png.
 extends SceneTree
+
+const CINE_AREAS := {
+	test_room = "res://areas/test_room/test_room.tscn", harbour = "res://areas/harbour/harbour.tscn",
+	relay_station = "res://areas/relay_station/relay_station.tscn", research_annex = "res://areas/research_annex/research_annex.tscn",
+	core = "res://areas/core/core.tscn",
+}
 
 ## [area scene, {shot: [camera position, look-at point]}] in world metres.
 const SHOTS := {
@@ -148,6 +156,10 @@ func _initialize() -> void:
 func _shoot() -> void:
 	var args := OS.get_cmdline_user_args()
 	var area: String = args[0] if args.size() else "harbour"
+	if area.ends_with("_cine"):
+		await _cine_shots(area.trim_suffix("_cine"))
+		quit()
+		return
 	var entry: Array = SHOTS.get(area, [])
 	if args.size() > 1 and args[1] == "reach":
 		entry = _reach_shots(area)
@@ -187,3 +199,35 @@ func _reach_shots(area: String) -> Array:
 		var s: Array = data.shots[n]
 		shots[n] = [Vector3(s[0][0], s[0][1], s[0][2]), Vector3(s[1][0], s[1][1], s[1][2])]
 	return [data.scene, shots]
+
+
+## Every take of `area` at 0/25/50/75/100%, through the Operative's own camera with the HUD off.
+func _cine_shots(area: String) -> void:
+	if not CINE_AREAS.has(area):
+		push_error("no Area %s to shoot takes in" % area)
+		return
+	var scene: Node = load(CINE_AREAS[area]).instantiate()
+	root.add_child(scene)
+	var hud := scene.get_node_or_null("HudLayer")
+	if hud:
+		hud.visible = false
+	await create_timer(3.0).timeout  # PropSkins swap in, shaders compile; a title card (if the Area plays one) is gone
+	paused = false
+	var op := scene.get_node("Operative")
+	op.set("cine", true)
+	DirAccess.make_dir_recursive_absolute("user://shots")
+	for take in scene.get_node("Cine").get_children():
+		if not take is AnimationPlayer:
+			continue
+		var clip: Animation = take.get_animation("take")
+		for pct in [0, 25, 50, 75, 100]:
+			take.play("take")
+			take.seek(clip.length * pct / 100.0, true)
+			take.pause()
+			await create_timer(0.8).timeout  # the host takes the pcam, the aim catches up
+			var path := "user://shots/%s_cine_%s_%d.png" % [area, take.name, pct]
+			root.get_texture().get_image().save_png(path)
+			print("saved ", ProjectSettings.globalize_path(path), " (%.1f s of %.1f)" % [clip.length * pct / 100.0, clip.length])
+		for p in take.get_meta("pcams", []):
+			take.get_node(p).set("priority", 0)
+		take.stop()

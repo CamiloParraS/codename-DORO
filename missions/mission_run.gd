@@ -25,10 +25,8 @@ const MENU := "res://ui/main_menu/main_menu.tscn"
 
 const LOG_PATH := "user://session_log.txt"  # each Mission appended at its end; the observer opens it
 const LIVE_PATH := "user://session_log_live.txt"  # the running Mission, every trail point: a crash leaves it
-const DIAGRAM_ORIGIN := 40.0  # tools/area_builder.gd _p: the log writes places in the builders' metres
 ## Tally events that count as doing a tutorial verb.
 const TEACH_EVENTS := {dart = "tranq", spoof = "radio", takedown = "takedown", fulton = "fulton"}
-const EXIT_NEAR := 5.0  # metres from an encounter_exit marker that name the way the Operative left
 
 var tally := MissionTally.new()
 var record := Aigis.new_record()
@@ -41,6 +39,8 @@ var rank := Rank.new()             # run-wide: a Checkpoint never restores it
 var first_s := false               # set on commit: the slot's first S on this Mission (Requisition unlocks)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
+var cine := {}                     # the takes this Mission plays ({intro, outro}: nodes under the Area's Cine); Campaign.cine_of unless set before _ready
+var take_playing := false          # a take (Cine) is on: the Rank clock, the Session log and the live calls hold; the tree is not paused
 var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame
 var _items := {}                   # Scanner charges and Magazines last frame: a drop is a use
 var _holding := false              # some guard was held up last frame
@@ -61,6 +61,8 @@ func _ready() -> void:
 	add_to_group("mission_plan")
 	add_to_group("checkpoint")
 	mission = record.mission
+	if cine.is_empty():
+		cine = Campaign.cine_of(mission)
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for e in get_tree().get_nodes_in_group("extraction"):
@@ -73,7 +75,9 @@ func _ready() -> void:
 	SessionLog.current.start_mission(record.mission, "%s, %s" % [get_parent().name, "campaign" if campaign else "replay" if replay else "free mode"])
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
-	if not intro.is_empty() and not campaign:  # a title card holds play (and the clock) for its 2.3 s; the campaign's came before the Codec call (Briefing)
+	if cine.has("intro"):  # a take replaces the card: after the Codec call the Area is up, so it plays here in every mode
+		_take(cine.intro, intro.values().map(func(k: String) -> String: return tr(k)), false, take_checkpoint)
+	elif not intro.is_empty() and not campaign:  # a title card holds play (and the clock) for its 2.3 s; the campaign's came before the Codec call (Briefing)
 		_card([intro.name, intro.area, intro.stamp], true, func() -> void: get_tree().paused = false)
 	take_checkpoint.call_deferred()  # once the Area has spawned its guards
 
@@ -171,7 +175,7 @@ static func copy(o: Object) -> Object:
 func game_over() -> void:
 	if ended or _game_over:
 		return
-	SessionLog.current.note("died at %s" % _where(get_tree().get_first_node_in_group("operative").global_position))
+	SessionLog.current.note("died at %s" % MissionPlaces.where(get_tree().get_first_node_in_group("operative").global_position))
 	_game_over = GAME_OVER.new()
 	_game_over.continues = rank.continues
 	_game_over.continued.connect(restore_checkpoint)
@@ -189,6 +193,16 @@ func _card(keys: Array, intro: bool, then: Callable) -> void:
 	card.done.connect(then)
 	_overlay(card)
 	get_tree().paused = true
+
+
+## A take over the live Area; `then` runs when control is back (an outro: when it has gone to black).
+func _take(key: String, lines: Array, outro: bool, then: Callable) -> void:
+	var c := Cine.new()
+	c.name = "CineRunner"
+	add_child(c)  # a child of this node: the Area is still setting up its own when the intro starts
+	c.fade_out = outro
+	c.lines.assign(lines)
+	c.play(get_parent(), key, then)
 
 
 func _overlay(screen: Control) -> void:
@@ -222,7 +236,7 @@ func event(name_: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if ended:
+	if ended or take_playing:
 		return
 	if not get_tree().paused or _game_over:
 		rank.seconds += delta
@@ -232,7 +246,7 @@ func _physics_process(delta: float) -> void:
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
-			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", _where(g.global_position)])
+			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", MissionPlaces.where(g.global_position)])
 			if g.target:
 				if g.dead:
 					_say_objective()
@@ -240,7 +254,7 @@ func _physics_process(delta: float) -> void:
 					if e.standing():
 						_on_extraction()
 		elif not d and _down.get(g, false):
-			SessionLog.current.note("%s up again at %s" % [g.name, _where(g.global_position)])
+			SessionLog.current.note("%s up again at %s" % [g.name, MissionPlaces.where(g.global_position)])
 		_down[g] = d
 		if g.known_down and not _known.get(g, false):
 			tally.add("down_found")
@@ -267,7 +281,7 @@ func _run_chain(delta: float) -> void:
 	if spotter or cam_sees:
 		var op: Node3D = get_tree().get_first_node_in_group("operative")
 		var by := str(spotter.name) if spotter else "a camera"
-		SessionLog.current.spotted(by, _where(op.global_position) if op else "?")
+		SessionLog.current.spotted(by, MissionPlaces.where(op.global_position) if op else "?")
 	var ev := chain.tick(delta, spotter != null or cam_sees)
 	match ev:
 		&"alert", &"realert":
@@ -304,7 +318,7 @@ func _guide(delta: float, alerting: bool) -> void:
 	if step >= _steps().size():
 		return
 	var intel := _step_intel()
-	var dist := _flat(op, intel) if intel else INF
+	var dist := MissionPlaces.flat(op, intel) if intel else INF
 	_hint(hints.update(delta, SessionLog.current.idle_seconds(), dist, alerting))
 
 
@@ -331,11 +345,11 @@ func _teach() -> void:
 		return
 	var enc := encounter_at(op.global_position)
 	if enc != _enc_now:
-		SessionLog.current.enter_encounter(enc, _exit_near(op.global_position) if _enc_now > 0 else "")
+		SessionLog.current.enter_encounter(enc, MissionPlaces.exit_near(get_tree(), op.global_position) if _enc_now > 0 else "")
 		_enc_now = enc
 	var world := {guard = INF, down = INF, spot = INF, holdup = INF, fulton = op.fulton_ready(), enc = enc}
 	var points: int = SessionLog.current.missions.back().trail.size()
-	SessionLog.current.place(_diagram(op.global_position), enc)
+	SessionLog.current.place(MissionPlaces.diagram(op.global_position), enc)
 	if _logs() and SessionLog.current.missions.back().trail.size() > points:
 		SessionLog.current.write_live(LIVE_PATH)
 	var carried: Node = op.carrying
@@ -347,14 +361,14 @@ func _teach() -> void:
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
 		if key != "":
-			world[key] = minf(world[key], _flat(op, g))
+			world[key] = minf(world[key], MissionPlaces.flat(op, g))
 		if key == "guard" and g.holdup_answer != "":
-			world.holdup = minf(world.holdup, _flat(op, g))
+			world.holdup = minf(world.holdup, MissionPlaces.flat(op, g))
 		if g.held_up and not _holding:
 			SessionLog.current.note("held up %s" % g.name)
 		holding = holding or g.held_up
 	for s: Node3D in get_tree().get_nodes_in_group("eavesdrop_spot"):
-		world.spot = minf(world.spot, _flat(op, s))
+		world.spot = minf(world.spot, MissionPlaces.flat(op, s))
 	var doing := {crouch = op.crouching, carry = op.carrying != null, eavesdrop = not op.voiceprints.held.is_empty(),
 		holdup = holding, scanner = op.items.charges < _items.get("charges", op.items.charges),
 		magazine = op.items.magazines < _items.get("magazines", op.items.magazines),
@@ -378,36 +392,9 @@ func _metis_line(verb: String) -> void:
 		get_tree().call_group("radio_log", "say", "METIS", tr(Tutorial.line_key(verb)))
 
 
-## The encounter_exit marker within EXIT_NEAR of pos (its name: Gangway, SternDrop), or "".
-func _exit_near(pos: Vector3) -> String:
-	for m: Node3D in get_tree().get_nodes_in_group("encounter_exit"):
-		if m.global_position.distance_to(pos) <= EXIT_NEAR:
-			return m.name
-	return ""
-
-
 ## The Encounter (its id) whose $Encounters marker rect holds pos, or 0. Areas without them have none.
 func encounter_at(pos: Vector3) -> int:
-	for m: Marker3D in get_tree().get_nodes_in_group("encounter"):
-		var size: Vector2 = m.get_meta("size")
-		var d := pos - m.global_position
-		if d.x >= 0.0 and d.z >= 0.0 and d.x <= size.x and d.z <= size.y:
-			return m.get_meta("id")
-	return 0
-
-
-## A world position as the Area builders write it: [x, y, h] in diagram metres.
-static func _diagram(p: Vector3) -> Vector3:
-	return Vector3(p.x + DIAGRAM_ORIGIN, p.z + DIAGRAM_ORIGIN, p.y)
-
-
-static func _where(p: Vector3) -> String:
-	var d := _diagram(p)
-	return "(%d, %d, %d)" % [d.x, d.y, d.z]
-
-
-static func _flat(a: Node3D, b: Node3D) -> float:
-	return Vector2(a.global_position.x - b.global_position.x, a.global_position.z - b.global_position.z).length()
+	return MissionPlaces.encounter_at(get_tree(), pos)
 
 
 ## What to do now, for the pause screen: the steps, then the Targets, then Extraction.
@@ -524,7 +511,9 @@ func _on_extraction() -> void:
 		_overlay(screen)
 		get_tree().paused = true
 	var outro: Dictionary = Campaign.MISSIONS[record.mission].get("outro", {})
-	if outro.is_empty():
+	if cine.has("outro"):  # ends on black, then the screen
+		_take(cine.outro, [], true, show)
+	elif outro.is_empty():
 		show.call()
 	else:  # fade out on the extraction beat, then the post-Mission screen
 		_card([outro.title, outro.line], false, show)

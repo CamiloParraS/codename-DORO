@@ -35,13 +35,14 @@ func _ready() -> void:
 	camera.fov = 70
 	camera.current = true
 	_back_arm.add_child(camera)
+	gameplay_cam = OperativeCam.build(camera, _back_arm)
 	_apply_shoulder()
 	add_child(_view)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if health.dead():
+	if health.dead() or cine:
 		return
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if _glance_left > 0.0:
@@ -95,6 +96,8 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if cine:  # a take moves the body (position and cine_face tracks); input, noise and the clocks wait
+		return
 	walking = Input.is_action_pressed("walk")
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
 	looking = Input.is_action_pressed("look") and not (aiming or _choking or radio_open or ladder or carrying)

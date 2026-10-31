@@ -47,6 +47,13 @@ var held_up: Guard       # the guard at gunpoint
 var fultons := FULTONS   # balloons left; a Continue returns to the Checkpoint's count
 var fulton_time := FULTON_TIME  # Quick Hold shortens it
 var camera: Camera3D
+var gameplay_cam: PhantomCamera3D  # the pcam that mirrors the shoulder rig (OperativeCam)
+var cine := false      # a take is playing: no input, noise or clocks; its AnimationPlayer moves the body
+var cine_face := 0.0:  # a take's heading for the body, radians (the body itself never turns otherwise)
+	set(v):
+		cine_face = v
+		if model:
+			model.rotation.y = v
 
 var _knock_left := 0.0
 var _step_left := 0.0
