@@ -147,16 +147,20 @@ func _run() -> void:
 		fin.queue_free()
 		get_tree().paused = false
 		Engine.time_scale = 1.0
-	if all and want("debug_overlay"):
+	if all and any_of(["debug_overlay", "debug_report"]):
 		DebugOverlay.visible = true
 		await wait(0.5)
 		await shoot("debug_overlay")
+		DebugOverlay._report_on = true
+		await wait(0.3)
+		await shoot("debug_report")
+		DebugOverlay._report_on = false
 		DebugOverlay.visible = false
 	# --- briefing, requisition, codec
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission_rank", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -226,6 +230,9 @@ func _play_shots(all: bool) -> void:
 		hud.get_parent().get_node("Pause")._show(true)
 		await wait(0.6)
 		await shoot("pause")
+		hud.get_parent().get_node("Pause")._ask("ui.pause.abort_confirm", func() -> void: pass)
+		await wait(0.6)
+		await shoot("pause_confirm")
 		hud.get_parent().get_node("Pause")._show(false)
 		await wait(0.6)
 	run.game_over()
