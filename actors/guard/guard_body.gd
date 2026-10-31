@@ -304,7 +304,8 @@ func search_spot() -> Vector3:
 		AlertChain.area.release(self)
 		_spot_for = alert.last_known
 		_swept = 0.0
-	return AlertChain.area.reserve(self, alert.last_known, global_position)
+	var hunting := alert.state == GuardAlert.State.EVASION or _fanning  # a Suspicion responder keeps to the point and the fixed spots
+	return AlertChain.area.reserve(self, alert.last_known, global_position, hunting)
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:

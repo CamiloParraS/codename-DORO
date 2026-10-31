@@ -185,10 +185,10 @@ func test_the_ring_puts_open_ground_spots_round_the_point_on_the_floor() -> void
 
 func test_a_squad_fans_out_each_to_the_free_spot_on_its_own_side() -> void:
 	var c := AlertChain.new()
-	var first := c.reserve("A", AT, AT + Vector3(20, 0, 0))
+	var first := c.reserve("A", AT, AT + Vector3(20, 0, 0), true)
 	assert_eq(first, AT, "the first checks the sighting itself, even from afar")
-	var east := c.reserve("B", AT, AT + Vector3(20, 0, 0))
-	var west := c.reserve("C", AT, AT + Vector3(-20, 0, 0))
+	var east := c.reserve("B", AT, AT + Vector3(20, 0, 0), true)
+	var west := c.reserve("C", AT, AT + Vector3(-20, 0, 0), true)
 	assert_gt(east.x, AT.x, "the guard to the east searches east of it")
 	assert_true(west.x < AT.x, "the one to the west searches west")
 	assert_true(is_equal_approx(east.distance_to(AT), 6.0), "the inner ring before the outer")
@@ -196,16 +196,16 @@ func test_a_squad_fans_out_each_to_the_free_spot_on_its_own_side() -> void:
 
 func test_a_swept_spot_is_not_searched_again_until_a_new_sighting() -> void:
 	var c := AlertChain.new()
-	var at_a := c.reserve("A", AT, AT)
+	var at_a := c.reserve("A", AT, AT, true)
 	c.searched("A")
-	var next := c.reserve("A", AT, AT)
+	var next := c.reserve("A", AT, AT, true)
 	assert_ne(next, at_a, "it moves on")
-	assert_ne(c.reserve("B", AT, AT), at_a, "and nobody else is sent to the swept spot")
+	assert_ne(c.reserve("B", AT, AT, true), at_a, "and nobody else is sent to the swept spot")
 	c.start_call("g", AT)
 	c.tick(AlertChain.CALL_TIME, false)  # a completed call: fresh information
 	c.release("A")
 	c.release("B")
-	assert_eq(c.reserve("C", AT, AT), AT, "after a new sighting the point is worth checking again")
+	assert_eq(c.reserve("C", AT, AT, true), AT, "after a new sighting the point is worth checking again")
 
 
 func test_with_every_spot_swept_the_search_starts_over() -> void:
@@ -213,3 +213,9 @@ func test_with_every_spot_swept_the_search_starts_over() -> void:
 	assert_eq(c.reserve("A", AT), AT)
 	c.searched("A")
 	assert_eq(c.reserve("A", AT), AT, "nothing else to search: round again")
+
+
+func test_a_suspicion_responder_keeps_to_the_point_and_the_fixed_spots() -> void:
+	var c := AlertChain.new()
+	assert_eq(c.reserve("A", AT, AT + Vector3(20, 0, 0)), AT)
+	assert_eq(c.reserve("B", AT, AT + Vector3(20, 0, 0)), AT, "no ring for a look round: back to the point, as before")

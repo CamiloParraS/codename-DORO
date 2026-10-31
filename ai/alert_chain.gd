@@ -111,19 +111,20 @@ func tick(delta: float, seen: bool) -> StringName:
 
 
 ## The spot `who` searches around `point`. The candidates are the point itself, the fixed spots within
-## SEARCH_REACH of it, and the ring round it (ring()), less the ones another searcher holds or someone has
+## SEARCH_REACH of it and, for a `wide` search (a hunt, not a Suspicion responder's look), the ring round it
+## (ring()), less the ones another searcher holds or someone has
 ## already swept. The first searcher holds the point; the others take the free candidate nearest the
 ## point and, given `from` (where the searcher stands), nearest themselves too (OUTWARD weighs the point
 ## against the walk), so a squad works outward from the sighting, each on its own side. With every candidate
 ## swept the sweep starts over; with every one held, it's the point. Asking again returns the same spot
 ## until release() or searched().
-func reserve(who: Variant, point: Vector3, from := Vector3.INF) -> Vector3:
+func reserve(who: Variant, point: Vector3, from := Vector3.INF, wide := false) -> Vector3:
 	if _held.has(who):
 		return _held[who]
-	var free := _free(point)
+	var free := _free(point, wide)
 	if free.is_empty() and not _searched.is_empty():
 		_searched.clear()  # every place swept: go round again
-		free = _free(point)
+		free = _free(point, wide)
 	var spot := point
 	if not free.is_empty():
 		var cost := func(s: Vector3) -> float:
@@ -170,10 +171,11 @@ func _on_floor(p: Vector3) -> Vector3:
 
 
 ## Candidates round `point` nobody holds or has swept.
-func _free(point: Vector3) -> Array:
+func _free(point: Vector3, wide: bool) -> Array:
 	var taken := _held.values()
 	var all := [point] + spots.filter(func(s: Vector3) -> bool: return s.distance_to(point) <= SEARCH_REACH)
-	all.append_array(ring(point))
+	if wide:
+		all.append_array(ring(point))
 	return all.filter(func(s: Vector3) -> bool:
 		return not s in taken and not _searched.any(func(q: Vector3) -> bool: return q.distance_to(s) < SPOT_APART))
 
