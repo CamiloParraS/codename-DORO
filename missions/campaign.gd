@@ -45,8 +45,8 @@ const MISSIONS := [
 		open = [["analyst", "live.m4.open.01"]],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["handler", "codec.m4.03"], ["analyst", "codec.m4.04", "director"],
 			["analyst", "codec.m4.05", "director"], ["handler", "codec.m4.06"], ["analyst", "codec.m4.07"]], steps = [
-		{intel = "IntelOps", objective = "objective.m4.s1", call = [["analyst", "live.m4.s1.01"]], hint = ["hint.m4.s1.1", "hint.m4.s1.2"]},
-		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"], ["analyst", "intel.m4.plan"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
+		{intel = "IntelLiftPanel", objective = "objective.m4.s1", call = [["analyst", "live.m4.s1.01"]], hint = ["hint.m4.s1.1", "hint.m4.s1.2"]},
+		{intel = "IntelLift", objective = "objective.m4.s2", call = [["handler", "live.m4.s2.01"], ["analyst", "intel.m4.plan"], ["analyst", "live.m4.s2.02"]], hint = ["hint.m4.s2.1", "hint.m4.s2.2"]},
 	]},
 ]
 

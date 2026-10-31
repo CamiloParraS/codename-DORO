@@ -70,8 +70,9 @@ intel.m3.authority,His duty roster mentions a board vote next week. Palladion is
 live.m3.s2.01,The vault is open. The files are back in the Archive.,"La bóveda está abierta. Los archivos están más adentro, en el Archivo."
 live.m3.s3.01,Files secured. Aigis was built from the memories of dead commanders.,Archivos asegurados. Aigis se construyó con los recuerdos de comandantes muertos.
 live.m3.s3.02,And the Core is under the Harbour. That's where we finish this.,Y el Núcleo está bajo el Puerto. Ahí terminamos esto.
-live.m4.s1.01,You're inside. The lift is through the hall.,Estás dentro. El montacargas está al fondo del pasillo.
+live.m4.s1.01,The code took. The lift is through the hall.,"El código funciona. El montacargas está al fondo del pasillo."
 live.m4.s2.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas está abierto. Hagas lo que hagas, Aigis lo recordará."
+live.m4.s2.02,"The floor door is the loud way. The plant room off the corridor has a stair up to a gallery over the floor.","La puerta de la sala es el camino ruidoso. El cuarto de máquinas junto al pasillo tiene una escalera a una galería sobre la sala."
 intel.m4.plan,The terminal down there takes memories as input. We write ours to look like its own.,El terminal de abajo acepta recuerdos. Escribimos los nuestros para que parezcan suyos.
 core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Núcleo. Sella el montacargas y bloquea la sala."
 hq.relay_offline,"Relay's offline. All units, sweep the station.","El repetidor está caído. Todas las unidades, registren la estación."
@@ -235,7 +236,7 @@ holdup.where.7,{m} m north-west,{m} m al noroeste
 live.m1.open.01,"The smoke break is at the freighter's stern, behind the bridge. Listen in.","La pausa para fumar es en la popa del carguero, detrás del puente. Escucha."
 live.m2.open.01,First the garage. We need the encryption keys.,Primero el garaje. Necesitamos las claves de cifrado.
 live.m3.open.01,The dock guard first. Get the vault code out of him.,Primero el guardia del muelle. Sácale el código de la bóveda.
-live.m4.open.01,"The operations building, by the west cliff. The lift is inside.","El edificio de operaciones, junto al acantilado oeste. El montacargas está dentro."
+live.m4.open.01,"You're on the south pier. The operations building is by the west cliff, the lift inside it.","Estás en el muelle sur. El edificio de operaciones está junto al acantilado oeste, con el montacargas dentro."
 hint.m1.s1.1,"The two deck hands smoke behind the bridge, at the freighter's stern.","Los dos marineros fuman detrás del puente, en la popa del carguero."
 hint.m1.s1.2,Move aft along the deck while the look-out faces away. Stand at the bridge corner and record them.,Avanza hacia popa por la cubierta mientras el vigía mira a otro lado. Ponte en la esquina del puente y grábalos.
 hint.m1.s2.1,"The foreman walks a loop through the container lanes, west of the gangway.","El capataz da vueltas entre los contenedores, al oeste de la pasarela."
@@ -254,10 +255,10 @@ hint.m3.s2.1,"The vault is in the middle of the lab. It has a back door, through
 hint.m3.s2.2,"Wait for the corridor guard's turn at the front door, or for the researcher to leave the clean room.","Espera a que el guardia del pasillo se gire en la puerta principal, o a que la investigadora salga de la sala limpia."
 hint.m3.s3.1,"The research files are in the Archive, next to the loading hall.","Los archivos de investigación están en el Archivo, junto a la nave de carga."
 hint.m3.s3.2,The Archive guard watches both doors. Record a guard's voice and Spoof him out to the loading hall.,El guardia del Archivo vigila las dos puertas. Graba la voz de un guardia y mándalo a la nave de carga con un Spoof.
-hint.m4.s1.1,"The operations building is on the west side of the yard, by the cliff.","El edificio de operaciones está al oeste del patio, junto al acantilado."
-hint.m4.s1.2,The guards are on alert for you and the north door is sealed. Keep to cover and come in by the south door.,Los guardias están alerta por ti y la puerta norte está sellada. Usa las coberturas y entra por la puerta sur.
+hint.m4.s1.1,"The lift controls are in the control room of the operations building, west of the yard by the cliff.","Los controles del montacargas están en la sala de control del edificio de operaciones, al oeste del patio, junto al acantilado."
+hint.m4.s1.2,"The north door is sealed and a guard watches the south door. The east door opens off the alley along the warehouse.","La puerta norte está sellada y un guardia vigila la puerta sur. La puerta este da al callejón junto al almacén."
 hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the cliff.","El montacargas está al fondo de la sala, contra el acantilado."
-hint.m4.s2.2,"A guard stands in the lift hall. Spoof him away, or wait until his back is turned.","Hay un guardia en la sala del montacargas. Aléjalo con un Spoof, o espera a que te dé la espalda."
+hint.m4.s2.2,"A guard in the lift hall faces the lift. The control room's side door comes out behind him.","Un guardia en la sala del montacargas mira hacia el montacargas. La puerta lateral de la sala de control sale a su espalda."
 hint.none,"That is all I have, Operative. You know the way.","Es todo lo que tengo, Operativo. Ya sabes el camino."
 radio.request_hint,Request hint,Pedir pista
 objective.m1.s1,LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE,ESCUCHA LA PAUSA PARA FUMAR DETRÁS DEL PUENTE
@@ -269,7 +270,7 @@ objective.m2.s3,SEARCH THE MESS HUT FOR THE CHIEF'S ORDERS,BUSCA LAS ÓRDENES DE
 objective.m3.s1,GET THE VAULT CODE FROM THE DOCK GUARD,CONSIGUE EL CÓDIGO DE LA BÓVEDA DEL GUARDIA DEL MUELLE
 objective.m3.s2,OPEN THE VAULT IN THE HEART OF THE LAB,ABRE LA BÓVEDA EN EL CORAZÓN DEL LABORATORIO
 objective.m3.s3,EXTRACT THE RESEARCH FILES THAT REVEAL THE CORE,EXTRAE LOS ARCHIVOS DE INVESTIGACIÓN QUE REVELAN EL NÚCLEO
-objective.m4.s1,REACH THE OPERATIONS BUILDING,LLEGA AL EDIFICIO DE OPERACIONES
+objective.m4.s1,ENTER THE CODE AT THE LIFT CONTROLS,INTRODUCE EL CÓDIGO EN LOS CONTROLES DEL MONTACARGAS
 objective.m4.s2,TAKE THE FREIGHT LIFT DOWN,BAJA EN EL MONTACARGAS
 objective.extract,REACH THE EXTRACTION POINT,VE AL PUNTO DE EXTRACCIÓN
 objective.targets,KILL OR CARRY OUT,ELIMINA O EXTRAE

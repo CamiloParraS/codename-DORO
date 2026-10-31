@@ -55,6 +55,8 @@ var _killing := false      # the grip in progress is a kill (X), not a choke (E)
 var _victim_down := false  # it was already Down when the kill began
 var _yaw := 0.0
 var _pitch := -0.25
+var _glance_left := 0.0  # s the camera is still being turned toward _glance_yaw (see glance)
+var _glance_yaw := 0.0
 var look_basis: Basis:  # where the camera looks (the body itself never turns), for the Radar's arrow
 	get: return Basis(Vector3.UP, _yaw)
 var _recoil := 0.0
@@ -171,6 +173,8 @@ func _apply_crouch() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		if _glance_left > 0.0:
+			return
 		var l := Locomotion.look(_yaw, _pitch, e.relative, GameSettings.current.sensitivity, GameSettings.current.invert_y)
 		_yaw = l.x
 		_pitch = l.y
@@ -769,7 +773,17 @@ func _nearest(down: bool, alive := false) -> Node3D:
 	return best
 
 
+## Turns the camera toward `at` for `secs` (the mouse is ignored meanwhile), to point out something the level wants seen.
+func glance(at: Vector3, secs: float) -> void:
+	var d := at - global_position
+	_glance_yaw = atan2(-d.x, -d.z)
+	_glance_left = secs
+
+
 func _process(delta: float) -> void:
+	if _glance_left > 0.0:
+		_glance_left -= delta
+		_yaw = lerp_angle(_yaw, _glance_yaw, minf(1.0, 4.0 * delta))
 	var head := 0.95 if crouching else 1.45
 	# follows the body where it is drawn (between physics ticks), not where the last tick left it: a step-wise
 	# follow made a moving character judder against the camera, which reads as a blur

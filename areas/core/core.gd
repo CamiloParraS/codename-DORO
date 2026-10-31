@@ -14,3 +14,9 @@ func _ready() -> void:
 	finale.set_script(load("res://ui/finale/finale.gd"))
 	finale.leave_to = $CoreTerminal.leave_to
 	add_child(finale)
+
+
+## Reinforcements: down the road ($Spots/SurfaceEntry) while the Operative is on the surface, down the lift
+## ($Spots/RoadEntry, in the corridor) once he is below, west of the cliff (diagram x < 0).
+func _entry_for(pos: Vector3) -> Marker3D:
+	return $Spots/RoadEntry if pos.x < -40.0 else $Spots/SurfaceEntry

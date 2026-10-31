@@ -32,6 +32,7 @@ const EXIT_NEAR := 5.0  # metres from an encounter_exit marker that name the way
 
 var tally := MissionTally.new()
 var record := Aigis.new_record()
+var mission := 0                   # the Mission this run plays: record.mission at _ready (a commit moves record on; the Core's scene stays)
 var plan := {}                     # Aigis.plan_mission for this record: what the Area deploys
 var return_to := ""                # scene to go back to once committed (Briefing, Free mode); "" stays
 var campaign := false              # committing moves Campaign.record on (never in Free mode)
@@ -59,6 +60,7 @@ func _ready() -> void:
 	add_to_group("mission_tally")
 	add_to_group("mission_plan")
 	add_to_group("checkpoint")
+	mission = record.mission
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for e in get_tree().get_nodes_in_group("extraction"):
@@ -440,14 +442,14 @@ func radar_blips() -> Array[Dictionary]:
 
 
 ## Targets neither dead nor on the Operative's shoulder (a Neutralized one left lying doesn't count,
-## unless it lies in the Extraction point: the Core room is one, so a choke there needs no carry).
+## unless it lies in the Extraction point or a target_zone: the Core room is one, so a choke there needs no carry).
 func _targets_left() -> Array:
 	return get_tree().get_nodes_in_group("targets").filter(func(t: Guard) -> bool:
 		return not (t.dead or t.carrier or (t.is_down() and _at_extraction(t))))
 
 
 func _at_extraction(t: Guard) -> bool:
-	return get_tree().get_nodes_in_group("extraction").any(func(e: Node) -> bool: return e.contains(t.global_position))
+	return (get_tree().get_nodes_in_group("extraction") + get_tree().get_nodes_in_group("target_zone")).any(func(e: Node) -> bool: return e.contains(t.global_position))
 
 
 func _say_objective() -> void:
@@ -463,7 +465,7 @@ func _step_intel() -> Node3D:
 
 
 func _steps() -> Array:
-	return Campaign.MISSIONS[record.mission].steps
+	return Campaign.MISSIONS[mission].steps
 
 
 ## Only the current step's intel is shown, and the Extraction beacon only once every step is done.
@@ -474,7 +476,7 @@ func _show_intel() -> void:
 	for e in get_tree().get_nodes_in_group("extraction"):
 		var beacon: Node3D = e.get_node_or_null("Beacon")
 		if beacon:
-			beacon.visible = step >= _steps().size()
+			beacon.visible = step >= _steps().size() and not ended  # the Core's scene outlives the Mission
 
 
 ## The current step's intel reached: the step is done, and that's a Checkpoint.
@@ -495,6 +497,7 @@ func _on_extraction() -> void:
 		return
 	SessionLog.current.note("extracted")
 	_finish()
+	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()

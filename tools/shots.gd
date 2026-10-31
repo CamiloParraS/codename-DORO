@@ -69,7 +69,7 @@ const SHOTS := {
 		pit = [Vector3(25, 6, -12), Vector3(60, -14, 40)],
 	}],
 	core = ["res://areas/core/core.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)], yard = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)],
-		corridor = [Vector3(-36, 2, -8), Vector3(-54, 1.5, -8)], room = [Vector3(-56, 2.5, -14), Vector3(-72, 1, -4)]}],
+		entrance = [Vector3(-33, 1.7, -8), Vector3(-45, 2.5, -8)], up45 = [Vector3(-33, 1.7, -8), Vector3(-45, 2.2, -8)], up70 = [Vector3(-34, 2.4, -8), Vector3(-46, 2.0, -8)], up71 = [Vector3(-33, 1.0, -8), Vector3(-45, 2.2, -8)], from_inside = [Vector3(-48, 1.7, -8), Vector3(-30, 2.5, -8)], from_inside_up = [Vector3(-44, 1.7, -8), Vector3(-36, 4, -8)], cliff_side = [Vector3(-38, 16, 10), Vector3(-38, 5, -8)], corridor = [Vector3(-36, 2, -8), Vector3(-54, 1.5, -8)], room = [Vector3(-56, 2.5, -14), Vector3(-72, 1, -4)]}],
 }
 
 
