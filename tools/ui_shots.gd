@@ -160,7 +160,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -173,6 +173,7 @@ func _briefing() -> void:
 	Campaign.start()
 	Campaign.slot = -1
 	Campaign.record = _record(1)
+	Campaign.record.merge({seen = {quiet_down = 6, takedown = 4}, last = {mission = 0, counts = {quiet_down = 6, takedown = 4}, shifted = "headshots"}})  # the Dossier: evidence and a shift
 	Campaign.gear = Requisition.new()
 	Campaign.gear.points = 7
 	Campaign.gear.signed = 4
@@ -328,15 +329,45 @@ func _post(run: Node) -> void:
 	after.points.downs = maxi(int(after.points.get("downs", 0)) - 60, 0)
 	s.strip = MissionTally.strip(run.record, after)
 	s.voice_key = "post.pallas.clean"
+	s.dossier = _fake_route(run)
+	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)
 	get_tree().paused = true
 	await wait(3.5)
 	await shoot("post_mission_rank")
 	s.advance()
+	await wait(4.0)
+	await shoot("post_mission_saw")
+	s.advance()
 	await wait(2.5)
 	await shoot("post_mission_aigis")
 	s.queue_free()
 	get_tree().paused = false
+
+
+## A made-up Dossier route for the "saw" page: the navmesh's way from the Operative to the Extraction point and
+## back out to its far corner, one point per PATH_EVERY s at a walk, a few marks on the way.
+func _fake_route(run: Node) -> Dictionary:
+	var map: RID = (run.get_parent() as Node3D).get_world_3d().navigation_map
+	var op: Node3D = get_tree().get_first_node_in_group("operative")
+	var ex: Node3D = get_tree().get_first_node_in_group("extraction")
+	var a := op.global_position if op else Vector3.ZERO
+	var b := ex.global_position if ex else a + Vector3(30, 0, 30)
+	var way := NavigationServer3D.map_get_path(map, a, b, true)
+	way.append_array(NavigationServer3D.map_get_path(map, b, a + (a - b).normalized() * 25.0, true))
+	var pts := []
+	var walk := 2.4 * SessionLog.PATH_EVERY  # metres per point
+	for i in way.size() - 1:
+		var seg := way[i + 1] - way[i]
+		for k in maxi(1, ceili(seg.length() / walk)):
+			pts.append(MissionPlaces.diagram_xy(way[i] + seg * (k * walk / maxf(seg.length(), 0.001))))
+	if pts.size() < 12:
+		return {}
+	var at := func(f: float) -> Array: return [f * pts.size() * SessionLog.PATH_EVERY, pts[int(f * (pts.size() - 1))]]
+	var marks := []
+	for m: Array in [["down", 0.15], ["spotted", 0.4], ["alert", 0.42], ["down", 0.55], ["kill", 0.7], ["down", 0.85]]:
+		marks.append([m[0]] + at.call(m[1]))
+	return Dossier.trail({path = pts, marks = marks})
 
 
 ## The HUD in the three moods: Harbour, Core (darkest), Annex (brightest), each under Evasion and Alert.
