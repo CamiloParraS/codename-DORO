@@ -88,6 +88,7 @@ func _ready() -> void:
 ## ponytail: no "far side of cover" spots yet; add markers in the area builder if searches look thin.
 func _fresh_chain() -> void:
 	AlertChain.area = AlertChain.new()
+	AlertChain.area.nav_map = (get_parent() as Node3D).get_world_3d().navigation_map if get_parent() is Node3D else RID()  # the search ring stands on the floor
 	for n: Node3D in get_parent().find_children("CarryBlock*", "StaticBody3D", true, false):  # one at each mouth
 		AlertChain.area.spots.append(n.global_position)
 	for l: Node3D in get_tree().get_nodes_in_group("ladders"):

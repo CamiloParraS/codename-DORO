@@ -139,8 +139,15 @@ func test_caution_triggers_are_ignored_in_alert_and_evasion() -> void:
 	assert_eq(c.phase, P.ALERT)
 
 
-func test_searchers_reserve_distinct_spots_nearest_first_one_holds_the_point() -> void:
+## A chain with no open-ground ring: every ring spot lands far off the floor, so only the fixed spots count.
+func _no_ring() -> AlertChain:
 	var c := AlertChain.new()
+	c.snap = func(p: Vector3) -> Vector3: return p + Vector3(100, 0, 0)
+	return c
+
+
+func test_searchers_reserve_distinct_spots_nearest_first_one_holds_the_point() -> void:
+	var c := _no_ring()
 	c.spots = [Vector3(8, 0, 2), Vector3(6, 0, 2), Vector3(30, 0, 2)]
 	assert_eq(c.reserve("A", AT), AT, "the first holds the point")
 	assert_eq(c.reserve("B", AT), Vector3(6, 0, 2), "nearest first")
@@ -150,7 +157,7 @@ func test_searchers_reserve_distinct_spots_nearest_first_one_holds_the_point() -
 
 
 func test_a_released_spot_goes_to_the_next_searcher() -> void:
-	var c := AlertChain.new()
+	var c := _no_ring()
 	c.spots = [Vector3(6, 0, 2)]
 	c.reserve("A", AT)
 	c.reserve("B", AT)
@@ -158,3 +165,51 @@ func test_a_released_spot_goes_to_the_next_searcher() -> void:
 	assert_eq(c.reserve("C", AT), Vector3(6, 0, 2))
 	c.release("A")
 	assert_eq(c.reserve("D", AT), AT, "the point is free again")
+
+
+# ----- fanning out -----
+
+func test_the_ring_puts_open_ground_spots_round_the_point_on_the_floor() -> void:
+	var c := AlertChain.new()
+	var ring := c.ring(AT)
+	assert_eq(ring.size(), AlertChain.RING_DIRS * AlertChain.RING_RADII.size())
+	for p: Vector3 in ring:
+		var r := Vector2(p.x - AT.x, p.z - AT.z).length()
+		assert_true(is_equal_approx(r, 6.0) or is_equal_approx(r, 11.0), "on one of the two rings")
+	c = AlertChain.new()
+	c.snap = func(p: Vector3) -> Vector3: return p if p.z <= 2.0 else p + Vector3(0, 9, 0)  # past z 2: up on a roof
+	for p: Vector3 in c.ring(AT):
+		assert_true(p.z <= 2.0, "a spot snapped up onto a roof (or into a wall) is dropped")
+	assert_gt(c.ring(AT).size(), 0)
+
+
+func test_a_squad_fans_out_each_to_the_free_spot_on_its_own_side() -> void:
+	var c := AlertChain.new()
+	var first := c.reserve("A", AT, AT + Vector3(20, 0, 0))
+	assert_eq(first, AT, "the first checks the sighting itself, even from afar")
+	var east := c.reserve("B", AT, AT + Vector3(20, 0, 0))
+	var west := c.reserve("C", AT, AT + Vector3(-20, 0, 0))
+	assert_gt(east.x, AT.x, "the guard to the east searches east of it")
+	assert_true(west.x < AT.x, "the one to the west searches west")
+	assert_true(is_equal_approx(east.distance_to(AT), 6.0), "the inner ring before the outer")
+
+
+func test_a_swept_spot_is_not_searched_again_until_a_new_sighting() -> void:
+	var c := AlertChain.new()
+	var at_a := c.reserve("A", AT, AT)
+	c.searched("A")
+	var next := c.reserve("A", AT, AT)
+	assert_ne(next, at_a, "it moves on")
+	assert_ne(c.reserve("B", AT, AT), at_a, "and nobody else is sent to the swept spot")
+	c.start_call("g", AT)
+	c.tick(AlertChain.CALL_TIME, false)  # a completed call: fresh information
+	c.release("A")
+	c.release("B")
+	assert_eq(c.reserve("C", AT, AT), AT, "after a new sighting the point is worth checking again")
+
+
+func test_with_every_spot_swept_the_search_starts_over() -> void:
+	var c := _no_ring()
+	assert_eq(c.reserve("A", AT), AT)
+	c.searched("A")
+	assert_eq(c.reserve("A", AT), AT, "nothing else to search: round again")

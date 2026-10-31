@@ -10,6 +10,7 @@ const CAUTION_SPEED := 2.2
 const RETREAT_GRACE := 0.7  # s without sight before a guard stops acting as if it sees the Operative
 const RETREAT_SPEED := 3.5  # backing off from the Operative, still facing it
 const CHASE_SPEED := 5.0  # the Operative runs 4.8
+const FAN_SPEED := 3.5    # an alerted guard jogging to its search spot once the squad has lost the Operative
 const PAUSE := 1.5        # seconds at each patrol point
 const FIDGET_STOP := 1.0  # a stop this long left may become a look around
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
@@ -105,6 +106,8 @@ var _radio_clock := 0.0
 var _tele_left := 0.0    # seconds left of the shared Aigis telegraph icon
 var _tele_icon := ""
 var _looked := false    # did the look-around at this search spot already
+var _fanning := false   # on Alert with the squad's sight lost: searching its own spot, not the last sighting (Engage.lost)
+var _swept := 0.0       # seconds spent looking round the current search spot (Engage.SWEEP_TIME moves it on)
 var _prev_state := GuardAlert.State.PATROL
 var _prev_calling := false
 var voice := GuardVoice.new()  # its one voice player: barks and radio lines
@@ -262,6 +265,8 @@ func _changed(why: String) -> void:
 	order = {}  # whatever it was told, it now has its own reason to act
 	AlertChain.area.release(self)  # a new state: any search spot it held is free
 	_spot_for = null
+	_fanning = false
+	_swept = 0.0
 	_refresh_mark()
 	_bt.restart()  # the tree picks the branch for the new state
 
@@ -289,15 +294,17 @@ func goal() -> Vector3:
 	return ladder_foot(search_spot(), get_tree().get_nodes_in_group("ladders"))
 
 
-## What it searches: in Evasion or a responder's local search, the spot it reserved near the last known
-## point (AlertChain.reserve); otherwise the last known point.
+## What it searches: in Evasion, a responder's local search or an Alert whose sight is lost (fanning), the
+## spot it reserved round the last known point, the free one nearest itself (AlertChain.reserve); otherwise
+## the last known point.
 func search_spot() -> Vector3:
-	if alert.state != GuardAlert.State.EVASION and not alert.rushing:
+	if alert.state != GuardAlert.State.EVASION and not alert.rushing and not _fanning:
 		return alert.last_known
 	if _spot_for != alert.last_known:  # the search moved (a noise): give up the old spot
 		AlertChain.area.release(self)
 		_spot_for = alert.last_known
-	return AlertChain.area.reserve(self, alert.last_known)
+		_swept = 0.0
+	return AlertChain.area.reserve(self, alert.last_known, global_position)
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:

@@ -91,10 +91,9 @@ func test_a_fresh_reinforcement_does_not_stop_the_squad_pushing() -> void:
 		{pos = Vector3(5, 0, 0), unseen = 9.0, last_known = Vector3.ZERO},
 		{pos = Vector3(60, 0, 0), unseen = 0.0, last_known = Vector3.ZERO, fresh = true},
 	]
-	assert_false(Engage.holds(1, false, 0.0, squad), "the nearest still pushes")
-	assert_true(Engage.holds(0, false, 0.0, squad))
+	assert_true(Engage.lost(squad), "a fresh reinforcement hasn't seen it: the squad has still lost it")
 	squad[2].fresh = false
-	assert_false(Engage.holds(0, false, 0.0, squad), "one that really saw it recently: everyone closes")
+	assert_false(Engage.lost(squad), "one that really saw it recently: everyone closes")
 
 
 func test_a_new_alert_marks_a_guard_as_not_having_seen() -> void:
@@ -105,17 +104,17 @@ func test_a_new_alert_marks_a_guard_as_not_having_seen() -> void:
 	assert_true(a.saw)
 
 
-func test_with_nobody_in_sight_for_5_s_only_the_nearest_pushes() -> void:
+func test_with_nobody_in_sight_for_5_s_the_squad_has_lost_it_and_nobody_stands_still() -> void:
 	var squad := [
 		{pos = Vector3(30, 0, 0), unseen = 6.0, last_known = Vector3.ZERO},
 		{pos = Vector3(5, 0, 0), unseen = 7.0, last_known = Vector3.ZERO},
 		{pos = Vector3(20, 0, 0), unseen = 9.0, last_known = Vector3.ZERO},
 	]
-	assert_true(Engage.holds(0, false, 0.0, squad))
-	assert_false(Engage.holds(1, false, 0.0, squad), "the nearest pushes")
-	assert_true(Engage.holds(2, false, 0.0, squad))
+	assert_true(Engage.lost(squad), "every guard fans out to its own search spot")
+	for i in squad.size():
+		assert_false(Engage.holds(i, false, 0.0, squad), "out of sight nobody holds its ground")
 	squad[0].unseen = 2.0
-	assert_false(Engage.holds(2, false, 0.0, squad), "someone saw it recently: everyone closes as before")
+	assert_false(Engage.lost(squad), "someone saw it recently: everyone closes as before")
 
 
 func test_no_regeneration_during_an_alert() -> void:

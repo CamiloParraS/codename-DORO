@@ -359,6 +359,19 @@ func chain() -> void:
 		"%d Reinforcements come out of the bridge (DeckEntry) for an Operative on the deck" % squad.size())
 	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.is_down() or g.alert.state == GuardAlert.State.ALERT), "every guard hunts")
 	await away(op)
+	await secs(Engage.PUSH_AFTER + 1.0)  # the squad has lost the Operative: it fans out round the last sighting
+	var hunters := get_tree().get_nodes_in_group("guards").filter(func(g: Guard) -> bool:
+		return not g.is_down() and not g.target and g.alert.state == GuardAlert.State.ALERT)
+	var from := hunters.map(func(g: Guard) -> Vector3: return g.global_position)
+	await secs(8.0)
+	var spots := {}
+	var moved := 0
+	for i in hunters.size():
+		spots[hunters[i].search_spot()] = true
+		moved += 1 if hunters[i].global_position.distance_to(from[i]) > 3.0 else 0
+	print("  %d hunters, %d distinct search spots, %d moved over 3 m in 8 s" % [hunters.size(), spots.size(), moved])
+	check(hunters.size() >= 3 and spots.size() >= mini(hunters.size(), 4), "out of sight, the hunters split up to separate search spots")
+	check(moved * 4 >= hunters.size() * 3, "and keep moving instead of standing where they lost the Operative")
 	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.EVASION, AlertChain.ALERT_TIME + 5.0), "unseen, the Alert drains to Evasion")
 	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.CAUTION, AlertChain.EVASION_TIME + 5.0), "Evasion ends in Caution")
 	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.alert.state < GuardAlert.State.ALERT), "in Caution the guards are back on patrol")

@@ -119,13 +119,28 @@ func search(delta: float, speed: float, sweep: float) -> void:
 	elif not arrived():
 		_looked = false
 		_walk_to(goal(), CHASE_SPEED if alert.rushing else speed, delta)  # a responder runs
-	elif goal() != search_spot():
-		face(search_spot(), delta)  # at a Ladder's foot, watching the roof
 	else:
-		if not _looked and alert.state == GuardAlert.State.EVASION:
-			model.react("look_nervous", LOOK_CLIP, 1.0)  # Evasion: the jittery scan
-			_looked = true  # one sweep per arrival
-		rotation.y += sin(_clock * 1.1) * sweep * delta
+		if goal() != search_spot():
+			face(search_spot(), delta)  # at a Ladder's foot, watching the roof
+		else:
+			if not _looked and alert.state == GuardAlert.State.EVASION:
+				model.react("look_nervous", LOOK_CLIP, 1.0)  # Evasion: the jittery scan
+				_looked = true  # one sweep per arrival
+			rotation.y += sin(_clock * 1.1) * sweep * delta
+		_move_on(delta)
+
+
+## A hunting searcher (Evasion, or fanning on Alert) looks round its spot for Engage.SWEEP_TIME, marks it
+## swept and takes the next free spot (AlertChain.searched): the squad keeps working outward. A Suspicion
+## responder stays at its one spot.
+func _move_on(delta: float) -> void:
+	if alert.state != GuardAlert.State.EVASION and not _fanning:
+		return
+	_swept += delta
+	if _swept >= Engage.SWEEP_TIME:
+		_swept = 0.0
+		_looked = false
+		AlertChain.area.searched(self)
 
 
 func chase(delta: float) -> void:
@@ -135,7 +150,17 @@ func chase(delta: float) -> void:
 	if _has_sight() and Engage.backs_off(true, _flat_dist(operative.global_position)):
 		face(operative.global_position, delta)  # the retreat in the tree failed (cornered): stands and fires
 		return
-	if _holds():
+	var squad := _squad()
+	var fan: bool = not _has_sight() and Engage.lost(squad[1])
+	if fan != _fanning:  # lost the Operative, or someone has it again: either way the spot it held is free
+		_fanning = fan
+		_swept = 0.0
+		AlertChain.area.release(self)
+	if _fanning:
+		search(delta, FAN_SPEED, 2.0)  # the squad lost it: each to its own spot round the last sighting
+		return
+	_held = Engage.holds(squad[0], _has_sight(), _flat_dist(operative.global_position), squad[1], _held)
+	if _held:
 		_look_for(delta)
 		return
 	_walk_to(goal(), CHASE_SPEED, delta)
@@ -174,9 +199,8 @@ func retreat(delta: float) -> bool:
 	return false
 
 
-## Engage.holds for this guard among the alerted ones: a guard that sees the Operative from afar stands
-## and shoots; with nobody in sight for a while, only the nearest pushes up.
-func _holds() -> bool:
+## [this guard's index, the alerted guards as Engage reads them]: who has sight (Engage.holds, Engage.lost).
+func _squad() -> Array:
 	var squad := []
 	var me := 0
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
@@ -186,8 +210,7 @@ func _holds() -> bool:
 			me = squad.size()
 		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known,
 			fresh = g.is_in_group("reinforcements") and not g.alert.saw})
-	_held = Engage.holds(me, _has_sight(), _flat_dist(operative.global_position), squad, _held)
-	return _held
+	return [me, squad]
 
 
 func _flee(delta: float) -> void:
