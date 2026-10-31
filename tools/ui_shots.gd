@@ -2,7 +2,12 @@
 ## (Harbour, Core, Annex) under Evasion and Alert. Needs a window (not --headless), and runs as a scene so
 ## the autoloads exist:
 ##   godot --path . tools/ui_shots.tscn -- <out dir> [es|radio]
-## "es" shoots the Spanish pass at 854x480 only; "radio" shoots the radio mode in all four Areas, 854x480. The driver lives on the root, so it outlives scene changes.
+## Extra args, in any order after the out dir:
+##   only=a,b   shoot just the shots whose name is `a` or starts with `a` (`only=codec,hud`), and skip the setup the rest need
+##   es         the Spanish pass          radio   the radio mode in all four Areas
+##   full       also shoot fullscreen (any extra arg otherwise limits the run to 854x480)
+## Every run ends by writing <out dir>/index.html: a contact sheet of all PNGs there (this run's marked new).
+## The driver lives on the root, so it outlives scene changes.
 extends Node
 
 const MENU := "res://ui/main_menu/main_menu.tscn"
@@ -11,6 +16,8 @@ var out := ""
 var lang := "en"
 var radio_only := false
 var sizes: Array = ["854x480", "full"]
+var only: Array = []
+var taken: Array[String] = []  # PNG file names written by this run
 
 
 func _ready() -> void:
@@ -19,10 +26,15 @@ func _ready() -> void:
 	out = args[0] if args.size() else ProjectSettings.globalize_path("user://ui_shots")
 	if args.size() > 1:
 		sizes = ["854x480"]
-		if args[1] == "radio":
-			radio_only = true
-		else:
-			lang = args[1]
+		for a: String in args.slice(1):
+			if a == "radio":
+				radio_only = true
+			elif a == "full":
+				sizes = ["854x480", "full"]
+			elif a.begins_with("only="):
+				only = Array(a.trim_prefix("only=").split(",", false))
+			else:
+				lang = a
 	DirAccess.make_dir_recursive_absolute(out)
 	var stand_in := Node.new()  # the "current scene" scene changes free, so this driver survives them
 	get_tree().root.add_child.call_deferred(stand_in)
@@ -34,7 +46,19 @@ func wait(s: float) -> void:
 	await get_tree().create_timer(s, true, false, true).timeout
 
 
+## Whether a shot called `name_` was asked for: no filter means all, else its name or a prefix of it.
+func want(name_: String) -> bool:
+	return only.is_empty() or only.any(func(f: String) -> bool: return name_.begins_with(f))
+
+
+## Whether any of `names` was asked for: the test for a setup that only feeds those shots.
+func any_of(names: Array) -> bool:
+	return names.any(want)
+
+
 func shoot(name_: String) -> void:
+	if not want(name_):
+		return
 	for sz: String in sizes:
 		if sz == "full":
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -46,6 +70,7 @@ func shoot(name_: String) -> void:
 		var img := get_viewport().get_texture().get_image()
 		var path := "%s/%s_%s.png" % [out, name_, sz]
 		img.save_png(path)
+		taken.append(path.get_file())
 		print("saved ", path, " ", img.get_size())
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_set_size(Vector2i(854, 480))
@@ -69,11 +94,11 @@ func _run() -> void:
 	DisplayServer.window_set_size(Vector2i(854, 480))
 	if radio_only:
 		await _radio_shots()
-		get_tree().quit()
+		_finish()
 		return
 	var all := lang == "en"
 	# --- menus
-	if all:
+	if all and any_of(["title", "main_menu", "mission_select", "settings"]):
 		await scene(MENU)
 		await wait(0.6)
 		await shoot("title")
@@ -93,9 +118,13 @@ func _run() -> void:
 		menu._settings()
 		await wait(0.6)
 		await shoot("settings")
+	if all and want("free_mode"):
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
 		await shoot("free_mode")
+	if all:
+		await _cards()
+	if all and any_of(["finale_debate", "finale_ending"]):
 		var fin := Control.new()  # the finale: the ending over its still
 		fin.set_script(load("res://ui/finale/finale.gd"))
 		get_tree().root.add_child(fin)
@@ -111,11 +140,25 @@ func _run() -> void:
 		fin.queue_free()
 		get_tree().paused = false
 		Engine.time_scale = 1.0
+	if all and want("debug_overlay"):
 		DebugOverlay.visible = true
 		await wait(0.5)
 		await shoot("debug_overlay")
 		DebugOverlay.visible = false
 	# --- briefing, requisition, codec
+	if any_of(["briefing", "requisition", "codec"]):
+		await _briefing()
+	# --- in play: the Harbour with Aigis awake
+	if not any_of(["hud_normal", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission"]):
+		if all:
+			await _moods()
+		_finish()
+		return
+	await _play_shots(all)
+	_finish()
+
+
+func _briefing() -> void:
 	Campaign.start()
 	Campaign.slot = -1
 	Campaign.record = _record(1)
@@ -145,7 +188,10 @@ func _run() -> void:
 	codec.talk.press()
 	await wait(0.2)
 	await shoot("codec")
-	# --- in play: the Harbour with Aigis awake
+
+
+## The Harbour with Aigis awake: the HUD busy, the radio, pause, game over and the post-Mission screen, then the moods.
+func _play_shots(all: bool) -> void:
 	await _area(0, 2)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	var op: Node = get_tree().get_first_node_in_group("operative")
@@ -177,11 +223,8 @@ func _run() -> void:
 	await wait(0.8)
 	await shoot("game_over")
 	await _post(run)
-	if not all:
-		get_tree().quit()
-		return
-	await _moods()
-	get_tree().quit()
+	if all:
+		await _moods()
 
 
 ## Loads Mission `mission`'s Area through the campaign, then poses it as Mission `as_mission` so Aigis is awake.
@@ -202,6 +245,8 @@ func _area(mission: int, as_mission: int) -> void:
 ## The radio mode at the confirm step in each Area: a guard and the farthest Radio point lit, the speaker too.
 func _radio_shots() -> void:
 	for m: Array in [["harbour", 0], ["relay", 1], ["annex", 2], ["core", 3]]:
+		if not any_of(["radio_" + m[0], "radio_beat_" + m[0]]):
+			continue
 		await _area(m[1], maxi(m[1], 2))
 		var op: Node = get_tree().get_first_node_in_group("operative")
 		var radio: Node = get_tree().get_first_node_in_group("radio")
@@ -271,6 +316,8 @@ func _post(run: Node) -> void:
 ## The HUD in the three moods: Harbour, Core (darkest), Annex (brightest), each under Evasion and Alert.
 func _moods() -> void:
 	for m: Array in [["harbour", 0, 2], ["core", 3, 3], ["annex", 2, 2]]:
+		if not any_of(["hud_" + m[0], "phase_" + m[0]]):
+			continue
 		await _area(m[1], m[2])
 		var op: Node = get_tree().get_first_node_in_group("operative")
 		op.voiceprints.held.append_array(["Kostas", "Dimos"])
@@ -282,3 +329,58 @@ func _moods() -> void:
 			_phase(ph)
 			await wait(0.6)
 			await shoot("phase_%s_%s" % [m[0], ph])
+
+
+## The Mission cards over black, held at full light: Mission 1's title card and its extraction card.
+func _cards() -> void:
+	var m: Dictionary = Campaign.MISSIONS[0]
+	var cards := {
+		mission_card_intro = [[m.intro.name, m.intro.area, m.intro.stamp], true],
+		mission_card_outro = [[m.outro.title, m.outro.line], false],
+	}
+	TranslationServer.set_locale(lang)
+	for n: String in cards:
+		if not want(n):
+			continue
+		var card := MissionCard.build(cards[n][0], cards[n][1], false)
+		get_tree().root.add_child(card)
+		await wait(StoryMotion.CARD_FADE + 0.6)
+		card.set_process(false)  # hold it: the card frees itself at 2.3 s
+		await shoot(n)
+		card.queue_free()
+
+
+## Writes index.html (a contact sheet of every PNG in the out dir, this run's marked new) and quits.
+func _finish() -> void:
+	var stems := {}  # shot name -> {size: file}
+	for f: String in DirAccess.get_files_at(out):
+		if f.get_extension() != "png":
+			continue
+		var base := f.get_basename()
+		var sz := base.get_slice("_", base.get_slice_count("_") - 1)
+		if sz == "full" or (sz.get_slice_count("x") == 2 and sz.replace("x", "").is_valid_int()):
+			stems.get_or_add(base.trim_suffix("_" + sz), {})[sz] = f
+	var names := stems.keys()
+	names.sort()
+	var html := "<!doctype html><meta charset=utf-8><title>UI shots</title><style>"
+	html += "body{background:#111;color:#ddd;font:14px sans-serif;margin:16px}h1{font-size:16px}"
+	html += ".g{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}"
+	html += "figure{margin:0}figure img{width:100%;display:block;border:1px solid #333;image-rendering:pixelated}"
+	html += "figcaption{padding:4px 0}.n{color:#7fd17f;margin-left:6px}.s a{color:#8ab;margin-right:8px}</style>"
+	html += "<h1>UI shots, %s</h1><div class=g>" % Time.get_datetime_string_from_system(false, true)
+	for n: String in names:
+		var files: Dictionary = stems[n]
+		var main: String = files.get("854x480", files.values()[0])
+		var fresh := main in taken
+		html += "<figure><a href='%s'><img src='%s' loading=lazy></a><figcaption>%s" % [main, main, n]
+		html += "<span class=n>%s</span>" % ("new" if fresh else "")
+		html += "<div class=s>"
+		for sz: String in files:
+			html += "<a href='%s'>%s</a>" % [files[sz], sz]
+		html += "</div></figcaption></figure>"
+	html += "</div>"
+	var file := FileAccess.open(out.path_join("index.html"), FileAccess.WRITE)
+	file.store_string(html)
+	file.close()
+	print("index ", out.path_join("index.html"))
+	get_tree().quit()
