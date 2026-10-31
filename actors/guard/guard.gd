@@ -23,6 +23,7 @@ const HOLD_TIME := 30.0         # seconds a guard told to hold its position stay
 const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
 const SHOT_PUSH := 4.5          # m/s where a rifle bullet lands: the head takes it faster, as it weighs less
 const HEAD_SHOT_PUSH := 6.0
+const FLINCH_PUSH := 2.5        # m/s a hit that does not drop it shoves the bone it landed on
 const HIT_STAGGER := 0.3        # m a non-lethal rifle hit knocks a guard back
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
@@ -548,10 +549,16 @@ func shoot(head: bool, from: Vector3) -> void:
 		kill(from, head)
 	else:
 		model.react("hit", HIT_TIME)
+		model.flinch(_away_from(from) * FLINCH_PUSH + Vector3.UP * 0.3, "Head" if head else "spine_02")
 		if is_inside_tree():
 			move_and_collide(((global_position - from) * Vector3(1, 0, 1)).normalized() * HIT_STAGGER)
 		voice.say(&"pain")
 		_changed(alert.hear(from, "a bullet"))
+
+
+## The flat direction away from `from`, which a hit shoves along.
+func _away_from(from: Vector3) -> Vector3:
+	return ((global_position - from) * Vector3(1, 0, 1)).normalized()
 
 
 ## A rifle bullet into a Down guard's ragdoll, at the bone it hit: the body is shoved.
@@ -579,6 +586,7 @@ func tranquilize(head: bool, from: Vector3) -> void:
 	if not vest:  # a vest stops the dart: the guard only hears it hit
 		stumble_left = Tranq.BODY_DELAY
 		model.react("hit", HIT_TIME)
+		model.flinch(_away_from(from) * FLINCH_PUSH * 0.6, "Head" if head else "spine_02")
 		voice.say(&"pain")
 	_changed(alert.hear(from, "a dart"))
 
@@ -694,12 +702,13 @@ func answer(op: Node3D) -> void:
 	answered = true
 	var run := get_tree().get_first_node_in_group("mission_plan")
 	var intel: String = run.intel_hint(global_position) if run else ""
-	var what := Holdup.answer(holdup_answer, not str(name) in op.voiceprints.held, intel != "")
+	var voice_new: bool = not str(name) in op.voiceprints.held
+	var what := Holdup.answer(holdup_answer, voice_new, intel != "")
 	Mixer.blip(0.8)  # a guard's voice blip under his line
+	if voice_new:  # his voice is copied whatever he says, a scripted answer (the foreman's) included
+		op.voiceprints.held.append(str(name))
+		get_tree().call_group("mission_tally", "event", "interrogated_voiceprint")
 	match what:
-		"voiceprint":
-			op.voiceprints.held.append(str(name))
-			get_tree().call_group("mission_tally", "event", "interrogated_voiceprint")
 		"objective":  # where, on the INTEL line (MissionRun._say_objective's)
 			get_tree().call_group("radio_log", "say", "INTEL", intel)
 		"scan":
