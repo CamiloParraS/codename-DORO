@@ -580,6 +580,18 @@ The HTML mocks are canonical, so their spacing wins over a 4px grid: 14, 26, 30,
 ### Colour tokens
 No colour literal outside `hud_palette.gd` except a screen's own named `const` (Game Over's red-tinted ground, the Codec's CRT greens, the Requisition paper). Translucent dark plates are `Color(HudPalette.GLASS, alpha)`. Sand is the only gold; the old `gold` token is gone.
 
+## Screen families (as shipped)
+
+The game ships five screen families on purpose; the Overview's two materials (smoked glass in play, grey paper between Missions) are the HUD and Requisition, and the rest each own one job. Do not converge them without a new decision.
+
+- **In play (smoked glass):** the HUD, radio ring and live call, as described above.
+- **Dark plate menus:** main menu, mission select, settings, free mode, pause. `UiMenu` plates with a red selection tab over the dimmed Harbour. A row may carry up to four right-aligned stat columns (`UiMenu.COLS`: rank, time, kills, alerts) under a `add_columns_header` line; the full Mission name goes in the selected row's description.
+- **Grey paper:** Requisition only. Costs read in Recruits ("1 RECRUIT", "2 RECRUITS"), never "PTS".
+- **Story screens:** the Codec (CRT green, its own palette), the Briefing and finale (black, Aigis Cyan Voice glyphs), Mission cards (black, Antonio) and game over (the one Michroma screen).
+- **Post-Mission (black, sand and cyan):** page 1 is the Rank; page 2, AIGIS HAS LEARNED, is one full-width row per Habit the Profile moved on, cause then effect: glyph, name, arrow and pips on the left, and on the right the answering Voice with the same line the Briefing speaks (`brief.<voice>.hint.<habit>.<level>`), or AIGIS EASES OFF when the Habit fell.
+
+**Tutorial tips** draw as keycaps and words on one line (`[KEY]` becomes a small keycap, a double space a gap); a tip wider than the subtitle column falls back to wrapped text, and a tip waits, with its clock, while two radio lines are showing.
+
 ## Do's and Don'ts
 
 ### Do:
