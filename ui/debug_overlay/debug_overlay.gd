@@ -101,7 +101,7 @@ func _mark() -> void:
 
 
 static func _diagram(p: Vector3) -> String:
-	var d := MissionRun._diagram(p)
+	var d := MissionPlaces.diagram(p)
 	return "(%.1f, %.1f, %.1f)" % [d.x, d.y, d.z]
 
 

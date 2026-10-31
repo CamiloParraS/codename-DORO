@@ -87,11 +87,12 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 ## The Mission's title card if it has one (black, so the Codec call follows without a flash of this page),
-## then its full-screen Codec call, then the Mission itself.
+## then its full-screen Codec call, then the Mission itself. A Mission whose intro is a take has no card here:
+## the take plays once the Area has loaded, after the call.
 func _open_codec() -> void:
 	set_process_unhandled_input(false)
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
-	if intro.is_empty():
+	if intro.is_empty() or Campaign.cine_of(record.mission).has("intro"):
 		_call()
 		return
 	var card := MissionCard.build([intro.name, intro.area, intro.stamp], true, false)
