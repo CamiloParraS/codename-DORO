@@ -58,6 +58,20 @@ func test_the_stand_ins_cannot_raise_an_alert_and_sit_on_the_water() -> void:
 	assert_true(boat.position.y < 0.0, "below the quay")
 
 
+func test_the_launch_is_textured_has_a_bow_and_heads_east() -> void:
+	_area = _harbour()
+	var boat: Node3D = _area.get_node("Cine/IntroProps/Boat")
+	var hull := boat.get_node("Hull") as MeshInstance3D
+	assert_true((hull.material_override as StandardMaterial3D).albedo_texture != null, "textured")
+	assert_true(boat.get_node("Bow") != null and boat.get_node("Windscreen") != null, "more than a box")
+	var bow := boat.transform.basis * Vector3.FORWARD
+	assert_true(bow.x > 0.9, "bow to the east: %s" % bow)
+	var clip := Cine.take_of(_area, KEY).get_animation("take")
+	var ti := clip.find_track(NodePath("IntroProps/Boat:position"), Animation.TYPE_VALUE)
+	assert_true(clip.track_get_key_value(ti, 1).x > clip.track_get_key_value(ti, 0).x, "travels west to east")
+	assert_true(clip.track_get_key_value(ti, 0).z < _start().z - 4.0, "and stays in the water, off the deck")
+
+
 func test_the_take_ends_with_the_operative_at_the_start_facing_the_start_way() -> void:
 	_area = _harbour()
 	var p := Cine.take_of(_area, KEY)

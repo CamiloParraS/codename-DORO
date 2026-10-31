@@ -62,6 +62,20 @@ func test_the_stand_ins_cannot_raise_an_alert() -> void:
 		assert_true(false, "no colliders: %s" % n.name)
 
 
+func test_the_fultoned_figure_is_the_operative_standing_and_the_camera_hides() -> void:
+	_area = _harbour()
+	var props := _area.get_node("Cine/OutroProps")
+	var model := props.get_node("Recruit/Model") as CharacterModel
+	assert_eq(model.kind, CharacterModel.Kind.OPERATIVE, "the player's look")
+	var clip := Cine.take_of(_area, KEY).get_animation("take")
+	var ti := clip.find_track(NodePath("OutroProps/Recruit/Model"), Animation.TYPE_METHOD)
+	assert_eq(clip.method_track_get_params(ti, 0)[0], "idle", "upright, not lying down")
+	var lamp := clip.find_track(NodePath("OutroProps/PoleCamera/Head/Lamp:visible"), Animation.TYPE_VALUE)
+	assert_true(lamp >= 0 and clip.track_get_key_value(lamp, 0) == false, "dark until the lamp lights")
+	var crate := (props.get_node("Cover") as MeshInstance3D).mesh as BoxMesh
+	assert_true(props.get_node("PoleCamera/Head").position.y >= crate.size.y, "the head peeks over the cover")
+
+
 func test_the_operative_is_gone_from_the_first_frame_and_the_black_is_total_at_the_end() -> void:
 	_area = _harbour()
 	var p := Cine.take_of(_area, KEY)
