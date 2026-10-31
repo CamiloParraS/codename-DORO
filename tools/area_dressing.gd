@@ -29,29 +29,29 @@ const SKINS := {
 
 ## Each Area's light and fog: sun [pitch, yaw], colour and energy; ambient colour and energy (kept low so the sun and
 ## lamps carry the form); fog (also the sky's horizon unless `haze` gives the horizon its own glow, so far hills
-## stand dark against it) colour, begin and end in metres; the sky's zenith colour, and how much the sun glows in it.
+## stand dark against it) colour, begin and end in metres; the sky's zenith colour, how much the sun glows in it, cloud cover and star brightness (0..1).
 ## grade: the colour grade's [shadows, mids, highlights], a 1D LUT. hfog: [height, density] of the ground haze;
 ## vol: volumetric fog density (shafts through lamp and flashlight cones); accents: [[x, y, h, colour, range, energy]]
 ## lights in diagram metres, warm or cool against the ambient.
 const MOODS := {
 	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.85, amb = Color(0.42, 0.5, 0.7), amb_e = 0.42,
 		fog = Color(0.3, 0.32, 0.42), fog_from = 18.0, fog_to = 120.0,
-		zenith = Color(0.07, 0.1, 0.2), glow = 0.9,  # dusk-blue haze, last light low in the west
+		zenith = Color(0.07, 0.1, 0.2), glow = 0.9, clouds = 0.5, stars = 0.3,  # dusk-blue haze, last light low in the west
 		grade = [Color(0.0, 0.035, 0.07), Color(0.5, 0.5, 0.5), Color(1.0, 0.95, 0.86)], hfog = [1.5, 0.07], vol = 0.0,
 		accents = [[40.0, 30.0, 3.0, Color(1.0, 0.6, 0.3), 14.0, 2.2], [17.0, 36.0, 3.0, Color(0.4, 0.7, 1.0), 12.0, 1.8]]},
 	relay_station = {sun = [-40, 140], sun_c = Color(0.62, 0.7, 0.95), sun_e = 0.95, amb = Color(0.46, 0.44, 0.52), amb_e = 1.2,
 		fog = Color(0.11, 0.09, 0.1), fog_from = 15.0, fog_to = 85.0, haze = Color(0.34, 0.18, 0.1),
-		zenith = Color(0.03, 0.04, 0.1), glow = 0.6,  # sodium-lit haze on the horizon, a thin moon in a dark sky
+		zenith = Color(0.03, 0.04, 0.1), glow = 0.6, clouds = 0.3, stars = 1.0,  # sodium-lit haze on the horizon, a thin moon in a dark sky
 		grade = [Color(0.0, 0.03, 0.06), Color(0.5, 0.5, 0.5), Color(1.0, 0.92, 0.8)], hfog = [2.0, 0.1], vol = 0.015,
 		accents = [[22.0, 62.0, 4.0, Color(1.0, 0.62, 0.25), 14.0, 2.4], [50.0, 40.0, 5.0, Color(0.45, 0.6, 1.0), 14.0, 1.8]]},
 	research_annex = {sun = [-65, 20], sun_c = Color(0.95, 0.97, 1.0), sun_e = 1.15, amb = Color(0.72, 0.78, 0.85), amb_e = 0.4,
 		fog = Color(0.66, 0.7, 0.75), fog_from = 40.0, fog_to = 140.0,
-		zenith = Color(0.45, 0.52, 0.6), glow = 0.3,  # cold clinical white overcast
+		zenith = Color(0.45, 0.52, 0.6), glow = 0.3, clouds = 0.6, stars = 0.0,  # cold clinical white overcast
 		grade = [Color(0.0, 0.02, 0.04), Color(0.5, 0.5, 0.5), Color(0.96, 1.0, 1.0)], hfog = [0.8, 0.05], vol = 0.0,
 		accents = [[40.0, 40.0, 4.0, Color(0.5, 1.0, 0.85), 14.0, 1.6]]},
 	core = {sun = [-60, 35], sun_c = Color(0.75, 0.32, 0.25), sun_e = 0.5, amb = Color(0.46, 0.27, 0.26), amb_e = 0.55,
 		fog = Color(0.15, 0.06, 0.06), fog_from = 15.0, fog_to = 80.0,
-		zenith = Color(0.05, 0.01, 0.02), glow = 0.4,  # dim red emergency light
+		zenith = Color(0.05, 0.01, 0.02), glow = 0.4, clouds = 0.25, stars = 0.0,  # dim red emergency light
 		grade = [Color(0.04, 0.0, 0.02), Color(0.5, 0.48, 0.48), Color(1.0, 0.86, 0.8)], hfog = [1.2, 0.15], vol = 0.02,
 		accents = [[40.0, 40.0, 3.5, Color(1.0, 0.2, 0.15), 16.0, 2.4], [30.0, 20.0, 3.5, Color(0.3, 0.8, 1.0), 12.0, 1.6]]},
 }
@@ -67,15 +67,23 @@ func _mood(area: String) -> void:
 	sun.light_color = md.sun_c
 	sun.light_energy = md.sun_e
 	sun.shadow_enabled = true
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	sun.directional_shadow_max_distance = 90.0
+	sun.shadow_blur = 1.5
+	sun.shadow_normal_bias = 1.2
 	_add(_root, sun)
 	var sky_mat := ShaderMaterial.new()
 	sky_mat.shader = load("res://assets/shaders/psx_sky.gdshader")
 	sky_mat.set_shader_parameter("horizon", md.get("haze", md.fog))
 	sky_mat.set_shader_parameter("zenith", md.zenith)
 	sky_mat.set_shader_parameter("glow", md.glow)
+	sky_mat.set_shader_parameter("clouds", md.clouds)
+	sky_mat.set_shader_parameter("stars", md.stars)
+	sky_mat.set_shader_parameter("ground", md.fog.darkened(0.6))
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
 	sky.radiance_size = Sky.RADIANCE_SIZE_32  # nothing reflects it but the sea
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL  # the clouds drift, but the radiance needn't refresh every frame
 	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
@@ -126,6 +134,7 @@ func _mood(area: String) -> void:
 		l.omni_range = a[4]
 		l.light_energy = a[5]
 		l.light_volumetric_fog_energy = 1.5
+		l.shadow_enabled = true
 		_fade(l)
 		_add(_root, l)
 
@@ -188,6 +197,7 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 			l.omni_range = DRESS_LIGHTS[key][1]
 			l.light_color = DRESS_LIGHTS[key][2]
 			l.light_energy = 3.0
+			l.shadow_enabled = key != "buoy_red" and key != "buoy_green"  # a buoy's glow is too small to throw a shadow worth its cost
 			_fade(l, key)
 			b.add_child(l)
 	if _root.is_ancestor_of(g):  # dressing in the NavRegion is owned by _bake
@@ -202,6 +212,7 @@ func _fade(l: Light3D, key := "") -> void:
 		l.distance_fade_enabled = true
 		l.distance_fade_begin = 40.0
 		l.distance_fade_length = 20.0
+		l.distance_fade_shadow = 30.0  # past this the light stays but its shadow (six cube faces) is dropped
 
 
 ## A model's meshes as plain MeshInstance3Ds wearing mat: an instance saves as a reference, so a material
@@ -421,6 +432,7 @@ func _beacons(beacons: Array) -> void:
 		l.light_color = bc[1]
 		l.omni_range = bc[2]
 		l.light_energy = 2.0
+		l.shadow_enabled = true
 		_fade(l)
 		_add(lamp, l)
 		if bc[3] >= 0:

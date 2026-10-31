@@ -4445,9 +4445,15 @@ shader_parameter/horizon = Color(0.15, 0.06, 0.06, 1)
 shader_parameter/zenith = Color(0.05, 0.01, 0.02, 1)
 shader_parameter/glow = 0.4
 shader_parameter/disc = null
+shader_parameter/clouds = 0.25
+shader_parameter/cloud_light = null
+shader_parameter/cloud_speed = null
+shader_parameter/stars = 0.0
+shader_parameter/ground = Color(0.06, 0.023999998, 0.023999998, 1)
 
 [sub_resource type="Sky" id="Sky_tp6ib"]
 sky_material = SubResource("ShaderMaterial_m5lvs")
+process_mode = 2
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_70wkn"]
@@ -4948,9 +4954,15 @@ shader_parameter/horizon = Color(0.66, 0.8, 0.95, 1)
 shader_parameter/zenith = Color(0.2, 0.36, 0.7, 1)
 shader_parameter/glow = 1.0
 shader_parameter/disc = null
+shader_parameter/clouds = 0.25
+shader_parameter/cloud_light = null
+shader_parameter/cloud_speed = null
+shader_parameter/stars = 0.0
+shader_parameter/ground = Color(0.06, 0.023999998, 0.023999998, 1)
 
 [sub_resource type="Sky" id="Sky_3tuum"]
 sky_material = SubResource("ShaderMaterial_4g0lu")
+process_mode = 2
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_vd4c0"]
@@ -4994,9 +5006,15 @@ shader_parameter/horizon = Color(0.56, 0.56, 0.57, 1)
 shader_parameter/zenith = Color(0.28, 0.28, 0.3, 1)
 shader_parameter/glow = 1.0
 shader_parameter/disc = null
+shader_parameter/clouds = 0.25
+shader_parameter/cloud_light = null
+shader_parameter/cloud_speed = null
+shader_parameter/stars = 0.0
+shader_parameter/ground = Color(0.06, 0.023999998, 0.023999998, 1)
 
 [sub_resource type="Sky" id="Sky_eggnk"]
 sky_material = SubResource("ShaderMaterial_oidio")
+process_mode = 2
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_5tuqi"]
@@ -5040,9 +5058,15 @@ shader_parameter/horizon = Color(0.6, 0.12, 0.06, 1)
 shader_parameter/zenith = Color(0.02, 0, 0, 1)
 shader_parameter/glow = 1.0
 shader_parameter/disc = null
+shader_parameter/clouds = 0.25
+shader_parameter/cloud_light = null
+shader_parameter/cloud_speed = null
+shader_parameter/stars = 0.0
+shader_parameter/ground = Color(0.06, 0.023999998, 0.023999998, 1)
 
 [sub_resource type="Sky" id="Sky_qsmbm"]
 sky_material = SubResource("ShaderMaterial_5g0r7")
+process_mode = 2
 radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_nwwdd"]
@@ -7187,7 +7211,9 @@ mesh = SubResource("BoxMesh_8ps41")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7230,7 +7256,9 @@ mesh = SubResource("BoxMesh_1ef3l")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7348,7 +7376,9 @@ mesh = SubResource("BoxMesh_chk5j")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7391,7 +7421,9 @@ mesh = SubResource("BoxMesh_ayg08")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7434,7 +7466,9 @@ mesh = SubResource("BoxMesh_ddj6h")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7561,7 +7595,9 @@ mesh = SubResource("BoxMesh_jilkm")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7604,7 +7640,9 @@ mesh = SubResource("BoxMesh_e3f43")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -7647,7 +7685,9 @@ mesh = SubResource("BoxMesh_nkhun")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 light_color = Color(1, 0.85, 0.6, 1)
 light_energy = 1.4
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 5.5
 
@@ -8211,7 +8251,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8229,7 +8271,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8247,7 +8291,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8265,7 +8311,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8283,7 +8331,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8301,7 +8351,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8319,7 +8371,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -8534,7 +8588,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8548,7 +8604,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8592,7 +8650,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8633,7 +8693,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8701,7 +8763,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8715,7 +8779,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8864,7 +8930,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8878,7 +8946,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8892,7 +8962,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8906,7 +8978,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -8996,7 +9070,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -9014,7 +9090,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -9116,7 +9194,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9130,7 +9210,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9153,7 +9235,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(0.45, 1, 0.55, 1)
 light_energy = 1.8
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9167,7 +9251,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(0.45, 1, 0.55, 1)
 light_energy = 1.8
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9226,7 +9312,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9240,7 +9328,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9254,7 +9344,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9268,7 +9360,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9483,7 +9577,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, 0.078051284, -
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0006699264, -0.3219487, -0.119792536)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 9.0
 
@@ -9949,7 +10045,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -9963,7 +10061,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -9977,7 +10077,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0.61)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, -0.49)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 3.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 14.0
 
@@ -10009,6 +10111,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.2, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6500006, 0)
 light_color = Color(1, 0.85, 0.55, 1)
 light_energy = 3.0
+shadow_enabled = true
 omni_range = 30.0
 
 [node name="BuoyRed_92p0_m2p0" type="Node3D" parent="Backdrop/Surroundings/Dressing" unique_id=1481004452]
@@ -10022,6 +10125,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 3.0
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -10036,6 +10140,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 light_color = Color(0.15, 1, 0.3, 1)
 light_energy = 3.0
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -10050,6 +10155,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 3.0
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -10064,6 +10170,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 light_color = Color(0.15, 1, 0.3, 1)
 light_energy = 3.0
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -10078,6 +10185,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 3.0
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -11433,7 +11541,9 @@ mesh = SubResource("BoxMesh_4m43f")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp0" unique_id=423337800]
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 7.0
 
@@ -11448,7 +11558,9 @@ mesh = SubResource("BoxMesh_ar74t")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp1" unique_id=1714805769]
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 
 [node name="Pole" type="MeshInstance3D" parent="Beacons/Lamp1" unique_id=1483770017]
@@ -11462,7 +11574,9 @@ mesh = SubResource("BoxMesh_s47xi")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp2" unique_id=858790090]
 light_color = Color(1, 0.12, 0.1, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 
 [node name="Lamp3" type="MeshInstance3D" parent="Beacons" unique_id=53126884]
@@ -11472,7 +11586,9 @@ mesh = SubResource("BoxMesh_lwdxx")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp3" unique_id=2774411]
 light_color = Color(0.15, 1, 0.3, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 
 [node name="Lamp4" type="MeshInstance3D" parent="Beacons" unique_id=53126885]
@@ -11482,7 +11598,9 @@ mesh = SubResource("BoxMesh_p4mam")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp4" unique_id=1294242380]
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 6.0
 
@@ -11497,7 +11615,9 @@ mesh = SubResource("BoxMesh_vlf0k")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp5" unique_id=438226701]
 light_color = Color(0.3, 1, 0.45, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 3.0
 
@@ -11508,7 +11628,9 @@ mesh = SubResource("BoxMesh_i3cmf")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp6" unique_id=1729694670]
 light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 
 [node name="Pole" type="MeshInstance3D" parent="Beacons/Lamp6" unique_id=1679446982]
@@ -11522,7 +11644,9 @@ mesh = SubResource("BoxMesh_k10tl")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp7" unique_id=873678991]
 light_color = Color(0.3, 1, 0.45, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 4.0
 
@@ -11533,7 +11657,9 @@ mesh = SubResource("BoxMesh_hda7j")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp8" unique_id=17663312]
 light_color = Color(0.3, 1, 0.45, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 4.0
 
@@ -11544,7 +11670,9 @@ mesh = SubResource("BoxMesh_76254")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp9" unique_id=1309131281]
 light_color = Color(1, 0.3, 0.1, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 4.0
 
@@ -11555,7 +11683,9 @@ mesh = SubResource("BoxMesh_xako7")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp10" unique_id=876235897]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11570,7 +11700,9 @@ mesh = SubResource("BoxMesh_36lin")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp11" unique_id=20220218]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11585,7 +11717,9 @@ mesh = SubResource("BoxMesh_yg4u4")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp12" unique_id=1311688187]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11600,7 +11734,9 @@ mesh = SubResource("BoxMesh_p424d")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp13" unique_id=455672508]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11615,7 +11751,9 @@ mesh = SubResource("BoxMesh_ia0v1")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp14" unique_id=1747140477]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11630,7 +11768,9 @@ mesh = SubResource("BoxMesh_vo3s3")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp15" unique_id=891124798]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 8.0
 
@@ -11645,7 +11785,9 @@ mesh = SubResource("BoxMesh_u7myg")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp16" unique_id=35109119]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 10.0
 
@@ -11660,7 +11802,9 @@ mesh = SubResource("BoxMesh_ka3ws")
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp17" unique_id=1326577088]
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 10.0
 
@@ -11673,6 +11817,9 @@ transform = Transform3D(0.81915206, -0.4967318, 0.2867882, 0, 0.49999997, 0.8660
 light_color = Color(0.75, 0.32, 0.25, 1)
 light_energy = 0.5
 shadow_enabled = true
+shadow_normal_bias = 1.2
+shadow_blur = 1.5
+directional_shadow_max_distance = 90.0
 
 [node name="Mood" type="WorldEnvironment" parent="." unique_id=364912812]
 environment = SubResource("Environment_70wkn")
@@ -11682,7 +11829,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(1, 0.2, 0.15, 1)
 light_energy = 2.4
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 16.0
 
@@ -11691,7 +11840,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 3.5, -20)
 light_color = Color(0.3, 0.8, 1, 1)
 light_energy = 1.6
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 distance_fade_enabled = true
+distance_fade_shadow = 30.0
 distance_fade_length = 20.0
 omni_range = 12.0
 

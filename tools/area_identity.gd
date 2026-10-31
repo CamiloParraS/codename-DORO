@@ -110,6 +110,7 @@ func _door_lamp(parent: Node3D, rect: Array, h: float, tag: String) -> void:
 	l.omni_range = 5.5
 	l.light_energy = 1.4
 	l.light_color = LAMP_COLOUR
+	l.shadow_enabled = true
 	_fade(l)
 	lamp.add_child(l)
 
