@@ -99,11 +99,11 @@
 [ext_resource type="Script" path="res://areas/extraction_point.gd" id="97_yrby3"]
 [ext_resource type="Script" path="res://areas/objective_watch.gd" id="98_fc4mg"]
 [ext_resource type="Script" path="res://areas/relay_station/relay_console.gd" id="99_k8vcu"]
-[ext_resource type="PackedScene" path="res://actors/character/character_model.tscn" id="100_1ghlw"]
-[ext_resource type="Script" path="res://actors/character/character_model.gd" id="101_60tbt"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/fulton_balloon.svg" id="102_wxxge"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="103_txa0n"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="104_8oa45"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="100_1ghlw"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="101_60tbt"]
+[ext_resource type="PackedScene" path="res://actors/character/character_model.tscn" id="102_wxxge"]
+[ext_resource type="Script" path="res://actors/character/character_model.gd" id="103_txa0n"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/fulton_balloon.svg" id="104_8oa45"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_fulton_lift.ogg" id="105_alqs6"]
 [ext_resource type="Script" path="res://areas/sea.gd" id="106_3ctvy"]
 
@@ -3755,60 +3755,224 @@ size = Vector3(4, 3, 4)
 size = Vector3(3, 3, 3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rrb8s"]
+albedo_color = Color(0.78, 0.8, 0.82, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mw8rk"]
+size = Vector3(1.8, 0.8, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_riqvf"]
+albedo_color = Color(0.55, 0.6, 0.66, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_v7v8b"]
+size = Vector3(1.3, 0.9, 1.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jitb6"]
+shading_mode = 0
+albedo_color = Color(0.9, 0.95, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6xr1j"]
+material = SubResource("StandardMaterial3D_jitb6")
+size = Vector3(0.12, 0.12, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xnasf"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.9, 0.95, 1, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qf1mm"]
+size = Vector3(0.5, 0.02, 9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7s6kl"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.9, 0.95, 1, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_d3pe7"]
+size = Vector3(0.5, 0.02, 9)
+
+[sub_resource type="Curve3D" id="Curve3D_t0oje"]
+_data = {
+"points": PackedVector3Array(0.16666667, -0.06666666, -0.083333336, -0.16666667, 0.06666666, 0.083333336, 39, -1, -53, 0.5, -0.4, -0.5833333, -0.5, 0.4, 0.5833333, 38, -0.6, -52.5, 0.6666667, -0.7, -1, -0.6666667, 0.7, 1, 36, 1.4, -49.5, 0.5916665, -0.43999997, -1.1949997, -0.5916665, 0.43999997, 1.1949997, 34, 3.6, -46.5, 0.2583332, -0.073333345, -0.6949997, -0.2583332, 0.073333345, 0.6949997, 32.45, 4.04, -42.33, 0, 0, 0, 0, 0, 0, 32.45, 4.04, -42.33),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0)
+}
+point_count = 6
+
+[sub_resource type="Resource" id="Resource_5seil"]
+script = ExtResource("101_60tbt")
+duration = 0.0
+transition = 1
+
+[sub_resource type="Animation" id="Animation_xjekj"]
+length = 9.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CineIntroRig/Dolly:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2, 4, 6, 7.8, 9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(39, -1, -53), Vector3(38, -0.6, -52.5), Vector3(36, 1.4, -49.5), Vector3(34, 3.6, -46.5), Vector3(32.45, 4.04, -42.33), Vector3(32.45, 4.04, -42.33)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CineIntroRig/LookTarget:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2, 4, 6, 7.8, 9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(43, -0.6, -48), Vector3(32, 1, -44), Vector3(33, 3.2, -41.5), Vector3(33, 3.2, -40), Vector3(32.45, 1.57, -32.6), Vector3(32.45, 1.57, -32.6)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CineIntroRig/Cam:priority")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [10]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("IntroProps:visible")
+tracks/3/interp = 0
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("IntroProps/Boat:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 5.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(46, -1.3, -49), Vector3(18, -1.3, -49)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../Operative:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(3, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(33, 2, -42), Vector3(33, 2, -40)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../Operative:cine_face")
+tracks/6/interp = 3
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(3, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-3.141592653589793, -3.141592653589793]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../Operative:moving")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(3, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../Operative:velocity")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(3, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector3(0, 0, -1), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vbcxt"]
+_data = {
+&"take": SubResource("Animation_xjekj")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kwnbn"]
 shading_mode = 0
 albedo_color = Color(0.15, 0.15, 0.15, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_mw8rk"]
-material = SubResource("StandardMaterial3D_rrb8s")
+[sub_resource type="CylinderMesh" id="CylinderMesh_gpnbc"]
+material = SubResource("StandardMaterial3D_kwnbn")
 top_radius = 0.02
 bottom_radius = 0.02
 height = 3.0
 radial_segments = 4
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_riqvf"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnc2r"]
 albedo_color = Color(0.4, 0.42, 0.44, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_v7v8b"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_5wi5k"]
 top_radius = 0.07
 bottom_radius = 0.09
 height = 4.2
 radial_segments = 6
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jitb6"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrp5u"]
 albedo_color = Color(0.75, 0.75, 0.72, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_6xr1j"]
+[sub_resource type="BoxMesh" id="BoxMesh_4nke7"]
 size = Vector3(0.3, 0.28, 0.7)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xnasf"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwx8j"]
 albedo_color = Color(0.05, 0.05, 0.06, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_qf1mm"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_1jko8"]
 top_radius = 0.09
 bottom_radius = 0.09
 height = 0.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7s6kl"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3oi5e"]
 shading_mode = 0
 albedo_color = Color(1, 0.15, 0.1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_d3pe7"]
-material = SubResource("StandardMaterial3D_7s6kl")
+[sub_resource type="BoxMesh" id="BoxMesh_sifla"]
+material = SubResource("StandardMaterial3D_3oi5e")
 size = Vector3(0.1, 0.1, 0.1)
 
-[sub_resource type="Curve3D" id="Curve3D_t0oje"]
+[sub_resource type="Curve3D" id="Curve3D_euo3x"]
 _data = {
 "points": PackedVector3Array(0, -0.016666671, -0.03333346, 0, 0.016666671, 0.03333346, -28.4, 0.5, 28.4, 0.01666673, -0.05, -0.16666667, -0.01666673, 0.05, 0.16666667, -28.4, 0.6, 28.6, 0.0666666, -0.14999999, -0.29999986, -0.0666666, 0.14999999, 0.29999986, -28.5, 0.8, 29.4, 0.01666673, -0.11666667, -0.26666674, -0.01666673, 0.11666667, 0.26666674, -28.8, 1.5, 30.4, -0.1333332, -0.016666671, -0.33333364, 0.1333332, 0.016666671, 0.33333364, -28.6, 1.5, 31, 0.14999993, -0.18333332, -0.23333359, -0.14999993, 0.18333332, 0.23333359, -28, 1.6, 32.4, 0.5, -0.3, 0.03333346, -0.5, 0.3, -0.03333346, -29.5, 2.6, 32.4, 0.25, -0.13333337, 0.03333346, -0.25, 0.13333337, -0.03333346, -31, 3.4, 32.2),
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
 point_count = 8
 
-[sub_resource type="Resource" id="Resource_5seil"]
-script = ExtResource("104_8oa45")
+[sub_resource type="Resource" id="Resource_4avvj"]
+script = ExtResource("101_60tbt")
 duration = 0.0
 transition = 1
 
-[sub_resource type="Animation" id="Animation_xjekj"]
+[sub_resource type="Animation" id="Animation_q7enc"]
 length = 9.6
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -4056,12 +4220,12 @@ tracks/18/keys = {
 }
 tracks/18/use_blend = true
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_vbcxt"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qsrf0"]
 _data = {
-&"take": SubResource("Animation_xjekj")
+&"take": SubResource("Animation_q7enc")
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_kwnbn"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ry37"]
 size = Vector3(160, 5, 160)
 
 [node name="Harbour" type="Node3D" unique_id=346793720]
@@ -8992,85 +9156,50 @@ shape = SubResource("BoxShape3D_csa20")
 
 [node name="Cine" type="Node3D" parent="." unique_id=903597126]
 
-[node name="OutroProps" type="Node3D" parent="Cine" unique_id=506445410]
+[node name="IntroProps" type="Node3D" parent="Cine" unique_id=1451835541]
 visible = false
 
-[node name="Recruit" type="Node3D" parent="Cine/OutroProps" unique_id=1271369679]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
+[node name="Boat" type="Node3D" parent="Cine/IntroProps" unique_id=2103081866]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 46, -1.3, -49)
 
-[node name="Model" type="Node3D" parent="Cine/OutroProps/Recruit" unique_id=1050695759 instance=ExtResource("100_1ghlw")]
-script = ExtResource("101_60tbt")
+[node name="Hull" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=360922318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_rrb8s")
+mesh = SubResource("BoxMesh_mw8rk")
 
-[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175996]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-
-[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@23" unique_id=1185679111]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
-mesh = SubResource("CylinderMesh_mw8rk")
-
-[node name="@Sprite3D@22" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@23" unique_id=1870896893]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-modulate = Color(1, 0.45, 0.15, 1)
-pixel_size = 0.125
-billboard = 1
-texture_filter = 0
-texture = ExtResource("102_wxxge")
-
-[node name="PatrolA" type="Node3D" parent="Cine/OutroProps" unique_id=699529988]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -20.74, 0, 28)
-
-[node name="Model" type="Node3D" parent="Cine/OutroProps/PatrolA" unique_id=1799198532 instance=ExtResource("100_1ghlw")]
-script = ExtResource("101_60tbt")
-
-[node name="PatrolB" type="Node3D" parent="Cine/OutroProps" unique_id=699529989]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -18.54, 0, 28)
-
-[node name="Model" type="Node3D" parent="Cine/OutroProps/PatrolB" unique_id=943182853 instance=ExtResource("100_1ghlw")]
-script = ExtResource("101_60tbt")
-
-[node name="PoleCamera" type="Node3D" parent="Cine/OutroProps" unique_id=1316000234]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.4, 0, 31)
-
-[node name="Pole" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera" unique_id=902469801]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+[node name="Cabin" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1166359030]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.5)
 material_override = SubResource("StandardMaterial3D_riqvf")
-mesh = SubResource("CylinderMesh_v7v8b")
+mesh = SubResource("BoxMesh_v7v8b")
 
-[node name="Head" type="Node3D" parent="Cine/OutroProps/PoleCamera" unique_id=902171051]
-transform = Transform3D(0.8660254, 0, 0.5, 0, 1, 0, -0.5, 0, 0.8660254, 0, 4.2, 0)
-
-[node name="Body" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1380868808]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.15)
-material_override = SubResource("StandardMaterial3D_jitb6")
+[node name="Lamp" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=361044323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0.5)
 mesh = SubResource("BoxMesh_6xr1j")
 
-[node name="Lens" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381217612]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.05, -0.54)
+[node name="WakeL" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1190087085]
+transform = Transform3D(0.98162717, 0, -0.190809, 0, 1, 0, 0.190809, 0, 0.98162717, -1.9, -0.18, 6.8)
 material_override = SubResource("StandardMaterial3D_xnasf")
-mesh = SubResource("CylinderMesh_qf1mm")
+mesh = SubResource("BoxMesh_qf1mm")
 
-[node name="Lamp" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381213220]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -0.4)
+[node name="WakeR" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1190087091]
+transform = Transform3D(0.98162717, 0, 0.190809, 0, 1, 0, -0.190809, 0, 0.98162717, 1.9, -0.18, 6.8)
+material_override = SubResource("StandardMaterial3D_7s6kl")
 mesh = SubResource("BoxMesh_d3pe7")
 
-[node name="Audio" type="AudioStreamPlayer3D" parent="Cine/OutroProps" unique_id=1758334435]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
-bus = &"SFX"
+[node name="CineIntroRig" type="Node3D" parent="Cine" unique_id=1395912866]
 
-[node name="CineOutroRig" type="Node3D" parent="Cine" unique_id=2006357807]
-
-[node name="Path" type="Path3D" parent="Cine/CineOutroRig" unique_id=1366259339]
+[node name="Path" type="Path3D" parent="Cine/CineIntroRig" unique_id=512602078]
 curve = SubResource("Curve3D_t0oje")
 
-[node name="Dolly" type="Node3D" parent="Cine/CineOutroRig" unique_id=2123148834]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.4, 0.5, 28.4)
+[node name="Dolly" type="Node3D" parent="Cine/CineIntroRig" unique_id=1869746645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39, -1, -53)
 
-[node name="LookTarget" type="Node3D" parent="Cine/CineOutroRig" unique_id=1877298874]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 3, 34)
+[node name="LookTarget" type="Node3D" parent="Cine/CineIntroRig" unique_id=1210841677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, -0.6, -48)
 
-[node name="Cam" type="Node3D" parent="Cine/CineOutroRig" unique_id=41387631 node_paths=PackedStringArray("follow_target", "follow_path", "look_at_target")]
+[node name="Cam" type="Node3D" parent="Cine/CineIntroRig" unique_id=926572898 node_paths=PackedStringArray("follow_target", "follow_path", "look_at_target")]
 top_level = true
-script = ExtResource("103_txa0n")
+script = ExtResource("100_1ghlw")
 follow_mode = 4
 follow_target = NodePath("../Dolly")
 follow_path = NodePath("../Path")
@@ -9083,8 +9212,105 @@ align_transform_with_view = Callable()
 align_position_with_view = Callable()
 align_rotation_with_view = Callable()
 
-[node name="CineOutro" type="AnimationPlayer" parent="Cine" unique_id=31308685]
+[node name="CineIntro" type="AnimationPlayer" parent="Cine" unique_id=23941600]
 libraries/ = SubResource("AnimationLibrary_vbcxt")
+metadata/min_s = 6.0
+metadata/max_s = 10.0
+metadata/pcams = [NodePath("../CineIntroRig/Cam")]
+
+[node name="OutroProps" type="Node3D" parent="Cine" unique_id=506445410]
+visible = false
+
+[node name="Recruit" type="Node3D" parent="Cine/OutroProps" unique_id=1271369679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
+
+[node name="Model" type="Node3D" parent="Cine/OutroProps/Recruit" unique_id=1050695759 instance=ExtResource("102_wxxge")]
+script = ExtResource("103_txa0n")
+
+[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@23" unique_id=1185679111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+mesh = SubResource("CylinderMesh_gpnbc")
+
+[node name="@Sprite3D@22" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@23" unique_id=1870896893]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+modulate = Color(1, 0.45, 0.15, 1)
+pixel_size = 0.125
+billboard = 1
+texture_filter = 0
+texture = ExtResource("104_8oa45")
+
+[node name="PatrolA" type="Node3D" parent="Cine/OutroProps" unique_id=699529988]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -20.74, 0, 28)
+
+[node name="Model" type="Node3D" parent="Cine/OutroProps/PatrolA" unique_id=1799198532 instance=ExtResource("102_wxxge")]
+script = ExtResource("103_txa0n")
+
+[node name="PatrolB" type="Node3D" parent="Cine/OutroProps" unique_id=699529989]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -18.54, 0, 28)
+
+[node name="Model" type="Node3D" parent="Cine/OutroProps/PatrolB" unique_id=943182853 instance=ExtResource("102_wxxge")]
+script = ExtResource("103_txa0n")
+
+[node name="PoleCamera" type="Node3D" parent="Cine/OutroProps" unique_id=1316000234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.4, 0, 31)
+
+[node name="Pole" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera" unique_id=902469801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+material_override = SubResource("StandardMaterial3D_bnc2r")
+mesh = SubResource("CylinderMesh_5wi5k")
+
+[node name="Head" type="Node3D" parent="Cine/OutroProps/PoleCamera" unique_id=902171051]
+transform = Transform3D(0.8660254, 0, 0.5, 0, 1, 0, -0.5, 0, 0.8660254, 0, 4.2, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1380868808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.15)
+material_override = SubResource("StandardMaterial3D_wrp5u")
+mesh = SubResource("BoxMesh_4nke7")
+
+[node name="Lens" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381217612]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.05, -0.54)
+material_override = SubResource("StandardMaterial3D_hwx8j")
+mesh = SubResource("CylinderMesh_1jko8")
+
+[node name="Lamp" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381213220]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -0.4)
+mesh = SubResource("BoxMesh_sifla")
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="Cine/OutroProps" unique_id=1758334435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
+bus = &"SFX"
+
+[node name="CineOutroRig" type="Node3D" parent="Cine" unique_id=2006357807]
+
+[node name="Path" type="Path3D" parent="Cine/CineOutroRig" unique_id=1366259339]
+curve = SubResource("Curve3D_euo3x")
+
+[node name="Dolly" type="Node3D" parent="Cine/CineOutroRig" unique_id=2123148834]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.4, 0.5, 28.4)
+
+[node name="LookTarget" type="Node3D" parent="Cine/CineOutroRig" unique_id=1877298874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 3, 34)
+
+[node name="Cam" type="Node3D" parent="Cine/CineOutroRig" unique_id=41387631 node_paths=PackedStringArray("follow_target", "follow_path", "look_at_target")]
+top_level = true
+script = ExtResource("100_1ghlw")
+follow_mode = 4
+follow_target = NodePath("../Dolly")
+follow_path = NodePath("../Path")
+look_at_mode = 2
+look_at_target = NodePath("../LookTarget")
+tween_resource = SubResource("Resource_4avvj")
+tween_on_load = false
+look_at_damping = true
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+align_rotation_with_view = Callable()
+
+[node name="CineOutro" type="AnimationPlayer" parent="Cine" unique_id=31308685]
+libraries/ = SubResource("AnimationLibrary_qsrf0")
 metadata/min_s = 6.0
 metadata/max_s = 10.0
 metadata/pcams = [NodePath("../CineOutroRig/Cam")]
@@ -9096,4 +9322,4 @@ collision_layer = 0
 script = ExtResource("106_3ctvy")
 
 [node name="Shape" type="CollisionShape3D" parent="Sea" unique_id=1284579712]
-shape = SubResource("BoxShape3D_kwnbn")
+shape = SubResource("BoxShape3D_0ry37")

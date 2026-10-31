@@ -1,6 +1,7 @@
 ## The Harbour's takes, as data in diagram metres [x, y, height] (the same frame as tools/build_harbour.gd; _w turns it into
 ## world metres). Each take is one static function the builder calls with the Area's `Cine` node (tools/area_cine.gd does the
 ## rail); a take's stand-in props are mesh-only rigs under their own group, hidden in play and shown by the take.
+##   HarbourCine.intro(cine)    # "Fog Level": a Metis launch crosses the fog at water level, the camera rises to the bow and settles
 ##   HarbourCine.outro(cine)    # "Gap in the Fog": a Recruit rises, the spot is empty, a patrol notices, a camera turns
 class_name HarbourCine
 extends RefCounted
@@ -197,4 +198,77 @@ static func outro(cine: Node) -> AnimationPlayer:
 	var t := clip.add_track(Animation.TYPE_AUDIO)
 	clip.track_set_path(t, "OutroProps/Audio")
 	clip.audio_track_insert_key(t, 0.0, LIFT, 0.0, 0.0)
+	return player
+
+
+# ---- Intro: "Fog Level" -----------------------------------------------------------------------
+# Just above the water, a Metis launch crosses the frame trailing its wake and the camera rises past it to the freighter's
+# bow, where the Operative steps aboard onto the start spot; it settles to the shoulder rig, so control returns with no cut.
+# The bow is a guard-free start (nearest post 17 m away, past a guard's 16 m reach) and he never leaves it. ~9 s.
+
+const INTRO_KEY := "CineIntro"
+const INTRO_LEN := 9.0
+const DECK_H := 2.0
+const SEA_H := -1.6
+const INTRO_START := [73.0, 0.0, DECK_H]  # OperativeStart (build_harbour.gd SPOTS); he faces south, into the ship
+const INTRO_TIP := [73.0, -2.0, DECK_H]   # where he comes aboard: the bow tip
+const INTRO_STEP_T := [3.0, 5.0]          # s he walks from the tip to the start
+const INTRO_WALK := 1.0                   # m/s
+const INTRO_BOAT_FROM := [86.0, -9.0, SEA_H + 0.3]  # the launch runs east to west, left to right as the camera sees it
+const INTRO_BOAT_TO := [58.0, -9.0, SEA_H + 0.3]
+const INTRO_BOAT_T := 5.5
+
+## The camera (one rail): [at s, camera [x, y, h], aim [x, y, h]]. The last two shots are the shoulder rig's resting pose
+## behind the start spot (pivot 1.45 up, arm 0.55 across and 2.4 back, tilted 0.25 rad; operative.gd), held for the aim to settle.
+const INTRO_SHOTS := [
+	[0.0, [79.0, -13.0, SEA_H + 0.6], [83.0, -8.0, SEA_H + 1.0]],   # a hand above the water, on the launch coming in
+	[2.0, [78.0, -12.5, SEA_H + 1.0], [72.0, -4.0, 1.0]],            # the launch passes; the aim slides to the hull
+	[4.0, [76.0, -9.5, 1.4], [73.0, -1.5, 3.2]],                     # rising up the hull as he steps aboard
+	[6.0, [74.0, -6.5, 3.6], [73.0, 0.0, 3.2]],
+	[7.8, [72.45, -2.33, 4.04], [72.45, 7.4, 1.57]],
+	[INTRO_LEN, [72.45, -2.33, 4.04], [72.45, 7.4, 1.57]],
+]
+
+
+static func intro(cine: Node) -> AnimationPlayer:
+	var props := Node3D.new()
+	props.name = "IntroProps"
+	props.visible = false  # a launch and its wake, shown by the take; mesh only
+	cine.add_child(props)
+
+	var boat := Node3D.new()
+	boat.name = "Boat"
+	boat.position = _w(INTRO_BOAT_FROM)
+	boat.rotation.y = PI / 2.0  # bow to the west
+	props.add_child(boat)
+	var hull := BoxMesh.new()
+	hull.size = Vector3(1.8, 0.8, 5.0)
+	_part(boat, "Hull", hull, Vector3(0, 0.2, 0), Color(0.78, 0.8, 0.82))
+	var cabin := BoxMesh.new()
+	cabin.size = Vector3(1.3, 0.9, 1.6)
+	_part(boat, "Cabin", cabin, Vector3(0, 1.05, 0.5), Color(0.55, 0.6, 0.66))
+	var lamp := Fx.lamp(Color(0.9, 0.95, 1.0), 0.12)
+	lamp.name = "Lamp"
+	lamp.position = Vector3(0, 1.7, 0.5)
+	boat.add_child(lamp)
+	for side in [-1.0, 1.0]:  # the V of the wake, flat on the water behind the stern
+		var wake := BoxMesh.new()
+		wake.size = Vector3(0.5, 0.02, 9.0)
+		var w := _part(boat, "Wake%s" % ("L" if side < 0 else "R"), wake, Vector3(side * 1.9, -0.18, 6.8), Color(0.9, 0.95, 1.0, 0.45))
+		w.rotation.y = side * deg_to_rad(11.0)
+		var m := w.material_override as StandardMaterial3D
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+
+	var cams: Array = INTRO_SHOTS.map(func(s: Array) -> Array: return s[1])
+	var aims: Array = INTRO_SHOTS.map(func(s: Array) -> Array: return s[2])
+	var ats: Array = INTRO_SHOTS.map(func(s: Array) -> float: return s[0])
+	var player := AreaCine.rail(cine, INTRO_KEY, _ws(cams), _ws(aims), _times(ats), {min_s = 6.0, max_s = 10.0})
+	var clip := player.get_animation("take")
+
+	_value(clip, "IntroProps:visible", [0.0], [true], Animation.INTERPOLATION_NEAREST)
+	_value(clip, "IntroProps/Boat:position", [0.0, INTRO_BOAT_T], [_w(INTRO_BOAT_FROM), _w(INTRO_BOAT_TO)])
+	# he steps off the bow tip onto the start spot and stands facing south, into the ship (the Area's start facing)
+	var face := deg_to_rad(-180.0)  # the OperativeStart marker's yaw
+	AreaCine.operative_track(player, _times(INTRO_STEP_T), [_w(INTRO_TIP), _w(INTRO_START)] as Array[Vector3], [face, face] as Array[float], INTRO_WALK)
 	return player

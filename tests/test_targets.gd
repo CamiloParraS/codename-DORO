@@ -81,6 +81,7 @@ func test_the_extraction_beacon_shows_once_every_step_is_done() -> void:
 	_root().add_child(ep)
 	var run := MissionRun.new()
 	run.record = Aigis.new_record()
+	run.cine = {none = true}  # no take: this Area has no Cine node
 	_root().add_child(run)
 	run._show_intel()
 	assert_false(ep.get_node("Beacon").visible)

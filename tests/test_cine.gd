@@ -197,7 +197,7 @@ func _mission_in_room(cine: Dictionary) -> MissionRun:
 	_area = _room()
 	var run := MissionRun.new()
 	run.name = "MissionRun"
-	run.cine = cine
+	run.cine = cine if not cine.is_empty() else {none = true}  # empty would fall back to Mission 1's own takes
 	_area.add_child(run)
 	if run.has_node("CineRunner"):
 		run.get_node("CineRunner").finished.connect(func(_s: bool) -> void: _done += 1)
