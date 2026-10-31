@@ -133,6 +133,7 @@ func _build() -> void:
 	door.owner = _root
 	_own(door)
 	door.set_script(load("res://areas/core/lift_door.gd"))
+	_shut_lift_door()
 	var ep := _area(_root, "ExtractionPoint", spots.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y = 1.5
 	for ar in _zd("areas"):
@@ -191,3 +192,22 @@ func _start() -> Array:
 		if _zones[z].has("start"):
 			return _zones[z].start
 	return [52, 77, 0]
+
+
+## The lift door as the Descent leaves it, seen from the corridor mouth: two shut leaves in the recess behind the exit,
+## with no body, so Spoof, sight and the navmesh pass through (the opened LiftDoor above is gone by then).
+func _shut_lift_door() -> void:
+	var door := _group(_root, "LiftDoorShut")
+	var steel := _mat("metal", Color(0.6, 0.62, 0.65))
+	for side in [-1.0, 1.0]:
+		var leaf := MeshInstance3D.new()
+		leaf.name = "Leaf" + ("W" if side < 0 else "E")
+		leaf.mesh = _box_mesh(Vector3(0.1, 3.0, 1.01), steel)
+		leaf.position = Vector3(0.6 - 40.0, 1.5, 32.0 - 40.0 + side * 0.5)
+		door.add_child(leaf)
+	var rail := MeshInstance3D.new()
+	rail.name = "Stripe"
+	rail.mesh = _box_mesh(Vector3(0.12, 0.2, 1.96), _mat("hazard", Color.WHITE))
+	rail.position = Vector3(0.6 - 40.0, 1.1, 32.0 - 40.0)
+	door.add_child(rail)
+	_own(door)
