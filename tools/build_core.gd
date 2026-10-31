@@ -138,6 +138,8 @@ func _build() -> void:
 	for ar in _zd("areas"):
 		_area(_root, ar[0], ar[1], ar[2], ar[3])
 	_core_objectives()
+	if _zones.size() == ZONES.size():
+		CoreCine.build(self)  # the Descent: the lift ride (tools/cine/core.gd)
 	var sea := _area(_root, "Sea", [40, 40, -5.5], Vector3(160, 5, 160), "res://areas/sea.gd")
 	sea.collision_mask = 1  # the Operative's layer
 	_save(CORE_OUT if _zones.size() == ZONES.size() else FOCUS_OUT)
