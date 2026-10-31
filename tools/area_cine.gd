@@ -105,6 +105,41 @@ static func operative_track(player: AnimationPlayer, times: Array[float], points
 		_steps(clip, "../Operative:velocity", ends, [Vector3(0, 0, -walk), Vector3.ZERO])
 
 
+## A hard cut inside a take (hide it under a dark pulse): a static pcam at `pos` looking at `look`, raised at `at` seconds above
+## the take's others with no tween. Joins the take's `pcams`. `rig` is the player's `<Name>Rig` node (rail and relay make it).
+static func cut_to(player: AnimationPlayer, name: String, pos: Vector3, look: Vector3, at: float, opts := {}) -> PhantomCamera3D:
+	var rig := player.get_parent().get_node(player.name + "Rig")
+	var aim := Node3D.new()
+	aim.name = name + "Look"
+	aim.position = look
+	rig.add_child(aim)
+	var cam := _pcam(rig, name, opts)
+	cam.position = pos
+	cam.look_at_mode = PhantomCamera3D.LookAtMode.SIMPLE
+	cam.look_at_target = aim
+	cam.tween_resource.duration = 0.0
+	_steps(player.get_animation("take"), "%s/%s:priority" % [rig.name, name], [at], [LIVE + 5])
+	var pcams: Array = player.get_meta("pcams")
+	pcams.append(NodePath("../%s/%s" % [rig.name, name]))
+	player.set_meta("pcams", pcams)
+	return cam
+
+
+## A track on the take's clip: `path` (from the Cine node, "Node:property" or "Node:resource:property") through `values` at `times`.
+## `step` holds each value until the next key (a flag, a teleport); otherwise it blends linearly.
+static func track(player: AnimationPlayer, path: String, times: Array, values: Array, step := false) -> void:
+	var clip := player.get_animation("take")
+	if step:
+		_steps(clip, path, times, values)
+		return
+	var t := clip.add_track(Animation.TYPE_VALUE)
+	clip.track_set_path(t, path)
+	clip.track_set_interpolation_type(t, Animation.INTERPOLATION_LINEAR)
+	clip.value_track_set_update_mode(t, Animation.UPDATE_CONTINUOUS)
+	for i in times.size():
+		clip.track_insert_key(t, times[i], values[i])
+
+
 static func _pcam(rig: Node, name: String, opts: Dictionary) -> PhantomCamera3D:
 	var cam := PhantomCamera3D.new()
 	cam.name = name

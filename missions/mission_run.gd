@@ -195,6 +195,14 @@ func _card(keys: Array, intro: bool, then: Callable) -> void:
 	get_tree().paused = true
 
 
+## Plays the Area's take `key` (a mid-Mission one, not the intro or outro), then `then`, and takes a Checkpoint once control is back.
+func play_take(key: String, then := Callable()) -> void:
+	_take(key, [], false, func() -> void:
+		take_checkpoint()
+		if then.is_valid():
+			then.call())
+
+
 ## A take over the live Area; `then` runs when control is back (an outro: when it has gone to black).
 func _take(key: String, lines: Array, outro: bool, then: Callable) -> void:
 	var c := Cine.new()

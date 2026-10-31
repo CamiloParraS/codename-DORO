@@ -274,6 +274,12 @@ func _impact(at: Vector3, on_guard: bool, lethal: bool) -> void:
 		Fx.puff(w, at, Color(0.7, 0.7, 0.65), 4, 1.0, 0.5)
 
 
+## The camera rig on the body at once (a take moved the Operative far: the rig follows by a lerp otherwise).
+func snap_view() -> void:
+	_pivot.global_position = global_position + Vector3.UP * (0.95 if crouching else 1.45)
+	_pivot.rotation = Vector3(0, _yaw, 0)
+
+
 func _process(delta: float) -> void:
 	if _glance_left > 0.0:
 		_glance_left -= delta
