@@ -302,6 +302,7 @@ func _build() -> void:
 	var intel: Node3D = _root.get_node("Intel")
 	var console := _area(intel, "RelayConsole", SPOTS.RelayConsole, Vector3(5, 3, 5), "res://areas/relay_station/relay_console.gd")
 	console.position.y += 1.5
+	_takes()
 	_save(OUT)
 	await _report_reach(nm, SPOTS.OperativeStart, REACH, CARRY)
 	quit()
@@ -309,6 +310,15 @@ func _build() -> void:
 
 ## The valley the hillside drops into, seen past the south rail. ponytail: the rest of the Backdrop kit
 ## (distant blocks, skyline, fog) is its own build. No kill volume: rails and cliffs close every edge.
+## The Relay Station's takes under $Cine (tools/cine/relay_station.gd): the intro "Up the Signal" and the outro "Dead Air".
+func _takes() -> void:
+	var cine := AreaCine.root(_root)
+	cine.owner = _root
+	RelayCine.intro(cine)
+	RelayCine.outro(cine)
+	_own(cine)
+
+
 func _backdrop() -> void:
 	var bd := _group(_root, "Backdrop")
 	bd.add_to_group("backdrop", true)

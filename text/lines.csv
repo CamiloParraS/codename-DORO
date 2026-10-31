@@ -539,6 +539,11 @@ intro.m1.area,HARBOUR,PUERTO
 intro.m1.stamp,Palladion island · 02:14 · fog off the water,Isla de Palladion · 02:14 · niebla sobre el agua
 outro.m1.title,MISSION COMPLETE,MISIÓN CUMPLIDA
 outro.m1.line,"Extraction confirmed. Nobody will know you were here.","Extracción confirmada. Nadie sabrá que estuviste aquí."
+intro.m2.name,MISSION 2,MISIÓN 2
+intro.m2.area,RADIO RELAY STATION,ESTACIÓN DE RADIO
+intro.m2.stamp,Palladion island · 03:40 · the mast is the only light,Isla de Palladion · 03:40 · el mástil es la única luz
+outro.m2.title,MISSION COMPLETE,MISIÓN CUMPLIDA
+outro.m2.line,"Extraction confirmed. The island has gone quiet.","Extracción confirmada. La isla ha enmudecido."
 intro.m3.name,MISSION 3,MISIÓN 3
 intro.m3.area,RESEARCH ANNEX,ANEXO DE INVESTIGACIÓN
 intro.m3.stamp,Palladion island · 07:40 · twelve months behind glass,Isla de Palladion · 07:40 · doce meses tras el cristal

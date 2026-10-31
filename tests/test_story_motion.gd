@@ -76,10 +76,10 @@ func test_only_a_mission_with_an_intro_or_outro_gets_a_card() -> void:
 		assert_true(Campaign.MISSIONS[0].intro.has(k))
 	assert_true(Campaign.MISSIONS[0].outro.has("title") and Campaign.MISSIONS[0].outro.has("line"))
 	for m in Campaign.MISSIONS.size():
-		if m == 0 or m == 2:  # Missions 1 and 3 have takes that carry their card's text
+		if m <= 2:  # Missions 1-3 have takes that carry their card's text
 			continue
 		assert_false(Campaign.MISSIONS[m].has("intro") or Campaign.MISSIONS[m].has("outro"))
-	for m in [0, 2]:
+	for m in [0, 1, 2]:
 		for k in Campaign.MISSIONS[m].intro.values() + Campaign.MISSIONS[m].outro.values():
 			assert_ne(TranslationServer.translate(k), k, "%s has text" % k)
 

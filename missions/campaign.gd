@@ -28,6 +28,8 @@ const MISSIONS := [
 		{intel = "IntelLiftPanel", objective = "objective.m1.s3", call = [["analyst", "intel.m1.manifest"], ["handler", "live.m1.s3.01"]], hint = ["hint.m1.s3.1", "hint.m1.s3.2"]},
 	]},
 	{title = "MISSION 2: RADIO RELAY STATION", area = RELAY_STATION, encounters = 3, targets = ["RELAY CHIEF"], carry_only = true,
+		intro = {name = "intro.m2.name", area = "intro.m2.area", stamp = "intro.m2.stamp"},
+		outro = {title = "outro.m2.title", line = "outro.m2.line"}, cine = {intro = "CineIntro", outro = "CineOutro"},
 		open = [["analyst", "live.m2.open.01"]],
 		codec = [["handler", "codec.m2.01"], ["operative", "codec.m2.02"], ["handler", "codec.m2.03"], ["handler", "codec.m2.04"],
 			["analyst", "codec.m2.05", "chief"], ["analyst", "codec.m2.06", "chief"], ["operative", "codec.m2.07"], ["handler", "codec.m2.08"]], steps = [
