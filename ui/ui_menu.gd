@@ -229,8 +229,12 @@ class _Plate extends Control:
 		var x := -snappedf(UiMenu.REACH * q, PixelKit.PX)
 		var r := Rect2(x, 0, size.x - x, size.y)
 		var lit := HudPalette.DMG if danger else HudPalette.LIGHT
-		PixelKit.stair_fill(self, r, UiMenu.PLATE, UiMenu.SLANT)
+		PixelKit.ramp(self, Rect2(r.position.x, 0, 30, size.y), UiMenu.PLATE, 5)  # the resting plate crumbles away on its left, as the HUD's do
+		PixelKit.stair_fill(self, Rect2(r.position.x + 30, 0, r.size.x - 30, size.y), UiMenu.PLATE, UiMenu.SLANT)
 		PixelKit.stair_fill(self, r, Color(lit, 0.95), UiMenu.SLANT, q)  # the light plate wipes in, its edge dithered
 		if q < 1.0:  # the resting plate's stair along its slanted edge
 			PixelKit.stair_edge(self, r, Color(HudPalette.LIGHT, 0.25 * (1.0 - q)), UiMenu.SLANT)
 		draw_rect(Rect2(x, 0, 6, size.y), Color(HudPalette.MARK_RED if danger else HudPalette.DMG, 0.35 + 0.65 * q))
+		if q > 0.0:  # the pick's chevron, in pixels
+			var m := size.y / 2.0
+			HudPalette.px_poly(self, PackedVector2Array([Vector2(x + 12, m - 9), Vector2(x + 24, m), Vector2(x + 12, m + 9)]), Color(HudPalette.DARK_INK, q))

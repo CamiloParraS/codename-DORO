@@ -86,7 +86,6 @@ static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Colo
 	ci.draw_string(font, pos, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
-static var _key_box: StyleBoxFlat
 const KEY_LIFT := 0.65  # the HUD keycap lift's black (docs/DESIGN.md Shadow Vocabulary): dense enough to read over a dark scene
 const DROP := Vector2(0, 2)  # a hold outline's slight drop
 const CORNER_STEPS := 5  # segments per rounded corner
@@ -94,18 +93,12 @@ const CORNER_STEPS := 5  # segments per rounded corner
 
 ## A key drawn as a key (docs/DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
 static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a := 1.0) -> float:
-	if not _key_box:
-		_key_box = StyleBoxFlat.new()
-		_key_box.shadow_size = 6
-		_key_box.shadow_offset = Vector2(0, 3)
-		_key_box.anti_aliasing = true
-	var side := 34.0 if small else 42.0
+	var side := 33.0 if small else 42.0  # whole chrome pixels
 	var fs := legible(ci, 14 if small else 20)
-	var w := maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16)
-	_key_box.set_corner_radius_all(4 if small else 6)
-	_key_box.bg_color = Color(LIGHT, a)
-	_key_box.shadow_color = Color(0, 0, 0, KEY_LIFT * a)
-	ci.draw_style_box(_key_box, Rect2(p, Vector2(w, side)))
+	var w := ceilf(maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16) / PixelKit.PX) * PixelKit.PX
+	var cap := Rect2(p, Vector2(w, side))
+	PixelKit.cut_fill(ci, Rect2(p + Vector2(0, PixelKit.PX), cap.size), Color(0, 0, 0, KEY_LIFT * a), 1)  # the key's lift: one pixel row of black
+	PixelKit.cut_fill(ci, cap, Color(LIGHT, a), 1)
 	hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
 	return w
 

@@ -61,6 +61,8 @@ func _ready() -> void:
 		face.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var m := ShaderMaterial.new()
 		m.shader = preload("res://ui/hud/portrait.gdshader")
+		m.set_shader_parameter("key", 0.1)  # the portrait's black goes clear: the dithered ground shows through
+		m.set_shader_parameter("lift", 0.12)
 		face.material = m
 		add_child(face)
 	if over_picture:
@@ -209,9 +211,12 @@ func _portrait(node: TextureRect, at: Vector2, id: String, speaking: bool, typin
 	node.texture = _faces.get(FRAME % [id, f], _faces.get(FRAME % [id, 0]))
 	node.position = (at + Vector2(14, 14)) * k
 	node.size = (PORTRAIT - Vector2(28, 28)) * k
-	node.modulate = Color(GREEN, 1.0 if speaking else 0.42)
+	node.modulate = Color(GREEN, 1.0 if speaking else 0.62)
 	node.visible = true
-	draw_rect(Rect2(at, PORTRAIT), CRT_DARK, true)
+	var well := PixelKit.snap(Rect2(at, PORTRAIT))
+	var lit := 1.0 if speaking else 0.55
+	draw_rect(well, Color(GREEN.lerp(CRT_DARK, 0.8), 1.0))  # the ground: a dark mint, dithered brighter toward the top
+	PixelKit.wash(self, well.grow(-3), Color(GREEN, 0.28 * lit), 0.55, 0.1)
 	PixelKit.frame(self, PixelKit.snap(Rect2(at, PORTRAIT)), GREEN if speaking else GREEN_DIM, 3)
 
 
@@ -221,8 +226,6 @@ func _slab(at: Vector2, label: String, right: bool, on: bool) -> void:
 	var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 28)).x + 46  # measured at the size hud_text draws
 	var x := at.x + PORTRAIT.x - w if right else at.x
 	var slab := Rect2(x, at.y, w, 52)
-	if right:
-		slab = Rect2(x + 20, at.y, w - 20, 52)
 	PixelKit.cut_fill(self, PixelKit.snap(slab), GREEN if on else GREEN_DIM, 6)
 	HudPalette.hud_text(self, Vector2(x + 24, at.y + 37), label, 28, CRT_DARK, f, 0, false)
 

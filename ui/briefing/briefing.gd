@@ -154,7 +154,7 @@ func _draw() -> void:
 				var f := HudPalette.tracked(disp, 64, 0.12)
 				var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 64).x + 56
 				PixelKit.stair_fill(self, Rect2(0, y - 70, x - 40 + w, 90), HudPalette.LIGHT, 22.0)
-				HudPalette.hud_text(self, Vector2(x, y), s, 64, HudPalette.DARK_INK, f, 0, false)
+				HudPalette.hud_text(self, Vector2(x - 40, y), s, 64, HudPalette.DARK_INK, f, 0, false)  # the title sits left of the body column
 				y += 70
 			"gap":
 				y += 24

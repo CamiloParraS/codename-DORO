@@ -16,6 +16,7 @@ const RED := HudPalette.DMG
 const ROW_H := 112.0
 const BOARD := Vector2(80, 230)
 const CELL := Vector2(123, 93)  # whole chrome pixels
+const SLOTS := 4  # rank columns, filled or empty, as in Peace Walker's R&D grid
 const WIPE_SECS := 0.3
 ## The in-game gear icons (small, in the rank cells) and their large copies (the drawing panel), by upgrade.
 const GEAR_ICONS := {
@@ -148,8 +149,11 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, d), PAPER)
+	PixelKit.wash(self, Rect2(0, 0, d.x, 230), Color(DARK, 0.1), 0.45, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground
+	PixelKit.wash(self, Rect2(0, d.y - 360, d.x, 240), Color(DARK, 0.1), 0.0, 0.5, false, 12.0)
 	var g := Campaign.gear
 	_title()
+	_ranks(g)
 	_points(d, g.points)
 	var ids: Array = Requisition.UPGRADES.keys()
 	for i in ids.size():
@@ -215,8 +219,12 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 	HudPalette.hud_text(self, Vector2(BOARD.x, y + 52), tr("ui.upgrade.%s" % id).to_upper(), 26, RED if on else DARK, _f(26, 0.1), 0, false)
 	HudPalette.hud_text(self, Vector2(BOARD.x, y + 80), tr("ui.upgrade.%s.effect" % id).to_upper(), 16, MUTED, _f(16, 0.2), 0, false)
 	if on:
-		draw_colored_polygon(PackedVector2Array([Vector2(BOARD.x - 26, y + 40), Vector2(BOARD.x - 8, y + 52), Vector2(BOARD.x - 26, y + 64)]), RED)
+		HudPalette.px_poly(self, PackedVector2Array([Vector2(BOARD.x - 27, y + 38), Vector2(BOARD.x - 9, y + 52), Vector2(BOARD.x - 27, y + 66)]), RED)
 	draw_rect(Rect2(BOARD.x + 250, y + 40, 600, 3), Color(DARK, 0.35))
+	for c in range(u.buys, SLOTS):  # unreachable ranks: empty slots
+		var slot := Rect2(BOARD.x + 250 + c * 150, y + 4, CELL.x, CELL.y)
+		PixelKit.cut_fill(self, slot, PAPER, 0)  # the row's rule stops at the last rank
+		PixelKit.frame(self, slot, Color(DARK, 0.14), 0)
 	for c in u.buys:
 		var cell := Rect2(BOARD.x + 250 + c * 150, y + 4, CELL.x, CELL.y)
 		var value: int = Requisition.BASE[u.stat] + u.step * (c + 1)
@@ -244,6 +252,20 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 
 
 ## A cell that isn't owned or in reach: a pixel frame, and a faint dithered tone inside when it is a later tier.
+## The rank columns' heads, as Peace Walker's R&D grid has them: the next rank of the picked row in red, the rest
+## fading toward the right.
+func _ranks(g: Requisition) -> void:
+	var ids: Array = Requisition.UPGRADES.keys()
+	var picked_rank := -1
+	if row < ids.size():
+		picked_rank = g.bought.get(ids[row], 0)
+	for c in SLOTS:
+		var at := Vector2(BOARD.x + 250 + c * 150, BOARD.y - 30)
+		var col := RED if c == picked_rank else Color(MUTED, 1.0 - 0.18 * c)
+		HudPalette.hud_text(self, at, "%s %d" % [tr("ui.post.rank").to_upper(), c + 1], 18, col, _f(18, 0.3), 0, false)
+		PixelKit.dashes(self, at + Vector2(0, 8), CELL.x, Color(col, 0.6), 1, 1)
+
+
 func _ghost(r: Rect2, col: Color, tone: float) -> void:
 	PixelKit.cut_fill(self, r, PAPER)  # the row's rule runs under a cell, not through it
 	PixelKit.frame(self, r, col, 3)

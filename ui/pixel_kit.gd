@@ -14,6 +14,16 @@ static func stepped(t: float) -> float:
 	return floorf(clampf(t, 0.0, 1.0) * STEPS) / STEPS
 
 
+## Row `i` of `rows`'s right edge for a slab leaning in `slant` px: whole cells, one step every `run` rows, so the
+## stair is even (a 3 px step per fixed number of rows) and its corners sit on the chrome grid.
+static func stair_end(right: float, slant: float, i: int, rows: int, px := PX) -> float:
+	var cells := roundi(slant / px)
+	if cells <= 0:
+		return snappedf(right, px)
+	var run := maxi(1, roundi(float(rows) / cells))
+	return snappedf(right, px) - px * mini(cells, floori(float(i) / run))
+
+
 ## `r` as stacked rows of `px` height, its right edge leaning in `slant` px toward the bottom, on a stair.
 ## `col` fills it up to `t` (0..1) from the left, the leading edge crumbling in an ordered-dither band that
 ## crawls with `shift`; at t = 1 it is solid. Rows are snapped to the grid.
@@ -24,7 +34,7 @@ static func stair_fill(ci: CanvasItem, r: Rect2, col: Color, slant := 0.0, t := 
 	var band := BAND * px
 	for i in rows:
 		var y := r.position.y + i * px
-		var end := r.end.x - snappedf(slant * (i + 0.5) / maxf(rows, 1), px)
+		var end := stair_end(r.end.x, slant, i, rows, px)
 		var h := minf(px, r.end.y - y)
 		var reach := r.position.x + t * (end - r.position.x + band)  # the wipe's far edge, band included
 		var solid := minf(end, reach - band)
@@ -45,7 +55,7 @@ static func stair_fill(ci: CanvasItem, r: Rect2, col: Color, slant := 0.0, t := 
 static func stair_edge(ci: CanvasItem, r: Rect2, col: Color, slant: float, px := PX) -> void:
 	var rows := ceili(r.size.y / px)
 	for i in rows:
-		var end := r.end.x - snappedf(slant * (i + 0.5) / maxf(rows, 1), px)
+		var end := stair_end(r.end.x, slant, i, rows, px)
 		ci.draw_rect(Rect2(end - px, r.position.y + i * px, px, minf(px, r.end.y - r.position.y - i * px)), col)
 
 
@@ -141,3 +151,15 @@ class Slab extends PanelContainer:
 
 	func _draw() -> void:
 		PixelKit.stair_fill(self, Rect2(Vector2.ZERO, size), color, slant)
+
+
+## `r` washed with ordered-dither `col` whose density runs from `d0` at its top to `d1` at its bottom (or, `across`, its
+## left to right): a flat dithered shade in place of a gradient.
+static func wash(ci: CanvasItem, r: Rect2, col: Color, d0: float, d1: float, across := false, px := HudPalette.DITHER_PX) -> void:
+	var cols := ceili(r.size.x / px)
+	var rows := ceili(r.size.y / px)
+	for gy in rows:
+		for gx in cols:
+			var dens := lerpf(d0, d1, float(gx) / maxf(cols - 1, 1) if across else float(gy) / maxf(rows - 1, 1))
+			if (HudPalette.BAYER[(gy & 3) * 4 + (gx & 3)] + 0.5) / 16.0 < dens:
+				ci.draw_rect(Rect2(r.position.x + gx * px, r.position.y + gy * px, px, px), col)
