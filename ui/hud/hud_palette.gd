@@ -87,13 +87,16 @@ static func hud_text(ci: CanvasItem, pos: Vector2, s: String, fs: int, col: Colo
 
 
 static var _key_box: StyleBoxFlat
+const KEY_LIFT := 0.65  # the HUD keycap lift's black (docs/DESIGN.md Shadow Vocabulary): dense enough to read over a dark scene
+const DROP := Vector2(0, 2)  # a hold outline's slight drop
+const CORNER_STEPS := 5  # segments per rounded corner
 
 
 ## A key drawn as a key (docs/DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
 static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a := 1.0) -> float:
 	if not _key_box:
 		_key_box = StyleBoxFlat.new()
-		_key_box.shadow_size = 8
+		_key_box.shadow_size = 6
 		_key_box.shadow_offset = Vector2(0, 3)
 		_key_box.anti_aliasing = true
 	var side := 34.0 if small else 42.0
@@ -101,34 +104,112 @@ static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a
 	var w := maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16)
 	_key_box.set_corner_radius_all(4 if small else 6)
 	_key_box.bg_color = Color(LIGHT, a)
-	_key_box.shadow_color = Color(0, 0, 0, 0.5 * a)
+	_key_box.shadow_color = Color(0, 0, 0, KEY_LIFT * a)
 	ci.draw_style_box(_key_box, Rect2(p, Vector2(w, side)))
 	hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
 	return w
 
 
+## The outline of `r`, corners rounded to `radius`, as a track in `track` filled clockwise from the top-left to
+## `t` (0..1) in `fill`, lifted off the scene by a slight drop shadow (alpha `shadow`, 0 for none).
+static func rect_fill(ci: CanvasItem, r: Rect2, t: float, fill: Color, track: Color, width := 2.0, radius := 0.0, shadow := 0.0) -> void:
+	var path := _round_rect(r, radius)
+	if shadow > 0.0:
+		var drop := PackedVector2Array()
+		for p in path:
+			drop.append(p + DROP)
+		ci.draw_polyline(drop, Color(0, 0, 0, shadow), width + 1.5, true)
+	ci.draw_polyline(path, track, width, true)
+	t = clampf(t, 0.0, 1.0)
+	if t <= 0.0:
+		return
+	var total := 0.0
+	for i in path.size() - 1:
+		total += path[i].distance_to(path[i + 1])
+	var left := t * total
+	var pts := PackedVector2Array([path[0]])
+	for i in path.size() - 1:
+		var seg := path[i].distance_to(path[i + 1])
+		if left <= seg:
+			pts.append(path[i].lerp(path[i + 1], left / seg if seg > 0.0 else 1.0))
+			break
+		pts.append(path[i + 1])
+		left -= seg
+	ci.draw_polyline(pts, fill, width, true)
+
+
+## The closed outline of `r` with its corners rounded to `radius`, clockwise from the end of the top-left corner.
+static func _round_rect(r: Rect2, radius: float) -> PackedVector2Array:
+	radius = minf(radius, minf(r.size.x, r.size.y) / 2.0)
+	var centres := [Vector2(r.end.x - radius, r.position.y + radius), r.end - Vector2(radius, radius),
+			Vector2(r.position.x + radius, r.end.y - radius), r.position + Vector2(radius, radius)]
+	var pts := PackedVector2Array([Vector2(r.position.x + radius, r.position.y)])
+	for c in 4:  # top-right, bottom-right, bottom-left, top-left: each arc after the straight edge before it
+		var from := -PI / 2 + c * PI / 2
+		for s in CORNER_STEPS + 1:
+			pts.append(centres[c] + Vector2.from_angle(from + PI / 2 * s / CORNER_STEPS) * radius)
+	return pts
+
+
 const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]  # 4x4 ordered-dither thresholds
-const DITHER_PX := 3.0  # one dither pixel, in design px
-const DITHER_BAND := 5  # dither pixels wide
+const DITHER_PX := 6.0  # one dither pixel, in design px
+const DITHER_BAND := 13  # dither pixels wide
+const FADE_W := DITHER_BAND * DITHER_PX  # a plate's dithered edge, which content keeps clear of
 
 ## A borderless plate: `tint` rising from alpha `a0` at the dithered edge to `a1` at the far one, the dithered edge
 ## (`fade_left`: the left one) crumbling away in an ordered-dither band whose pixels crawl slowly, as if fading out.
-static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true) -> void:
+## `cut` slants two opposite corners (the dithered edge's top and the far edge's bottom) by that many px, on a 45 degree line.
+static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true, cut := 0.0) -> void:
 	var band := DITHER_BAND * DITHER_PX
 	var body := Rect2(r.position.x + band, r.position.y, r.size.x - band, r.size.y) if fade_left else Rect2(r.position, Vector2(r.size.x - band, r.size.y))
-	var lo := Color(tint, a0)
+	var lo := Color(tint, a0)  # the body starts here and the dither pixels are this strong
 	var hi := Color(tint, a1)
-	var near := lo.lerp(hi, band / r.size.x)
-	var cols := PackedColorArray([near, hi, hi, near] if fade_left else [hi, near, near, hi])
-	ci.draw_polygon(PackedVector2Array([body.position, Vector2(body.end.x, body.position.y), body.end, Vector2(body.position.x, body.end.y)]), cols)
-	var t := int(Time.get_ticks_msec() / 220.0)  # the pattern crawls a cell every 220 ms
+	var shape := PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
+	if cut > 0.0:  # clockwise from the top-left; the cuts sit top-right and bottom-left (mirrored for fade_left)
+		if fade_left:
+			shape = PackedVector2Array([r.position + Vector2(cut, 0), Vector2(r.end.x, r.position.y), r.end - Vector2(cut, 0), Vector2(r.position.x, r.end.y), Vector2(r.position.x, r.position.y + cut)])
+		else:
+			shape = PackedVector2Array([r.position, Vector2(r.end.x - cut, r.position.y), Vector2(r.end.x, r.position.y + cut), r.end, Vector2(r.position.x + cut, r.end.y), Vector2(r.position.x, r.end.y - cut)])
+	var body_shape := PackedVector2Array([body.position, Vector2(body.end.x, body.position.y), body.end, Vector2(body.position.x, body.end.y)])
+	for poly in Geometry2D.intersect_polygons(shape, body_shape):
+		var cols := PackedColorArray()
+		for v in poly:
+			var u := clampf((v.x - body.position.x) / body.size.x, 0.0, 1.0)
+			cols.append(hi.lerp(lo, u) if not fade_left else lo.lerp(hi, u))
+		ci.draw_polygon(poly, cols)
+	var t := int(Time.get_ticks_msec() / 700.0)  # the pattern crawls a cell every 700 ms
 	var rows := ceili(r.size.y / DITHER_PX)
 	for cx in DITHER_BAND:
 		var dens := (cx + 0.5) / DITHER_BAND  # 0 at the dying edge, 1 where it meets the body
 		var x := r.position.x + cx * DITHER_PX if fade_left else r.end.x - (cx + 1) * DITHER_PX
 		for ry in rows:
 			if (BAYER[((ry + t) & 3) * 4 + ((cx + t * 3) & 3)] + 0.5) / 16.0 < dens:
-				ci.draw_rect(Rect2(x, r.position.y + ry * DITHER_PX, DITHER_PX, minf(DITHER_PX, r.end.y - r.position.y - ry * DITHER_PX)), near)
+				var y := r.position.y + ry * DITHER_PX
+				if cut > 0.0 and not Geometry2D.is_point_in_polygon(Vector2(x, y) + Vector2(DITHER_PX, DITHER_PX) / 2.0, shape):
+					continue
+				ci.draw_rect(Rect2(x, y, DITHER_PX, minf(DITHER_PX, r.end.y - y)), lo)
+
+
+## `pts` filled as chunky pixels: every `px`-sized cell of the canvas grid whose centre falls inside the polygon.
+static func px_poly(ci: CanvasItem, pts: PackedVector2Array, col: Color, px := 3.0) -> void:
+	var lo := pts[0]
+	var hi := pts[0]
+	for p in pts:
+		lo = lo.min(p)
+		hi = hi.max(p)
+	for gy in range(floori(lo.y / px), ceili(hi.y / px)):
+		for gx in range(floori(lo.x / px), ceili(hi.x / px)):
+			if Geometry2D.is_point_in_polygon(Vector2((gx + 0.5) * px, (gy + 0.5) * px), pts):
+				ci.draw_rect(Rect2(gx * px, gy * px, px, px), col)
+
+
+## A ring (or, with `width` 0, a disc) of radius `r` at `c`, drawn as chunky pixels.
+static func px_ring(ci: CanvasItem, c: Vector2, r: float, width: float, col: Color, px := 3.0) -> void:
+	for gy in range(floori((c.y - r) / px) - 1, ceili((c.y + r) / px) + 1):
+		for gx in range(floori((c.x - r) / px) - 1, ceili((c.x + r) / px) + 1):
+			var d := Vector2((gx + 0.5) * px, (gy + 0.5) * px).distance_to(c)
+			if d <= r and (width <= 0.0 or d >= r - width):
+				ci.draw_rect(Rect2(gx * px, gy * px, px, px), col)
 
 
 ## A smoke panel with its hairline and the two sand corner brackets (docs/DESIGN.md Panel).

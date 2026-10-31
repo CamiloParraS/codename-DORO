@@ -11,6 +11,8 @@ const SELECT_WIPE := 0.2  # s the strip takes to open, in 6 hard steps
 const SLOT_STAGGER := 0.035
 const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
 const MINT := HudPalette.MINT  # the live call card's tint
+const CARD_INSET := 46.0  # px a gear card's content starts in from its edge
+const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corners are cut by
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
 const CALL := Vector2(64, 410)  # the live call card's corner
@@ -75,21 +77,37 @@ func _edge_flash(d: Vector2) -> void:
 	_canvas.draw_rect(Rect2(d.x - w, 0, w, d.y), c)
 
 
-## Bottom-left: a labelled 18x340 gauge, 70 px from the edges: ink fill, the red lost segment behind it, a 1 px
-## frame, quarter ticks and the percentage underneath. Under a quarter of life the fill and the number go red and blink.
+## Bottom-left: a labelled gauge as wide as its label, 70 px from the edges: ink fill, the red lost segment behind it,
+## a pixel frame, cut corners, quarter ticks and the percentage underneath. Under a quarter of life the fill and the number go red and blink.
 func _life(d: Vector2) -> void:
 	var c := _canvas
 	var label_w := HudPalette.tracked(HudPalette.LABEL, 16, 0.2).get_string_size(tr("ui.hud.life").to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(c, 16)).x
-	var well := Rect2(70, d.y - 70 - 340, roundf(label_w), 340)  # as wide as the label above it
+	var px := 3.0  # the gauge is a grid of 3 px pixels
+	var cols := roundi(label_w / px)  # as wide as the label above it
+	var rows := 113
+	var well := Rect2(70, d.y - 70 - rows * px, cols * px, rows * px)
 	var low := life < 0.25
 	var warn := low and int(Time.get_ticks_msec() / 300.0) % 2 == 0
-	HudPalette.plate(c, well.grow(6), HudPalette.GLASS, 0.5, 0.78, false)
-	c.draw_rect(well, Color(0.0, 0.0, 0.0, 0.35))
-	var inner := well.grow(-2)
+	HudPalette.plate(c, well.grow_individual(8, 8, HudPalette.FADE_W + 24, 8), HudPalette.GLASS, 0.35, 0.92, false, LIFE_CUT * px + 14.0)
 	var full := smoothstep(0.96, 1.0, life)  # at full life the fill takes a faint green hue
 	var ink := HudPalette.LIGHT.lerp(HudPalette.FULL_GREEN, 0.16 * full)
-	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * _lost, inner.size.x, inner.size.y * _lost), HudPalette.DMG)
-	c.draw_rect(Rect2(inner.position.x, inner.end.y - inner.size.y * life, inner.size.x, inner.size.y * life), HudPalette.DMG if warn else ink)
+	var edge := Color(HudPalette.LIGHT, 0.7)
+	for i in rows:  # top-right and bottom-left corners are cut on a stair, like the menu plates' slant
+		var x0 := maxi(0, LIFE_CUT - (rows - 1 - i))
+		var x1 := cols - maxi(0, LIFE_CUT - i)
+		var y := well.position.y + i * px
+		c.draw_rect(Rect2(well.position.x + x0 * px, y, (x1 - x0) * px, px), Color(0.0, 0.0, 0.0, 0.4))
+		if i == 0 or i == rows - 1:
+			c.draw_rect(Rect2(well.position.x + x0 * px, y, (x1 - x0) * px, px), edge)
+			continue
+		c.draw_rect(Rect2(well.position.x + x0 * px, y, px, px), edge)
+		c.draw_rect(Rect2(well.position.x + (x1 - 1) * px, y, px, px), edge)
+		if i < 2 or i > rows - 3:
+			continue
+		var frac := (rows - 2.5 - i) / (rows - 4)  # how far up the gauge this row is
+		var col := HudPalette.DMG if frac <= _lost and frac > life else (HudPalette.DMG if warn else ink) if frac <= life else Color(0, 0, 0, 0)
+		if col.a > 0.0:
+			c.draw_rect(Rect2(well.position.x + (x0 + 2) * px, y, (x1 - x0 - 4) * px, px), col)
 	for q in [0.25, 0.5, 0.75]:
 		var ty: float = well.end.y - well.size.y * q
 		c.draw_line(Vector2(well.end.x + 4, ty), Vector2(well.end.x + 12, ty), Color(HudPalette.LIGHT, 0.55), 1.0)
@@ -142,29 +160,41 @@ func _radar(d: Vector2) -> void:
 	for b: Dictionary in (run.radar_blips() if run else []):
 		var p := o + RadarModel.blip(RadarModel.flat(b.pos) - origin, 12)
 		if b.target:
-			c.draw_arc(p, 11, 0, TAU, 32, HudPalette.LIGHT, 2.5, true)
-			c.draw_circle(p, 4, HudPalette.LIGHT)
+			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
+			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
-			c.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT)
+			HudPalette.px_poly(c, PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT)
 	var f := RadarModel.facing(_operative.look_basis)
 	var arrow := PackedVector2Array([o + f * 17, o + f.rotated(2.55) * 14, o - f * 5, o + f.rotated(-2.55) * 14])
-	c.draw_colored_polygon(arrow, HudPalette.SAND)
-	arrow.append(arrow[0])
-	c.draw_polyline(arrow, HudPalette.DARK_INK, 1.5, true)
+	var rim := Geometry2D.offset_polygon(arrow, 2.5, Geometry2D.JOIN_MITER)  # a dark pixel rim round the sand arrow
+	if not rim.is_empty():
+		HudPalette.px_poly(c, rim[0], HudPalette.DARK_INK)
+	HudPalette.px_poly(c, arrow, HudPalette.SAND)
 
 
 ## A guard on the Radar: a triangle pointing along `face`.
 func _triangle(p: Vector2, face: Vector2, s: float, col: Color) -> void:
-	_canvas.draw_colored_polygon(PackedVector2Array([p + face * s * 1.2, p + face.rotated(2.4) * s, p + face.rotated(-2.4) * s]), col)
+	HudPalette.px_poly(_canvas, PackedVector2Array([p + face * s * 1.2, p + face.rotated(2.4) * s, p + face.rotated(-2.4) * s]), col)
 
 
-## The jammed Radar: dark red ground, red static, 2 px dark bands every 6 px rolling down, a red rim, JAMMED.
+## The jammed Radar: dark red ground, red ordered-dither static that swells and crumbles toward the rim, 2 px dark bands every 6 px rolling down, a red rim, JAMMED.
 func _jammed(o: Vector2, rad: float) -> void:
 	var c := _canvas
 	c.draw_circle(o, rad, HudPalette.JAM)
-	for i in 220:  # static, kept inside the disc
-		var p := Vector2.from_angle(randf() * TAU) * sqrt(randf()) * (rad - 3)
-		c.draw_rect(Rect2(o + p, Vector2(randf_range(2, 8), 2)), Color(HudPalette.DMG, randf_range(0.25, 0.8)))
+	var px := HudPalette.DITHER_PX
+	var beat := Time.get_ticks_msec()
+	var shift := int(beat / 110.0)  # the pattern shuffles fast: dead air
+	var dens := 0.36 + 0.2 * sin(beat / 520.0)  # the static swells and thins
+	var edge := rad - 3.0
+	for gy in range(floori((o.y - edge) / px), ceili((o.y + edge) / px)):
+		for gx in range(floori((o.x - edge) / px), ceili((o.x + edge) / px)):
+			var cell := Vector2((gx + 0.5) * px, (gy + 0.5) * px)
+			var dist := cell.distance_to(o)
+			if dist > edge:
+				continue
+			var rim := clampf((edge - dist) / (px * 4.0), 0.0, 1.0)  # thins out toward the rim: crumbling away
+			if (HudPalette.BAYER[((gy + shift) & 3) * 4 + ((gx + shift * 3) & 3)] + 0.5) / 16.0 < dens * rim:
+				c.draw_rect(Rect2(gx * px, gy * px, px, px), Color(HudPalette.DMG, 0.55))
 	var y := -rad + fmod(Time.get_ticks_msec() / 50.0, 6.0)
 	while y < rad:
 		var half := sqrt(maxf(rad * rad - y * y, 0.0))
@@ -184,8 +214,8 @@ func _voiceprints(d: Vector2) -> void:
 	var rows: Array = held.slice(0, VP_SHOWN).map(func(n: String) -> String: return n)
 	if held.size() > VP_SHOWN:
 		rows.append("+%d" % (held.size() - VP_SHOWN))
-	var plate := Rect2(x - 150, y - 22, 164, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
-	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.4, 0.74, true)
+	var plate := Rect2(x - 150 - HudPalette.FADE_W, y - 22, 164 + HudPalette.FADE_W, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
+	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.35, 0.9, true)
 	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 2)
 	for i in rows.size():
 		HudPalette.hud_label(_canvas, Vector2(x, y + 24 + 22 * i), rows[i], 17, HudPalette.LIGHT_2, 0.12, HudPalette.LABEL, 2)
@@ -240,8 +270,8 @@ func _aigis_cue() -> void:
 	var c := _canvas
 	var e := _enter(_cue_age, 0.6)
 	var at := Vector2(70 - 28 * (1.0 - e), 56)
-	var plate := Rect2(at + Vector2(-16, -14), Vector2(6 * HABIT_W + 20, 100))  # a smoke plate: the cue reads on a white wall too
-	HudPalette.plate(c, plate, HudPalette.GLASS, 0.45 * e, 0.8 * e, false)  # no frame: the cyan inside says Aigis
+	var plate := Rect2(at + Vector2(-16, -14), Vector2(6 * HABIT_W + 20 + HudPalette.FADE_W, 100))  # a smoke plate: the cue reads on a white wall too
+	HudPalette.plate(c, plate, HudPalette.GLASS, 0.35 * e, 0.92 * e, false)  # no frame: the cyan inside says Aigis
 	var eye := at + Vector2(13, 13)
 	c.draw_arc(eye, 12, 0, TAU, 32, HudPalette.CYAN, 2.0, true)
 	c.draw_arc(eye + Vector2(-4, -1), 3.2, 0, TAU, 16, HudPalette.CYAN, 2.0, true)
@@ -276,7 +306,7 @@ func _item_rect(d: Vector2) -> Rect2:
 
 ## A card: a borderless smoke plate that rises in opacity toward the screen edge and dithers away on its inner side.
 func _card(r: Rect2) -> void:
-	HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.4, 0.8)
+	HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.35, 0.92)
 
 
 ## Bottom-right: the item card (with the Fulton balloons beside it) over the weapon card and its rounds bar.
@@ -284,23 +314,24 @@ func _gear(d: Vector2) -> void:
 	var gun: Gun = _operative.gun()
 	var wr := _weapon_rect(d)
 	_card(wr)
-	var name_w := _card_name(wr.position + Vector2(30, 36), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
+	wr = Rect2(wr.position.x + CARD_INSET, wr.position.y, wr.size.x - CARD_INSET, wr.size.y)  # the content sits clear of the fade
+	var name_w := _card_name(wr.position + Vector2(20, 34), tr("ui.gear.rifle" if gun == _operative.rifle else "ui.gear.tranq"))
 	var chip := "LTH" if gun.lethal else "SLP"
-	_chip(Vector2(wr.position.x + 30 + name_w + 8, wr.position.y + 15), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
-	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(40, 164), 1.2, HudPalette.LIGHT)
+	_chip(Vector2(wr.position.x + 20 + name_w + 8, wr.position.y + 13), chip, HudPalette.DMG if gun.lethal else HudPalette.SLP)
+	_sil(&"rifle" if gun == _operative.rifle else &"tranq", wr.position + Vector2(72, 160), 1.0, HudPalette.LIGHT)
 	if gun.suppressor_max >= 0:  # shots left on the suppressor
-		var sx := wr.position.x + 30
+		var sx := wr.position.x + 20
 		for i in gun.suppressor_max:
 			var col := HudPalette.LIGHT if i < gun.suppressor else Color(HudPalette.LIGHT, 0.2)
-			_canvas.draw_rect(Rect2(sx + i * 14, wr.position.y + 48, 10, 10), HudPalette.DMG if gun.suppressor <= 0 else col)
+			_canvas.draw_rect(Rect2(sx + i * 12, wr.position.y + 44, 9, 9), HudPalette.DMG if gun.suppressor <= 0 else col)
 	var count := str(gun.loaded)
 	var res := " / %d" % gun.reserve
-	var cf := HudPalette.tracked(HudPalette.DISPLAY, 58, 0.04)
+	var cf := HudPalette.tracked(HudPalette.DISPLAY, 50, 0.04)
 	var rf := HudPalette.DISPLAY
-	var rw := rf.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 28).x
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 12), res, 28, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, rf, 2, false)
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 58, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
-	var track := Rect2(wr.position.x, wr.end.y + 12, wr.size.x, 6)  # rounds left, loaded and reserve
+	var rw := rf.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 12), res, 24, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, rf, 2, false)
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 50, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	var track := Rect2(wr.position.x + 20, wr.end.y + 12, wr.size.x - 20, 6)  # rounds left, loaded and reserve
 	_canvas.draw_rect(track, Color(HudPalette.LIGHT, 0.22))
 	var left := float(gun.loaded + gun.reserve) / maxf(gun.total, 1.0)
 	_rounds = lerpf(_rounds, left, 1.0 - exp(-get_process_delta_time() * 14.0))
@@ -308,12 +339,13 @@ func _gear(d: Vector2) -> void:
 	var it: Items = _operative.items
 	var ir := _item_rect(d)
 	_card(ir)
+	ir = Rect2(ir.position.x + CARD_INSET, ir.position.y, ir.size.x - CARD_INSET, ir.size.y)
 	var live: bool = it.scanning() or _operative.throwing
-	var split := ir.end.x - 124.0  # the item on the left, the Fulton balloons on the right
+	var split := ir.end.x - 108.0  # the item on the left, the Fulton balloons on the right
 	var scanner: bool = it.selected == Items.Kind.SCANNER
-	_sil(&"scanner" if scanner else &"magazine", Vector2(ir.position.x + 26, ir.end.y - 12), 0.8, HudPalette.LIGHT if live else Color(HudPalette.LIGHT, 0.86))
-	_card_name(ir.position + Vector2(100, 48), tr("ui.gear.scanner" if scanner else "ui.gear.magazine"), HudPalette.LIGHT)
-	HudPalette.hud_text(_canvas, Vector2(split - 14, ir.end.y - 18), str(it.count()), 40, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 40, 0.04), 2, false)
+	_sil(&"scanner" if scanner else &"magazine", Vector2(ir.position.x + 50, ir.end.y - 12), 0.68, HudPalette.LIGHT if live else Color(HudPalette.LIGHT, 0.86))
+	_card_name(ir.position + Vector2(112, 46), tr("ui.gear.scanner" if scanner else "ui.gear.magazine"), HudPalette.LIGHT)
+	HudPalette.hud_text(_canvas, Vector2(split - 14, ir.end.y - 18), str(it.count()), 34, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.04), 2, false)
 	_canvas.draw_line(Vector2(split, ir.position.y + 10), Vector2(split, ir.end.y - 10), Color(HudPalette.LIGHT, 0.25), 1.0)
 	if it.scanning():
 		_canvas.draw_rect(Rect2(ir.position.x, ir.end.y - 4, ir.size.x * it.scan_left / it.scan_time, 4), HudPalette.LIGHT)
@@ -341,8 +373,8 @@ func _balloons(r: Rect2) -> void:
 	var is_ready: bool = n > 0 and _operative.fulton_ready()
 	var blink := is_ready and int(Time.get_ticks_msec() / 250.0) % 2 == 0
 	var col := HudPalette.DMG if n == 0 else (HudPalette.LIGHT if blink else HudPalette.SAND)
-	_sil(&"balloon", Vector2(r.position.x + 16, r.end.y - 14), 0.7, col)
-	HudPalette.hud_text(_canvas, Vector2(r.end.x - 16, r.end.y - 18), str(n), 40, col, HudPalette.tracked(HudPalette.DISPLAY, 40, 0.04), 2, false)
+	_sil(&"balloon", Vector2(r.position.x + 14, r.end.y - 14), 0.6, col)
+	HudPalette.hud_text(_canvas, Vector2(r.end.x - 16, r.end.y - 18), str(n), 34, col, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.04), 2, false)
 
 
 ## A short strip that grows leftward from the card it changes: icon and count only, the selected slot (white,
@@ -364,35 +396,38 @@ func _selector(d: Vector2) -> void:
 		slots.append(["ui.gear.magazine", &"magazine", str(it.magazines), it.selected == Items.Kind.MAGAZINE])
 	slots.sort_custom(func(first: Array, second: Array) -> bool: return first[3] and not second[3])  # the selected one first
 	var card := _weapon_rect(d) if _select == "weapon" else _item_rect(d)
-	var x := card.position.x - 6
+	var x := card.position.x - 6 - 24.0  # clear of the card's dithered edge
 	var step := floorf(clampf(_select_age / SELECT_WIPE, 0.0, 1.0) * 6.0) / 6.0  # the strip's wipe, outward from the card
-	var reach := card.position.x - 6 - (step * slots.size() * 108.0)
+	var reach := card.position.x - 6 - 24.0 - (step * slots.size() * 92.0)
 	for i in slots.size():
 		var s: Array = slots[i]
 		var on: bool = s[3]
-		var w := 116.0 if on else 98.0
-		var h := 138.0 if on else 120.0
+		var w := 90.0 if on else 76.0
+		var h := 116.0 if on else 100.0
 		var r := Rect2(x - w, card.end.y - h, w, h)
 		x -= w + 6
-		if _select_age < i * SLOT_STAGGER or r.position.x < reach - 108.0:
+		if _select_age < i * SLOT_STAGGER or r.position.x < reach - 92.0:
 			continue
 		var ink := HudPalette.DARK_INK if on else HudPalette.LIGHT
 		if on:
 			_canvas.draw_rect(r, Color(HudPalette.LIGHT, a))
 		else:
-			HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.45 * a, 0.8 * a)
-		var gun_icon: bool = s[1] in [&"tranq", &"rifle"]
-		var gs := (0.46 if on else 0.38) if gun_icon else (0.98 if on else 0.84)
-		var isz := _sil_size(s[1], gs)
-		_sil(s[1], Vector2(r.get_center().x - isz.x / 2, r.position.y + 18 + isz.y), gs, Color(ink, a))
-		HudPalette.hud_text(_canvas, Vector2(r.end.x - 10, r.end.y - 10), s[2], 26, Color(ink, a), HudPalette.FIGURE, 2, false)
+			HudPalette.plate(_canvas, r, HudPalette.GLASS, 0.35 * a, 0.92 * a)
+		if s[1] in [&"tranq", &"rifle"]:  # guns stand on end, muzzle up
+			var gs := 0.4 if on else 0.34
+			_sil_up(s[1], r.get_center() + Vector2(0, -8), gs, Color(ink, a))
+		else:
+			var gs := 0.78 if on else 0.68
+			var isz := _sil_size(s[1], gs)
+			_sil(s[1], Vector2(r.get_center().x - isz.x / 2, r.position.y + 14 + isz.y), gs, Color(ink, a))
+		HudPalette.hud_text(_canvas, Vector2(r.end.x - 8, r.end.y - 8), s[2], 22, Color(ink, a), HudPalette.FIGURE, 2, false)
 		if on:
-			var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 24, 0.14)
+			var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 20, 0.14)
 			var label_text := tr(s[0]).to_upper()
-			var nw := f.get_string_size(label_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
-			var tag := Rect2(r.end.x - nw - 28, r.position.y - 40, nw + 28, 34)
+			var nw := f.get_string_size(label_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+			var tag := Rect2(r.end.x - nw - 24, r.position.y - 34, nw + 24, 28)
 			_canvas.draw_rect(tag, Color(HudPalette.LIGHT, a))
-			HudPalette.hud_text(_canvas, tag.position + Vector2(14, 25), label_text, 24, Color(HudPalette.DARK_INK, a), f, 0, false)
+			HudPalette.hud_text(_canvas, tag.position + Vector2(12, 21), label_text, 20, Color(HudPalette.DARK_INK, a), f, 0, false)
 
 
 ## The gear icons (assets/ui/icons/*.svg, white, designed in docs/ui-mock/icons.html): the SVG's own size, so `s`
@@ -416,6 +451,15 @@ func _sil_size(kind: StringName, s: float) -> Vector2:
 func _sil(kind: StringName, foot: Vector2, s: float, col: Color) -> void:
 	var sz := _sil_size(kind, s)
 	_canvas.draw_texture_rect(GEAR[kind][0], Rect2(foot - Vector2(0, sz.y), sz), false, col)
+
+
+## The gear icon `kind` turned a quarter-turn so its muzzle points up, centred on `at`.
+func _sil_up(kind: StringName, at: Vector2, s: float, col: Color) -> void:
+	var sz := _sil_size(kind, s)
+	var k := _k()  # the canvas draws in design px under this scale (hud.gd)
+	_canvas.draw_set_transform(at * k, -PI / 2.0, Vector2(k, k))
+	_canvas.draw_texture_rect(GEAR[kind][0], Rect2(-sz / 2.0, sz), false, col)
+	_canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 
 
 func _keycap(p: Vector2, legend: String, small := false, a := 1.0) -> float:

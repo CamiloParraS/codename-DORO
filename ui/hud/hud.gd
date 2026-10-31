@@ -6,6 +6,8 @@
 ## pixel art keeps its grid. Lives on CanvasLayer 1, above the banding pass (layer -1).
 extends "res://ui/hud/hud_corners.gd"
 
+const CROSSHAIR_PX := 30.0  # logical px a side; the textures are 48, so this shrinks them to 5/8
+
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -64,12 +66,13 @@ func _process(delta: float) -> void:
 	_canvas.queue_redraw()
 
 
-## The crosshair only: pixel art on the logical canvas. Shots leave from it, and it wanders a little with the sway.
+## The crosshair only, CROSSHAIR_PX square (the art is 48): pixel art on the logical canvas. Shots leave from it, and it wanders a little with the sway.
 func _draw() -> void:
 	if _operative and _operative.aiming:
 		var tex := _crosshair(_operative.gun().crosshair)
 		var wander := Locomotion.drift_px(_operative.aim_drift(), _operative.camera.fov, size.y)
-		draw_texture(tex, (size / 2 + wander - tex.get_size() / 2).round())
+		var side := CROSSHAIR_PX
+		draw_texture_rect(tex, Rect2((size / 2 + wander - Vector2(side, side) / 2).round(), Vector2(side, side)), false)
 
 
 ## Radio line from a guard (call_group "radio_log").
@@ -174,7 +177,8 @@ func _draw_design() -> void:
 
 
 ## Lower-middle, no text: per choice, the key (a held key gets a sand outline), then a round disc holding the
-## action's pictogram. A move under way spins a sand arc round its disc; a barred one is struck through in red.
+## action's pictogram. A held key's outline fills as the hold progresses; a move with no key (the kill) spins a
+## sand arc round its pictogram; a barred one is struck through in red.
 func _prompt(d: Vector2) -> void:
 	var parts: Array = _operative.prompt_parts
 	if parts.is_empty():
@@ -196,8 +200,11 @@ func _prompt(d: Vector2) -> void:
 		var cx := x
 		if p.action != "":
 			var kw := _keycap(Vector2(cx, top + 17), Prompts.key(p.action), false, e)
-			if p.hold:
-				_canvas.draw_rect(Rect2(cx - 4, top + 13, kw + 8, 50), Color(HudPalette.SAND_DIM, HudPalette.SAND_DIM.a * e), false, 2.0)
+			if p.hold:  # the outline is the hold's gauge: it fills clockwise as the key stays down
+				var prog: float = p.get("progress", 0.0)
+				HudPalette.rect_fill(_canvas, Rect2(cx - 4, top + 13, kw + 8, 50), prog,
+						Color(HudPalette.SAND, e), Color(HudPalette.SAND_DIM, HudPalette.SAND_DIM.a * e * (0.6 if prog > 0.0 else 1.0)),
+						3.0 if prog > 0.0 else 2.0, 10.0, 0.45 * e)  # the keycap's 6 px corner, 4 px out
 			cx += kw + 14
 		var o := Vector2(cx + 38, top + 38)  # no disc: the pictogram stands alone on a soft dark drop
 		var col := Color(HudPalette.LIGHT_3 if p.state == "warn" else HudPalette.LIGHT, e)
