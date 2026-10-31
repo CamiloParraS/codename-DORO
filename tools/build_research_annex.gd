@@ -313,6 +313,7 @@ func _build() -> void:
 	var ep := _area(_root, "ExtractionPoint", SPOTS.Extraction, Vector3(4, 3, 4), "res://areas/extraction_point.gd")
 	ep.position.y += 1.5
 	_intel({IntelVault = INTEL.IntelVault, ResearchFiles = SPOTS.ResearchFiles})
+	_takes()
 	var encounters := _group(_root, "Encounters")  # MissionRun reads which one the Operative is in
 	for e in ENCOUNTERS:
 		_marker(encounters, "Encounter%d" % e[0], [e[3][0], e[3][1], 0], 0, {id = e[0], size = Vector2(e[3][2], e[3][3])}, "encounter")
@@ -329,6 +330,15 @@ func _build() -> void:
 	_save(OUT)
 	await _report_reach(nm, SPOTS.OperativeStart, REACH, CARRY)
 	quit()
+
+
+## The Annex's takes under $Cine (tools/cine/research_annex.gd): the intro "Twelve Months" and the outro "Memory Loss".
+func _takes() -> void:
+	var cine := AreaCine.root(_root)
+	cine.owner = _root
+	AnnexCine.intro(cine)
+	AnnexCine.outro(cine)
+	_own(cine)
 
 
 ## One WALLS entry: the boxes between its gaps.

@@ -57,7 +57,7 @@ func test_a_target_flees_only_from_alert_on() -> void:
 func test_targets_left_until_killed_or_carried() -> void:
 	var run := MissionRun.new()
 	run.record = Aigis.new_record()
-	run.record.mission = 2
+	run.record.mission = 3
 	var t: Guard = load("res://actors/guard/guard.tscn").instantiate()
 	t.add_to_group("targets")
 	_root().add_child(run)

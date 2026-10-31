@@ -544,6 +544,11 @@ intro.m2.area,RADIO RELAY STATION,ESTACIÓN DE RADIO
 intro.m2.stamp,Palladion island · 03:40 · the mast is the only light,Isla de Palladion · 03:40 · el mástil es la única luz
 outro.m2.title,MISSION COMPLETE,MISIÓN CUMPLIDA
 outro.m2.line,"Extraction confirmed. The island has gone quiet.","Extracción confirmada. La isla ha enmudecido."
+intro.m3.name,MISSION 3,MISIÓN 3
+intro.m3.area,RESEARCH ANNEX,ANEXO DE INVESTIGACIÓN
+intro.m3.stamp,Palladion island · 07:40 · twelve months behind glass,Isla de Palladion · 07:40 · doce meses tras el cristal
+outro.m3.title,MISSION COMPLETE,MISIÓN CUMPLIDA
+outro.m3.line,"She is out. Something in the racks has gone quiet.","Ella está fuera. Algo en los bastidores se ha callado."
 sign.garage,GARAGE,TALLER
 sign.no_smoking,NO SMOKING,PROHIBIDO FUMAR
 sign.fuel,FUEL,COMBUSTIBLE

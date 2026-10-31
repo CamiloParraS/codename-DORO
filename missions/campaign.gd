@@ -38,6 +38,8 @@ const MISSIONS := [
 		{intel = "IntelMess", objective = "objective.m2.s3", call = [["analyst", "live.m2.s3.01"]], hint = ["hint.m2.s3.1", "hint.m2.s3.2"]},
 	]},
 	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, encounters = 3, targets = ["LEAD RESEARCHER"], carry_only = true,
+		intro = {name = "intro.m3.name", area = "intro.m3.area", stamp = "intro.m3.stamp"},
+		outro = {title = "outro.m3.title", line = "outro.m3.line"}, cine = {intro = "CineIntro", outro = "CineOutro"},
 		open = [["analyst", "live.m3.open.01"]],
 		codec = [["handler", "codec.m3.01"], ["operative", "codec.m3.02"], ["analyst", "codec.m3.03", "researcher"], ["analyst", "codec.m3.04", "researcher"],
 			["handler", "codec.m3.05"], ["handler", "codec.m3.08"], ["handler", "codec.m3.06"], ["analyst", "codec.m3.07"]], steps = [
