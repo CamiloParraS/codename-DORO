@@ -1,0 +1,61 @@
+[gd_resource type="AudioBusLayout" format=3 uid="uid://d153owrqs63t1"]
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_j3pel"]
+mode = 2
+drive = 0.4
+
+[sub_resource type="AudioEffectHighPassFilter" id="AudioEffectHighPassFilter_g28q7"]
+cutoff_hz = 400.0
+
+[sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_n8wo2"]
+cutoff_hz = 3200.0
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_5t1r3"]
+mode = 2
+drive = 0.4
+
+[resource]
+bus/1/name = &"Music"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Master"
+bus/2/name = &"SFX"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = 0.0
+bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectDistortion_j3pel")
+bus/2/effect/0/enabled = true
+bus/3/name = &"UI"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 0.0
+bus/3/send = &"Master"
+bus/4/name = &"Ambience"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Master"
+bus/5/name = &"Voice"
+bus/5/solo = false
+bus/5/mute = false
+bus/5/bypass_fx = false
+bus/5/volume_db = 0.0
+bus/5/send = &"SFX"
+bus/6/name = &"Radio"
+bus/6/solo = false
+bus/6/mute = false
+bus/6/bypass_fx = false
+bus/6/volume_db = 0.0
+bus/6/send = &"SFX"
+bus/6/effect/0/effect = SubResource("AudioEffectHighPassFilter_g28q7")
+bus/6/effect/0/enabled = true
+bus/6/effect/1/effect = SubResource("AudioEffectLowPassFilter_n8wo2")
+bus/6/effect/1/enabled = true
+bus/6/effect/2/effect = SubResource("AudioEffectDistortion_5t1r3")
+bus/6/effect/2/enabled = true

@@ -201,6 +201,7 @@ func stop_blips() -> void:
 ## A generated 40 ms square-ish tone at 440 Hz with a linear decay; blip() and GuardVoice.speak pitch-shift it.
 static func blip_tone() -> AudioStreamWAV:
 	var rate := 22050
+	@warning_ignore("integer_division")
 	var n := rate / 25
 	var data := PackedByteArray()
 	data.resize(n * 2)

@@ -16,7 +16,7 @@ var _n := 0  # guards up last frame
 func update(states: Array, now: float) -> StringName:
 	var top: int = states.max() if not states.is_empty() else GuardAlert.State.PATROL
 	var prev := _top
-	_top = top
+	_top = top as GuardAlert.State
 	var left := states.size() < _n  # a guard went (downed, scene change): not an Evasion ending
 	_n = states.size()
 	if top == prev:

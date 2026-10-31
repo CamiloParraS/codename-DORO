@@ -9,8 +9,8 @@ const VARIANTS := 2
 
 
 ## The Dominant Voice's post-Mission line: its band, and whether this Mission's Lethality was 0.
-static func post_key(dominant: String, lethality_zero: bool) -> String:
-	return "post.%s.%s" % [dominant, "clean" if lethality_zero else "blood"]
+static func post_key(dominant: String, zero: bool) -> String:
+	return "post.%s.%s" % [dominant, "clean" if zero else "blood"]
 
 
 ## No guard or Target died in this tally.
