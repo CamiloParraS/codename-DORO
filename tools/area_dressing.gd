@@ -34,7 +34,7 @@ const SKINS := {
 ## vol: volumetric fog density (shafts through lamp and flashlight cones); accents: [[x, y, h, colour, range, energy]]
 ## lights in diagram metres, warm or cool against the ambient.
 const MOODS := {
-	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.85, amb = Color(0.42, 0.5, 0.7), amb_e = 0.6,
+	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.85, amb = Color(0.42, 0.5, 0.7), amb_e = 0.42,
 		fog = Color(0.3, 0.32, 0.42), fog_from = 18.0, fog_to = 120.0,
 		zenith = Color(0.07, 0.1, 0.2), glow = 0.9,  # dusk-blue haze, last light low in the west
 		grade = [Color(0.0, 0.035, 0.07), Color(0.5, 0.5, 0.5), Color(1.0, 0.95, 0.86)], hfog = [1.5, 0.07], vol = 0.0,

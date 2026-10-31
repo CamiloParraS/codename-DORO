@@ -7,9 +7,9 @@ const INTERNAL_HEIGHT := 480
 const SKY := Color(0.33, 0.37, 0.42)
 const FOG_BEGIN := 20.0
 const FOG_END := 60.0
-## The optional passes of psx_post, off by name: set_effect(&"scanlines", true). Grain and the fringe are on.
+## The optional passes of psx_post, off by name: set_effect(&"scanlines", true). The fringe is on.
 const EFFECTS := {
-	grain = [0.0, 0.025], fringe = [0.0, 0.0015], scanlines = [0.0, 0.35],
+	fringe = [0.0, 0.0015], scanlines = [0.0, 0.35],
 }
 
 var _mat := ShaderMaterial.new()
@@ -48,7 +48,7 @@ func _update_scale() -> void:
 	get_viewport().scaling_3d_scale = clampf(float(INTERNAL_HEIGHT) / get_window().size.y, 0.05, 1.0)
 
 
-## Switch one of EFFECTS (grain, fringe, scanlines) on or off.
+## Switch one of EFFECTS (fringe, scanlines) on or off.
 func set_effect(effect: StringName, on: bool) -> void:
 	if EFFECTS.has(effect):
 		_mat.set_shader_parameter(effect, EFFECTS[effect][1 if on else 0])
