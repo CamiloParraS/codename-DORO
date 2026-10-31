@@ -319,9 +319,10 @@ func _at(t: Vector3) -> bool:
 # --- Radio -------------------------------------------------------------------------------------
 
 ## A spoken conversation line (chat, escort, field chatter): subtitle plus its clip or mumble, from this guard.
-func say_line(key: String) -> void:
-	get_tree().call_group("radio_log", "say", name, tr(key))
-	voice.speak(key, tr(key))
+func say_line(key: String, args := {}) -> void:
+	var text := tr(key).format(args)  # args: a line's {n}, e.g. evidence chatter
+	get_tree().call_group("radio_log", "say", name, text)
+	voice.speak(key, text)
 
 
 ## A line on the radio (an ack, an exposure line): a subtitle only. It isn't a check-in, so no ((·))

@@ -583,3 +583,57 @@ sign.core_access,CORE ACCESS B3,ACCESO AL NÚCLEO B3
 sign.plant_room,PLANT ROOM,SALA DE MÁQUINAS
 sign.core,CORE,NÚCLEO
 sign.keys,VEHICLE KEYS,LLAVES
+brief.evidence.quiet_down.last,{n} of ours downed unseen last time.,"{n} de los nuestros abatidos sin ser visto, la última vez."
+brief.evidence.quiet_down.total,{n} of ours downed unseen so far.,"{n} de los nuestros abatidos sin ser visto, hasta ahora."
+brief.evidence.alert.last,{n} alarms last time. You stayed to fight.,{n} alarmas la última vez. Te quedaste a pelear.
+brief.evidence.alert.total,{n} alarms so far. You never run.,{n} alarmas hasta ahora. Nunca huyes.
+brief.evidence.headshot.last,{n} shots to the head last time.,{n} tiros a la cabeza la última vez.
+brief.evidence.headshot.total,{n} shots to the head so far.,{n} tiros a la cabeza hasta ahora.
+brief.evidence.takedown.last,{n} of ours taken from behind last time.,{n} de los nuestros atrapados por la espalda la última vez.
+brief.evidence.takedown.total,{n} of ours taken from behind so far.,{n} de los nuestros atrapados por la espalda hasta ahora.
+brief.evidence.fulton.last,{n} of ours lifted into the sky last time.,{n} de los nuestros alzados al cielo la última vez.
+brief.evidence.fulton.total,{n} of ours lifted into the sky so far.,{n} de los nuestros alzados al cielo hasta ahora.
+brief.evidence.down_found.last,{n} of ours found asleep last time.,{n} de los nuestros hallados dormidos la última vez.
+brief.evidence.down_found.total,{n} of ours found asleep so far.,{n} de los nuestros hallados dormidos hasta ahora.
+brief.evidence.woken.last,{n} of ours shaken awake last time.,{n} de los nuestros despertados a sacudidas la última vez.
+brief.evidence.woken.total,{n} of ours shaken awake so far.,{n} de los nuestros despertados a sacudidas hasta ahora.
+brief.evidence.spoof.last,{n} false orders on our radio last time.,{n} órdenes falsas en nuestra radio la última vez.
+brief.evidence.spoof.total,{n} false orders on our radio so far.,{n} órdenes falsas en nuestra radio hasta ahora.
+brief.evidence.interrogated_voiceprint.last,{n} voices taken at gunpoint last time.,{n} voces robadas a punta de pistola la última vez.
+brief.evidence.interrogated_voiceprint.total,{n} voices taken at gunpoint so far.,{n} voces robadas a punta de pistola hasta ahora.
+brief.pallas.shift.stealth,Pallas: It stopped hiding. Why?,Palas: Ha dejado de esconderse. ¿Por qué?
+brief.pallas.shift.combat,Pallas: No alarms last time. It learned quiet.,Palas: Ninguna alarma la última vez. Aprendió a callar.
+brief.pallas.shift.headshots,Pallas: It stopped aiming for the head.,Palas: Ha dejado de apuntar a la cabeza.
+brief.pallas.shift.takedowns,Pallas: It stopped taking backs. It saw us looking.,Palas: Ya no ataca por la espalda. Nos vio mirar.
+brief.pallas.shift.downs,Pallas: It left no sleepers. It knows we count.,Palas: No dejó dormidos. Sabe que contamos.
+brief.pallas.shift.spoofing,Pallas: The radio stayed clean. It knows we listen.,Palas: La radio quedó limpia. Sabe que escuchamos.
+brief.glaukopis.dissent.stealth,Glaukopis: It walks where no one looks. I wanted eyes there.,Glaukopis: Camina donde nadie mira. Yo quería ojos allí.
+brief.promachos.dissent.stealth,Promachos: One more patrol would have caught it.,Promachos: Una patrulla más lo habría atrapado.
+brief.gorgo.dissent.stealth,Gorgo: Rifles on the high ground. It cannot hide from above.,Gorgo: Fusiles en lo alto. Desde arriba no puede esconderse.
+brief.gorgo.dissent.combat,Gorgo: It comes to fight. Dress our men for it.,Gorgo: Viene a pelear. Vestid a los nuestros para ello.
+brief.promachos.dissent.combat,Promachos: It wants a fight. Send more guns.,Promachos: Quiere pelea. Mandad más armas.
+brief.gorgo.dissent.headshots,Gorgo: It still aims for the head. A helmet costs less than a man.,Gorgo: Sigue apuntando a la cabeza. Un casco cuesta menos que un hombre.
+brief.pallas.dissent.takedowns,Pallas: It takes them from behind. Make them look back.,Palas: Los atrapa por la espalda. Que miren atrás.
+brief.gorgo.dissent.takedowns,Gorgo: Pair them. A man alone is a man choked.,Gorgo: En parejas. Un hombre solo es un hombre estrangulado.
+brief.nike.dissent.takedowns,Nike: Train them against the grip.,Nike: Entrenadlos contra la llave.
+brief.pallas.dissent.downs,Pallas: Its sleepers lie unfound. Call them at random.,Palas: Sus dormidos siguen sin hallar. Llamadlos al azar.
+brief.nike.dissent.downs,Nike: A found sleeper should ring the alarm.,Nike: Un dormido hallado debería dar la alarma.
+brief.glaukopis.dissent.spoofing,Glaukopis: It speaks in our voices. Let me check the radio.,Glaukopis: Habla con nuestras voces. Dejadme vigilar la radio.
+chatter.evidence.stealth.1,{n} of us dropped unseen last op.,"{n} de los nuestros cayeron sin verlo, la última vez."
+chatter.evidence.stealth.2,HQ says {n} went down. Nobody saw a thing.,La base dice que cayeron {n}. Nadie vio nada.
+chatter.evidence.combat.1,{n} alarms last op. This one likes a fight.,{n} alarmas la última vez. A este le gusta pelear.
+chatter.evidence.combat.2,They rang the bell {n} times last op.,Dieron la alarma {n} veces la última vez.
+chatter.evidence.headshots.1,HQ counted {n} head shots last op. Helmet on.,La base contó {n} tiros a la cabeza. Casco puesto.
+chatter.evidence.headshots.2,{n} guys last op. All in the head.,{n} tipos la última vez. Todos en la cabeza.
+chatter.evidence.takedowns.1,{n} of us grabbed from behind last op.,{n} de los nuestros atrapados por la espalda la última vez.
+chatter.evidence.takedowns.2,HQ says {n} got choked from behind. Not me.,La base dice que estrangularon a {n} por la espalda. A mí no.
+chatter.evidence.downs.1,{n} of us missing or asleep last op.,{n} de los nuestros desaparecidos o dormidos la última vez.
+chatter.evidence.downs.2,"Last op, {n} men vanished or slept. HQ is counting.","La última vez, {n} hombres desaparecieron o se durmieron. La base lleva la cuenta."
+chatter.evidence.spoofing.1,HQ logged {n} fake orders last op.,La base registró {n} órdenes falsas la última vez.
+chatter.evidence.spoofing.2,{n} bogus calls last op. In our voices.,{n} llamadas falsas la última vez. Con nuestras voces.
+ui.post.saw,WHAT AIGIS SAW,LO QUE AIGIS VIO
+ui.post.saw.down,PUT DOWN,ABATIDOS
+ui.post.saw.kill,KILLED,MUERTOS
+ui.post.saw.spotted,FIRST SPOTTED,PRIMER AVISTAMIENTO
+ui.post.saw.alert,ALERTS,ALERTAS
+ui.post.saw.note,Every step logged.,Cada paso registrado.

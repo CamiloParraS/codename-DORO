@@ -56,6 +56,11 @@ static func _record(r: Variant) -> Dictionary:
 		if not r.points.get(h) is float:
 			return {}
 		out.points[h] = int(r.points[h])
+	var last := Dossier.clean_last(r.get("last"))  # the Dossier's keys are optional: an old slot has none
+	if r.has("seen"):
+		out.seen = Dossier.clean_seen(r.seen)
+	if not last.is_empty():
+		out.last = last
 	return out
 
 

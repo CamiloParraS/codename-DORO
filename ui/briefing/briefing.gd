@@ -28,11 +28,11 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	record = Campaign.record
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
-	_lines = _build_lines()
+	_lines = _build_lines().map(func(l: Array) -> Array: return l if l.size() > 2 else l + [tr(l[1])])  # [kind, key, text]
 	for l: Array in _lines:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] in ["voice", "habit", "hint"] else ""
-		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
+		_blips.append(VoiceBlip.new(_prefix.sub(l[2], "") if l[0] != "band" else "", voice))
 	var scan := UiScan.make(HudPalette.BACKDROP, true, true, HudPalette.BACKDROP_DIM)
 	scan.show_behind_parent = true  # under the page's own drawing
 	add_child(scan)
@@ -114,12 +114,26 @@ func _build_lines() -> Array:
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
 	lines.append(["gap", ""])
-	for key: String in plan.briefing_keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
-		lines.append(["habit" if key.begins_with("brief.pallas.habit.") else "hint" if ".hint." in key else "voice", key])
+	var keys: Array = plan.briefing_keys.duplicate()
+	var shift: String = record.get("last", {}).get("shifted", "")
+	if shift != "":  # Aigis saw the Operative drop a Habit: said after the rows, before the close
+		keys.insert(keys.size() - 1, "brief.pallas.shift." + shift)
+	if plan.get("dissent", "") != "":  # a close call: the outvoted sponsor objects last
+		keys.insert(keys.size() - 1, plan.dissent)
+	for key: String in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
+		lines.append(_line(key))
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
 	lines.append_array(m.steps.map(func(s: Dictionary) -> Array: return ["objective", s.objective]))
 	lines.append(["objective", Campaign.objective(record.mission, m.steps.size())])
 	return lines
+
+
+## A plan key as a line. A Habit row cites what Aigis counted (Dossier.evidence) when the record says enough.
+func _line(key: String) -> Array:
+	if not key.begins_with("brief.pallas.habit."):
+		return ["hint" if ".hint." in key else "voice", key]
+	var ev := Dossier.evidence(record, key.get_slice(".", 3))
+	return ["habit", key, tr(ev[0]).format(ev[1]) if not ev.is_empty() else tr(key)]
 
 
 func _draw() -> void:
@@ -161,7 +175,7 @@ func _draw() -> void:
 					HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y), s, 24, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
 			"hint":  # what that Habit now meets: the sponsoring Voice and its line, closing the row
 				var who := VoiceBlip.voice_of(_lines[i][1])
-				var rows := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), d.x - x * 2 - RIGHT_COL, HudPalette.FIGURE_MED, 34)
+				var rows := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), d.x - x * 2 - RIGHT_COL, HudPalette.FIGURE_MED, 34)
 				if s != "":
 					_voice_head(Vector2(x + RIGHT_COL, y + 50), who, i, k)
 					var left := s.length()
@@ -174,7 +188,7 @@ func _draw() -> void:
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
 				_voice_head(Vector2(x, y), who, i, k)
-				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w, HudPalette.FIGURE_MED, 28)
+				var full := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), body_w, HudPalette.FIGURE_MED, 28)
 				var left := s.length()
 				for l in full:
 					HudPalette.hud_text(self, Vector2(x + TAG + 90, y), l.left(maxi(left, 0)), 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)

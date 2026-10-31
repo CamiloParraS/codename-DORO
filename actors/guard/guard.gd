@@ -229,7 +229,8 @@ func _chatter(delta: float) -> void:
 		return
 	_chatter_clock = CHATTER_EVERY * rng.randf_range(0.75, 1.25)
 	if operative and VoiceLines.heard(_flat_dist(operative.global_position)):
-		say_line(VoiceLines.pick(chatter_sets, rng))
+		var line := VoiceLines.pick_line(chatter_sets, rng)
+		say_line(line[0], line[1])
 
 
 ## Barks off what changed this frame: a choke, the Radio call ending (squelch off), Caution ending, the

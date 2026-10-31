@@ -251,6 +251,7 @@ func _physics_process(delta: float) -> void:
 		var d: bool = g.is_down()
 		if d and not _down.get(g, false):
 			tally.guard_down()
+			SessionLog.current.mark("kill" if g.dead else "down", MissionPlaces.diagram_xy(g.global_position))
 			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", MissionPlaces.where(g.global_position)])
 			if g.target:
 				if g.dead:
@@ -504,8 +505,11 @@ func _on_extraction() -> void:
 	_finish()
 	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
+	after.last.merge(Dossier.trail(SessionLog.current.missions.back()))  # the route Aigis draws back
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
+	screen.dossier = after.last
+	screen.floor_plan = FloorPlan.of_area(get_parent()) if not after.last.path.is_empty() else {}
 	screen.rank = rank
 	screen.par = par
 	screen.mission_name = tr("ui.mission.%d" % record.mission)

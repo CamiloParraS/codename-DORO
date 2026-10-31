@@ -57,6 +57,7 @@ const DOMINANT_WEIGHT := 2.0
 const OTHER_WEIGHT := 1.0
 const NIKE_FROM := 0.10      # ratio bands; a value on a threshold goes to the higher band
 const GORGO_FROM := 0.40
+const DISSENT_FROM := 0.75   # a passed-over step scoring this share of the pick's score is a close call: its sponsor objects
 
 ## Free mode Presets: Habit levels (missing = 0) and a Lethality ratio (NAN = undefined).
 const PRESETS := {
@@ -154,6 +155,8 @@ static func complete_mission(record: Dictionary, tally: Dictionary) -> Dictionar
 		p[h] = clampi(p[h], 0, most)
 	out.lethality += GUARD_DEATH * int(tally.get("kill", 0)) + TARGET_DEATH * int(tally.get("target_kill", 0))
 	out.denominator += GUARD_DEATH * int(tally.get("spawned", 0)) + TARGET_DEATH * int(tally.get("targets", 0))
+	out.seen = Dossier.add_seen(record.get("seen", {}), tally)  # what the Briefing can cite (Dossier)
+	out.last = {mission = record.mission, counts = Dossier.counts_of(tally), shifted = Dossier.shifted(record.points, gained)}
 	out.mission += 1
 	return out
 
@@ -182,6 +185,8 @@ static func resolve_ending(ratio: float) -> String:
 ##   Habit's next unlocked step with its score ([] for the pinned Habit's steps, which aren't scored
 ##   against anything)
 ## - pinned: the strongest Habit, answered in full first ("" when no Habit has a level)
+## - dissent: "brief.<voice>.dissent.<habit>", the sponsor of the closest step the budget passed over and never
+##   deployed, objecting, or "" when no call was close (DISSENT_FROM). The Briefing speaks it before the close.
 static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) -> Dictionary:
 	var dominant := resolve_ending(ratio)
 	var weights := {}
@@ -241,8 +246,24 @@ static func plan_mission(profile: Dictionary, ratio: float, mission_index: int) 
 
 	return {
 		"weights": weights, "dominant": dominant, "budget": budget, "pinned": pinned, "picks": picks,
-		"unlocked": unlocked, "deployed": deployed, "briefing_keys": keys,
+		"unlocked": unlocked, "deployed": deployed, "briefing_keys": keys, "dissent": _dissent(picks, deployed),
 	}
+
+
+## The closest call the greedy fill made against a step that never deployed, as its sponsor's objection key.
+## Only another Voice objects: a sponsor outbid by its own other step has nobody to argue with.
+static func _dissent(picks: Array, deployed: Dictionary) -> String:
+	var best := ""
+	var best_share := DISSENT_FROM
+	for pick: Dictionary in picks:
+		for c: Dictionary in pick.candidates:
+			if c.habit == pick.habit or c.sponsor == pick.sponsor or deployed[c.habit] >= c.level or pick.score <= 0:
+				continue
+			var share: float = c.score / float(pick.score)
+			if share >= best_share and (best == "" or share > best_share):
+				best = "brief.%s.dissent.%s" % [c.sponsor, c.habit]
+				best_share = share
+	return best
 
 
 ## A Mission index held to the Core: campaign done (4) plans and caps like the Core.

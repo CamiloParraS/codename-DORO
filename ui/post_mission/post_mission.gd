@@ -3,8 +3,12 @@
 ## bar, then the grade stamped in with a thump, a short shake and a two-frame white flash, the codename under it,
 ## the bonus chips and the Metis ticker. Page 2, "AIGIS HAS LEARNED": a card per Habit the Profile moved on
 ## (glyph, level pips, rise/fall arrow). A first press while the tally runs skips it to its final values.
+## Between them, when the Dossier has a trail, "WHAT AIGIS SAW": the Operative's route drawn back over SAW_SECS
+## with where it put guards down, killed, was spotted and set off Alerts (post_mission_saw.gd draws it).
 ## rank_only (replays, Free mode) shows page 1 alone. Drawn in design px (1080 tall); fades in from black.
 extends Control
+
+const SAW := preload("res://ui/post_mission/post_mission_saw.gd")
 
 signal committed
 
@@ -26,7 +30,9 @@ var rank := Rank.new()  # the attempt's counters
 var par := 0.0          # Rank.par for the Mission
 var mission_name := ""  # shown under the header, "" for none
 var rank_only := false
-var page := 0           # 0 Rank, 1 Aigis
+var dossier := {}       # the record's Dossier `last`: its path and marks draw the "saw" page
+var floor_plan := {}    # FloorPlan.of_area for the Area just played: the map under the route
+var page := 0           # an index into pages()
 var _age := 0.0         # since the page opened (real time)
 var _total := 0.0       # since the screen opened: the fade
 var _ticked := {}       # row -> last count step ticked
@@ -46,6 +52,8 @@ func _process(delta: float) -> void:
 	modulate.a = minf(_total / FADE, 1.0)
 	if page == 0:
 		_sounds()
+	elif pages()[page] == "saw":
+		SAW.sounds(self)
 	queue_redraw()
 
 
@@ -67,10 +75,23 @@ func _skip() -> void:
 		_ticked[i] = COUNT_STEPS
 
 
-## The next page, or commit after the last.
+## The pages in order: "rank", then (the campaign) "saw" when there is a route to draw, and "learned".
+func pages() -> Array[String]:
+	var out: Array[String] = ["rank"]
+	if not rank_only:
+		if not dossier.get("path", []).is_empty():
+			out.append("saw")
+		out.append("learned")
+	return out
+
+
+## The next page, or commit after the last. A press while the route still draws finishes it first.
 func advance() -> void:
-	if page == 0 and not rank_only:
-		page = 1
+	if pages()[page] == "saw" and _age < SAW.done_at(self):
+		_age = SAW.done_at(self)
+		return
+	if page < pages().size() - 1:
+		page += 1
 		_age = 0.0
 		return
 	committed.emit()
@@ -127,11 +148,16 @@ func _draw() -> void:
 	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, d), HudPalette.GROUND)
 	draw_rect(Rect2(Vector2.ZERO, d), Color(0, 0, 0, 0.25))
-	_header(Vector2(80, 56), tr("ui.post.learned" if page == 1 else "ui.post.title").to_upper(), mission_name.to_upper(), HudPalette.CYAN if page == 1 else HudPalette.LIGHT)
-	if page == 0:
-		_draw_rank(d)
-	else:
-		_draw_aigis(d)
+	var view: String = pages()[page]
+	var title: String = {rank = "ui.post.title", saw = "ui.post.saw", learned = "ui.post.learned"}[view]
+	_header(Vector2(80, 56), tr(title).to_upper(), mission_name.to_upper(), HudPalette.LIGHT if view == "rank" else HudPalette.CYAN)
+	match view:
+		"rank":
+			_draw_rank(d)
+		"saw":
+			SAW.draw_page(self, d)
+		_:
+			_draw_aigis(d)
 	if voice_key != "":  # the Metis ticker
 		draw_rect(Rect2(0, d.y - 64, d.x, 64), Color.BLACK)
 		draw_rect(Rect2(0, d.y - 64, 130, 64), HudPalette.DMG)

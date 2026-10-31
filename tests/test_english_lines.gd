@@ -2,11 +2,11 @@
 extends McpTestSuite
 
 ## The English column: no placeholder text outside the Voice keys (ticket 36 writes those), and the
-## whole column stays inside the 3,500-word budget.
+## whole column stays inside the 4,000-word budget (raised from 3,500 for the Dossier lines).
 
 const CSV := "res://text/lines.csv"
 const VOICE_KEYS := ["brief.", "post.", "finale.debate.", "finale.end."]  # written by hand, not drafted
-const WORD_CAP := 3500
+const WORD_CAP := 4000
 
 
 func suite_name() -> String:

@@ -30,6 +30,11 @@ static func diagram(p: Vector3) -> Vector3:
 	return Vector3(p.x + DIAGRAM_ORIGIN, p.z + DIAGRAM_ORIGIN, p.y)
 
 
+## The same seen from above: diagram x and y (a Dossier mark).
+static func diagram_xy(p: Vector3) -> Vector2:
+	return Vector2(p.x + DIAGRAM_ORIGIN, p.z + DIAGRAM_ORIGIN)
+
+
 static func where(p: Vector3) -> String:
 	var d := diagram(p)
 	return "(%d, %d, %d)" % [d.x, d.y, d.z]

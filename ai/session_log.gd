@@ -7,6 +7,8 @@
 ## Spoof send = one transmission Glaukopis judged (a Codec Spoof or a report-in), believed or exposed.
 ## Notes are the run's other moments in words (who spotted, a guard down, a step, a Continue), and the trail is
 ## where the Operative stood every TRAIL_EVERY seconds, in diagram metres (the Area builders' x, y, h).
+## The path is the same finer (every PATH_EVERY s, x and y only) and the marks are where things happened
+## ([kind, seconds, Vector2]: Dossier.MARKS); neither is written to the file: they are the Dossier's.
 ## The file keeps every run: each Mission is appended once it ends, under its start time and label.
 class_name SessionLog
 extends RefCounted
@@ -14,23 +16,26 @@ extends RefCounted
 const IDLE_LOG := 60.0
 const LOGGED := ["dart", "rifle", "spoof", "takedown", "fulton", "holdup"]  # event names count() keeps
 const TRAIL_EVERY := 10.0
+const PATH_EVERY := 2.0
 const MAX_BYTES := 1 << 20  # a log past this starts over rather than grow without end
 
 static var current := SessionLog.new()  # one per game run, fed by MissionRun
 
 ## [{mission, seconds, <LOGGED counts>, idles: [seconds], spotted: seconds or -1,
 ##   encounters: [[id, seconds, exit]], alerts: [[encounter, seconds]], tips: [[verb, seconds]],
-##   notes: [[seconds, text]], trail: [[seconds, Vector3 (x, y, h), encounter]], label, started, written}]
+##   notes: [[seconds, text]], trail: [[seconds, Vector3 (x, y, h), encounter]], path: [Vector2],
+##   marks: [[kind, seconds, Vector2]], label, started, written}]
 var missions := []
 var _idle := 0.0
 var _alerting := false
+var _at := Vector2.ZERO  # the Operative's last place(), in diagram x and y: where a mark lands by default
 
 
 ## label: the Area and the mode, for the header line.
 func start_mission(index: int, label := "") -> void:
 	finish_mission()
 	var m := {mission = index, seconds = 0.0, idles = [], open = true, spotted = -1.0, encounters = [], alerts = [], tips = [],
-		notes = [], trail = [], label = label, started = Time.get_datetime_string_from_system(false, true), written = false}
+		notes = [], trail = [], path = [], marks = [], label = label, started = Time.get_datetime_string_from_system(false, true), written = false}
 	for e: String in LOGGED:
 		m[e] = 0
 	missions.append(m)
@@ -76,6 +81,7 @@ func count(event: String) -> void:
 func spotted(by := "", where := "") -> void:
 	if not missions.is_empty() and missions.back().spotted < 0.0:
 		missions.back().spotted = seconds()
+		mark("spotted")
 		if by != "":
 			note("first spotted by %s, Operative at %s" % [by, where])
 
@@ -90,6 +96,13 @@ func enter_encounter(id: int, exit := "") -> void:
 func alert(enc: int) -> void:
 	if not missions.is_empty():
 		missions.back().alerts.append([enc, seconds()])
+		mark("alert")
+
+
+## Something the Dossier draws happened at `at` (diagram x, y), by default where the Operative stands.
+func mark(kind: String, at: Variant = null) -> void:
+	if not missions.is_empty():
+		missions.back().marks.append([kind, seconds(), at if at is Vector2 else _at])
 
 
 func tip(verb: String) -> void:
@@ -110,6 +123,10 @@ func place(at: Vector3, enc: int) -> void:
 	var trail: Array = missions.back().trail
 	if trail.is_empty() or seconds() - trail.back()[0] >= TRAIL_EVERY:
 		trail.append([seconds(), at, enc])
+	_at = Vector2(at.x, at.y)
+	var path: Array = missions.back().path
+	if path.size() <= int(seconds() / PATH_EVERY):  # one point per PATH_EVERY s of Mission time
+		path.append(_at)
 
 
 ## The Mission ended or was left: log a running idle. Safe to call twice.

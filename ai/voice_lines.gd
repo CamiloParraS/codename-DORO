@@ -29,22 +29,32 @@ static func chatter_key(habit: String, state: String, variant: int) -> String:
 	return "chatter.%s.%s.%d" % [state, habit, variant + 1]
 
 
-## [[habit, state], ...] in Habit-table order for every Habit that has chatter.
-static func chatter_sets(points: Dictionary, deployed: Dictionary) -> Array:
+## [[habit, state], ...] in Habit-table order for every Habit that has chatter. A deployed Habit whose events
+## the last Mission had Dossier.CITE_FROM times or more (record's Dossier keys) adds [habit, "evidence", n]
+## after it: the guards repeat the number HQ gave them.
+static func chatter_sets(points: Dictionary, deployed: Dictionary, record := {}) -> Array:
 	var out := []
 	for h: String in Aigis.HABITS:
 		var s := chatter_state(int(points.get(h, 0)), int(deployed.get(h, 0)))
 		if s != "":
 			out.append([h, s])
+		var n := Dossier.last_count(record, h)
+		if s == "confirm" and n >= Dossier.CITE_FROM:
+			out.append([h, "evidence", n])
 	return out
 
 
-## One random line from the sets, or "" with none.
+## One random line's key from the sets, or "" with none.
 static func pick(sets: Array, rng: RandomNumberGenerator) -> String:
+	return pick_line(sets, rng)[0]
+
+
+## One random line from the sets as [key, format args], or ["", {}] with none.
+static func pick_line(sets: Array, rng: RandomNumberGenerator) -> Array:
 	if sets.is_empty():
-		return ""
+		return ["", {}]
 	var s: Array = sets[rng.randi() % sets.size()]
-	return chatter_key(s[0], s[1], rng.randi() % VARIANTS)
+	return [chatter_key(s[0], s[1], rng.randi() % VARIANTS), {n = s[2]} if s.size() > 2 else {}]
 
 
 ## Chatter is overheard like a chat: only within the same range.
