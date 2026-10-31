@@ -11,6 +11,7 @@ const RETREAT_GRACE := 0.7  # s without sight before a guard stops acting as if 
 const RETREAT_SPEED := 3.5  # backing off from the Operative, still facing it
 const CHASE_SPEED := 5.0  # the Operative runs 4.8
 const PAUSE := 1.5        # seconds at each patrol point
+const FIDGET_STOP := 1.0  # a stop this long left may become a look around
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
@@ -96,6 +97,7 @@ var _glance := 0.0       # seconds left of a glance behind
 var _glance_yaw := 0.0
 var _fire_left := 0.0
 var _pause := 0.0
+var _stop_checked := false      # this stop has had its one chance to fidget
 var _clock := 0.0
 var chatter_sets: Array = []     # VoiceLines.chatter_sets: what this guard mutters about, if the Operative is near
 var _chatter_clock := CHATTER_EVERY
@@ -214,6 +216,12 @@ func _set_mark() -> void:
 	var state := GuardAlert.State.ALERT if bang else alert.state
 	_mark.text = "((·))" if talk else MARKS[state]
 	_mark.modulate = Color.WHITE if talk else MARK_COLORS[state]
+
+
+## The running branch of the behaviour tree, for the debug overlay.
+func bt_trace() -> String:
+	var inst := _bt.get_bt_instance()
+	return BtTrace.running_path(inst.get_root_task()) if inst else ""
 
 
 func is_down() -> bool:

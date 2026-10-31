@@ -38,6 +38,18 @@ class StubGuard:
 		calls.append("retreat")
 		return false
 
+	var new_stop := false  # one fidget chance at a stop, then the stop is over
+	var fidgets := 0
+
+	func at_new_stop() -> bool:
+		var was := new_stop
+		new_stop = false
+		return was
+
+	func fidget() -> void:
+		fidgets += 1
+		calls.append("fidget")
+
 	func face(_pos: Vector3, _delta: float) -> void:
 		calls.append("face")
 
@@ -64,6 +76,36 @@ func test_patrol_walks_the_route() -> void:
 	var t := _tree_for(GuardAlert.State.PATROL)
 	t[1].update(0.1)
 	assert_eq(t[0].calls, ["patrol"])
+
+
+func test_patrol_may_fidget_at_a_stop_then_keeps_walking() -> void:
+	seed(1)
+	var fidgets := 0
+	for n in 40:  # a 40% chance at each stop
+		var t := _tree_for(GuardAlert.State.PATROL)
+		t[0].new_stop = true
+		t[1].update(0.1)
+		fidgets += t[0].fidgets
+		assert_eq(t[0].calls[-1], "patrol", "the walk goes on after the fidget")
+	assert_true(fidgets > 0 and fidgets < 40, "fidgeted %d of 40 stops" % fidgets)
+
+
+func test_a_fidget_is_on_cooldown_afterwards() -> void:
+	seed(3)
+	var t := _tree_for(GuardAlert.State.PATROL)
+	var fidgets := 0
+	for i in 150:  # a fresh stop every tick for 15 s, inside the 20 s cooldown
+		t[0].new_stop = true
+		t[1].update(0.1)
+		fidgets += t[0].calls.count("fidget")
+		t[0].calls.clear()
+	assert_eq(fidgets, 1, "one fidget in the cooldown")
+
+
+func test_running_path_names_the_branch_in_play() -> void:
+	var t := _tree_for(GuardAlert.State.PATROL)
+	t[1].update(0.1)
+	assert_eq(BtTrace.running_path(t[1].get_root_task()), "Guard > Patrol > Walk route")
 
 
 func test_patrol_carries_out_a_radio_order_first() -> void:

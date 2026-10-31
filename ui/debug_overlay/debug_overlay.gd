@@ -165,6 +165,8 @@ func _field(tally: MissionTally) -> String:
 	for g in get_tree().get_nodes_in_group("guards") + get_tree().get_nodes_in_group("cameras"):
 		var state: String = "DESTROYED" if g.get("destroyed") else "DOWN" if g.has_method("is_down") and g.is_down() else GuardAlert.State.keys()[g.alert.state]
 		s += "  %s %s%s %s\n" % [g.name, state, " (helmet)" if g.get("helmet") else "", g.last_reason]
+		if g.has_method("bt_trace") and state != "DOWN":
+			s += "      %s\n" % g.bt_trace()
 	var radio := get_tree().get_first_node_in_group("radio")
 	if radio:
 		var j: Dictionary = radio.glaukopis.last

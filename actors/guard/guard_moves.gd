@@ -53,6 +53,23 @@ func patrol(delta: float) -> void:
 			telegraph("head_check", "?", "look", tr("radio.hm"))
 
 
+## True once per patrol stop of at least FIDGET_STOP, as the tree asks for it: the guard is standing there, free to
+## fidget. Walking again re-arms it.
+func at_new_stop() -> bool:
+	if _pause <= 0.0:
+		_stop_checked = false
+		return false
+	if _stop_checked or _pause < FIDGET_STOP or _glance > 0.0 or _tele_left > 0.0 or held_up:
+		return false
+	_stop_checked = true
+	return true
+
+
+## A look around for the rest of the stop.
+func fidget() -> void:
+	model.react("look", _pause, 1.0)
+
+
 ## The shared Aigis telegraph: a cyan icon over the head and a pose for Telegraph.DURATION, so the
 ## Operative can read what Aigis changed. kind keys Metis's first-sighting call (Telegraph.METIS);
 ## mutter is an optional subtitle line when the Operative is within earshot.

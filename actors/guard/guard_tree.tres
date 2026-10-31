@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://b3duoomqwyy1w" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
 [ext_resource type="Script" path="res://actors/guard/bt/bt_too_close.gd" id="7_close"]
 [ext_resource type="Script" path="res://actors/guard/bt/bt_retreat.gd" id="8_retreat"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_at_new_stop.gd" id="9_stop"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_fidget.gd" id="10_fidget"]
 
 [sub_resource type="BTCondition" id="in_alert"]
 script = ExtResource("1_state")
@@ -15,12 +17,14 @@ state = 2
 
 [sub_resource type="BTAction" id="chase"]
 script = ExtResource("2_chase")
+custom_name = "Chase"
 
 [sub_resource type="BTCondition" id="too_close"]
 script = ExtResource("7_close")
 
 [sub_resource type="BTAction" id="retreat"]
 script = ExtResource("8_retreat")
+custom_name = "Retreat"
 
 [sub_resource type="BTTimeLimit" id="retreat_limit"]
 time_limit = 3.0
@@ -70,6 +74,7 @@ script = ExtResource("1_state")
 
 [sub_resource type="BTAction" id="follow_order"]
 script = ExtResource("6_order")
+custom_name = "Follow order"
 
 [sub_resource type="BTSequence" id="order"]
 custom_name = "Radio order"
@@ -80,10 +85,33 @@ script = ExtResource("1_state")
 
 [sub_resource type="BTAction" id="walk_route"]
 script = ExtResource("5_patrol")
+custom_name = "Walk route"
 
-[sub_resource type="BTSequence" id="patrol"]
+[sub_resource type="BTCondition" id="new_stop"]
+script = ExtResource("9_stop")
+
+[sub_resource type="BTAction" id="fidget"]
+script = ExtResource("10_fidget")
+custom_name = "Look around"
+
+[sub_resource type="BTProbability" id="fidget_chance"]
+run_chance = 0.4
+children = [SubResource("fidget")]
+
+[sub_resource type="BTSequence" id="fidget_at_stop"]
+custom_name = "Fidget at a stop"
+children = [SubResource("new_stop"), SubResource("fidget_chance")]
+
+[sub_resource type="BTCooldown" id="fidget_cooldown"]
+duration = 20.0
+children = [SubResource("fidget_at_stop")]
+
+[sub_resource type="BTAlwaysSucceed" id="fidget_optional"]
+children = [SubResource("fidget_cooldown")]
+
+[sub_resource type="BTDynamicSequence" id="patrol"]
 custom_name = "Patrol"
-children = [SubResource("in_patrol"), SubResource("walk_route")]
+children = [SubResource("in_patrol"), SubResource("fidget_optional"), SubResource("walk_route")]
 
 [sub_resource type="BTSelector" id="root"]
 custom_name = "Guard"
