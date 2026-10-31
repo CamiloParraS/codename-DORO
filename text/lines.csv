@@ -539,6 +539,11 @@ intro.m1.area,HARBOUR,PUERTO
 intro.m1.stamp,Palladion island · 02:14 · fog off the water,Isla de Palladion · 02:14 · niebla sobre el agua
 outro.m1.title,MISSION COMPLETE,MISIÓN CUMPLIDA
 outro.m1.line,"Extraction confirmed. Nobody will know you were here.","Extracción confirmada. Nadie sabrá que estuviste aquí."
+intro.m3.name,MISSION 3,MISIÓN 3
+intro.m3.area,RESEARCH ANNEX,ANEXO DE INVESTIGACIÓN
+intro.m3.stamp,Palladion island · 07:40 · twelve months behind glass,Isla de Palladion · 07:40 · doce meses tras el cristal
+outro.m3.title,MISSION COMPLETE,MISIÓN CUMPLIDA
+outro.m3.line,"She is out. Something in the racks has gone quiet.","Ella está fuera. Algo en los bastidores se ha callado."
 sign.garage,GARAGE,TALLER
 sign.no_smoking,NO SMOKING,PROHIBIDO FUMAR
 sign.fuel,FUEL,COMBUSTIBLE

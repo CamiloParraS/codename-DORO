@@ -75,10 +75,13 @@ func test_only_a_mission_with_an_intro_or_outro_gets_a_card() -> void:
 	for k in ["name", "area", "stamp"]:
 		assert_true(Campaign.MISSIONS[0].intro.has(k))
 	assert_true(Campaign.MISSIONS[0].outro.has("title") and Campaign.MISSIONS[0].outro.has("line"))
-	for m in range(1, Campaign.MISSIONS.size()):
+	for m in Campaign.MISSIONS.size():
+		if m == 0 or m == 2:  # Missions 1 and 3 have takes that carry their card's text
+			continue
 		assert_false(Campaign.MISSIONS[m].has("intro") or Campaign.MISSIONS[m].has("outro"))
-	for k in Campaign.MISSIONS[0].intro.values() + Campaign.MISSIONS[0].outro.values():
-		assert_ne(TranslationServer.translate(k), k, "%s has text" % k)
+	for m in [0, 2]:
+		for k in Campaign.MISSIONS[m].intro.values() + Campaign.MISSIONS[m].outro.values():
+			assert_ne(TranslationServer.translate(k), k, "%s has text" % k)
 
 
 func test_a_card_built_for_the_briefing_stays_black_when_it_ends() -> void:
