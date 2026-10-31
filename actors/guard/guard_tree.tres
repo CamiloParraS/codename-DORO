@@ -6,25 +6,21 @@
 [ext_resource type="Script" uid="uid://b27bjsr6t8vqr" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
 [ext_resource type="Script" uid="uid://duqt6b7x6v62t" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
 [ext_resource type="Script" uid="uid://b3duoomqwyy1w" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_too_close.gd" id="7_close"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_retreat.gd" id="8_retreat"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_at_new_stop.gd" id="9_stop"]
-[ext_resource type="Script" path="res://actors/guard/bt/bt_fidget.gd" id="10_fidget"]
+[ext_resource type="Script" uid="uid://blkc64otugqpl" path="res://actors/guard/bt/bt_too_close.gd" id="7_close"]
+[ext_resource type="Script" uid="uid://cj6ye4b413g7g" path="res://actors/guard/bt/bt_retreat.gd" id="8_retreat"]
+[ext_resource type="Script" uid="uid://b8nwvmec4s6r4" path="res://actors/guard/bt/bt_at_new_stop.gd" id="9_stop"]
+[ext_resource type="Script" uid="uid://bbrah58tcbn8l" path="res://actors/guard/bt/bt_fidget.gd" id="10_fidget"]
 
 [sub_resource type="BTCondition" id="in_alert"]
 script = ExtResource("1_state")
 state = 2
 
-[sub_resource type="BTAction" id="chase"]
-script = ExtResource("2_chase")
-custom_name = "Chase"
-
 [sub_resource type="BTCondition" id="too_close"]
 script = ExtResource("7_close")
 
 [sub_resource type="BTAction" id="retreat"]
-script = ExtResource("8_retreat")
 custom_name = "Retreat"
+script = ExtResource("8_retreat")
 
 [sub_resource type="BTTimeLimit" id="retreat_limit"]
 time_limit = 3.0
@@ -33,6 +29,10 @@ children = [SubResource("retreat")]
 [sub_resource type="BTSequence" id="back_off"]
 custom_name = "Keep distance"
 children = [SubResource("too_close"), SubResource("retreat_limit")]
+
+[sub_resource type="BTAction" id="chase"]
+custom_name = "Chase"
+script = ExtResource("2_chase")
 
 [sub_resource type="BTSelector" id="engage"]
 custom_name = "Engage"
@@ -73,8 +73,8 @@ children = [SubResource("in_suspicion"), SubResource("turn"), SubResource("searc
 script = ExtResource("1_state")
 
 [sub_resource type="BTAction" id="follow_order"]
-script = ExtResource("6_order")
 custom_name = "Follow order"
+script = ExtResource("6_order")
 
 [sub_resource type="BTSequence" id="order"]
 custom_name = "Radio order"
@@ -83,16 +83,12 @@ children = [SubResource("in_patrol_order"), SubResource("follow_order")]
 [sub_resource type="BTCondition" id="in_patrol"]
 script = ExtResource("1_state")
 
-[sub_resource type="BTAction" id="walk_route"]
-script = ExtResource("5_patrol")
-custom_name = "Walk route"
-
 [sub_resource type="BTCondition" id="new_stop"]
 script = ExtResource("9_stop")
 
 [sub_resource type="BTAction" id="fidget"]
-script = ExtResource("10_fidget")
 custom_name = "Look around"
+script = ExtResource("10_fidget")
 
 [sub_resource type="BTProbability" id="fidget_chance"]
 run_chance = 0.4
@@ -108,6 +104,10 @@ children = [SubResource("fidget_at_stop")]
 
 [sub_resource type="BTAlwaysSucceed" id="fidget_optional"]
 children = [SubResource("fidget_cooldown")]
+
+[sub_resource type="BTAction" id="walk_route"]
+custom_name = "Walk route"
+script = ExtResource("5_patrol")
 
 [sub_resource type="BTDynamicSequence" id="patrol"]
 custom_name = "Patrol"
