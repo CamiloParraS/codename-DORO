@@ -48,6 +48,7 @@ static func build(b: Object) -> void:
 	car.add_child(lamp)
 	var cine: Node3D = AreaCine.root(b._root)
 	_descent(cine)
+	CoreAscent.build(b, car, cine)  # the finale's Ascent: the same car and shaft, the other way
 	cine.owner = b._root
 	b._own(car)
 	b._own(cine)

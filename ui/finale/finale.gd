@@ -1,5 +1,6 @@
 ## The finale, full screen: the radial's single order "Transmit memories" in slowed time, the Final debate,
-## the Dominant Voice's ending over slowly panning stills, then the Epilogue as a paused Codec call.
+## the Dominant Voice's ending over slowly panning stills, then the Epilogue as subtitles over the Ascent (the Core's
+## lift rising out of the shaft, the Dominant Voice's set; a paused Codec call when the Area has no such take).
 ## Group "finale": the Core terminal calls begin(). Free mode calls start(record, leave_to) for any Preset.
 ## The data lives in ai/finale.gd; stills go through the PSX banding pass like the rest of layer 0.
 extends Control
@@ -17,6 +18,7 @@ var _blip: VoiceBlip
 var _t := 0.0
 var _line_t := 0.0  # since the current line began: its glyph's pulse
 var _still_tex: Texture2D
+var _ascending := false  # the Epilogue runs over the live Area: this control draws nothing under it
 
 
 func _ready() -> void:
@@ -86,12 +88,40 @@ func _advance() -> void:
 	elif model.stage == "epilogue":
 		_blip = null
 		var codec := CodecScreen.new(Finale.epilogue(model.band))
+		var take := _ascend()
+		codec.over_picture = take != null
 		codec.finished.connect(func() -> void:
 			codec.queue_free()
-			_leave())
+			if take:
+				take.release()  # to black, then _leave
+			else:
+				_leave())
 		add_child(codec)
 	else:
 		_leave()
+
+
+## The Ascent behind the Epilogue: the world runs at normal speed under a take that holds its last frame until the
+## Epilogue is read (the lines are the player's pace; the take is short). A held skip leaves at once. Null when the
+## Area has no such take (the Epilogue stays a paused call).
+func _ascend() -> Cine:
+	var area := get_parent()
+	var set := area.get_node_or_null(AscentLogic.SET)
+	if set == null or Cine.take_of(area, AscentLogic.KEY) == null:
+		return null
+	get_tree().paused = false
+	Engine.time_scale = 1.0
+	set.show_variant(model.band)
+	var take := Cine.new()
+	take.name = "CineRunner"
+	take.hold = true
+	take.held.connect(func(skipped: bool) -> void:
+		if skipped:
+			_leave())
+	if not take.play(area, AscentLogic.KEY, _leave):
+		return null
+	_ascending = true
+	return take
 
 
 func _leave() -> void:
@@ -114,7 +144,7 @@ func _show(i: int) -> void:
 
 
 func _draw() -> void:
-	if model == null:
+	if model == null or _ascending:
 		return
 	var k := size.y / HudPalette.DESIGN_H
 	var d := size / k

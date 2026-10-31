@@ -28,6 +28,7 @@ const BURST := 0.16        # s of static and tear on a speaker change
 const WAVE_BARS := 34
 
 var talk: CodecCall
+var over_picture := false   # a subtitle strip over the live picture (the Ascent), not the full-screen call
 var _ringing := false
 var _ring_t := 0.0
 var _t := 0.0       # since the call opened (the tune-in)
@@ -62,7 +63,10 @@ func _ready() -> void:
 		m.shader = preload("res://ui/hud/portrait.gdshader")
 		face.material = m
 		add_child(face)
-	add_child(UiScan.make(null, true))
+	if over_picture:
+		_t = StoryMotion.TUNE
+	else:
+		add_child(UiScan.make(null, true))
 	Mixer.codec_call(true)
 	HudPalette.fade(self)
 	if talk.done():
@@ -141,6 +145,12 @@ func _draw() -> void:
 	var k := _k()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
+	if over_picture:
+		_left.visible = false
+		_right.visible = false
+		if not talk.done():
+			_subtitle(d)
+		return
 	draw_rect(Rect2(Vector2.ZERO, d), CRT_GROUND)
 	_grid(d)
 	_left.visible = false
@@ -232,7 +242,7 @@ func _wave(c: Vector2, talking: bool) -> void:
 
 func _subtitle(d: Vector2) -> void:
 	var top := d.y - BAR - 190
-	draw_rect(Rect2(0, top, d.x, 190), Color.BLACK)
+	draw_rect(Rect2(0, top, d.x, 190), Color(0, 0, 0, 0.6 if over_picture else 1.0))
 	draw_rect(Rect2(0, top, d.x, 2), GREEN)
 	HudPalette.hud_text(self, Vector2(d.x / 2, top + 54), talk.speaker_name().to_upper(), 24, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.3), 1, false)
 	var font := HudPalette.FIGURE

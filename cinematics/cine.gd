@@ -9,12 +9,14 @@ class_name Cine
 extends Node
 
 signal finished(skipped: bool)
+signal held(skipped: bool)   # a `hold` take reached its last frame (or was skipped to it) and waits for release()
 
 const CLIP := "take"
 const LANDING_MAX := 2.0  # s to wait for the host to switch back before handing over anyway
 
 var lines: Array[String] = []   # the lower-third's translated lines (a Mission's intro card text)
 var fade_out := false           # an outro: ends on black
+var hold := false               # waits on its last frame until release(), then goes to black (the Ascent plays under the Epilogue)
 var skipped := false
 var done := false
 
@@ -33,6 +35,7 @@ var _layer: CanvasLayer
 var _held := 0.0
 var _armed := false             # the advance key has been up since the take began
 var _ending := false
+var _holding := false
 var _landing := 0.0
 var _at := 0.0                  # s into the take when it ended
 
@@ -85,7 +88,7 @@ func play(area: Node, key: String, then: Callable) -> bool:
 
 
 func _process(delta: float) -> void:
-	if done:
+	if done or _holding:
 		return
 	if _ending:
 		_landing += delta
@@ -112,10 +115,31 @@ func skip() -> void:
 		return
 	skipped = true
 	_player.seek(_player.get_animation(CLIP).length, true)
-	_end()
+	_arrive()
 
 
 func _on_finished(_clip: StringName) -> void:
+	_arrive()
+
+
+## The clip is at its last frame: end it, or (a `hold` take) stay on that frame until release().
+func _arrive() -> void:
+	if hold and not _holding and not _ending:
+		_holding = true
+		_overlay.third = 0.0
+		_overlay.skip = 0.0
+		_overlay.queue_redraw()
+		held.emit(skipped)
+		return
+	_end()
+
+
+## Ends a `hold` take on black; `then` runs as for an outro.
+func release() -> void:
+	if not _holding:
+		return
+	_holding = false
+	fade_out = true
 	_end()
 
 

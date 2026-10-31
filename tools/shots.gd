@@ -220,14 +220,17 @@ func _cine_shots(area: String) -> void:
 		if not take is AnimationPlayer:
 			continue
 		var clip: Animation = take.get_animation("take")
-		for pct in [0, 25, 50, 75, 100]:
-			take.play("take")
-			take.seek(clip.length * pct / 100.0, true)
-			take.pause()
-			await create_timer(0.8).timeout  # the host takes the pcam, the aim catches up
-			var path := "user://shots/%s_cine_%s_%d.png" % [area, take.name, pct]
-			root.get_texture().get_image().save_png(path)
-			print("saved ", ProjectSettings.globalize_path(path), " (%.1f s of %.1f)" % [clip.length * pct / 100.0, clip.length])
+		for variant in (AscentLogic.VARIANTS if take.name == AscentLogic.KEY else [""]):  # the Ascent has a set per ending
+			if variant != "":
+				scene.get_node(AscentLogic.SET).show_variant(variant)
+			for pct in [0, 25, 50, 75, 100]:
+				take.play("take")
+				take.seek(clip.length * pct / 100.0, true)
+				take.pause()
+				await create_timer(0.8).timeout  # the host takes the pcam, the aim catches up
+				var path := "user://shots/%s_cine_%s%s_%d.png" % [area, take.name, "_" + variant if variant != "" else "", pct]
+				root.get_texture().get_image().save_png(path)
+				print("saved ", ProjectSettings.globalize_path(path), " (%.1f s of %.1f)" % [clip.length * pct / 100.0, clip.length])
 		for p in take.get_meta("pcams", []):
 			take.get_node(p).set("priority", 0)
 		take.stop()
