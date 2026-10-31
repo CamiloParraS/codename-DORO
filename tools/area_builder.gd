@@ -1,7 +1,7 @@
 ## Shared builders for the Area greybox generators (tools/build_harbour.gd, tools/build_relay_station.gd,
 ## tools/build_research_annex.gd): structures, markers, the navmesh, saving and the checks. The layers under it are
-## tools/area_dressing.gd (scenery) and tools/area_kit.gd (materials and boxes).
-extends "res://tools/area_dressing.gd"
+## tools/area_identity.gd (doorways and signs), tools/area_dressing.gd (scenery) and tools/area_kit.gd (materials and boxes).
+extends "res://tools/area_identity.gd"
 
 
 ## The NavRegion every Area bakes: static colliders on layer 1 only (not the carry blocks).
@@ -84,8 +84,10 @@ func _stable_ids(out: String) -> void:
 	f.store_string(result)
 
 
-## Four walls with door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre(, width)]],
+## Four walls with door gaps (any number per side) and a roof: [name, rect, height, doors [[side, centre(, width(, style))]],
 ## tint, base, wall material]. A door is 2 m wide unless given. The walls stand on base (0 if missing) and are brick unless given.
+## Each doorway is dressed (tools/area_identity.gd _door) in its style: a steel door unless given, a vehicle bay from 3 m
+## wide, nothing past 4 m (an open side).
 func _building(parent: Node3D, b: Array) -> void:
 	var r: Array = b[1]
 	var h: float = b[2]
@@ -111,6 +113,13 @@ func _building(parent: Node3D, b: Array) -> void:
 			var rect := [s[0], w[1], s[1] - s[0], w[3] - w[1]] if ns else [w[0], s[0], w[2] - w[0], s[1] - s[0]]
 			_box(parent, "Wall%s%d" % [side, i], rect, base, base + h, b[6] if b.size() > 6 else "brick", b[4])
 	_box(parent, "Roof", r, base + h, base + h + 0.3, "metal", Color(0.6, 0.6, 0.6))
+	for d in b[3]:
+		var w: float = d[2] if d.size() > 2 else 2.0
+		var ns: bool = d[0] in ["N", "S"]
+		var at: Array = {N = [d[1], y0 + t / 2], S = [d[1], y1 - t / 2], W = [x0 + t / 2, d[1]], E = [x1 - t / 2, d[1]]}[d[0]]
+		_door(parent, {at = at, base = base, along_x = ns, t = t, wall_h = h, width = w, out = -1.0 if d[0] in ["N", "W"] else 1.0,
+			style = d[3] if d.size() > 3 else ("none" if w > 4.0 else "bay" if w >= 3.0 else "door"),
+			mat = b[6] if b.size() > 6 else "brick", tint = b[4], lamp = true})
 
 
 ## The [from, to] stretches of a wall from `from` to `to` left between its sorted gaps [[from, to]].

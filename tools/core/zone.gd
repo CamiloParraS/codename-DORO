@@ -5,6 +5,7 @@
 ##   posts, target_posts, extra_posts, sentries, cameras  guards and Countermeasures
 ##   encounters, exits, objectives, intel  what the session log and MissionRun read
 ##   dress, lit, markings, beacons, clifftop  set dressing and mood
+##   doorways, trim, signs, props  what the place is (tools/area_identity.gd), on top of the Harbour's (tools/identity/harbour.gd)
 ##   spots, areas, reach  markers, trigger areas and the navmesh reach points to report
 ##   start  where a focused build (zones=...) reaches from
 extends RefCounted

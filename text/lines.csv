@@ -539,3 +539,33 @@ intro.m1.area,HARBOUR,PUERTO
 intro.m1.stamp,Palladion island · 02:14 · fog off the water,Isla de Palladion · 02:14 · niebla sobre el agua
 outro.m1.title,MISSION COMPLETE,MISIÓN CUMPLIDA
 outro.m1.line,"Extraction confirmed. Nobody will know you were here.","Extracción confirmada. Nadie sabrá que estuviste aquí."
+sign.garage,GARAGE,TALLER
+sign.no_smoking,NO SMOKING,PROHIBIDO FUMAR
+sign.fuel,FUEL,COMBUSTIBLE
+sign.mess,MESS,COMEDOR
+sign.office,OFFICE,OFICINA
+sign.relay,RELAY STATION 7,REPETIDORA 7
+sign.high_voltage,DANGER: HIGH VOLTAGE,PELIGRO: ALTA TENSIÓN
+sign.barracks,BARRACKS,BARRACONES
+sign.annex,PALLADION RESEARCH ANNEX,ANEXO DE INVESTIGACIÓN PALLADION
+sign.lab,BIO LAB,LAB. BIOLÓGICO
+sign.clean_room,CLEAN ROOM,SALA LIMPIA
+sign.vault,VAULT,CÁMARA
+sign.authorised,AUTHORISED PERSONNEL ONLY,SOLO PERSONAL AUTORIZADO
+sign.lockers,LOCKERS,VESTUARIO
+sign.server,SERVER ROOM,SERVIDORES
+sign.security,SECURITY,SEGURIDAD
+sign.archive,ARCHIVE,ARCHIVO
+sign.reception,RECEPTION,RECEPCIÓN
+sign.loading,LOADING BAY,MUELLE DE CARGA
+sign.blasting,BLASTING AREA: KEEP OUT,ZONA DE VOLADURAS: NO PASAR
+sign.freight_lift,FREIGHT LIFT,MONTACARGAS
+sign.lift_control,LIFT CONTROL,MANDO MONTACARGAS
+sign.gatehouse,GATEHOUSE,GARITA
+sign.operations,OPERATIONS,OPERACIONES
+sign.warehouse_a,WAREHOUSE A,ALMACÉN A
+sign.warehouse_b,WAREHOUSE B,ALMACÉN B
+sign.core_access,CORE ACCESS B3,ACCESO AL NÚCLEO B3
+sign.plant_room,PLANT ROOM,SALA DE MÁQUINAS
+sign.core,CORE,NÚCLEO
+sign.keys,VEHICLE KEYS,LLAVES

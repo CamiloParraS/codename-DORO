@@ -70,11 +70,15 @@ func _build() -> void:
 	for r in _zd("ramps"):
 		_ramp(solid, r)
 	for l in LOW:
-		_box(solid, "Low%d" % solid.get_child_count(), l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
+		_box(solid, "%s%d" % [l[2] if l.size() > 2 else "Low", solid.get_child_count()], l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
 	for b in BUILDINGS:
 		_building(_group(solid, b[0]), b)
 	_gangway(solid)
-	_dress(nav, DRESS + _zd("dress"))
+	var idn := {}
+	for k in ["doorways", "trim", "signs", "props"]:
+		idn[k] = IDENTITY.get(k, []) + _zd(k)
+	_identity(solid, idn)
+	_dress(nav, DRESS + IDENTITY.dress + _zd("dress"))
 	_tint_lit_lamps(nav)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
@@ -89,8 +93,8 @@ func _build() -> void:
 	_clifftop_clear_of_the_core()
 	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS, false)
 	_surroundings()
-	_markings(MARKINGS + _zd("markings"))
-	_beacons(BEACONS + _zd("beacons"))
+	_markings(MARKINGS + IDENTITY.markings + _zd("markings"))
+	_beacons(BEACONS + IDENTITY.beacons + _zd("beacons"))
 	_mood("core")
 
 	# the Operative lands at the south pier's tip facing north; reinforcements come down the road to the

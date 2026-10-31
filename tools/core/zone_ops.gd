@@ -5,6 +5,7 @@ extends "res://tools/core/zone.gd"
 const D := {
 	start = [26, 46, 0],
 	seal = [["OpsNorthPlug", [19, 19.85, 2, 0.3], 0, 4, "panels", Color.WHITE]],
+	trim = [["OpsNorthPlugStripes", [19, 19.79, 2, 0.06], 0, 2.6, "hazard"]],  # the sealed door reads as sealed
 	posts = [
 		["PostGate", [20, 45, 0], 120, {scan = 60.0, role = "gatekeeper", enc = 2}, []],
 		["PostLiftHall", [15.5, 25, 0], 180, {hold = 5.0, role = "interceptor", enc = 2}, []],  # faces down the hall; his back to the control room's door

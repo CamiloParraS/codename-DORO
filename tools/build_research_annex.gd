@@ -7,6 +7,7 @@
 extends "res://tools/area_builder.gd"
 
 const OUT := "res://areas/research_annex/research_annex.tscn"
+const IDENTITY := preload("res://tools/identity/research_annex.gd").D  # what each room is: tools/area_identity.gd
 const FENCE := Color(0.7, 0.72, 0.75)
 const RAIL := Color(0.8, 0.3, 0.25)
 
@@ -49,7 +50,9 @@ const SOLID := [
 	["RailYardW2", [40, 74, 0.2, 2], 5, 6, "metal", RAIL],
 ]
 ## The lab's interior walls, 0.4 m thick and 3.6 m high, with doorway gaps: [name, "H" (runs east) or "V" (runs
-## south), centre line, from, to, gaps [[from, to]]]. A wall cut by gaps is numbered from 1. The lab is a ring: the
+## south), centre line, from, to, gaps [[from, to(, style(, out))]]]. A gap is dressed as a doorway (area_identity.gd
+## _door): a steel door unless given, its leaves swung back on the side away from `out` (+1: south / east). A wall
+## cut by gaps is numbered from 1. The lab is a ring: the
 ## north corridor (y 28..31) and the south corridor (y 41..44), joined by the west (x 6..9) and east (x 53..56)
 ## passages round the middle block (lab, clean room, vault). Corners break the sight lines; Evasion can circle.
 const WALLS := [
@@ -57,32 +60,33 @@ const WALLS := [
 	["WallLockerOffice", "V", 18, 18.2, 27.8, []],
 	["WallOfficeServer", "V", 32, 18.2, 27.8, [[21, 23]]],                         # room to room: office <-> server room
 	["WallServerSecurity", "V", 44, 18.2, 27.8, []],
-	["WallBlockN", "H", 31, 9, 53, [[14, 16], [31, 33], [46, 48]]],                # lab, clean room, the vault's front door
-	["WallBlockS", "H", 41, 9, 53, [[22, 24], [35, 37]]],                          # lab, clean room
-	["WallBlockW", "V", 9, 31, 41, [[35, 37]]],                                    # lab onto the west passage
+	["WallBlockN", "H", 31, 9, 53, [[14, 16, "glass", -1], [31, 33, "frame"], [46, 48, "blast"]]],                # lab, clean room, the vault's front door
+	["WallBlockS", "H", 41, 9, 53, [[22, 24, "glass"], [35, 37, "frame"]]],                          # lab, clean room
+	["WallBlockW", "V", 9, 31, 41, [[35, 37, "glass", -1]]],                                    # lab onto the west passage
 	["WallBlockE", "V", 53, 31, 41, []],
-	["WallLabClean", "V", 30, 31.2, 40.8, [[33, 36]]],                             # the researcher's walk
+	["WallLabClean", "V", 30, 31.2, 40.8, [[33, 36, "frame"]]],                             # the researcher's walk
 	["WallCleanVault", "V", 40, 31.2, 40.8, [[37, 39]]],                           # the vault's back door
-	["WallSouthRow", "H", 44, 6, 56, [[10, 12], [30, 32], [46, 48]]],              # lobby, Archive, loading hall
+	["WallSouthRow", "H", 44, 6, 56, [[10, 12, "door", -1], [30, 32, "door", -1], [46, 48, "door", -1]]],              # lobby, Archive, loading hall
 	["WallLobbyArchive", "V", 24, 44.2, 54, []],
-	["WallArchiveHall", "V", 40, 44.2, 54, [[44.2, 46.2]]],                        # A8's spoof walk to the hall
+	["WallArchiveHall", "V", 40, 44.2, 54, [[44.2, 46.2, "frame"]]],                        # A8's spoof walk to the hall
 ]
 const WALL_T := 0.4
 const WALL_H := 3.6
+const WALL_TINT := Color(0.92, 0.93, 0.95)  # clinical white panels
 ## Sentry towers: raised walkable slabs on a central leg: [name, rect, top h, material].
 const DECKS := [["GateTower", [30, 5, 6, 6], 5, "metal"], ["YardTower", [40, 70, 6, 6], 5, "metal"]]
-## Low cover: [rect, h0]. On the strip, between V1's line and the path along the lab wall; the researcher's bench;
-## the lobby counter.
+## Low cover: [rect, h0(, name)]. On the strip, between V1's line and the path along the lab wall; the researcher's
+## bench, the Archive's table and the lobby counter, indoors, are cabinet runs ("Cabinets", area_kit.gd ROWS), not barriers.
 const LOW := [
 	[[20, 60, 6, 1.2], 0], [[48, 70, 4, 1.2], 0], [[9, 14.6, 5, 1.2], 0], [[64, 20, 6, 1.2], 0],
-	[[25.5, 52, 5, 1.2], 0], [[16, 37.5, 6, 1.2], 0], [[8, 48, 1.2, 3], 0],
+	[[25.5, 52, 5, 1.2], 0, "Cabinets"], [[16, 37.5, 6, 1.2], 0, "Cabinets"], [[8, 48, 1.2, 3], 0, "Cabinets"],
 ]
 ## Enterable buildings: [name, rect, height, doors [[side, centre]], tint, base]. The lab's six doors: the front door
 ## and the Archive back door (S), office and security (N), the west passage (W), the loading hall (E, past the dock
 ## guard).
 const BUILDINGS := [
-	["Lab", [6, 18, 50, 36], 4.0, [["S", 14.0], ["S", 32.0], ["N", 22.0], ["N", 47.0], ["W", 36.0], ["E", 49.0]],
-		Color(0.85, 0.85, 0.8), 0.0],
+	["Lab", [6, 18, 50, 36], 4.0, [["S", 14.0, 2.0, "glass"], ["S", 32.0], ["N", 22.0], ["N", 47.0], ["W", 36.0], ["E", 49.0]],
+		Color(0.85, 0.86, 0.88), 0.0, "concrete"],
 ]
 ## No Fulton under a roof: [name, rect, h0, h1]: the lab and under the pump house.
 const ROOMS := [["Lab", [6, 18, 50, 36], 0, 4], ["PumpCrawl", [28, 56, 8, 10], 0, 3.5]]
@@ -172,16 +176,11 @@ const DRESS := [
 	# security: the monitor desk on the east wall
 	["table", [54.8, 22, 0], 90], ["monitor", [54.9, 22.3, 0.96], 90], ["pc", [54.9, 21.4, 0.96], 90], ["locker", [55.4, 26, 0], 270],
 	# lab: the researcher's bench (LOW) with a screen on it, a second bench on the south wall
-	["monitoring_screen", [19, 38.1, 1.0], 0], ["table", [12, 39.8, 0], 0], ["monitor", [12, 39.8, 0.96], 0],
+	["monitoring_screen", [19, 38.1, 1.0], 0],
 	# vault: cabinets either side of the front door
-	["cabinet_b", [42, 31.6, 0], 180], ["cabinet_b", [43.3, 31.6, 0], 180], ["cabinet_b", [50.7, 31.6, 0], 180],
-	["cabinet_b", [52, 31.6, 0], 180], ["cardboard_box", [51.8, 40, 0], 20],
+	["cabinet_b", [42, 31.6, 0], 180], ["cabinet_b", [43.3, 31.6, 0], 180], ["cabinet_b", [52, 31.6, 0], 180],
 	# lobby
 	["vending_machine", [23.3, 52, 0], 270], ["chair", [6.5, 46, 0], 90], ["chair", [6.5, 47, 0], 90],
-	# Archive: racking on the south and west walls
-	["shelf", [34.5, 53.4, 0], 180], ["shelf", [35.3, 53.4, 0], 180], ["shelf", [36.1, 53.4, 0], 180],
-	["shelf", [36.9, 53.4, 0], 180], ["shelf", [37.7, 53.4, 0], 180],
-	["shelf", [24.6, 47.5, 0], 90], ["shelf", [24.6, 48.3, 0], 90],
 	# loading hall
 	["pallet_stack", [54.2, 52.5, 0], 0], ["crate_wide", [42.5, 52.8, 0], 0], ["cardboard_box", [44.5, 53.1, 0], 30],
 	["cabinet_a", [55.4, 45.5, 0], 270],
@@ -272,14 +271,15 @@ func _build() -> void:
 		var r: Array = d[1]
 		_box(solid, d[0] + "Leg", [r[0] + r[2] / 2 - 0.5, r[1] + r[3] / 2 - 0.5, 1, 1], 0, d[2] - 0.3, "metal", Color(0.5, 0.5, 0.5))
 	for l in LOW:
-		_box(solid, "Low%d" % solid.get_child_count(), l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
+		_box(solid, "%s%d" % [l[2] if l.size() > 2 else "Low", solid.get_child_count()], l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
 	for b in BUILDINGS:
 		_building(_group(solid, b[0]), b)
 	for w in WALLS:
 		_wall_run(solid.get_node("Lab"), w)
 	for r in RAMPS:
 		_ramp(solid, r)
-	_dress(nav, DRESS)
+	_identity(solid, IDENTITY)
+	_dress(nav, DRESS + IDENTITY.dress)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -289,6 +289,7 @@ func _build() -> void:
 	_backdrop()
 	_surroundings()
 	_markings(MARKINGS)
+	_beacons(IDENTITY.beacons)
 	_mood("research_annex")
 
 	var spots := _group(_root, "Spots")
@@ -337,7 +338,12 @@ func _wall_run(parent: Node3D, w: Array) -> void:
 		var s: Array = spans[i]
 		var c: float = w[2] - WALL_T / 2
 		var rect := [s[0], c, s[1] - s[0], WALL_T] if w[1] == "H" else [c, s[0], WALL_T, s[1] - s[0]]
-		_box(parent, w[0] + (str(i + 1) if spans.size() > 1 else ""), rect, 0, WALL_H, "brick", Color(0.8, 0.78, 0.72))
+		_box(parent, w[0] + (str(i + 1) if spans.size() > 1 else ""), rect, 0, WALL_H, "panels", WALL_TINT)
+	for gap in w[5]:
+		var c: float = (gap[0] + gap[1]) / 2.0
+		_door(parent, {at = [c, w[2]] if w[1] == "H" else [w[2], c], along_x = w[1] == "H", t = WALL_T, wall_h = WALL_H,
+			width = gap[1] - gap[0], style = gap[2] if gap.size() > 2 else "door", out = gap[3] if gap.size() > 3 else 1.0,
+			mat = "panels", tint = WALL_TINT})
 
 
 ## The quarry pit's sheer west and north walls and the road out; _surroundings lays the ground. No collision:
@@ -386,7 +392,7 @@ func _surroundings() -> void:
 	var g := _group(bd, "Surroundings")
 	g.owner = _root
 	_heightfield(g, "Plain", GROUND_RECT, 4.0, _ground_h, GROUND_HOLES, "terrain", TERRAIN, "res://areas/research_annex/plain.res")
-	_dress(bd, BACKDROP_DRESS.map(func(it: Array) -> Array:
+	_dress(bd, (BACKDROP_DRESS + IDENTITY.backdrop).map(func(it: Array) -> Array:
 		var at: Array = [it[1][0], it[1][1], _ground_h(it[1][0], it[1][1])]
 		return [it[0], at] + it.slice(2)), false)
 	for w in WOODS:

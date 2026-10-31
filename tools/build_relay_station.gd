@@ -8,6 +8,7 @@
 extends "res://tools/area_builder.gd"
 
 const OUT := "res://areas/relay_station/relay_station.tscn"
+const IDENTITY := preload("res://tools/identity/relay_station.gd").D  # what each building is: tools/area_identity.gd
 const SNOW := Color(0.92, 0.93, 0.97)
 const SNOW_FIELD := Color(1.5, 1.5, 1.6)  # the hillside: overbright, so snow still reads pale under the sodium night
 const VALLEY_H := -13.5   # the valley floor the hillside falls to, south of the motor pool
@@ -68,7 +69,7 @@ const LOW := [
 const BUILDINGS := [
 	["Garage", [44, 62, 14, 10], 5.0, [["W", 67.0, 3.0], ["E", 67.0]], Color(0.9, 0.85, 0.8), 0.0, "corrugated"],  # the west door is the vehicle bay, the east one a personnel door
 	["FuelHut", [66, 66, 6, 6], 3.0, [["W", 69.0]], Color(0.8, 0.8, 0.8), 0.0, "concrete"],
-	["MessHut", [52, 38, 12, 8], 3.5, [["S", 58.0], ["W", 42.0]], Color(0.9, 0.82, 0.7), 3.0, "planks"],
+	["MessHut", [52, 38, 12, 8], 3.5, [["S", 58.0, 2.0, "wood"], ["W", 42.0, 2.0, "wood"]], Color(0.9, 0.82, 0.7), 3.0, "planks"],
 	["Office", [50, 8, 14, 10], 3.7, [["W", 15.0], ["S", 52.0]], Color(0.85, 0.88, 0.9), 6.0, "panels"],  # roof top at 10, level with the catwalk
 ]
 ## The stilted barracks: a 10 m Crawlspace under it, north to south.
@@ -147,9 +148,7 @@ const DRESS := [
 	["lamp_post", [30, 75.3, 0], 0], ["lamp_post", [60, 75.3, 0], 0],
 	# garage inside
 	["cabinet_b", [46.5, 62.55, 0], 180], ["cabinet_a", [48, 62.55, 0], 180], ["ceiling_lamp", [51, 67, 4.8], 0],
-	["cardboard_box", [56.5, 71, 0], 10],
-	["van", [48.5, 70.2, 0], 90], ["shelf", [51, 62.6, 0], 180], ["shelf", [52, 62.6, 0], 180], ["table", [55, 63.1, 0], 180],
-	["pc", [55, 63.1, 0.96], 180], ["barrel_b", [57, 62.9, 0], 0], ["jerrycan", [56.8, 63.9, 0], 20], ["ceiling_lamp", [47, 66.5, 4.8], 0],
+	["van", [48.5, 70.2, 0], 90], ["barrel_b", [57, 62.9, 0], 0], ["jerrycan", [56.8, 63.9, 0], 20], ["ceiling_lamp", [47, 66.5, 4.8], 0],
 	["ceiling_lamp", [55, 67, 4.8], 0], ["bollard", [42.4, 65.2, 0], 0], ["bollard", [42.4, 68.8, 0], 0],  # bay door posts
 	# fuel hut: a riser tank behind it; the second van waits in the yard
 	["tank_tall", [74.5, 69, 0], 0], ["van", [22, 69, 0], 0], ["sandbags", [26, 73.5, 0], 0],
@@ -249,7 +248,8 @@ func _build() -> void:
 		_building(_group(solid, b[0]), b)
 	for r in RAMPS:
 		_ramp(solid, r)
-	_dress(nav, DRESS)
+	_identity(solid, IDENTITY)
+	_dress(nav, DRESS + IDENTITY.dress)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -261,7 +261,8 @@ func _build() -> void:
 		_ladder(ladders, l).set_meta("walkable", true)
 	_backdrop()
 	_surroundings()
-	_markings(MARKINGS)
+	_markings(MARKINGS + IDENTITY.markings)
+	_beacons(IDENTITY.beacons)
 	_mood("relay_station")
 
 	var spots := _group(_root, "Spots")

@@ -36,12 +36,13 @@ const PROPS := {
 	Container3 = "container_a", Container4 = "container_b", Container5 = "container_b", Container6 = "container_a",
 	DeckContainer1 = "container_a", DeckContainer2 = "container_b", DeckContainer3 = "container_a", Truck = "van", ConsoleDesk = "desk",
 	Crane = "crane_tower", CraneBoom = "crane_boom", Bridge = "freighter_bridge", Antenna = "lattice_mast",
+	LiftPanel = "control_panel", CoreConsole = "core_console",
 }
 ## Boxes with no mesh of their own: a dress model draws them (the freighter_hull shell over the hull and bow).
 const SHELLED := ["Hull", "Bow", "BowTip"]
 ## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
 ## equal share of the length and the full height; its depth scales with its height.
-const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock"}
+const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock", Cabinets = "low_cabinets", Crates = "crate_wide"}  # low cover indoors, on deck
 ## Materials that sound like a metal deck underfoot: their boxes get the meta `surface = "metal"`.
 const METAL_FLOORS := ["deck", "deck_plate", "metal", "hatch", "hatch_cover", "superstructure"]
 

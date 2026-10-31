@@ -7,6 +7,7 @@
 extends "res://tools/area_builder.gd"
 
 const OUT := "res://areas/harbour/harbour.tscn"
+const IDENTITY := preload("res://tools/identity/harbour.gd").D  # what each place is: tools/area_identity.gd
 const DECK := 2.0         # the freighter's deck height above the quay
 const CONTAINER_H := 2.6
 const KERB_H := 0.5       # no jump, so a kerb holds the Operative off the sea
@@ -106,11 +107,11 @@ const SOLID := [
 ## The crane is open lattice: its tower and boom sit on the guards' layer, which blocks bodies but not sight,
 ## shots or the camera. Only these parts block sight: [name, rect, h0, h1], the machinery base and the top plate.
 const CRANE_SOLID := [["CraneBase", [54, 18, 4, 4], 0, 2.4], ["CranePlate", [54, 18, 4, 4], 7.7, 8]]
-## Low cover: [rect, h0].
+## Low cover: [rect, h0(, name: a ROWS key in area_kit.gd, Low (a road barrier) if missing)].
 const LOW := [
 	[[44, 22, 6, 1.2], 0], [[26, 45, 8, 1.2], 0], [[48, 14, 1.2, 6], 0], [[52, 56, 6, 1.2], 0],
 	[[8, 43, 5, 1.2], 0],        # the forecourt, in front of the lift housing
-	[[66, 22, 1.2, 3], DECK],    # deck crates by the port rail, the port way past O1
+	[[66, 22, 1.2, 3], DECK, "Crates"],  # deck crates by the port rail, the port way past O1
 ]
 ## Enterable buildings: [name, rect, height, doors [[side, centre(, width)]], tint, base, wall material].
 const BUILDINGS := [
@@ -372,11 +373,12 @@ func _build() -> void:
 	_crane_lattice(solid)
 	_camera_poles(solid, CAMERAS)
 	for l in LOW:
-		_box(solid, "Low%d" % solid.get_child_count(), l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
+		_box(solid, "%s%d" % [l[2] if l.size() > 2 else "Low", solid.get_child_count()], l[0], l[1], l[1] + LOW_H, "wood", Color(0.9, 0.8, 0.6))
 	for b in BUILDINGS:
 		_building(_group(solid, b[0]), b)
 	_gangway(solid)
-	_dress(nav, DRESS)
+	_identity(solid, IDENTITY)
+	_dress(nav, DRESS + IDENTITY.dress)
 	var crawl := _group(nav, "Crawlspaces")
 	for c in CRAWLSPACES:
 		_crawlspace(_group(crawl, c.name), c)
@@ -389,8 +391,8 @@ func _build() -> void:
 	_backdrop()
 	_dress(_root.get_node("Backdrop"), BACKDROP_DRESS, false)
 	_surroundings()
-	_markings(MARKINGS)
-	_beacons(BEACONS)
+	_markings(MARKINGS + IDENTITY.markings)
+	_beacons(BEACONS + IDENTITY.beacons)
 	_mood("harbour")
 
 	var spots := _group(_root, "Spots")

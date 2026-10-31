@@ -3,7 +3,12 @@
 ## and the Core room's gallery. The stair ends flush with the mezzanine's edge at y 25 (at 24.8 the slab's lip stopped
 ## the Operative), along the west wall in view of the corridor door (a ladder there went unnoticed in playtest 1).
 ## Two green ceiling lamps (`lit`) light the door and the stair, and PlantCue turns the camera to the stair once.
+## Identity: the lift door in a striped blast frame under a CORE ACCESS sign, a service tunnel's cable tray and pipe,
+## the plant room's door, pumps and pipework.
 extends "res://tools/core/zone.gd"
+
+const HAZ_DARK := Color(0.3, 0.3, 0.32)
+const PIPE := Color(0.85, 0.7, 0.6)
 
 const D := {
 	start = [8, 32, 0],
@@ -32,6 +37,7 @@ const D := {
 		["ceiling_lamp", [-7, 31.4, 3.8], 0], ["ceiling_lamp", [-11, 27.5, 7.2], 0],  # `lit`: the plant room's door and the stair
 		# the plant room: a generator and drums, clear of the stair (x -14 to -11.5) and the door (x -8 to -6)
 		["generator", [-6.5, 26.5, 0], 90], ["drum", [-5.2, 23, 0], 0], ["drum", [-5.3, 24, 0], 30],
+		["pump", [-9.5, 22.65, 0], 180], ["pump", [-7.0, 22.65, 0], 180],
 	],
 	lit = [[-7, 31.4], [-11, 27.5]],  # ceiling lamps of `dress` that glow green (LIT_COLOUR), the way to the stair (playtest 4)
 	markings = [
@@ -40,5 +46,23 @@ const D := {
 	],
 	spots = {RoadEntry = [-2, 32, 0], PlantStair = [-12.5, 26.5, 2]},  # PlantStair is where PlantCue turns the camera
 	areas = [["PlantCue", [-7, 32, 1.5], Vector3(2, 3, 2.6), "res://areas/core/plant_cue.gd"]],
+	doorways = [{at = [-7, 30.85], along_x = true, t = 0.3, wall_h = 4.0, width = 2.0, out = 1.0, style = "door", mat = "brick", tint = Color(0.7, 0.72, 0.75)}],
+	trim = [
+		# the lift door's frame, both faces, and the plate over it up to the cut's lintel (LiftDoor itself is build_core.gd's)
+		["LiftJambN", [1.0, 30.7, 0.15, 0.3], 0.0, 3.3, "hazard"], ["LiftJambS", [1.0, 33.0, 0.15, 0.3], 0.0, 3.3, "hazard"],
+		["LiftHead", [1.0, 30.7, 0.15, 2.6], 3.0, 3.3, "hazard"], ["LiftPlate", [0.5, 30.7, 0.5, 2.6], 3.3, 4.3, "metal", HAZ_DARK],
+		["LiftJambNW", [0.35, 30.7, 0.15, 0.3], 0.0, 3.3, "hazard"], ["LiftJambSW", [0.35, 33.0, 0.15, 0.3], 0.0, 3.3, "hazard"],
+		# the tunnel: a cable tray along its south wall, a pipe along the north
+		["CableTray", [-13.8, 32.85, 15.6, 0.15], 3.1, 3.16, "metal", Color(0.55, 0.57, 0.6)], ["Cables", [-13.8, 32.88, 15.6, 0.1], 3.16, 3.22, "metal", Color(0.2, 0.2, 0.22)],
+		["TunnelPipe", [-13.8, 31.0, 15.6, 0.2], 3.55, 3.75, "rust", PIPE],
+		["CoreSignHangN", [-12.52, 31.6, 0.04, 0.04], 3.75, 4.0, "metal", HAZ_DARK], ["CoreSignHangS", [-12.52, 32.4, 0.04, 0.04], 3.75, 4.0, "metal", HAZ_DARK],
+		# the plant room's pipework, along the north and east walls
+		["PlantPipeN", [-9.5, 22.3, 5.2, 0.25], 2.3, 2.55, "rust", PIPE], ["PlantPipeE", [-4.55, 22.3, 0.25, 8.4], 2.3, 2.55, "rust", PIPE],
+	],
+	signs = [
+		["sign.core_access", [2.03, 32, 4.85], 90, 2.6, "red", 0.5], ["sign.plant_room", [-7, 31.03, 3.05], 180, 1.8, "white", 0.3],
+		["sign.core", [-12.5, 32, 3.55], 90, 1.6, "red", 0.4],
+	],
+	props = [["keypad", [1.6, 33.28, 1.3], 0], ["valve_wheel", [-4.39, 25.5, 1.4], 270], ["valve_wheel", [-4.39, 27.0, 1.4], 270]],
 	reach = {Corridor = [-6, 32, 0], PlantDoor = [-7, 30, 0], PlantStair = [-12.75, 30.1, 0], Mezzanine = [-12, 23.5, GALLERY]},
 }

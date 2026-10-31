@@ -7,12 +7,15 @@ const DRESS_SOLID_H := 0.6
 ## Colliders that differ from the model's bounds: the lamp post's arm overhangs, so only its pole blocks;
 ## ceiling lamps hang out of reach.
 const DRESS_SHAPES := {lamp_post = Vector3(0.4, 6, 0.4), ceiling_lamp = Vector3.ZERO, freighter_hull = Vector3.ZERO, utility_pole = Vector3(0.4, 9, 0.4),
-	pine = Vector3(0.6, 8, 0.6), tyre_fender = Vector3.ZERO, piling = Vector3.ZERO}
+	pine = Vector3(0.6, 8, 0.6), tyre_fender = Vector3.ZERO, piling = Vector3.ZERO, lift_post = Vector3(0.5, 3.8, 0.5), boom_gate = Vector3(0.5, 1.1, 0.5),
+	strip_curtain = Vector3.ZERO, conveyor = Vector3.ZERO}
+## Models whose collider stands at the model's origin rather than its bounds' centre (an arm skews the bounds).
+const DRESS_PIVOT := ["lamp_post", "lift_post", "boom_gate"]
 ## Models that light up: [light offset in the model's own axes, range, colour].
 const DRESS_LIGHTS := {
 	lamp_post = [Vector3(0, 5.4, -1.1), 14.0, Color(1, 0.62, 0.3)],  # sodium
 	ceiling_lamp = [Vector3(0, -0.4, 0), 9.0, Color(1, 0.95, 0.85)],
-	lighthouse = [Vector3(0, 12.85, 0), 30.0, Color(1, 0.85, 0.55)],
+	lighthouse = [Vector3(0, 12.85, 0), 30.0, Color(1, 0.85, 0.55)], wall_lamp = [Vector3(0.3, 0, 0), 6.0, Color(1, 0.85, 0.6)],
 	buoy_red = [Vector3(0, 3.4, 0), 6.0, Color(1, 0.15, 0.1)], buoy_green = [Vector3(0, 3.4, 0), 6.0, Color(0.15, 1, 0.3)],
 }
 ## Untextured models (made in Blender as bare shape) that wear an area material: model = [material, tint].
@@ -134,7 +137,7 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 		b.add_child(m)
 		m.scale = s
 		m.position = Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * s - Vector3.UP * size.y / 2
-		if solid and key == "lamp_post":  # the arm skews the bounds' centre: the pole stands at the model's origin
+		if solid and key in DRESS_PIVOT:
 			b.get_node("Shape").position = Vector3(m.position.x, 0, m.position.z)
 		if DRESS_LIGHTS.has(key):
 			var l := OmniLight3D.new()
