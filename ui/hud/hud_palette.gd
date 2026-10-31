@@ -25,6 +25,7 @@ const SAND := Color("d4bc8a")  # the Operative's own readouts: brackets, gear na
 const SAND_DIM := Color("d4bc8a80")
 const MINT := Color("8fd9c0")  # the live call card and the Codec
 const CYAN := Color("a9d6dc")  # Aigis, and nothing else
+const FULL_GREEN := Color("6fe08a")  # the faintest hue life takes at full health
 const DMG := Color("c42032")  # ALERT, a calling guard, life lost
 const MARK_RED := Color("e0423a")  # the ! over a guard
 const SLP := Color("2c6aa3")
@@ -104,6 +105,30 @@ static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a
 	ci.draw_style_box(_key_box, Rect2(p, Vector2(w, side)))
 	hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
 	return w
+
+
+const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]  # 4x4 ordered-dither thresholds
+const DITHER_PX := 3.0  # one dither pixel, in design px
+const DITHER_BAND := 5  # dither pixels wide
+
+## A borderless plate: `tint` rising from alpha `a0` at the dithered edge to `a1` at the far one, the dithered edge
+## (`fade_left`: the left one) crumbling away in an ordered-dither band whose pixels crawl slowly, as if fading out.
+static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true) -> void:
+	var band := DITHER_BAND * DITHER_PX
+	var body := Rect2(r.position.x + band, r.position.y, r.size.x - band, r.size.y) if fade_left else Rect2(r.position, Vector2(r.size.x - band, r.size.y))
+	var lo := Color(tint, a0)
+	var hi := Color(tint, a1)
+	var near := lo.lerp(hi, band / r.size.x)
+	var cols := PackedColorArray([near, hi, hi, near] if fade_left else [hi, near, near, hi])
+	ci.draw_polygon(PackedVector2Array([body.position, Vector2(body.end.x, body.position.y), body.end, Vector2(body.position.x, body.end.y)]), cols)
+	var t := int(Time.get_ticks_msec() / 220.0)  # the pattern crawls a cell every 220 ms
+	var rows := ceili(r.size.y / DITHER_PX)
+	for cx in DITHER_BAND:
+		var dens := (cx + 0.5) / DITHER_BAND  # 0 at the dying edge, 1 where it meets the body
+		var x := r.position.x + cx * DITHER_PX if fade_left else r.end.x - (cx + 1) * DITHER_PX
+		for ry in rows:
+			if (BAYER[((ry + t) & 3) * 4 + ((cx + t * 3) & 3)] + 0.5) / 16.0 < dens:
+				ci.draw_rect(Rect2(x, r.position.y + ry * DITHER_PX, DITHER_PX, minf(DITHER_PX, r.end.y - r.position.y - ry * DITHER_PX)), near)
 
 
 ## A smoke panel with its hairline and the two sand corner brackets (docs/DESIGN.md Panel).
