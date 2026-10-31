@@ -10,6 +10,7 @@ const REQUISITION := preload("res://ui/requisition/requisition.gd")
 const GLYPHS: Dictionary = preload("res://ui/finale/finale.gd").GLYPHS
 const TAG := 112  # px from the margin to a Voice line's text: room for "() GLAUKOPIS"
 const MARGIN := 24
+const RIGHT_COL := 560.0  # px from the margin to a Habit row text column
 
 var record: Dictionary
 var plan: Dictionary
@@ -29,7 +30,7 @@ func _ready() -> void:
 	_lines = _build_lines()
 	for l: Array in _lines:
 		# objectives and headings have no Voice: shown at once
-		var voice := VoiceBlip.voice_of(l[1]) if l[0] == "voice" else ""
+		var voice := VoiceBlip.voice_of(l[1]) if l[0] in ["voice", "habit", "hint"] else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(tr(l[1]), "") if l[0] != "band" else "", voice))
 	var scan := UiScan.make(HudPalette.BACKDROP, true, true, HudPalette.BACKDROP_DIM)
 	scan.show_behind_parent = true  # under the page's own drawing
@@ -110,7 +111,9 @@ func _build_lines() -> Array:
 		return [["title", "ui.brief.complete"], ["gap", ""], ["head", "ui.brief.ending"], ["band", band]]
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
-	lines.append_array(plan.briefing_keys.map(func(k: String) -> Array: return ["voice", k]))
+	lines.append(["gap", ""])
+	for key: String in plan.briefing_keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
+		lines.append(["habit" if key.begins_with("brief.pallas.habit.") else "hint" if ".hint." in key else "voice", key])
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
 	lines.append_array(m.steps.map(func(s: Dictionary) -> Array: return ["objective", s.objective]))
 	lines.append(["objective", Campaign.objective(record.mission, m.steps.size())])
@@ -145,16 +148,29 @@ func _draw() -> void:
 			"band":  # the ending: its Voice, large
 				HudPalette.hud_text(self, Vector2(x, y + 20), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1]).to_upper()], 64, HudPalette.CYAN, HudPalette.tracked(disp, 64, 0.1), 0, false)
 				y += 80
+			"habit":  # the Habit Aigis noticed: glyph, name and levels deployed on the left, Pallas's line beside them
+				if s != "":
+					var h: String = String(_lines[i][1]).get_slice(".", 3)
+					HabitGlyphs.draw(self, h, Vector2(x, y - 22), HudPalette.CYAN, 4.0)
+					HudPalette.hud_text(self, Vector2(x + 62, y + 10), tr("ui.habit." + h).to_upper(), 40, HudPalette.LIGHT, HudPalette.tracked(disp, 40, 0.06), 0, false)
+					for p in 3:
+						draw_rect(Rect2(x + 62 + p * 30, y + 22, 25, 8), HudPalette.SAND if p < int(plan.deployed.get(h, 0)) else Color(HudPalette.LIGHT, 0.2))
+					HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y), s, 24, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
+			"hint":  # what that Habit now meets: the sponsoring Voice and its line, closing the row
+				var who := VoiceBlip.voice_of(_lines[i][1])
+				var rows := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), d.x - x * 2 - RIGHT_COL, HudPalette.FIGURE_MED, 34)
+				if s != "":
+					_voice_head(Vector2(x + RIGHT_COL, y + 50), who, i, k)
+					var left := s.length()
+					for j in rows.size():
+						HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y + 96 + j * 44), rows[j].left(maxi(left, 0)), 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+						left -= rows[j].length() + 1
+				y += 96 + rows.size() * 44 - 12
+				draw_rect(Rect2(x, y, d.x - x * 2, 1), Color(HudPalette.LIGHT, 0.14))
+				y += 28
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
-				var glyph: String = GLYPHS[who]
-				var gf := HudPalette.tracked(disp, 26, 0.0)
-				var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
-				var pk := StoryMotion.pulse(_line_t if i == _typing_i and not _blips[i].done() else 99.0)
-				draw_set_transform((Vector2(x, y - 2) + Vector2(w / 2, -13)) * k, 0.0, Vector2(k, k) * pk)  # the glyph's pulse
-				draw_string(gf, Vector2(-w / 2, 13), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, HudPalette.CYAN)
-				draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
-				HudPalette.hud_text(self, Vector2(x + w + 10, y - 2), tr("ui.voice." + who).to_upper(), 26, HudPalette.CYAN, HudPalette.tracked(disp, 26, 0.2), 0, false)
+				_voice_head(Vector2(x, y), who, i, k)
 				var full := HudPalette.wrap(_prefix.sub(tr(_lines[i][1]), ""), body_w, HudPalette.FIGURE_MED, 28)
 				var left := s.length()
 				for l in full:
@@ -166,5 +182,24 @@ func _draw() -> void:
 				for l in HudPalette.wrap("- " + s, d.x - x * 2, HudPalette.FIGURE_MED, 28):
 					HudPalette.hud_text(self, Vector2(x, y), l, 28, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
 					y += 38
-	var foot := tr("ui.brief.any_key") if Campaign.done() else "%s   [R] %s" % [tr("ui.brief.any_key"), tr("ui.brief.requisition")]  # R is the briefing's own key
-	HudPalette.hud_text(self, Vector2(x, d.y - 60), foot.to_upper(), 22, HudPalette.LIGHT_3, HudPalette.tracked(disp, 22, 0.24), 0, false)
+	var af := HudPalette.tracked(disp, 22, 0.24)
+	var ak := tr("ui.brief.any_key").to_upper()
+	HudPalette.hud_text(self, Vector2(x, d.y - 60), ak, 22, HudPalette.LIGHT_2, af, 0, false)
+	if not Campaign.done():  # R is the briefing's own key
+		var rx := x + af.get_string_size(ak, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x + 56
+		var kw := HudPalette.keycap(self, Vector2(rx, d.y - 86), "R", true)
+		HudPalette.hud_text(self, Vector2(rx + kw + 14, d.y - 60), tr("ui.brief.requisition").to_upper(), 22, HudPalette.LIGHT_2, af, 0, false)
+
+
+## A Voice's mark in a thin cyan frame, then its name; the mark pulses while its line types.
+func _voice_head(at: Vector2, who: String, i: int, k: float) -> void:
+	var disp := HudPalette.DISPLAY
+	var glyph: String = GLYPHS[who]
+	var gf := HudPalette.tracked(disp, 26, 0.0)
+	var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
+	var pk := StoryMotion.pulse(_line_t if i == _typing_i and not _blips[i].done() else 99.0)
+	draw_rect(Rect2(at.x - 10, at.y - 28, w + 20, 38), Color(HudPalette.CYAN, 0.45), false, 1.5)
+	draw_set_transform((Vector2(at.x, at.y - 2) + Vector2(w / 2, -13)) * k, 0.0, Vector2(k, k) * pk)
+	draw_string(gf, Vector2(-w / 2, 13), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, HudPalette.CYAN)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	HudPalette.hud_text(self, Vector2(at.x + w + 24, at.y - 2), tr("ui.voice." + who).to_upper(), 26, HudPalette.CYAN, HudPalette.tracked(disp, 26, 0.2), 0, false)

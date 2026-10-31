@@ -370,6 +370,8 @@ ui.pause.restart,RESTART FROM CHECKPOINT,REINICIAR DESDE EL PUNTO DE CONTROL
 ui.pause.abort,ABORT MISSION,ABANDONAR MISIÓN
 ui.pause.quit,QUIT TO MENU,SALIR AL MENÚ
 ui.pause.quit_confirm,QUIT TO MENU? THE MISSION IS LOST.,¿SALIR AL MENÚ? SE PIERDE LA MISIÓN.
+ui.pause.restart_confirm,RESTART FROM THE CHECKPOINT? PROGRESS SINCE IT IS LOST.,¿REINICIAR DESDE EL PUNTO DE CONTROL? SE PIERDE EL PROGRESO DESDE ENTONCES.
+ui.pause.abort_confirm,ABORT THE MISSION? NOTHING IS KEPT.,¿ABANDONAR LA MISIÓN? NO SE CONSERVA NADA.
 ui.pause.controls,CONTROLS,CONTROLES
 ui.ctl.move,MOVE,MOVERSE
 ui.ctl.walk,WALK,CAMINAR
@@ -436,7 +438,9 @@ ui.req.max,MAX,MÁX
 ui.req.items,S-RANK ITEMS,OBJETOS DE RANGO S
 ui.req.unlocked,UNLOCKED,DESBLOQUEADO
 ui.req.s_on,S ON MISSION {n},S EN MISIÓN {n}
-ui.req.footer,UP/DOWN: PICK   ENTER: BUY   ESC: CONTINUE,ARRIBA/ABAJO: ELEGIR   INTRO: COMPRAR   ESC: SEGUIR
+ui.req.hint.pick,PICK,ELEGIR
+ui.req.hint.buy,BUY,COMPRAR
+ui.req.hint.continue,CONTINUE,SEGUIR
 ui.upgrade.scanner,SCANNER CELLS,CELDAS DE ESCÁNER
 ui.upgrade.scanner.effect,SCANNER CHARGES,CARGAS DE ESCÁNER
 ui.upgrade.magazines,MAGAZINE POUCH,PORTACARGADORES
@@ -469,6 +473,15 @@ ui.codec.answer,[{key}] ANSWER,[{key}] RESPONDER
 ui.post.rank,RANK,RANGO
 ui.post.title,MISSION RESULT,RESULTADO DE MISIÓN
 ui.post.nothing,NOTHING NEW,SIN NOVEDADES
+ui.debug.report,Aigis report,Informe de Aigis
+ui.debug.none,No Mission or plan on this screen,Sin misión ni plan en esta pantalla
+ui.debug.profile,Profile,Perfil
+ui.debug.voices,Voices,Voces
+ui.debug.plan,Plan,Plan
+ui.debug.budget,Budget {n},Presupuesto {n}
+ui.debug.nothing,Nothing deployed,Nada desplegado
+ui.debug.lethality,Lethality {ratio}  ending {band},Letalidad {ratio}  final {band}
+ui.post.answers,ANSWERS UNLOCKED: {n},RESPUESTAS DESBLOQUEADAS: {n}
 ui.post.eases,AIGIS EASES OFF,AIGIS RELAJA
 ui.post.no_answer,NO ANSWER YET,SIN RESPUESTA AÚN
 ui.post.learned,AIGIS HAS LEARNED,AIGIS HA APRENDIDO

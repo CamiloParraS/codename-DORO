@@ -179,7 +179,13 @@ func _draw() -> void:
 	if line != "":
 		HudPalette.hud_text(self, Vector2(136, d.y - 83), line, 21, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 	draw_rect(Rect2(0, d.y - 64, d.x, 64), HudPalette.GROUND)
-	HudPalette.hud_text(self, Vector2(80, d.y - 24), tr("ui.req.footer"), 20, HudPalette.LIGHT_2, _f(20, 0.16), 0, false)
+	var hx := 80.0
+	for hint: Array in [[["UP", "DOWN"], "pick"], [["ENTER"], "buy"], [["ESC"], "continue"]]:
+		for legend: String in hint[0]:
+			hx += HudPalette.keycap(self, Vector2(hx, d.y - 50), legend, true) + 6
+		var verb := tr("ui.req.hint." + hint[1]).to_upper()
+		HudPalette.hud_text(self, Vector2(hx + 8, d.y - 24), verb, 20, HudPalette.LIGHT_2, _f(20, 0.16), 0, false)
+		hx += _f(20, 0.16).get_string_size(verb, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 56
 
 
 func _title() -> void:

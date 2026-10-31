@@ -251,6 +251,11 @@ func _draw_aigis(d: Vector2) -> void:
 		var e: Dictionary = changed[i]
 		var x := 80.0 + (1.0 - clampf((_age - born) / 0.1, 0.0, 1.0)) * 36.0
 		_aigis_row(Rect2(x, 230.0 + i * (h + gap), w, h), e)
+	if not changed.is_empty() and _age >= FIRST + changed.size() * CARD:  # where Aigis stands now, under the rows
+		var unlocked := 0
+		for e: Dictionary in strip:
+			unlocked += int(e.level)
+		HudPalette.hud_text(self, Vector2(80, 230.0 + changed.size() * (h + gap) + 14), tr("ui.post.answers").format({n = unlocked}).to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.2), 0, false)
 	if _age >= FIRST + changed.size() * CARD + 0.4:
 		var ak := tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(self, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)

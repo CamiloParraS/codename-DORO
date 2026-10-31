@@ -24,6 +24,7 @@ var _menu := UiMenu.new(760)
 var _confirm_box := PanelContainer.new()
 var _confirm_menu := UiMenu.new(420)
 var _confirm_q := Label.new()
+var _on_yes := Callable()  # what YES does: the question asked last
 var _resume: Button
 
 
@@ -75,11 +76,12 @@ func _ready() -> void:
 	_stage.add_child(_menu)
 	_resume = _row(_menu, "ui.pause.resume", func() -> void: _show(false))
 	_row(_menu, "ui.pause.restart", func() -> void:
-		_show(false)
-		get_tree().call_group("checkpoint", "restore_checkpoint"))
-	_row(_menu, "ui.pause.abort", _abort)
+		_ask("ui.pause.restart_confirm", func() -> void:
+			_show(false)
+			get_tree().call_group("checkpoint", "restore_checkpoint")))
+	_row(_menu, "ui.pause.abort", func() -> void: _ask("ui.pause.abort_confirm", _abort))
 	_row(_menu, "ui.menu.settings", _settings)
-	_row(_menu, "ui.pause.quit", func() -> void: _ask(), true)
+	_row(_menu, "ui.pause.quit", func() -> void: _ask("ui.pause.quit_confirm", _quit), true)
 	_controls()
 	_build_confirm()
 	_layout()
@@ -151,7 +153,7 @@ func _build_confirm() -> void:
 	v.add_child(_confirm_menu)
 	_confirm_box.add_child(v)
 	_stage.add_child(_confirm_box)
-	_row(_confirm_menu, "ui.yes", _quit)
+	_row(_confirm_menu, "ui.yes", func() -> void: _on_yes.call())
 	_row(_confirm_menu, "ui.no", func() -> void:
 		_confirm_box.hide()
 		_menu.show()
@@ -229,8 +231,10 @@ func _settings() -> void:
 	add_child(p)
 
 
-## The question in place of the menu, then YES and NO (NO focused).
-func _ask() -> void:
+## The question in place of the menu, then YES (which runs `on_yes`) and NO (focused).
+func _ask(question: String, on_yes: Callable) -> void:
+	_confirm_q.text = question
+	_on_yes = on_yes
 	_menu.hide()
 	_confirm_box.show()
 	_confirm_menu.focus_first(true)

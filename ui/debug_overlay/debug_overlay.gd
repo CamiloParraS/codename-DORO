@@ -1,6 +1,8 @@
 ## F3 debug overlay, on every screen (an autoload): why Aigis deployed what it did and why the guards
 ## act. Reads the first node in group "mission_plan" (record and plan; tally too inside a Mission),
 ## the guards' and cameras' last reasons, and Glaukopis's last judgement (group "radio").
+## F3 again swaps the developer text for the Aigis report, three large blocks (Profile, Voices, Plan) built to be
+## read across a room; a third press hides it.
 extends CanvasLayer
 
 const FS := 22  # design px, on the 1080 canvas every screen shares
@@ -9,17 +11,19 @@ const RIGHT_X := 1000.0  # design px
 var _root := Control.new()  # scaled from the 1080 design canvas, like the other full-screen pages
 var _left := Label.new()
 var _right := Label.new()
+var _report := Control.new()  # the presentation view, drawn from the same record and plan
+var _report_on := false
+var _bg := ColorRect.new()
 
 
 func _ready() -> void:
 	layer = 100
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
-	var bg := ColorRect.new()
-	bg.color = Color(HudPalette.DARK_INK, 0.92)
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
+	_bg.color = Color(HudPalette.DARK_INK, 0.92)
+	_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_bg)
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_root)
 	var rule := ColorRect.new()  # the cyan header rule: this is Aigis's view
@@ -41,6 +45,10 @@ func _ready() -> void:
 		_root.add_child(l)
 	_left.position = Vector2(32, 20)
 	_right.position = Vector2(RIGHT_X, 20)
+	_report.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_report.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_report.draw.connect(_draw_report)
+	_root.add_child(_report)
 	get_viewport().size_changed.connect(_fit)
 	_fit()
 
@@ -54,7 +62,13 @@ func _fit() -> void:
 
 func _input(e: InputEvent) -> void:
 	if e.is_action_pressed("debug_overlay"):
-		visible = not visible
+		if not visible:
+			visible = true
+			_report_on = false
+		elif not _report_on:
+			_report_on = true
+		else:
+			visible = false
 	elif e.is_action_pressed("debug_mark"):
 		_mark()
 
@@ -92,7 +106,14 @@ static func _diagram(p: Vector3) -> String:
 
 
 func _process(_delta: float) -> void:
+	_left.visible = not _report_on
+	_right.visible = not _report_on
+	_report.visible = _report_on
+	_bg.color.a = 1.0 if _report_on else 0.92  # the report is read from afar: nothing ghosts through
 	if not visible:
+		return
+	if _report_on:
+		_report.queue_redraw()
 		return
 	var src := get_tree().get_first_node_in_group("mission_plan")
 	if not src:
@@ -159,3 +180,68 @@ func _field(tally: MissionTally) -> String:
 
 static func _ratio(r: float) -> String:
 	return "undefined" if is_nan(r) else "%.2f" % r
+
+
+## The Aigis report: Profile (points toward each level), Voices (weights) and Plan (what is deployed and by whom),
+## then the lethality line. Bars instead of numbers, 30 px and up, in the post-Mission page's palette.
+func _draw_report() -> void:
+	var c := _report
+	var d := _root.size
+	var disp := HudPalette.DISPLAY
+	var src := get_tree().get_first_node_in_group("mission_plan")
+	HudPalette.hud_text(c, Vector2(80, 96), tr("ui.debug.report").to_upper(), 54, HudPalette.CYAN, HudPalette.tracked(disp, 54, 0.14), 0, false)
+	if not src:
+		HudPalette.hud_text(c, Vector2(80, 190), tr("ui.debug.none").to_upper(), 34, HudPalette.LIGHT_3, HudPalette.tracked(disp, 34, 0.2), 0, false)
+		return
+	var record: Dictionary = src.record
+	var plan: Dictionary = src.plan
+	var tally: MissionTally = src.get("tally")
+	var gained: Dictionary = tally.points() if tally else {}
+	var m: int = record.mission
+	_report_head(c, Vector2(80, 190), tr("ui.debug.profile"), 560)
+	for i in Aigis.HABITS.size():
+		var h: String = Aigis.HABITS[i]
+		var p := int(record.points.get(h, 0))
+		var y := 262.0 + i * 96.0
+		HabitGlyphs.draw(c, h, Vector2(80, y - 24), HudPalette.CYAN, 4.0)
+		HudPalette.hud_text(c, Vector2(144, y + 10), tr("ui.habit." + h).to_upper(), 34, HudPalette.LIGHT, HudPalette.tracked(disp, 34, 0.06), 0, false)
+		var bar := Rect2(144, y + 24, 400, 12)
+		c.draw_rect(bar, Color(HudPalette.LIGHT, 0.14))
+		c.draw_rect(Rect2(bar.position, Vector2(bar.size.x * clampf(p / 300.0, 0.0, 1.0), bar.size.y)), HudPalette.SAND)
+		for t in [1, 2]:  # the level thresholds
+			c.draw_rect(Rect2(bar.position.x + bar.size.x * t / 3.0 - 1, bar.position.y - 4, 2, bar.size.y + 8), HudPalette.GROUND)
+		var shown := "L%d" % Aigis.level(p, m)
+		if gained.get(h, 0):
+			shown += "  +%d" % gained[h]
+		HudPalette.hud_text(c, Vector2(580, y + 10), shown, 34, HudPalette.SAND, HudPalette.tracked(disp, 34, 0.04), 0, false)
+	_report_head(c, Vector2(760, 190), tr("ui.debug.voices"), 480)
+	var top := 1.0
+	for v: String in Aigis.VOICES:
+		top = maxf(top, float(plan.weights[v]))
+	for i in Aigis.VOICES.size():
+		var v: String = Aigis.VOICES[i]
+		var y := 262.0 + i * 96.0
+		var lead: bool = v == plan.dominant
+		var col := HudPalette.CYAN if lead else HudPalette.LIGHT_2
+		HudPalette.hud_text(c, Vector2(760, y + 10), tr("ui.voice." + v).to_upper(), 34, col, HudPalette.tracked(disp, 34, 0.12), 0, false)
+		var bar := Rect2(760, y + 24, 400, 12)
+		c.draw_rect(bar, Color(HudPalette.LIGHT, 0.14))
+		c.draw_rect(Rect2(bar.position, Vector2(bar.size.x * float(plan.weights[v]) / top, bar.size.y)), col)
+	_report_head(c, Vector2(1300, 190), tr("ui.debug.plan"), 540)
+	HudPalette.hud_text(c, Vector2(1300, 262), tr("ui.debug.budget").format({n = plan.budget}).to_upper(), 34, HudPalette.LIGHT, HudPalette.tracked(disp, 34, 0.12), 0, false)
+	var y := 330.0
+	for p: Dictionary in plan.picks:
+		HudPalette.hud_text(c, Vector2(1300, y), String(Aigis.LADDERS[p.habit][p.level - 1][1]), 30, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+		HudPalette.hud_text(c, Vector2(1300, y + 30), "%s  %s" % [tr("ui.voice." + p.sponsor).to_upper(), tr("ui.habit." + p.habit).to_upper()], 20, HudPalette.LIGHT_3, HudPalette.tracked(disp, 20, 0.2), 0, false)
+		y += 78.0
+	if plan.picks.is_empty():
+		HudPalette.hud_text(c, Vector2(1300, y), tr("ui.debug.nothing").to_upper(), 30, HudPalette.LIGHT_3, HudPalette.tracked(disp, 30, 0.2), 0, false)
+	var ratio := Aigis.lethality_ratio(record)
+	var line := tr("ui.debug.lethality").format({ratio = _ratio(ratio), band = Aigis.resolve_ending(ratio).to_upper()})
+	c.draw_rect(Rect2(80, d.y - 120, d.x - 160, 1), Color(HudPalette.LIGHT, 0.2))
+	HudPalette.hud_text(c, Vector2(80, d.y - 60), line.to_upper(), 34, HudPalette.LIGHT, HudPalette.tracked(disp, 34, 0.16), 0, false)
+
+
+func _report_head(c: Control, at: Vector2, title: String, width: float) -> void:
+	HudPalette.hud_text(c, at, title.to_upper(), 26, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 0, false)
+	c.draw_rect(Rect2(at.x, at.y + 14, width, 2), Color(HudPalette.LIGHT, 0.4))

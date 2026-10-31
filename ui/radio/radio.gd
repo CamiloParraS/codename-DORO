@@ -336,7 +336,8 @@ func _draw() -> void:
 			p.x -= w
 		elif dir.x <= 0.2:
 			p.x -= w / 2
-		var ink := RING_SAND if on else HudPalette.LIGHT_3
+		var ink := RING_SAND if on else HudPalette.LIGHT_2
+		draw_rect(Rect2(p.x - 10, p.y - 22, w + 20, 32), Color(HudPalette.GLASS, 0.6))  # the label reads over any scene
 		HudPalette.hud_text(self, p, num, 20, Color(ink, ink.a * 0.7), f)
 		HudPalette.hud_text(self, p + Vector2(nw, 0), label, 20, ink, f)
 	HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.step." + menu.step), 20, RING_SAND, 0.24, HudPalette.LABEL, 1, false)
