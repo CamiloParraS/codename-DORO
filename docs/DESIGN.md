@@ -588,7 +588,10 @@ The game ships five screen families on purpose; the Overview's two materials (sm
 - **Dark plate menus:** main menu, mission select, settings, free mode, pause. `UiMenu` plates with a red selection tab over the dimmed Harbour. A row may carry up to four right-aligned stat columns (`UiMenu.COLS`: rank, time, kills, alerts) under a `add_columns_header` line; the full Mission name goes in the selected row's description.
 - **Grey paper:** Requisition only. Costs read in Recruits ("1 RECRUIT", "2 RECRUITS"), never "PTS".
 - **Story screens:** the Codec (CRT green, its own palette), the Briefing and finale (black, Aigis Cyan Voice glyphs), Mission cards (black, Antonio) and game over (the one Michroma screen).
+- **Briefing:** one row per answered Habit, same grammar as the post-Mission page: glyph, name and deployed pips on the left, Pallas's line and then the sponsoring Voice (its mark in a thin cyan frame) and its line on the right. Voice lines that belong to no Habit follow as a plain list. `[R]` Requisition is a keycap.
 - **Post-Mission (black, sand and cyan):** page 1 is the Rank; page 2, AIGIS HAS LEARNED, is one full-width row per Habit the Profile moved on, cause then effect: glyph, name, arrow and pips on the left, and on the right the answering Voice with the same line the Briefing speaks (`brief.<voice>.hint.<habit>.<level>`), or AIGIS EASES OFF when the Habit fell.
+
+**Pause** asks before Restart from checkpoint, Abort Mission and Quit to menu, each with its own question and YES/NO (NO focused). **Debug overlay:** F3 shows the developer text, F3 again the Aigis report (Profile bars toward each level, Voice weights, the Plan and the lethality line, 26 px and up, opaque), a third press hides it.
 
 **Tutorial tips** draw as keycaps and words on one line (`[KEY]` becomes a small keycap, a double space a gap); a tip wider than the subtitle column falls back to wrapped text, and a tip waits, with its clock, while two radio lines are showing.
 
