@@ -9,6 +9,8 @@ signal reached
 const HOLD_TIME := 5.0
 const SWEEP_DELAY := 30.0
 const LINE := "hq.relay_offline"
+const RING := 1.0  # m, the ground mark (ObjectiveMarker) round where the Operative stands to hold E
+const FLOOR_DROP := 1.5  # the builders put a console's centre this far over its floor
 
 @export var hold_time := HOLD_TIME
 @export var prompt := "ui.prompt.sabotage"  # a text key, shown as "HOLD [E] <verb>"
@@ -23,6 +25,10 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	var ring := ObjectiveMarker.ring(RING)
+	ring.position.y = -FLOOR_DROP  # where the builders stand it; ground() finds the real floor
+	add_child(ring)
+	ObjectiveMarker.ground(ring, 1.0, 0.3 - FLOOR_DROP)  # from under a desk top
 	body_entered.connect(func(b: Node3D) -> void:
 		if b.is_in_group("operative"):
 			_operative = b)

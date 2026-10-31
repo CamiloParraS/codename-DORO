@@ -261,17 +261,14 @@ func _camera_poles(parent: Node3D, cameras: Array) -> void:
 			_box(parent, c[0] + "Pole", [c[1][0] - 0.1, c[1][1] - 0.1, 0.2, 0.2], c[3], c[1][2], "metal", Color(0.5, 0.5, 0.5))
 
 
-## Intel pickups: {name: [x, y[, floor h]]}, each a small unshaded slab 0.6 m up under $Intel.
-func _intel(pickups: Dictionary) -> void:
+## Intel pickups: {name: [x, y[, floor h]]}, each 0.6 m up under $Intel. Names in `places` are walked into, not
+## picked up (the Core's lift); intel_pickup.gd draws either at runtime (ObjectiveMarker).
+func _intel(pickups: Dictionary, places := []) -> void:
 	var intel := _group(_root, "Intel")
-	var intel_mat := StandardMaterial3D.new()
-	intel_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	for n in pickups:
 		var a := _area(intel, n, [pickups[n][0], pickups[n][1], pickups[n][2] + 0.6 if pickups[n].size() > 2 else 0.6], Vector3(1.5, 2, 1.5), "res://areas/intel_pickup.gd")
-		var m := MeshInstance3D.new()
-		m.name = "Mesh"
-		m.mesh = _box_mesh(Vector3(0.4, 0.1, 0.3), intel_mat)
-		_add(a, m)
+		if n in places:
+			a.set("item", false)
 
 
 ## Prints whether the navmesh reaches each `reach` spot from `start_at` (within 0.5 m across and 1 m up,

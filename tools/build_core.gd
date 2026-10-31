@@ -176,7 +176,7 @@ func _tint_lit_lamps(nav: Node3D) -> void:
 
 ## The Core's steps under $Intel: the lift panel (a console, as in Mission 1) and the lift (a walk-in).
 func _core_objectives() -> void:
-	_intel(_zd("intel", true))
+	_intel(_zd("intel", true), ["IntelLift"])
 	var intel := _root.get_node("Intel")
 	for n in _zd("objectives", true):
 		var o: Dictionary = _zd("objectives", true)[n]
