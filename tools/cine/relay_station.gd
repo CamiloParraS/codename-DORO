@@ -1,8 +1,9 @@
 ## The Relay Station's takes, as data in diagram metres [x, y, height] (the frame of tools/build_relay_station.gd; _w turns it
 ## into world metres). Each take is one static function the builder calls with the Area's `Cine` node (tools/area_cine.gd does
 ## the rail); a take's stand-in props are mesh-only rigs under their own group, hidden in play and shown by the take.
-##   RelayCine.intro(cine)    # "Up the Signal": a radio, the cable, the mast, the valley, then down to the Operative
-##   RelayCine.outro(cine)    # "Dead Air": the carry's last stretch while the station's lamps die behind it
+##   RelayCine.intro(cine)    # "Up the Signal": the signal, the cable, the mast, the valley, then down to the Operative running in
+##   RelayCine.outro(cine)    # "Dead Air": the helipad while the station's lamps die behind it, in two takes: CineOutro (carrying
+##                            # the Chief) and CineOutroAlone (Cine.variant_key picks one from what he carries)
 class_name RelayCine
 extends RefCounted
 
@@ -41,6 +42,22 @@ static func _part(parent: Node, name: String, mesh: Mesh, at: Vector3, mat: Mate
 	return p
 
 
+## The Spoofing look's radio signal (RadioLook: three pixel-art wave frames, billboarded, unshaded, nearest), at `at`.
+static func _signal(parent: Node, name: String, at: Vector3, pixel: float) -> Sprite3D:
+	var s := Sprite3D.new()
+	s.name = name
+	s.texture = RadioLook.SIGNAL_ICON
+	s.hframes = 3
+	s.pixel_size = pixel
+	s.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	s.shaded = false
+	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	s.position = at
+	parent.add_child(s)
+	return s
+
+
 ## A thin bar from a to b (a cable run).
 static func _bar(parent: Node, name: String, a: Vector3, b: Vector3, mat: Material) -> void:
 	var box := BoxMesh.new()
@@ -63,9 +80,9 @@ static func rig_pose(at: Vector3, yaw: float) -> Array[Vector3]:
 
 
 # ---- Intro: "Up the Signal" ---------------------------------------------------------------------------------------
-# A crackling radio in the mess, the camera follows a pulse of light along the cable, up the mast and out over the valley,
-# where it leaves as a ring, then swoops down to the Operative at the start spot. He never moves, and the start is
-# beyond every guard's reach (the test). ~10 s.
+# The Spoofing signal sprite (RadioLook's) at the mess's radio, the camera follows a pulse of it along the cable, up the mast
+# and out over the valley, where it leaves as a ring, then swoops down as the Operative runs in from the side onto the start
+# spot and turns to face the start way. The start is beyond every guard's reach (the test). ~10 s.
 
 const INTRO_KEY := "CineIntro"
 const INTRO_LEN := 10.0
@@ -73,6 +90,10 @@ const INTRO_START := [8.0, 72.0, 0.0]  # OperativeStart (build_relay_station.gd 
 const INTRO_FACING := 45.0             # its facing, degrees (START_FACING)
 const RADIO := [58.6, 39.4, 4.25]
 const SIGNAL := Color(0.45, 0.85, 1.0)
+const RUN_FROM := [-1.0, 80.0, 0.0]    # where he runs in from, off to the side of the final shot (the hill's west edge)
+const RUN_T := [7.4, 8.9, 9.3]         # s he sets off, reaches the start spot, has turned to face the start way
+const RUN_SPEED := 5.5                 # m/s
+const SIGNAL_PX := 0.14                # the sprite's metres per pixel (RadioLook's drifting spark is 0.03)
 const RING_FROM := 6.8
 const RING_TO := 9.0
 ## The pulse: [at s, [x, y, h]] along the cable, radio to antenna tip. The cable bars join these points.
@@ -102,18 +123,7 @@ static func intro(cine: Node) -> AnimationPlayer:
 	props.visible = false  # a radio, a lit cable, the pulse and its ring; shown by the take, mesh only
 	cine.add_child(props)
 
-	var radio := Node3D.new()
-	radio.name = "Radio"
-	radio.position = _w(RADIO) + Vector3(0, -0.1, 0)
-	props.add_child(radio)
-	var steel := StandardMaterial3D.new()
-	steel.albedo_color = Color(0.32, 0.34, 0.3)
-	var body := BoxMesh.new()
-	body.size = Vector3(0.7, 0.4, 0.3)
-	_part(radio, "Body", body, Vector3.ZERO, steel)
-	var grille := BoxMesh.new()
-	grille.size = Vector3(0.4, 0.26, 0.02)
-	_part(radio, "Grille", grille, Vector3(0, 0, 0.16), _glow(SIGNAL, 2.0))
+	_signal(props, "Radio", _w(RADIO), SIGNAL_PX)  # the sprite the user swaps for the antenna art later
 
 	var cable := _glow(SIGNAL, 1.0)
 	var pts: Array[Vector3] = []
@@ -121,10 +131,7 @@ static func intro(cine: Node) -> AnimationPlayer:
 		pts.append(_w(row[1]))
 	for i in pts.size() - 1:
 		_bar(props, "Cable%d" % i, pts[i], pts[i + 1], cable)
-	var ball := SphereMesh.new()
-	ball.radius = 0.25
-	ball.height = 0.5
-	_part(props, "Pulse", ball, pts[0], _glow(SIGNAL, 8.0))
+	_signal(props, "Pulse", pts[0], SIGNAL_PX * 0.6)
 	var ring := TorusMesh.new()
 	ring.inner_radius = 0.92
 	ring.outer_radius = 1.0
@@ -146,27 +153,41 @@ static func intro(cine: Node) -> AnimationPlayer:
 	AreaCine.track(player, "IntroProps:visible", [0.0, INTRO_LEN], [true, false], true)  # gone again once control returns
 	AreaCine.track(player, "IntroProps/Pulse:position", _times(PULSE.map(func(r: Array) -> float: return r[0])), pts)
 	AreaCine.track(player, "IntroProps/Pulse:visible", [0.0, 1.6, 6.8], [false, true, false], true)
+	var beats: Array[float] = []
+	var frames: Array[int] = []
+	for i in int(INTRO_LEN / 0.5):  # the waves grow and restart, as in RadioLook's spark
+		beats.append(i * 0.5)
+		frames.append(i % 3)
+	for n in ["Radio", "Pulse"]:
+		AreaCine.track(player, "IntroProps/%s:frame" % n, beats, frames, true)
+	var run_from := _w(RUN_FROM)
+	var run_to := _w(INTRO_START)
+	var heading := atan2(-(run_to.x - run_from.x), -(run_to.z - run_from.z))  # the body's yaw for travelling that way
+	AreaCine.operative_track(player, _times(RUN_T), [run_from, run_to, run_to] as Array[Vector3], [heading, heading, -INTRO_FACING * RAD] as Array[float], RUN_SPEED)
 	AreaCine.track(player, "IntroProps/Ring:scale", [RING_FROM, RING_TO], [Vector3.ONE, Vector3.ONE * 60.0])
 	return player
 
 
 # ---- Outro: "Dead Air" --------------------------------------------------------------------------------------------
-# The Operative carries the Relay Chief the last stretch to the helipad while the station's lamps die behind him, from
-# the console outward, and the antenna's red lamp goes last. The walk is a position track with the real carry clip
-# looping (operative_track); the Chief rides his shoulder as in play. Fade to black over the last 0.6 s. ~9 s.
+# Control ends in the helipad's zone, so the take starts there (the rig's resting pose, no jump): he crosses the pad while the
+# station's lamps die behind him, from the console outward, and the antenna's red lamp goes last. Two takes, same length and
+# lamps: CineOutro carries the Chief (the carry clip loops under the position track, the Chief rides his shoulder as in play)
+# and CineOutroAlone, for an Operative carrying nothing (Cine.variant_key), where he crosses faster, stops and looks back at
+# the dying station. Fade to black over the last 0.6 s. ~9 s.
 
 const OUTRO_KEY := "CineOutro"
 const OUTRO_LEN := 9.0
 const OUTRO_THIRD_AT := 5.5
-const OUTRO_FROM := [21.0, 14.0, 6.0]
-const OUTRO_TO := [10.0, 14.0, 6.0]     # a metre short of the Extraction point (9, 14)
-const OUTRO_WALK_T := 5.5               # s the walk lasts (2 m/s over 11 m)
-const OUTRO_STEP := 1.6                 # m/s the carry clip plays at
+const OUTRO_FROM := [10.5, 14.0, 6.0]   # inside ExtractionPoint (9, 14; 4 m wide), where he comes in from the east
+const OUTRO_TO := [6.0, 14.0, 6.0]      # the pad's far side
 const OUTRO_YAW := PI / 2.0             # facing west
+const OUTRO_LOOK_YAW := -PI / 2.0       # alone: turned back east to the station
+const OUTRO_LOOK_AT := [3.4, 4.2]       # alone: s he stops, s he has turned
+## Per version: [m/s the clip plays at, s the walk lasts]. The carry is slow and heavy; alone he is quick.
+const OUTRO_WALK := {carry = [1.4, 3.2], alone = [2.0, 2.25]}
 const OUTRO_SHOTS := [
-	[0.0, [23.3, 13.5, 8.0], [19.0, 14.0, 7.4]],    # over the shoulder, at the rig's pose
-	[2.5, [21.0, 16.5, 8.0], [16.0, 14.0, 7.3]],    # easing wider
-	[4.5, [23.0, 20.0, 8.6], [12.0, 14.0, 7.3]],
+	[2.0, [15.0, 17.0, 8.3], [7.5, 14.0, 7.2]],     # easing wider as he crosses the pad
+	[4.0, [18.5, 19.5, 9.0], [8.0, 14.0, 7.3]],
 	[5.5, [26.0, 19.0, 9.5], [30.0, 12.0, 12.0]],   # he stops; the camera turns back to the station
 	[7.0, [29.0, 18.0, 10.5], [38.0, 12.0, 16.0]],
 	[OUTRO_LEN, [30.0, 18.0, 11.0], [37.0, 11.0, 26.0]],
@@ -177,17 +198,35 @@ const DEAD := [[1, 4.6], [2, 4.9], [3, 5.3], [4, 5.8], [5, 6.1], [6, 6.4], [7, 6
 const FLICKER := [0.0, 6.9, 7.2, 7.5, 7.8]  # the red lamp: on, off, on, off for good
 
 
-static func outro(cine: Node) -> AnimationPlayer:
-	var cams: Array[Vector3] = []
-	var aims: Array[Vector3] = []
-	var ats: Array[float] = []
+static func outro(cine: Node) -> void:
+	_outro(cine, OUTRO_KEY, false)
+	_outro(cine, OUTRO_KEY + Cine.ALONE, true)
+
+
+static func _outro(cine: Node, key: String, alone: bool) -> AnimationPlayer:
+	var pose := rig_pose(_w(OUTRO_FROM), OUTRO_YAW)  # the shot control leaves off on
+	var cams: Array[Vector3] = [pose[0]]
+	var aims: Array[Vector3] = [pose[1]]
+	var ats: Array[float] = [0.0]
 	for s in OUTRO_SHOTS:
 		ats.append(float(s[0]))
 		cams.append(_w(s[1]))
 		aims.append(_w(s[2]))
-	var player := AreaCine.rail(cine, OUTRO_KEY, cams, aims, ats, {min_s = 6.0, max_s = 10.0})
+	var player := AreaCine.rail(cine, key, cams, aims, ats, {min_s = 6.0, max_s = 10.0})
 	player.set_meta("third_at", OUTRO_THIRD_AT)
-	AreaCine.operative_track(player, [0.0, OUTRO_WALK_T], [_w(OUTRO_FROM), _w(OUTRO_TO)] as Array[Vector3], [OUTRO_YAW, OUTRO_YAW] as Array[float], OUTRO_STEP)
+	var w: Array = OUTRO_WALK.alone if alone else OUTRO_WALK.carry
+	var times: Array[float] = [0.0, w[1]]
+	var faces: Array[float] = [OUTRO_YAW, OUTRO_YAW]
+	if alone:  # he stops, then turns back to look at the station
+		times.append_array([OUTRO_LOOK_AT[0], OUTRO_LOOK_AT[1]])
+		faces.append_array([OUTRO_YAW, OUTRO_LOOK_YAW])
+	var to := _w(OUTRO_TO)
+	var points: Array[Vector3] = [_w(OUTRO_FROM), to]
+	if alone:
+		points.append_array([to, to])
+	AreaCine.operative_track(player, times, points, faces)
+	AreaCine.track(player, "../Operative:moving", [0.0, w[1]], [true, false], true)  # the walking clip, only while he crosses
+	AreaCine.track(player, "../Operative:velocity", [0.0, w[1]], [Vector3(0, 0, -w[0]), Vector3.ZERO], true)
 	for d in DEAD:
 		var lamp := "../Beacons/Lamp%d" % d[0]
 		AreaCine.track(player, lamp + "/Light:light_energy", [0.0, d[1], d[1] + 0.15], [2.0, 2.0, 0.0])

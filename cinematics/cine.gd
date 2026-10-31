@@ -12,6 +12,7 @@ signal finished(skipped: bool)
 signal held(skipped: bool)   # a `hold` take reached its last frame (or was skipped to it) and waits for release()
 
 const CLIP := "take"
+const ALONE := "Alone"  # a take key + this: the version for an Operative carrying nothing
 const LANDING_MAX := 2.0  # s to wait for the host to switch back before handing over anyway
 
 var lines: Array[String] = []   # the lower-third's translated lines (a Mission's intro card text)
@@ -46,6 +47,14 @@ static func take_of(area: Node, key: String) -> AnimationPlayer:
 	return area.get_node_or_null("Cine/" + key) as AnimationPlayer
 
 
+## The take to play for `key`: its "Alone" sibling when the Area has one and the Operative carries nothing (an outro that shows
+## him leaving with the objective or without it), else `key` itself.
+static func variant_key(area: Node, key: String) -> String:
+	var op = area.get_node_or_null("Operative")
+	var alone := key + ALONE
+	return alone if op != null and op.carrying == null and take_of(area, alone) != null else key
+
+
 ## A take over `run`'s Area (a child of `run`: the Area is still setting up its own when an intro starts).
 static func launch(run: MissionRun, key: String, lines: Array, outro: bool, then: Callable) -> void:
 	var c := Cine.new()
@@ -53,7 +62,7 @@ static func launch(run: MissionRun, key: String, lines: Array, outro: bool, then
 	run.add_child(c)
 	c.fade_out = outro
 	c.lines.assign(lines)
-	c.play(run.get_parent(), key, then)
+	c.play(run.get_parent(), variant_key(run.get_parent(), key) if outro else key, then)
 
 
 ## Plays `key` in `area`, then calls `then`. False (and `then` is called at once) when the Area has no such take.
