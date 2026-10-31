@@ -27,22 +27,33 @@ const SKINS := {
 }
 
 
-## Each Area's light and fog: sun [pitch, yaw], colour and energy; ambient colour and energy; fog (also the
-## sky's horizon unless `haze` gives the horizon its own glow, so far hills stand dark against it) colour, begin
-## and end in metres; the sky's zenith colour, and how much the sun glows in it.
+## Each Area's light and fog: sun [pitch, yaw], colour and energy; ambient colour and energy (kept low so the sun and
+## lamps carry the form); fog (also the sky's horizon unless `haze` gives the horizon its own glow, so far hills
+## stand dark against it) colour, begin and end in metres; the sky's zenith colour, and how much the sun glows in it.
+## grade: the colour grade's [shadows, mids, highlights], a 1D LUT. hfog: [height, density] of the ground haze;
+## vol: volumetric fog density (shafts through lamp and flashlight cones); accents: [[x, y, h, colour, range, energy]]
+## lights in diagram metres, warm or cool against the ambient.
 const MOODS := {
-	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.7, amb = Color(0.42, 0.5, 0.7), amb_e = 0.7,
+	harbour = {sun = [-14, 235], sun_c = Color(1.0, 0.68, 0.5), sun_e = 0.85, amb = Color(0.42, 0.5, 0.7), amb_e = 0.6,
 		fog = Color(0.3, 0.32, 0.42), fog_from = 18.0, fog_to = 120.0,
-		zenith = Color(0.07, 0.1, 0.2), glow = 0.9},  # dusk-blue haze, last light low in the west
-	relay_station = {sun = [-40, 140], sun_c = Color(0.62, 0.7, 0.95), sun_e = 0.6, amb = Color(0.46, 0.44, 0.52), amb_e = 1.35,
+		zenith = Color(0.07, 0.1, 0.2), glow = 0.9,  # dusk-blue haze, last light low in the west
+		grade = [Color(0.0, 0.035, 0.07), Color(0.5, 0.5, 0.5), Color(1.0, 0.95, 0.86)], hfog = [1.5, 0.07], vol = 0.0,
+		accents = [[40.0, 30.0, 3.0, Color(1.0, 0.6, 0.3), 14.0, 2.2], [17.0, 36.0, 3.0, Color(0.4, 0.7, 1.0), 12.0, 1.8]]},
+	relay_station = {sun = [-40, 140], sun_c = Color(0.62, 0.7, 0.95), sun_e = 0.95, amb = Color(0.46, 0.44, 0.52), amb_e = 1.2,
 		fog = Color(0.11, 0.09, 0.1), fog_from = 15.0, fog_to = 85.0, haze = Color(0.34, 0.18, 0.1),
-		zenith = Color(0.03, 0.04, 0.1), glow = 0.6},  # sodium-lit haze on the horizon, a thin moon in a dark sky
-	research_annex = {sun = [-65, 20], sun_c = Color(0.95, 0.97, 1.0), sun_e = 1.0, amb = Color(0.72, 0.78, 0.85), amb_e = 0.5,
+		zenith = Color(0.03, 0.04, 0.1), glow = 0.6,  # sodium-lit haze on the horizon, a thin moon in a dark sky
+		grade = [Color(0.0, 0.03, 0.06), Color(0.5, 0.5, 0.5), Color(1.0, 0.92, 0.8)], hfog = [2.0, 0.1], vol = 0.015,
+		accents = [[22.0, 62.0, 4.0, Color(1.0, 0.62, 0.25), 14.0, 2.4], [50.0, 40.0, 5.0, Color(0.45, 0.6, 1.0), 14.0, 1.8]]},
+	research_annex = {sun = [-65, 20], sun_c = Color(0.95, 0.97, 1.0), sun_e = 1.15, amb = Color(0.72, 0.78, 0.85), amb_e = 0.4,
 		fog = Color(0.66, 0.7, 0.75), fog_from = 40.0, fog_to = 140.0,
-		zenith = Color(0.45, 0.52, 0.6), glow = 0.3},  # cold clinical white overcast
-	core = {sun = [-60, 35], sun_c = Color(0.75, 0.32, 0.25), sun_e = 0.4, amb = Color(0.46, 0.27, 0.26), amb_e = 0.75,
+		zenith = Color(0.45, 0.52, 0.6), glow = 0.3,  # cold clinical white overcast
+		grade = [Color(0.0, 0.02, 0.04), Color(0.5, 0.5, 0.5), Color(0.96, 1.0, 1.0)], hfog = [0.8, 0.05], vol = 0.0,
+		accents = [[40.0, 40.0, 4.0, Color(0.5, 1.0, 0.85), 14.0, 1.6]]},
+	core = {sun = [-60, 35], sun_c = Color(0.75, 0.32, 0.25), sun_e = 0.5, amb = Color(0.46, 0.27, 0.26), amb_e = 0.55,
 		fog = Color(0.15, 0.06, 0.06), fog_from = 15.0, fog_to = 80.0,
-		zenith = Color(0.05, 0.01, 0.02), glow = 0.4},  # dim red emergency light
+		zenith = Color(0.05, 0.01, 0.02), glow = 0.4,  # dim red emergency light
+		grade = [Color(0.04, 0.0, 0.02), Color(0.5, 0.48, 0.48), Color(1.0, 0.86, 0.8)], hfog = [1.2, 0.15], vol = 0.02,
+		accents = [[40.0, 40.0, 3.5, Color(1.0, 0.2, 0.15), 16.0, 2.4], [30.0, 20.0, 3.5, Color(0.3, 0.8, 1.0), 12.0, 1.6]]},
 }
 
 
@@ -89,14 +100,45 @@ func _mood(area: String) -> void:
 	env.glow_enabled = true  # lamps bloom a little at 480 lines
 	env.glow_intensity = 0.7
 	env.glow_bloom = 0.03
-	env.glow_hdr_threshold = 0.85
+	env.glow_hdr_threshold = 1.0  # only the emissive (lamps, lenses) bloom, not a sunlit wall
 	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.08
+	env.adjustment_contrast = 1.1
 	env.adjustment_saturation = 1.12
+	env.adjustment_color_correction = _grade(md.grade)
+	env.fog_height = md.hfog[0]  # ground haze pooling below this
+	env.fog_height_density = md.hfog[1]
+	if md.vol > 0.0:
+		env.volumetric_fog_enabled = true
+		env.volumetric_fog_density = md.vol
+		env.volumetric_fog_albedo = md.fog.lightened(0.25)
+		env.volumetric_fog_length = 48.0
+		env.volumetric_fog_ambient_inject = 0.2
 	var we := WorldEnvironment.new()
 	we.name = "Mood"
 	we.environment = env
 	_add(_root, we)
+	for k in md.accents.size():
+		var a: Array = md.accents[k]
+		var l := OmniLight3D.new()
+		l.name = "Accent%d" % k
+		l.position = _p([a[0], a[1], a[2]])
+		l.light_color = a[3]
+		l.omni_range = a[4]
+		l.light_energy = a[5]
+		l.light_volumetric_fog_energy = 1.5
+		_fade(l)
+		_add(_root, l)
+
+
+## The colour grade as a 1D LUT: each channel is remapped through shadows -> mids -> highlights.
+func _grade(c: Array) -> GradientTexture1D:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	g.colors = PackedColorArray(c)
+	var t := GradientTexture1D.new()
+	t.gradient = g
+	t.width = 256
+	return t
 
 
 ## A map coordinate as a node-name part: -7.5 -> "m7p5".
@@ -369,10 +411,7 @@ func _beacons(beacons: Array) -> void:
 		var dome := SphereMesh.new()
 		dome.radius = 0.07
 		dome.height = 0.14
-		var m := StandardMaterial3D.new()
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		m.albedo_color = bc[1]
-		dome.material = m
+		dome.material = _glow_mat(bc[1], 4.0)
 		lens.mesh = dome
 		lens.position.y = -0.1
 		lens.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

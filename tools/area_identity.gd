@@ -98,9 +98,7 @@ func _leaves(parent: Node3D, d: Dictionary, key: String, tall: float) -> void:
 ## A warm bulkhead lamp over an outside door.
 func _door_lamp(parent: Node3D, rect: Array, h: float, tag: String) -> void:
 	var lamp := _trim(parent, "Lamp_" + tag, rect, h, h + 0.18, "metal", Color(0.3, 0.3, 0.3))
-	var glow := StandardMaterial3D.new()
-	glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	glow.albedo_color = LAMP_COLOUR
+	var glow := _glow_mat(LAMP_COLOUR, 3.5)
 	var bulb := MeshInstance3D.new()
 	bulb.name = "Bulb"
 	bulb.mesh = _box_mesh(Vector3(rect[2] * 0.8, 0.06, rect[3] * 0.8), glow)

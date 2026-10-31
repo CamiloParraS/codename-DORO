@@ -9,6 +9,10 @@ uniform bool split = false;
 uniform vec3 tint : source_color = vec3(1.0);
 uniform float tile_m = 2.0;
 uniform float side_tile_m = 2.0;
+uniform vec3 emission : source_color = vec3(0.0);  // a lamp, a screen, a lit sign: bloomed by the Area's glow
+uniform float emission_energy = 1.0;
+uniform float gloss = 0.0;  // 0 matte; wet planks and metal catch the lights at 0.3 to 0.6
+uniform float rim = 0.12;   // grazing faces pick up a little sky, so a silhouette parts from what stands behind it
 
 varying vec2 box_uv;
 varying vec2 side_uv;
@@ -26,5 +30,8 @@ void vertex() {
 void fragment() {
 	vec3 c = split && top < 0.5 ? texture(side_tex, side_uv).rgb : texture(albedo_tex, box_uv).rgb;
 	ALBEDO = c * tint;
-	ROUGHNESS = 1.0;
+	ROUGHNESS = 1.0 - gloss * 0.75;
+	SPECULAR = gloss * 0.5;
+	float grazing = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
+	EMISSION = emission * emission_energy + ALBEDO * grazing * rim;
 }

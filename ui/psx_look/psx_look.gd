@@ -7,6 +7,12 @@ const INTERNAL_HEIGHT := 480
 const SKY := Color(0.33, 0.37, 0.42)
 const FOG_BEGIN := 20.0
 const FOG_END := 60.0
+## The optional passes of psx_post, off by name: set_effect(&"scanlines", true). Grain and the fringe are on.
+const EFFECTS := {
+	grain = [0.0, 0.025], fringe = [0.0, 0.0015], scanlines = [0.0, 0.35],
+}
+
+var _mat := ShaderMaterial.new()
 
 
 func _ready() -> void:
@@ -28,8 +34,8 @@ func _ready() -> void:
 	var post := ColorRect.new()
 	post.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	post.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	post.material = ShaderMaterial.new()
-	(post.material as ShaderMaterial).shader = load("res://assets/shaders/psx_post.gdshader")
+	_mat.shader = load("res://assets/shaders/psx_post.gdshader")
+	post.material = _mat
 	add_child(post)
 
 	get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_NEAREST
@@ -40,3 +46,9 @@ func _ready() -> void:
 ## 3D scale that makes the internal height 480 (854 wide at 16:9) whatever the window size.
 func _update_scale() -> void:
 	get_viewport().scaling_3d_scale = clampf(float(INTERNAL_HEIGHT) / get_window().size.y, 0.05, 1.0)
+
+
+## Switch one of EFFECTS (grain, fringe, scanlines) on or off.
+func set_effect(effect: StringName, on: bool) -> void:
+	if EFFECTS.has(effect):
+		_mat.set_shader_parameter(effect, EFFECTS[effect][1 if on else 0])

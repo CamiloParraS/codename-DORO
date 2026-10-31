@@ -115,6 +115,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(1, 1, 1, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_ob53l"]
 material = SubResource("ShaderMaterial_fbggu")
@@ -173,6 +177,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.9, 0.5, 0.2, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_0snym"]
 material = SubResource("ShaderMaterial_d17uu")
@@ -189,6 +197,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.8, 0.3, 0.25, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_380pr"]
 material = SubResource("ShaderMaterial_5fse7")
@@ -212,6 +224,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.42, 0.32, 0.27, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_75aa5"]
 material = SubResource("ShaderMaterial_7nmw5")
@@ -228,6 +244,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.28, 0.34, 0.4, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_kec17"]
 material = SubResource("ShaderMaterial_pyu1y")
@@ -244,6 +264,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.45, 0.5, 0.4, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_0sg6y"]
 material = SubResource("ShaderMaterial_vb5ih")
@@ -260,6 +284,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.36, 0.34, 0.3, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_o4yb8"]
 material = SubResource("ShaderMaterial_v6wmu")
@@ -282,6 +310,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.6, 0.9, 0.6, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_60ihh"]
 material = SubResource("ShaderMaterial_60td4")
@@ -360,6 +392,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.5, 0.5, 0.5, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_6bnih"]
 material = SubResource("ShaderMaterial_ht1xx")
@@ -376,6 +412,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.55, 0.6, 0.7, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_h46m8"]
 material = SubResource("ShaderMaterial_gawmk")
@@ -434,6 +474,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.85, 0.86, 0.88, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_mbiej"]
 material = SubResource("ShaderMaterial_x7kwe")
@@ -513,6 +557,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.6, 0.6, 0.6, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_c3sho"]
 material = SubResource("ShaderMaterial_hr072")
@@ -533,6 +581,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.32, 0.33, 0.35, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_ioqur"]
 material = SubResource("ShaderMaterial_ytnaq")
@@ -554,14 +606,20 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.3, 0.3, 0.3, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_kvx1p"]
 material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.36, 0.18, 0.22)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oys3g"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_3t5ib"]
 material = SubResource("StandardMaterial3D_oys3g")
@@ -591,8 +649,10 @@ material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.36, 0.18, 0.22)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sj3ff"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_g2ebp"]
 material = SubResource("StandardMaterial3D_sj3ff")
@@ -622,8 +682,10 @@ material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.36, 0.18, 0.22)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_id8wy"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_sq4t4"]
 material = SubResource("StandardMaterial3D_id8wy")
@@ -653,8 +715,10 @@ material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.36, 0.18, 0.22)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qfram"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_mmht4"]
 material = SubResource("StandardMaterial3D_qfram")
@@ -684,8 +748,10 @@ material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.22, 0.18, 0.36)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5awh0"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_p46oh"]
 material = SubResource("StandardMaterial3D_5awh0")
@@ -715,8 +781,10 @@ material = SubResource("ShaderMaterial_710mn")
 size = Vector3(0.22, 0.18, 0.36)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nq152"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.6, 1)
+albedo_color = Color(0.2, 0.17, 0.120000005, 0.2)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_wdill"]
 material = SubResource("StandardMaterial3D_nq152")
@@ -733,6 +801,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.92, 0.93, 0.95, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.2
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_bt4yx"]
 material = SubResource("ShaderMaterial_p2ra6")
@@ -970,6 +1042,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(1, 1, 1, 1)
 shader_parameter/tile_m = 1.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_tcp70"]
 material = SubResource("ShaderMaterial_yq04m")
@@ -1297,6 +1373,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.95, 0.97, 0.98, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_vxfvj"]
 material = SubResource("ShaderMaterial_koasl")
@@ -1310,6 +1390,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(1.4, 1.42, 1.45, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_i8moa"]
 material = SubResource("ShaderMaterial_6bf4k")
@@ -1323,6 +1407,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.85, 0.87, 0.9, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_u7lrr"]
 material = SubResource("ShaderMaterial_trtbf")
@@ -1348,6 +1436,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.5, 0.52, 0.55, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_qx65v"]
 material = SubResource("ShaderMaterial_ssrsh")
@@ -1361,6 +1453,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.66, 0.65, 0.6, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_rl2m3"]
 material = SubResource("ShaderMaterial_u6yjm")
@@ -1374,6 +1470,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.2, 0.28, 0.45, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_sw4oh"]
 material = SubResource("ShaderMaterial_0nhj6")
@@ -1391,6 +1491,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.18, 0.36, 0.24, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_0icay"]
 material = SubResource("ShaderMaterial_3ju4h")
@@ -1408,6 +1512,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.5, 0.17, 0.14, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_5ix3k"]
 material = SubResource("ShaderMaterial_xgm56")
@@ -1421,6 +1529,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.72, 0.56, 0.16, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_6jnc6"]
 material = SubResource("ShaderMaterial_iirt6")
@@ -1692,6 +1804,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.8, 0.7, 0.55, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_1rcke"]
 material = SubResource("ShaderMaterial_6eas4")
@@ -1725,6 +1841,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.65, 0.6, 0.55, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_tdwnf"]
 material = SubResource("ShaderMaterial_1r5dd")
@@ -1747,6 +1867,10 @@ shader_parameter/split = true
 shader_parameter/tint = Color(0.8, 0.8, 0.75, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = 6.0
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuwdt"]
 resource_name = "tree_bark_rt_b"
@@ -2090,6 +2214,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.8, 0.78, 0.75, 1)
 shader_parameter/tile_m = 6.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5c0rg"]
 resource_name = "skin_me"
@@ -2751,6 +2879,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.85, 0.85, 0.82, 1)
 shader_parameter/tile_m = 5.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l20n7"]
 resource_name = "colormap"
@@ -2800,6 +2932,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.75, 0.72, 0.68, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ma1f"]
 resource_name = "skin_me"
@@ -2847,6 +2983,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.3, 0.55, 0.95, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_ugut2"]
 material = SubResource("ShaderMaterial_41my2")
@@ -2860,6 +3000,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(1, 0.78, 0.2, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_m15j0"]
 material = SubResource("ShaderMaterial_qp7m6")
@@ -2873,6 +3017,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.95, 0.95, 0.92, 1)
 shader_parameter/tile_m = 4.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.0
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_rbiqd"]
 material = SubResource("ShaderMaterial_io66d")
@@ -3022,6 +3170,10 @@ shader_parameter/split = null
 shader_parameter/tint = Color(0.22, 0.23, 0.25, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
+shader_parameter/emission = null
+shader_parameter/emission_energy = null
+shader_parameter/gloss = 0.45
+shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_23fhf"]
 material = SubResource("ShaderMaterial_65oor")
@@ -3035,23 +3187,30 @@ size = Vector3(0.2, 0.3, 0.2)
 material = SubResource("ShaderMaterial_65oor")
 size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qsn45"]
+[sub_resource type="Gradient" id="Gradient_qsn45"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0.02, 0.04, 1, 0.5, 0.5, 0.5, 1, 0.96, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ee2jm"]
+gradient = SubResource("Gradient_qsn45")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jmg06"]
 shader = ExtResource("87_js31b")
 shader_parameter/horizon = Color(0.66, 0.7, 0.75, 1)
 shader_parameter/zenith = Color(0.45, 0.52, 0.6, 1)
 shader_parameter/glow = 0.3
 shader_parameter/disc = null
 
-[sub_resource type="Sky" id="Sky_ee2jm"]
-sky_material = SubResource("ShaderMaterial_qsn45")
+[sub_resource type="Sky" id="Sky_dtlkq"]
+sky_material = SubResource("ShaderMaterial_jmg06")
 radiance_size = 0
 
-[sub_resource type="Environment" id="Environment_jmg06"]
+[sub_resource type="Environment" id="Environment_6gy75"]
 background_mode = 2
-sky = SubResource("Sky_ee2jm")
+sky = SubResource("Sky_dtlkq")
 ambient_light_source = 2
 ambient_light_color = Color(0.72, 0.78, 0.85, 1)
-ambient_light_energy = 0.5
+ambient_light_energy = 0.4
 reflected_light_source = 2
 tonemap_mode = 2
 tonemap_exposure = 1.15
@@ -3063,45 +3222,47 @@ ssao_light_affect = 0.15
 glow_enabled = true
 glow_intensity = 0.7
 glow_bloom = 0.03
-glow_hdr_threshold = 0.85
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.66, 0.7, 0.75, 1)
 fog_density = 1.0
 fog_sky_affect = 0.0
+fog_height = 0.8
+fog_height_density = 0.05
 fog_depth_begin = 40.0
 fog_depth_end = 140.0
 adjustment_enabled = true
-adjustment_contrast = 1.08
+adjustment_contrast = 1.1
 adjustment_saturation = 1.12
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_dtlkq"]
-size = Vector3(50, 4, 36)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6gy75"]
-size = Vector3(8, 3.5, 10)
+adjustment_color_correction = SubResource("GradientTexture1D_ee2jm")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5dt8a"]
-size = Vector3(4, 3, 4)
+size = Vector3(50, 4, 36)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_g08m1"]
+size = Vector3(8, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k7jso"]
+size = Vector3(4, 3, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a0lcq"]
 size = Vector3(1.5, 2, 1.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k7jso"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j1lns"]
 shading_mode = 0
 
-[sub_resource type="BoxMesh" id="BoxMesh_a0lcq"]
-material = SubResource("StandardMaterial3D_k7jso")
-size = Vector3(0.4, 0.1, 0.3)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_j1lns"]
-size = Vector3(1.5, 2, 1.5)
-
 [sub_resource type="BoxMesh" id="BoxMesh_4dry4"]
-material = SubResource("StandardMaterial3D_k7jso")
+material = SubResource("StandardMaterial3D_j1lns")
 size = Vector3(0.4, 0.1, 0.3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7v12k"]
+size = Vector3(1.5, 2, 1.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uh30g"]
+material = SubResource("StandardMaterial3D_j1lns")
+size = Vector3(0.4, 0.1, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d2yfp"]
 
 [node name="ResearchAnnex" type="Node3D" unique_id=1055715180]
 script = ExtResource("1_6lk4e")
@@ -7403,10 +7564,20 @@ omni_range = 3.0
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1099561937]
 transform = Transform3D(0.9396926, -0.3099755, 0.14454395, 0, 0.42261824, 0.9063078, -0.34202012, -0.8516508, 0.39713123, 0, 20, 0)
 light_color = Color(0.95, 0.97, 1, 1)
+light_energy = 1.15
 shadow_enabled = true
 
 [node name="Mood" type="WorldEnvironment" parent="." unique_id=1925583530]
-environment = SubResource("Environment_jmg06")
+environment = SubResource("Environment_6gy75")
+
+[node name="Accent0" type="OmniLight3D" parent="." unique_id=380801849]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+light_color = Color(0.5, 1, 0.85, 1)
+light_energy = 1.6
+light_volumetric_fog_energy = 1.5
+distance_fade_enabled = true
+distance_fade_length = 20.0
+omni_range = 14.0
 
 [node name="Spots" type="Node3D" parent="." unique_id=1274382804]
 
@@ -7573,7 +7744,7 @@ collision_layer = 0
 script = ExtResource("88_t22d4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/Lab" unique_id=1520173870]
-shape = SubResource("BoxShape3D_dtlkq")
+shape = SubResource("BoxShape3D_5dt8a")
 
 [node name="PumpCrawl" type="Area3D" parent="NoFulton" unique_id=116804250]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.75, 21)
@@ -7581,7 +7752,7 @@ collision_layer = 0
 script = ExtResource("88_t22d4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/PumpCrawl" unique_id=2135519322]
-shape = SubResource("BoxShape3D_6gy75")
+shape = SubResource("BoxShape3D_g08m1")
 
 [node name="Operative" type="CharacterBody3D" parent="." unique_id=589795370 instance=ExtResource("89_cgu8r")]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -32, 0, 32)
@@ -7598,7 +7769,7 @@ collision_layer = 0
 script = ExtResource("93_2gcq6")
 
 [node name="Shape" type="CollisionShape3D" parent="ExtractionPoint" unique_id=111841606]
-shape = SubResource("BoxShape3D_5dt8a")
+shape = SubResource("BoxShape3D_k7jso")
 
 [node name="Intel" type="Node3D" parent="." unique_id=1262456663]
 
@@ -7608,10 +7779,10 @@ collision_layer = 0
 script = ExtResource("94_fmgeb")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelVault" unique_id=1421653422]
-shape = SubResource("BoxShape3D_g08m1")
+shape = SubResource("BoxShape3D_a0lcq")
 
 [node name="Mesh" type="MeshInstance3D" parent="Intel/IntelVault" unique_id=1474517866]
-mesh = SubResource("BoxMesh_a0lcq")
+mesh = SubResource("BoxMesh_4dry4")
 
 [node name="ResearchFiles" type="Area3D" parent="Intel" unique_id=606600838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.6, 10)
@@ -7619,10 +7790,10 @@ collision_layer = 0
 script = ExtResource("94_fmgeb")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/ResearchFiles" unique_id=1818584390]
-shape = SubResource("BoxShape3D_j1lns")
+shape = SubResource("BoxShape3D_7v12k")
 
 [node name="Mesh" type="MeshInstance3D" parent="Intel/ResearchFiles" unique_id=250116098]
-mesh = SubResource("BoxMesh_4dry4")
+mesh = SubResource("BoxMesh_uh30g")
 
 [node name="IntelOffice" type="Area3D" parent="Intel" unique_id=698832014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 1.5, 22)
@@ -7632,7 +7803,7 @@ verb = "answer"
 guards = PackedStringArray("GuardA9")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelOffice" unique_id=1298080078]
-shape = SubResource("BoxShape3D_7v12k")
+shape = SubResource("BoxShape3D_d2yfp")
 
 [node name="Encounters" type="Node3D" parent="." unique_id=1703216033]
 

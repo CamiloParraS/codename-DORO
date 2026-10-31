@@ -2,6 +2,8 @@
 ## knock, choke takedown, carrying a Down guard, Hold-up, Fulton, the tranq pistol and the rifle. Grown from the stealth-core prototype.
 extends "res://actors/operative/operative_hands.gd"
 
+var _was_hunted := false
+
 
 func _ready() -> void:
 	add_to_group("operative")
@@ -96,11 +98,15 @@ func _physics_process(delta: float) -> void:
 	walking = Input.is_action_pressed("walk")
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
 	looking = Input.is_action_pressed("look") and not (aiming or _choking or radio_open or ladder or carrying)
+	var hunted := get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT)
+	if hunted and not _was_hunted:
+		camera.fov -= 9.0  # a punch in when a guard raises the alarm, eased back out by the lerp below
+	_was_hunted = hunted
 	camera.fov = lerpf(camera.fov, 50.0 if aiming else 75.0 if looking else 70.0, minf(1.0, 12 * delta))
 	_shoulder_arm.spring_length = lerpf(_shoulder_arm.spring_length, 0.0 if looking else 0.55, minf(1.0, 14 * delta))
 	_back_arm.spring_length = lerpf(_back_arm.spring_length, 0.0 if looking else Locomotion.CAM_DIST_AIM if aiming else Locomotion.CAM_DIST, minf(1.0, 14 * delta))
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
-	health.tick(delta, get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT))
+	health.tick(delta, hunted)
 	items.tick(delta)
 	if health.dead():  # lying where it fell: the ragdoll moves, the body only settles
 		velocity = Vector3(0, 0.0 if is_on_floor() else velocity.y - 20 * delta, 0)

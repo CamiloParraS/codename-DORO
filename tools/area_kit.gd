@@ -24,6 +24,8 @@ const TEX := {
 ## Metres per repeat where it isn't 2: wall textures span a wall's height.
 const TILE := {asphalt = 6.0, concrete = 4.0, corrugated = 5.0, panels = 4.0, rock = 6.0, cargo = 2.6,
 	hatch = 2.5, windows = 3.0, hazard = 1.0}
+## Gloss (psx_surface): the surfaces that catch a light. Wet quay and planks, bare metal.
+const GLOSS := {asphalt = 0.25, planks = 0.3, metal = 0.45, deck_plate = 0.35, quay = 0.25, pier = 0.3, deck = 0.35, panels = 0.2}
 ## Materials whose top and sides differ: key = [top, sides].
 const SPLIT := {
 	quay = ["asphalt", "concrete"], deck = ["deck_plate", "rust"], pier = ["planks", "rust"], kerb = ["concrete", "hazard"],
@@ -109,12 +111,23 @@ func _mat(key: String, tint: Color) -> ShaderMaterial:
 		m.set_shader_parameter("albedo_tex", load(TEX[top]))
 		m.set_shader_parameter("tint", tint)
 		m.set_shader_parameter("tile_m", TILE.get(top, 2.0))
+		m.set_shader_parameter("gloss", GLOSS.get(key, GLOSS.get(top, 0.0)))
 		if SPLIT.has(key):
 			m.set_shader_parameter("split", true)
 			m.set_shader_parameter("side_tex", load(TEX[SPLIT[key][1]]))
 			m.set_shader_parameter("side_tile_m", TILE.get(SPLIT[key][1], 2.0))
 		_mats[k] = m
 	return _mats[k]
+
+
+## A lit bulb, lens or screen: dark albedo, emission above the glow threshold so only these bloom.
+func _glow_mat(c: Color, energy := 3.0) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_color = c * 0.2
+	m.emission_enabled = true
+	m.emission = c
+	m.emission_energy_multiplier = energy
+	return m
 
 
 func _box_mesh(size: Vector3, mat: Material) -> BoxMesh:
