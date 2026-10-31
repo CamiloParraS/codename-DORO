@@ -1,9 +1,9 @@
-## Headless playthrough of the Harbour's three Encounters and the Core revisit (pw-feel 07, the deck from 12):
+## Headless playthrough of the Harbour's three Encounters (pw-feel 07, the deck from 12):
 ## spawns, the navmesh route, patrol routes, designed sight lines, every Mission 1 step by its verb (eavesdrop,
 ## the pair's split and the stern drop it opens to a Spoof, Hold-up, lift panel), Fulton outdoors and refused indoors, Extraction and the Rank page, the Alert chain (a stopped
 ## call; a completed one through Alert, Evasion and Caution, with Reinforcements from the bridge), every way a
 ## Hold-up ends (Alert, 6 m, a partner's sight, a choke), a guard looking at a balloon, a Game Over and
-## Continue, and what the Core changes. Prints PASS/FAIL.
+## Continue, and the Core's Target (play_core walks the Core's layout). Prints PASS/FAIL.
 ##   godot --headless --fixed-fps 60 --path . tools/play_harbour.tscn
 ## (a scene, not --script, so the autoloads exist). Guards' alert meters are reset every frame while the
 ## Operative is teleported about, so a check reads what a guard sees without the whole Area going to Alert.
@@ -164,7 +164,6 @@ func away(op: Node3D) -> void:
 	await frames(2)
 
 
-var harbour_north_door := 0.0
 
 
 func mission_1() -> void:
@@ -189,7 +188,6 @@ func mission_1() -> void:
 		total += r[0]
 		check(r[1] < 0.6, "walkable: %s, %.1f m" % [l[0], r[0]])
 	print("      route bow → three steps → Extraction: %.0f m" % total)
-	harbour_north_door = path_len(at(22, 14), at(20, 24))[0]
 
 	# patrols: park the Operative out of sight and watch a minute go by
 	await place(op, at(52, 77), true)
@@ -298,8 +296,10 @@ func mission_1() -> void:
 		"the Fultoned Foreman stays on HQ's poll roster, unable to answer")
 
 	# step 3: the lift panel, then out by the slipway
-	ops.global_position = at(22.8, 22.4)
+	await place(op, ops.global_position + Vector3(0.8, 0, 0))  # a Down guard lies where its ragdoll is: carry it over, as a player would
+	op._interact()
 	await place(op, at(22, 22.4))
+	op._interact()  # dropped beside the lift panel
 	await frames(5)
 	check("enter the code" in op.prompt.to_lower() and "[e] carry" in op.prompt.to_lower(), "beside the lift panel and a body, both prompts show (%s)" % op.prompt)
 	Input.action_press("interact")
@@ -313,7 +313,7 @@ func mission_1() -> void:
 	var rank_page := func() -> Array: return run.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("committed"))
 	await until(func() -> bool: return not rank_page.call().is_empty(), 4.0)  # after the 2.3 s outro card
 	var page: Array = rank_page.call()
-	check(page.size() == 1 and page[0].rank_only and page[0].stats()[2] == ["ALERTS", str(run.rank.alerts)] and page[0].rank.grade(page[0].par) != "",
+	check(page.size() == 1 and page[0].rank_only and page[0].stats()[2] == [tr("ui.post.alerts"), run.rank.alerts, false] and page[0].rank.grade(page[0].par) != "",
 		"the Rank page shows: grade %s, %s" % [page[0].rank.grade(page[0].par) if page.size() else "-", page[0].stats() if page.size() else []])
 	if page.size():
 		page[0].advance()  # any key: a replay's single page commits
@@ -352,11 +352,8 @@ func chain() -> void:
 	await place(op, at(66, 38, 2))
 	check(await until(func() -> bool: return ch.alerts == 1, 10.0), "left alone, O5's call completes")
 	check(ch.phase == AlertChain.Phase.ALERT and run.rank.alerts == 1, "a completed call is an Alert, counted for Rank")
+	check(area._entry_for(op.global_position) == area.get_node("Spots/DeckEntry"), "Reinforcements for an Operative on the deck come out of the bridge (DeckEntry)")
 	await frames(5)
-	var squad := get_tree().get_nodes_in_group("reinforcements")
-	var deck: Vector3 = area.get_node("Spots/DeckEntry").global_position
-	check(squad.size() == Reinforcements.SQUAD and squad.all(func(g: Guard) -> bool: return g.global_position.distance_to(deck) < 4.0),
-		"%d Reinforcements come out of the bridge (DeckEntry) for an Operative on the deck" % squad.size())
 	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.is_down() or g.alert.state == GuardAlert.State.ALERT), "every guard hunts")
 	await away(op)
 	await secs(Engage.PUSH_AFTER + 1.0)  # the squad has lost the Operative: it fans out round the last sighting
@@ -372,6 +369,9 @@ func chain() -> void:
 	print("  %d hunters, %d distinct search spots, %d moved over 3 m in 8 s" % [hunters.size(), spots.size(), moved])
 	check(hunters.size() >= 3 and spots.size() >= mini(hunters.size(), 4), "out of sight, the hunters split up to separate search spots")
 	check(moved * 4 >= hunters.size() * 3, "and keep moving instead of standing where they lost the Operative")
+	var squad := func() -> Array: return get_tree().get_nodes_in_group("reinforcements")
+	check(await until(func() -> bool: return squad.call().size() == Reinforcements.SQUAD, area.ARRIVAL_DELAY + 2.0),
+		"%d Reinforcements arrive within %.0f s of the call" % [squad.call().size(), area.ARRIVAL_DELAY])
 	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.EVASION, AlertChain.ALERT_TIME + 5.0), "unseen, the Alert drains to Evasion")
 	check(await until(func() -> bool: return ch.phase == AlertChain.Phase.CAUTION, AlertChain.EVASION_TIME + 5.0), "Evasion ends in Caution")
 	check(get_tree().get_nodes_in_group("guards").all(func(g: Guard) -> bool: return g.alert.state < GuardAlert.State.ALERT), "in Caution the guards are back on patrol")
@@ -474,8 +474,9 @@ func continues() -> void:
 	run.event("takedown")  # a Habit-relevant action
 	for i in Health.HITS_TO_DIE:
 		op.take_hit()
-	await frames(2)
-	var screen := area.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("continued"))
+	var game_over := func() -> Array: return area.find_children("*", "Control", true, false).filter(func(c: Node) -> bool: return c.has_signal("continued"))
+	await until(func() -> bool: return not game_over.call().is_empty(), op.DEATH_TIME + 1.0)  # after the death ragdoll
+	var screen: Array = game_over.call()
 	check(screen.size() == 1 and get_tree().paused, "death opens the Game Over screen over a paused Area")
 	var t := run.rank.seconds
 	await frames(30)
@@ -497,25 +498,13 @@ func continues() -> void:
 	await frames(5)
 
 
+## The Core's Target (its layout is tools/play_core.gd's): a Fultoned Target is delivered, weighs nothing in
+## Lethality and isn't a Recruit.
 func core() -> void:
-	print("--- Core: the Harbour re-crossed")
+	print("--- Core: the Target")
 	var area := await load_area("res://areas/core/core.tscn", 3)
 	var run: MissionRun = area.get_node("MissionRun")
 	var op: Node3D = area.get_node("Operative")
-	var names := get_tree().get_nodes_in_group("guards").map(func(g: Guard) -> String: return str(g.name))
-	check(not names.has("GuardPA") and not names.has("GuardPB") and not names.has("GuardForeman"), "the pair and the Foreman are gone")
-	check(names.has("GuardStern") and names.has("GuardLiftHall"), "a stern Patroller and a lift-hall Interceptor are posted")
-	var north: float = path_len(at(22, 14), at(20, 24))[0]
-	check(north > harbour_north_door + 10.0, "the Ops north door is sealed: north yard to control room %.0f m (Mission 1: %.0f m)" % [north, harbour_north_door])
-	var lift := path_len(area.get_node("Spots/OperativeStart").global_position, at(8, 32))
-	check(lift[1] < 0.6, "bow to lift mouth is walkable, %.0f m" % lift[0])
-	check(await seen(op, "GuardStern", at(66, 56, 2), false, 12.0) > 0.0, "the stern Patroller covers the way round the bridge")
-	await place(op, at(19.5, 32))
-	await frames(10)
-	check(run.step == 1, "step 1: reaching the Operations building")
-	await place(op, at(8, 32))
-	await frames(10)
-	check(run.step == 2 and area.get_node_or_null("LiftDoor") == null, "step 2: the lift opens")
 	var director: Guard = get_tree().get_nodes_in_group("targets")[0]
 	director.neutralize()
 	op.launch_fulton(director)
