@@ -133,6 +133,7 @@ func wake(from: Vector3) -> void:
 ## patrol over. A helmet (a Countermeasure) stays on.
 func return_to_post() -> void:
 	dead = false
+	_fell = false  # a guard killed on its feet since would keep playing the "dead" clip
 	wake(global_position)  # up, off any shoulder, solid again
 	alert = GuardAlert.new()  # remembering nothing, not even waking
 	stumble_left = 0.0
