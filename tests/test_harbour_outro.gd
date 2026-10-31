@@ -68,8 +68,13 @@ func test_the_fultoned_figure_is_the_operative_standing_and_the_camera_hides() -
 	var model := props.get_node("Recruit/Model") as CharacterModel
 	assert_eq(model.kind, CharacterModel.Kind.OPERATIVE, "the player's look")
 	var clip := Cine.take_of(_area, KEY).get_animation("take")
-	var ti := clip.find_track(NodePath("OutroProps/Recruit/Model"), Animation.TYPE_METHOD)
-	assert_eq(clip.method_track_get_params(ti, 0)[0], "idle", "upright, not lying down")
+	var plays := {}  # s -> the clip the Model is told to play then (one method track per call)
+	for i in clip.get_track_count():
+		if clip.track_get_type(i) == Animation.TYPE_METHOD and clip.track_get_path(i) == NodePath("OutroProps/Recruit/Model"):
+			for k in clip.track_get_key_count(i):
+				plays[snappedf(clip.track_get_key_time(i, k), 0.01)] = clip.method_track_get_params(i, k)[0]
+	assert_eq(plays.get(0.0), "lift_off", "yanked off his feet, not lying down")
+	assert_eq(plays.get(snappedf(CineFulton.GRIP, 0.01)), "hang", "then hanging from the line")
 	var lamp := clip.find_track(NodePath("OutroProps/PoleCamera/Head/Lamp:visible"), Animation.TYPE_VALUE)
 	assert_true(lamp >= 0 and clip.track_get_key_value(lamp, 0) == false, "dark until the lamp lights")
 	var crate := (props.get_node("Cover") as MeshInstance3D).mesh as BoxMesh

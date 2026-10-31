@@ -291,6 +291,7 @@ func _process(delta: float) -> void:
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
 	if not health.dead():  # a ragdoll is not driven by the clips
-		model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task()), Vector2(velocity.x, velocity.z).length())
+		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task())
+		model.play(cine_clip if cine and cine_clip != "" else clip, Vector2(velocity.x, velocity.z).length())
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = not looking and _back_arm.get_hit_length() > HIDE_BODY_BELOW

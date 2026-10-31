@@ -41,7 +41,10 @@ const MIXAMO_CLIPS := {
 	"look_nervous": "nervously_look_around", "point": "pointing", "argue": "standing_arguing",
 	"phone": "talking_on_phone",
 	"climb": "climbing_ladder", "use": "button_pushing", "throw": "throw", "pick_up": "picking_up",
+	"lift_off": "pro_jump_up",  # an outro's Fulton: yanked off the ground (then "hang", cut from HANG_FROM below)
 }
+const HANG_FROM := "freehang_climb"  # "hang" is its first HANG_LEN s: the rest climbs over a ledge
+const HANG_LEN := 0.35
 ## Game clip -> Mixamo clip to swap in while the tranq pistol is in hand. Mixamo has no pistol fire,
 ## crouch-walk or low kneel takes, so those keep the rifle's. The pack's short pistol idle is the raised two-hand hold, which
 ## loops as the aim (the loose "Pistol Aim" holsters halfway through).
@@ -377,6 +380,11 @@ func _clips() -> AnimationLibrary:
 		lib.add_animation(c, mixamo.get_animation(MIXAMO_CLIPS[c]))
 	for c in PISTOL_CLIPS.values():  # kept under their own names; play() swaps them in
 		lib.add_animation(c, mixamo.get_animation(c))
+	if mixamo.has_animation(HANG_FROM):  # a ledge climb's first beat, arms up, swung back and forth: hanging from a line
+		var hang := mixamo.get_animation(HANG_FROM).duplicate() as Animation
+		hang.length = HANG_LEN
+		hang.loop_mode = Animation.LOOP_PINGPONG
+		lib.add_animation("hang", hang)
 	return lib
 
 

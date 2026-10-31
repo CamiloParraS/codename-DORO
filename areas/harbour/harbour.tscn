@@ -4102,40 +4102,40 @@ tracks/6/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": ["idle"],
+"args": ["lift_off"],
 "method": &"play"
 }]
 }
-tracks/7/type = "value"
+tracks/7/type = "method"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("OutroProps/Recruit:position")
-tracks/7/interp = 2
+tracks/7/path = NodePath("OutroProps/Recruit/Model")
+tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
+"times": PackedFloat32Array(0.45),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["hang"],
+"method": &"play"
+}]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("OutroProps/Recruit:position")
+tracks/8/interp = 2
+tracks/8/loop_wrap = true
+tracks/8/keys = {
 "times": PackedFloat32Array(0, 1, 2.5, 4, 9.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector3(-29, 0, 34), Vector3(-29, 1, 34), Vector3(-29, 7, 34), Vector3(-29, 16, 34), Vector3(-29, 45, 34)]
 }
-tracks/8/type = "method"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("OutroProps/PatrolA/Model")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": ["walk", 1.4],
-"method": &"play"
-}]
-}
 tracks/9/type = "method"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("OutroProps/PatrolB/Model")
+tracks/9/path = NodePath("OutroProps/PatrolA/Model")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
@@ -4146,43 +4146,43 @@ tracks/9/keys = {
 "method": &"play"
 }]
 }
-tracks/10/type = "value"
+tracks/10/type = "method"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("OutroProps/PatrolA:position")
+tracks/10/path = NodePath("OutroProps/PatrolB/Model")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["walk", 1.4],
+"method": &"play"
+}]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("OutroProps/PatrolA:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
 "times": PackedFloat32Array(0, 9.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(-20.74, 0, 28), Vector3(-34.18, 0, 28)]
 }
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("OutroProps/PatrolB:position")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("OutroProps/PatrolB:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
 "times": PackedFloat32Array(0, 6.4, 8.2, 9.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector3(-18.54, 0, 28), Vector3(-27.5, 0, 28), Vector3(-27.5, 0, 28), Vector3(-29.46, 0, 28)]
-}
-tracks/12/type = "method"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("OutroProps/PatrolB/Model")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = {
-"times": PackedFloat32Array(6.4),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": ["idle"],
-"method": &"play"
-}]
 }
 tracks/13/type = "method"
 tracks/13/imported = false
@@ -4191,11 +4191,11 @@ tracks/13/path = NodePath("OutroProps/PatrolB/Model")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(6.7),
+"times": PackedFloat32Array(6.4),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector3(-29, 1.4, 34)],
-"method": &"gaze"
+"args": ["idle"],
+"method": &"play"
 }]
 }
 tracks/14/type = "method"
@@ -4205,10 +4205,10 @@ tracks/14/path = NodePath("OutroProps/PatrolB/Model")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(7.9),
+"times": PackedFloat32Array(6.7),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [null],
+"args": [Vector3(-29, 1.4, 34)],
 "method": &"gaze"
 }]
 }
@@ -4219,6 +4219,20 @@ tracks/15/path = NodePath("OutroProps/PatrolB/Model")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
+"times": PackedFloat32Array(7.9),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [null],
+"method": &"gaze"
+}]
+}
+tracks/16/type = "method"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("OutroProps/PatrolB/Model")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
 "times": PackedFloat32Array(8.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -4226,49 +4240,49 @@ tracks/15/keys = {
 "method": &"play"
 }]
 }
-tracks/16/type = "value"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("OutroProps/PatrolB:rotation:y")
-tracks/16/interp = 3
-tracks/16/loop_wrap = true
-tracks/16/keys = {
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("OutroProps/PatrolB:rotation:y")
+tracks/17/interp = 3
+tracks/17/loop_wrap = true
+tracks/17/keys = {
 "times": PackedFloat32Array(6.4, 7.1, 8, 8.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [1.5707963267948966, 2.4, 2.4, 1.5707963267948966]
 }
-tracks/17/type = "value"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("OutroProps/PoleCamera/Head/Lamp:visible")
-tracks/17/interp = 0
-tracks/17/loop_wrap = true
-tracks/17/keys = {
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("OutroProps/PoleCamera/Head/Lamp:visible")
+tracks/18/interp = 0
+tracks/18/loop_wrap = true
+tracks/18/keys = {
 "times": PackedFloat32Array(0, 7.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
 }
-tracks/18/type = "value"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("OutroProps/PoleCamera/Head:rotation:y")
-tracks/18/interp = 3
-tracks/18/loop_wrap = true
-tracks/18/keys = {
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("OutroProps/PoleCamera/Head:rotation:y")
+tracks/19/interp = 3
+tracks/19/loop_wrap = true
+tracks/19/keys = {
 "times": PackedFloat32Array(0, 7.6, 8.8),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.5235987755982988, 0.5235987755982988, 2.2655345508782525]
 }
-tracks/19/type = "audio"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("OutroProps/Audio")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = {
+tracks/20/type = "audio"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("OutroProps/Audio")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -4276,7 +4290,7 @@ tracks/19/keys = {
 }],
 "times": PackedFloat32Array(0)
 }
-tracks/19/use_blend = true
+tracks/20/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6neuy"]
 _data = {
@@ -9312,7 +9326,7 @@ script = ExtResource("103_txa0n")
 kind = 0
 
 [node name="@MeshInstance3D@24" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175997]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)
 
 [node name="@MeshInstance3D@22" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@24" unique_id=315831657]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)

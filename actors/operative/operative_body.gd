@@ -55,6 +55,7 @@ var cine_face := 0.0:  # a take's heading for the body, radians (the body itself
 		if model:
 			model.rotation.y = v
 
+var cine_clip := ""     # a take's pose for the body (a Fulton's lift_off and hang); "" leaves the clip to the body's state
 var cine_view := 0.0:  # a take's heading for the camera rig, radians: where the player looks once control returns
 	set(v):
 		cine_view = v

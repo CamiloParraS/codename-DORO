@@ -2,8 +2,8 @@
 ## into world metres). Each take is one static function the builder calls with the Area's `Cine` node (tools/area_cine.gd does
 ## the rail); a take's stand-in props are mesh-only rigs under their own group, hidden in play and shown by the take.
 ##   RelayCine.intro(cine)    # "Up the Signal": the signal, the cable, the mast, the valley, then down to the Operative running in
-##   RelayCine.outro(cine)    # "Dead Air": the helipad while the station's lamps die behind it, in two takes: CineOutro (carrying
-##                            # the Chief) and CineOutroAlone (Cine.variant_key picks one from what he carries)
+##   RelayCine.outro(cine)    # "Dead Air": he goes up the Fulton line from the helipad (the Chief held on his shoulder) and
+##                            # the station's lamps die under him
 class_name RelayCine
 extends RefCounted
 
@@ -68,15 +68,9 @@ static func _bar(parent: Node, name: String, a: Vector3, b: Vector3, mat: Materi
 	p.basis = Basis.looking_at(d, up)
 
 
-## Where the shoulder rig rests behind `at` (world) facing `yaw` (radians, the marker's): [camera, aim]. The same pose as the
-## Harbour's: pivot 1.45 up, arm 0.55 across and 2.4 back, tilted 0.25 rad (operative.gd).
+## Where the shoulder rig rests behind `at` facing `yaw` (AreaCine.rig_pose).
 static func rig_pose(at: Vector3, yaw: float) -> Array[Vector3]:
-	var f := Vector3(-sin(yaw), 0, -cos(yaw))
-	var cam := at + Vector3.UP * (1.45 + 2.4 * sin(0.25)) - f * 2.4 * cos(0.25) + f.cross(Vector3.UP) * 0.55
-	var reach := 7.4 + 2.4 * cos(0.25)
-	var aim := cam + f * reach
-	aim.y = cam.y - reach * tan(0.25)
-	return [cam, aim]
+	return AreaCine.rig_pose(at, yaw)
 
 
 # ---- Intro: "Up the Signal" ---------------------------------------------------------------------------------------
@@ -168,69 +162,64 @@ static func intro(cine: Node) -> AnimationPlayer:
 	return player
 
 
+
+
 # ---- Outro: "Dead Air" --------------------------------------------------------------------------------------------
-# Control ends in the helipad's zone, so the take starts there (the rig's resting pose, no jump): he crosses the pad while the
-# station's lamps die behind him, from the console outward, and the antenna's red lamp goes last. Two takes, same length and
-# lamps: CineOutro carries the Chief (the carry clip loops under the position track, the Chief rides his shoulder as in play)
-# and CineOutroAlone, for an Operative carrying nothing (Cine.variant_key), where he crosses faster, stops and looks back at
-# the dying station. Fade to black over the last 0.6 s. ~9 s.
+# Control ends in the helipad's zone, so the take starts there (the rig's resting pose, no jump). He stops; the Fulton
+# balloon goes up and fills over him, the line yanks him off his feet and he rises hanging from it, the Chief held on his
+# shoulder (an ill Target never gets a balloon of his own: carry_only). The camera, low on the pad's south-west corner,
+# follows him up, then lets him go and turns east to the station as its lamps die from the console outward; the antenna's
+# red lamp goes last. The same take serves an Operative carrying nothing. Fade to black over the last 0.6 s. ~10 s.
 
 const OUTRO_KEY := "CineOutro"
-const OUTRO_LEN := 9.0
-const OUTRO_THIRD_AT := 5.5
+const OUTRO_LEN := 10.0
+const OUTRO_THIRD_AT := 5.0             # s the line comes in: as he clears the summit
 const OUTRO_FROM := [10.5, 14.0, 6.0]   # inside ExtractionPoint (9, 14; 4 m wide), where he comes in from the east
-const OUTRO_TO := [6.0, 14.0, 6.0]      # the pad's far side
-const OUTRO_YAW := PI / 2.0             # facing west
-const OUTRO_LOOK_YAW := -PI / 2.0       # alone: turned back east to the station
-const OUTRO_LOOK_AT := [3.4, 4.2]       # alone: s he stops, s he has turned
-## Per version: [m/s the clip plays at, s the walk lasts]. The carry is slow and heavy; alone he is quick.
-const OUTRO_WALK := {carry = [1.4, 3.2], alone = [2.0, 2.25]}
+const OUTRO_YAW := PI / 2.0             # facing west, as control leaves him
+## The camera: [at s, camera [x, y, h], aim [x, y, h] or "him" (where he is then, chest high)], after the rig pose it starts
+## on. High enough at the end that the lamp post at (13.8, 18) sits under the frame.
 const OUTRO_SHOTS := [
-	[2.0, [15.0, 17.0, 8.3], [7.5, 14.0, 7.2]],     # easing wider as he crosses the pad
-	[4.0, [18.5, 19.5, 9.0], [8.0, 14.0, 7.3]],
-	[5.5, [26.0, 19.0, 9.5], [30.0, 12.0, 12.0]],   # he stops; the camera turns back to the station
-	[7.0, [29.0, 18.0, 10.5], [38.0, 12.0, 16.0]],
-	[OUTRO_LEN, [30.0, 18.0, 11.0], [37.0, 11.0, 26.0]],
+	[1.2, [11.8, 17.6, 6.8], [10.5, 14.0, 9.5]],     # off his shoulder, low, looking up at the balloon filling
+	[3.0, [10.0, 18.6, 7.3], "him"],                 # the yank, and up, drifting to the pad's south-west corner
+	[4.6, [8.0, 19.0, 8.8], "him"],
+	[6.2, [6.3, 19.2, 11.0], [24.0, 14.0, 22.0]],    # it lets him go and turns east to the station
+	[8.0, [6.0, 19.2, 13.0], [30.0, 14.0, 19.0]],    # the lamps die
+	[OUTRO_LEN, [5.8, 19.2, 14.0], [42.0, 13.0, 24.0]],  # the antenna's red lamp
 ]
 ## The lamps in the order they die ([N of Beacons/LampN, at s]): the console's two, the key cabinet's, the helipad's four.
 ## N is the index in IDENTITY.beacons (tools/identity/relay_station.gd); Lamp0 is the antenna's red one, which goes last.
-const DEAD := [[1, 4.6], [2, 4.9], [3, 5.3], [4, 5.8], [5, 6.1], [6, 6.4], [7, 6.7]]
-const FLICKER := [0.0, 6.9, 7.2, 7.5, 7.8]  # the red lamp: on, off, on, off for good
+const DEAD := [[1, 6.4], [2, 6.7], [3, 7.0], [4, 7.4], [5, 7.6], [6, 7.8], [7, 8.0]]
+const FLICKER := [0.0, 8.3, 8.6, 8.9, 9.2]  # the red lamp: on, off, on, off for good
+## The helipad's two sodium lamp posts (dressing, NavRegion/Dressing/<name>/Light) go with the pad's beacons: [name, at s].
+const POSTS_DEAD := [["LampPost_13p8_18p0", 7.7], ["LampPost_4p6_10p0", 7.9]]
 
 
-static func outro(cine: Node) -> void:
-	_outro(cine, OUTRO_KEY, false)
-	_outro(cine, OUTRO_KEY + Cine.ALONE, true)
-
-
-static func _outro(cine: Node, key: String, alone: bool) -> AnimationPlayer:
-	var pose := rig_pose(_w(OUTRO_FROM), OUTRO_YAW)  # the shot control leaves off on
+static func outro(cine: Node) -> AnimationPlayer:
+	var props := Node3D.new()
+	props.name = "OutroProps"
+	props.visible = false  # the balloon, shown by the take
+	cine.add_child(props)
+	CineFulton.build(props)
+	var from := _w(OUTRO_FROM)
+	var pose := rig_pose(from, OUTRO_YAW)  # the shot control leaves off on
 	var cams: Array[Vector3] = [pose[0]]
 	var aims: Array[Vector3] = [pose[1]]
 	var ats: Array[float] = [0.0]
 	for s in OUTRO_SHOTS:
 		ats.append(float(s[0]))
 		cams.append(_w(s[1]))
-		aims.append(_w(s[2]))
-	var player := AreaCine.rail(cine, key, cams, aims, ats, {min_s = 6.0, max_s = 10.0})
+		aims.append(CineFulton.at_time(from, s[0]) + Vector3.UP * 1.5 if s[2] is String else _w(s[2]))
+	var player := AreaCine.rail(cine, OUTRO_KEY, cams, aims, ats, {min_s = 8.0, max_s = 11.0})
 	player.set_meta("third_at", OUTRO_THIRD_AT)
-	var w: Array = OUTRO_WALK.alone if alone else OUTRO_WALK.carry
-	var times: Array[float] = [0.0, w[1]]
-	var faces: Array[float] = [OUTRO_YAW, OUTRO_YAW]
-	if alone:  # he stops, then turns back to look at the station
-		times.append_array([OUTRO_LOOK_AT[0], OUTRO_LOOK_AT[1]])
-		faces.append_array([OUTRO_YAW, OUTRO_LOOK_YAW])
-	var to := _w(OUTRO_TO)
-	var points: Array[Vector3] = [_w(OUTRO_FROM), to]
-	if alone:
-		points.append_array([to, to])
-	AreaCine.operative_track(player, times, points, faces)
-	AreaCine.track(player, "../Operative:moving", [0.0, w[1]], [true, false], true)  # the walking clip, only while he crosses
-	AreaCine.track(player, "../Operative:velocity", [0.0, w[1]], [Vector3(0, 0, -w[0]), Vector3.ZERO], true)
+	AreaCine.track(player, "OutroProps:visible", [0.0], [true], true)
+	CineFulton.lift(player, "OutroProps", from, OUTRO_YAW, OUTRO_LEN)
+
 	for d in DEAD:
 		var lamp := "../Beacons/Lamp%d" % d[0]
 		AreaCine.track(player, lamp + "/Light:light_energy", [0.0, d[1], d[1] + 0.15], [2.0, 2.0, 0.0])
 		AreaCine.track(player, lamp + "/Lens:visible", [0.0, d[1]], [true, false], true)
+	for p in POSTS_DEAD:
+		AreaCine.track(player, "../NavRegion/Dressing/%s/Light:light_energy" % p[0], [0.0, p[1], p[1] + 0.2], [3.0, 3.0, 0.0])
 	var red := "../Beacons/Lamp0"
 	AreaCine.track(player, red + "/Light:light_energy", FLICKER, [2.0, 2.0, 0.0, 2.0, 0.0], true)
 	AreaCine.track(player, red + "/Lens:visible", FLICKER, [true, true, false, true, false], true)

@@ -6,6 +6,7 @@ render_mode unshaded, fog_disabled, depth_test_disabled, depth_draw_never, cull_
 uniform sampler2D screen : hint_screen_texture, filter_nearest;
 uniform float amount : hint_range(0.0, 1.0) = 1.0;  // fade-in
 uniform float desat = 0.25;
+uniform float dark = 0.0;    // how far it also darkens (a take's intel beat; the radio mode leaves it at 0)
 
 void vertex() {
 	POSITION = vec4(VERTEX.xy * 2.0, 0.5, 1.0);  // a 1x1 QuadMesh covers the whole screen
@@ -13,6 +14,6 @@ void vertex() {
 
 void fragment() {
 	vec3 c = texture(screen, SCREEN_UV).rgb;
-	ALBEDO = mix(c, vec3(dot(c, vec3(0.299, 0.587, 0.114))), desat * amount);
+	ALBEDO = mix(c, vec3(dot(c, vec3(0.299, 0.587, 0.114))), desat * amount) * (1.0 - dark * amount);
 	ALPHA = 1.0;
 }

@@ -1,12 +1,14 @@
 ## Replays one take so it can be edited and judged without playing the campaign. Needs a window (not --headless); a scene, not --script, so the autoloads (Mixer) exist:
 ##   godot --path . tools/cine_replay.tscn -- <area> --list
-##   godot --path . tools/cine_replay.tscn -- <area> <take> [--step=0.5 | --at=1,2.5,8] [--variant=gorgo] [--no-sheet]
+##   godot --path . tools/cine_replay.tscn -- <area> <take> [--step=0.5 | --at=1,2.5,8] [--variant=gorgo] [--carry] [--no-sheet]
 ##   godot --path . tools/cine_replay.tscn -- <area> <take> --live [--loops=2]
 ## <area>: test_room, harbour, relay_station, research_annex, core. <take>: a node under the Area's Cine (CineIntro,
 ## CineOutro, CineOutroAlone, CineDescent, CineAscent...).
 ## Stills (default, every 0.5 s through the Operative's camera, HUD off) go to user://shots/replay_<area>_<take>_<t>.png and
 ## are tiled, in time order, into replay_<area>_<take>_sheet.png: one image shows the whole move. Their times and the take's
 ## length are printed. --live plays the take in real time through Cine (letterbox, lower-third, skip) and loops it.
+## The Area loads as its own Mission (MISSION_OF), so its Target is there; --carry puts that Target on the Operative's shoulder
+## (an outro's carrying version).
 ## Edit tools/cine/<area>.gd, rebuild the Area (tools/build_<area>.gd), run this again.
 extends Node
 
@@ -15,6 +17,7 @@ const AREAS := {
 	relay_station = "res://areas/relay_station/relay_station.tscn", research_annex = "res://areas/research_annex/research_annex.tscn",
 	core = "res://areas/core/core.tscn",
 }
+const MISSION_OF := {harbour = 0, relay_station = 1, research_annex = 2, core = 3}  # record.mission, so the right Targets spawn
 const SHEET_COLUMNS := 4
 const CELL_WIDTH := 480
 
@@ -38,6 +41,9 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	var scene: Node = load(AREAS[pos[0]]).instantiate()
+	var run := scene.get_node_or_null("MissionRun")
+	if run and MISSION_OF.has(pos[0]):
+		run.record.mission = MISSION_OF[pos[0]]
 	get_tree().root.add_child(scene)
 	var cine := scene.get_node_or_null("Cine")
 	if cine == null:
@@ -59,6 +65,8 @@ func _run() -> void:
 	get_tree().paused = false
 	if _flags.has("variant"):
 		_show_variant(scene, _flags.variant)
+	if _flags.has("carry"):
+		_carry(scene)
 	if _flags.has("live"):
 		await _live(scene, pos[1])
 	else:
@@ -72,6 +80,19 @@ func _show_variant(scene: Node, variant: String) -> void:
 		set_node.show_variant(variant)
 	else:
 		push_warning("--variant only applies to the Core's Ascent; ignored")
+
+
+## The Mission's first Target, Down on the Operative's shoulder.
+func _carry(scene: Node) -> void:
+	var names: Array = Campaign.MISSIONS[scene.get_node("MissionRun").record.mission].targets
+	var op := scene.get_node("Operative")
+	var t: Node = scene.get_node_or_null(String(names[0])) if not names.is_empty() else null
+	if t == null:
+		push_warning("--carry: this Mission has no Target")
+		return
+	t.neutralize()
+	op.carrying = t
+	t.carrier = op
 
 
 func _times(length: float) -> Array[float]:

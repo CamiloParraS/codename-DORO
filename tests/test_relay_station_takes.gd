@@ -3,9 +3,8 @@ extends McpTestSuite
 
 ## The Relay Station's takes: "Up the Signal" (intro) and "Dead Air" (outro). Both are declared by Mission 2, short, one rail;
 ## the intro shows the antenna's signal sprites (the Spoofing look), has the Operative run in from the side and hands him over
-## at the start spot with no guard able to see him; the outro comes in two versions (carrying the Chief, alone) picked at
-## run time, each starting where control stood, walking the helipad under the real clip, never touching the Chief, killing
-## the lamps in order and ending on black.
+## at the start spot with no guard able to see him; the outro starts where control stood and takes him up the Fulton line
+## from the helipad (the Chief, if carried, held on his shoulder: never touched), killing the lamps in order and ending on black.
 
 const SCENE := "res://areas/relay_station/relay_station.tscn"
 
@@ -26,12 +25,12 @@ func test_mission_two_declares_both_takes_and_their_text() -> void:
 	for k: String in ["intro.m2.name", "intro.m2.area", "intro.m2.stamp", "outro.m2.title", "outro.m2.line"]:
 		assert_true(TranslationServer.translate(k) != k, "%s has a line" % k)
 	_area = _relay()
-	for key in ["CineIntro", "CineOutro", "CineOutroAlone"]:
+	for key in ["CineIntro", "CineOutro"]:
 		var p := Cine.take_of(_area, key)
 		assert_true(p != null, key)
 		assert_true(CineLogic.length_ok(p), "within its own range")
 		var len := p.get_animation("take").length
-		assert_true(len >= 8.0 and len <= 10.0, "%s short: %.1f s" % [key, len])
+		assert_true(len >= 8.0 and len <= 11.0, "%s short: %.1f s" % [key, len])
 		assert_eq(p.get_meta("pcams").size(), 1, "one continuous camera")
 
 
@@ -84,39 +83,24 @@ func test_no_guard_cone_can_reach_the_start_during_the_intro() -> void:
 	assert_true(checked > 3)
 
 
-func test_the_outro_walks_the_helipad_in_both_versions_and_never_touches_the_chief() -> void:
+func test_the_outro_fultons_him_from_the_helipad_and_never_touches_the_chief() -> void:
 	_area = _relay()
 	var ep: Vector3 = _area.get_node("Spots/Extraction").position
 	var zone: Vector3 = _area.get_node("ExtractionPoint").position
-	for key in ["CineOutro", "CineOutroAlone"]:
-		var p := Cine.take_of(_area, key)
-		var clip := p.get_animation("take")
-		var ti := clip.find_track(NodePath("../Operative:position"), Animation.TYPE_VALUE)
-		assert_true(ti >= 0, "%s: the Operative walks" % key)
-		var from: Vector3 = clip.track_get_key_value(ti, 0)
-		var end: Vector3 = clip.track_get_key_value(ti, clip.track_get_key_count(ti) - 1)
-		assert_true(Vector2(from.x, from.z).distance_to(Vector2(zone.x, zone.z)) < 2.5, "%s: starts where control stood (no jump back)" % key)
-		assert_true(Vector2(end.x, end.z).distance_to(Vector2(ep.x, ep.z)) < 4.0, "%s: ends on the helipad" % key)
-		assert_true(clip.find_track(NodePath("../Operative:moving"), Animation.TYPE_VALUE) >= 0, "%s: the clip plays" % key)
-		for i in clip.get_track_count():
-			var path := str(clip.track_get_path(i))
-			assert_false("Chief" in path or "carrying" in path or "Operative:visible" in path, "untouched: %s" % path)
-		assert_true(p.has_meta("third_at"))
-	var alone := Cine.take_of(_area, "CineOutroAlone").get_animation("take")
-	var carry := Cine.take_of(_area, "CineOutro").get_animation("take")
-	assert_true(alone.find_track(NodePath("../Operative:cine_face"), Animation.TYPE_VALUE) >= 0)
-	assert_true(absf(carry.length - alone.length) < 0.01, "the same length")
-
-
-func test_the_outro_variant_follows_what_the_operative_carries() -> void:
-	_area = _relay()
-	var op = _area.get_node("Operative")
-	assert_eq(Cine.variant_key(_area, "CineOutro"), "CineOutroAlone", "nothing on his shoulder")
-	op.carrying = Node3D.new()
-	assert_eq(Cine.variant_key(_area, "CineOutro"), "CineOutro", "the Chief on it")
-	op.carrying.free()
-	op.carrying = null
-	assert_eq(Cine.variant_key(_area, "CineIntro"), "CineIntro", "a take with no alone version is itself")
+	var p := Cine.take_of(_area, "CineOutro")
+	var clip := p.get_animation("take")
+	var ti := clip.find_track(NodePath("../Operative:position"), Animation.TYPE_VALUE)
+	var from: Vector3 = clip.track_get_key_value(ti, 0)
+	var end: Vector3 = clip.value_track_interpolate(ti, clip.length)
+	assert_true(Vector2(from.x, from.z).distance_to(Vector2(zone.x, zone.z)) < 2.5, "starts where control stood (no jump back)")
+	assert_true(Vector2(end.x, end.z).distance_to(Vector2(ep.x, ep.z)) < 4.0, "goes straight up from the helipad")
+	assert_true(end.y > from.y + 30.0, "and out of the frame: %.1f m up" % (end.y - from.y))
+	assert_eq(clip.value_track_interpolate(clip.find_track(NodePath("../Operative:cine_clip"), Animation.TYPE_VALUE), clip.length), "hang", "hanging from the line")
+	for i in clip.get_track_count():
+		var path := str(clip.track_get_path(i))
+		assert_false("Chief" in path or "carrying" in path or "Operative:visible" in path, "untouched: %s" % path)
+	assert_true(p.has_meta("third_at"))
+	assert_eq(Cine.variant_key(_area, "CineOutro"), "CineOutro", "one take, carrying or not")
 
 
 func test_the_lamps_die_in_order_and_the_red_one_last() -> void:

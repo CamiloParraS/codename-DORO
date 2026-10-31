@@ -105,7 +105,7 @@ static func _pole_camera(parent: Node, name: String, base: Array, height: float,
 
 
 # ---- Outro: "Gap in the Fog" ------------------------------------------------------------------
-# The Operative (his own look, standing) rises into the fog on the Fulton line, the camera comes down on the empty Extraction
+# The Operative (his own look) is yanked up the Fulton line and rises into the fog hanging from it, the camera comes down on the empty Extraction
 # point, the rear guard of a patrol slows and glances at it, and a pole camera hiding behind a crate lights its lamp and turns. Fade to black at the end. ~9.6 s.
 
 const OUTRO_KEY := "CineOutro"
@@ -145,7 +145,7 @@ static func outro(cine: Node) -> AnimationPlayer:
 	var recruit := _model(props, "Recruit", spot, 0.0, CharacterModel.Kind.OPERATIVE)
 	var balloon := Fx.balloon()
 	balloon.scale = Vector3.ONE
-	balloon.position.y = 3.0
+	balloon.position.y = CineFulton.TIE  # the cable hangs down to his raised hand, as in the other outros' Fulton
 	recruit.add_child(balloon)
 	var b_stop_x := 12.5  # where the rear guard stops; the lead guard is 2.2 m ahead of him
 	var guard_a := _model(props, "PatrolA", _w([b_stop_x - 2.2 + OUTRO_WALK * OUTRO_STOP_AT, OUTRO_PATROL_Y, 0.0]), PI / 2.0)
@@ -173,8 +173,9 @@ static func outro(cine: Node) -> AnimationPlayer:
 	_value(clip, "../ExtractionPoint/Beacon:visible", [0.0], [false], Animation.INTERPOLATION_NEAREST)
 	_value(clip, "OutroProps:visible", [0.0], [true], Animation.INTERPOLATION_NEAREST)
 
-	# the Operative and his balloon rise on the line, upright
-	_call(clip, "OutroProps/Recruit/Model", 0.0, &"play", ["idle"])
+	# the Operative and his balloon rise on the line: yanked off his feet, then hanging from it (CineFulton's pose)
+	_call(clip, "OutroProps/Recruit/Model", 0.0, &"play", ["lift_off"])
+	_call(clip, "OutroProps/Recruit/Model", CineFulton.GRIP, &"play", ["hang"])
 	var heights := OUTRO_RISE_H.map(func(h: float) -> Vector3: return spot + Vector3(0, h, 0))
 	_value(clip, "OutroProps/Recruit:position", OUTRO_RISE_T, heights, Animation.INTERPOLATION_CUBIC)
 

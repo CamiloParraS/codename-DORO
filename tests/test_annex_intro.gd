@@ -1,8 +1,9 @@
 @tool
 extends McpTestSuite
 
-## The Research Annex's intro take, "Twelve Months": declared by Mission 3, short, one rail, the seasons turn in the light and
-## end on the Area's real values, he walks in through the fence's hole, and no guard's cone can reach him while it plays.
+## The Research Annex's intro take, "Twelve Months": declared by Mission 3, short, one rail; the Mission's steps light up in
+## order through the walls under a dim, everything ends on the Area's real values, he walks in through the fence's hole, and
+## no guard's cone can reach him while it plays.
 
 const SCENE := "res://areas/research_annex/research_annex.tscn"
 const KEY := "CineIntro"
@@ -27,42 +28,45 @@ func test_mission_three_declares_the_intro_and_it_resolves() -> void:
 	assert_true(p != null, "the Annex has the take")
 	assert_true(CineLogic.length_ok(p), "within its own range")
 	var len := p.get_animation("take").length
-	assert_true(len >= 8.0 and len <= 10.0, "short: %.1f s" % len)
+	assert_true(len >= 8.0 and len <= 11.0, "short: %.1f s" % len)
 	assert_eq(p.get_meta("pcams").size(), 1, "one continuous camera")
 
 
-func test_the_light_ends_on_the_areas_real_values() -> void:
+func test_the_world_ends_on_the_areas_real_values() -> void:
 	_area = _annex()
-	var sun: DirectionalLight3D = _area.get_node("Sun")
 	var env: Environment = _area.get_node("Mood").environment
-	var rot := sun.rotation_degrees
-	var col := sun.light_color
-	var en := sun.light_energy
-	var amb := env.ambient_light_color
-	var amb_e := env.ambient_light_energy
+	var begin := env.fog_depth_begin
+	var end := env.fog_depth_end
 	var p := Cine.take_of(_area, KEY)
+	var dim: ShaderMaterial = _area.get_node("Cine/IntroProps/Dim").material_override
 	var len := p.get_animation("take").length
 	p.play("take")
-	p.seek(len * 0.5, true)
-	assert_true(sun.light_color != col or sun.light_energy != en, "the seasons move the light mid-take")
+	p.seek(3.0, true)
+	assert_true(env.fog_depth_begin > begin, "the fog pulls back while the camera is high")
+	assert_true(float(dim.get_shader_parameter("amount")) > 0.9, "and the world dims for the marks")
 	p.seek(len, true)
-	assert_true(sun.rotation_degrees.distance_to(rot) < 0.01, "sun angle")
-	assert_true(_close(sun.light_color, col), "sun colour")
-	assert_true(absf(sun.light_energy - en) < 0.01, "sun energy")
-	assert_true(_close(env.ambient_light_color, amb), "ambient")
-	assert_true(absf(env.ambient_light_energy - amb_e) < 0.01, "ambient energy")
+	assert_true(absf(env.fog_depth_begin - begin) < 0.01 and absf(env.fog_depth_end - end) < 0.01, "fog back to the Area's")
+	assert_true(float(dim.get_shader_parameter("amount")) < 0.01, "no dim at control")
 	p.stop()
 
 
-func test_the_calendar_flips_through_twelve_months() -> void:
+func test_the_marks_light_the_missions_steps_in_order_and_go_before_control() -> void:
 	_area = _annex()
 	var p := Cine.take_of(_area, KEY)
-	var cal: Label3D = _area.get_node("Cine/IntroProps/Calendar")
+	var len := p.get_animation("take").length
+	var last := 0.0
+	for m: Array in AnnexCine.MARKS:
+		assert_true(m[4] > last, "%s lights after the one before" % m[0])
+		last = m[4]
+		assert_true(TranslationServer.translate(m[3]) != m[3], "%s has a tag line" % m[0])
+	assert_eq(AnnexCine.MARKS[3][2], Campaign.MISSIONS[2].targets[0], "the target mark follows Mission 3's Target")
 	p.play("take")
-	p.seek(0.0, true)
-	assert_eq(cal.text, "01/12")
-	p.seek(p.get_animation("take").length, true)
-	assert_eq(cal.text, "12/12")
+	p.seek(last + 0.1, true)
+	for m: Array in AnnexCine.MARKS:
+		assert_true((_area.get_node("Cine/IntroProps/" + m[0]) as CineMark).lit, "%s is lit" % m[0])
+	p.seek(len, true)
+	for m: Array in AnnexCine.MARKS:
+		assert_false((_area.get_node("Cine/IntroProps/" + m[0]) as CineMark).lit, "%s is off at control" % m[0])
 	p.stop()
 
 
@@ -82,7 +86,7 @@ func test_the_operative_walks_in_through_the_fence_hole_and_no_guard_cone_reache
 	assert_true(t >= 0, "the take walks him")
 	var start: Vector3 = _area.get_node("Spots/OperativeStart").position
 	assert_true(clip.track_get_key_value(t, 0).z > 75.8 - 40.0 + 1.0, "he begins outside the south fence")
-	var through: Vector3 = clip.value_track_interpolate(t, 5.1)
+	var through: Vector3 = clip.value_track_interpolate(t, AnnexCine.WALK_IN[1][0])
 	assert_true(absf(through.x - (AnnexCine.GAP[0] - 40.0)) < 0.5 and absf(through.z - (AnnexCine.GAP[1] - 40.0)) < 1.0, "he passes through the hole")
 	assert_true(clip.value_track_interpolate(t, clip.length).distance_to(start) < 0.1, "and ends on the start spot")
 	# the hole is open to the eye and shut to the body

@@ -105,6 +105,17 @@ static func operative_track(player: AnimationPlayer, times: Array[float], points
 		_steps(clip, "../Operative:velocity", ends, [Vector3(0, 0, -walk), Vector3.ZERO])
 
 
+## Where the shoulder rig rests behind `at` (world) facing `yaw` (radians, a marker's): [camera, aim]. Pivot 1.45 up, arm
+## 0.55 across and 2.4 back, tilted 0.25 rad (operative.gd): a take that starts or ends here hands over with no jump.
+static func rig_pose(at: Vector3, yaw: float) -> Array[Vector3]:
+	var f := Vector3(-sin(yaw), 0, -cos(yaw))
+	var cam := at + Vector3.UP * (1.45 + 2.4 * sin(0.25)) - f * 2.4 * cos(0.25) + f.cross(Vector3.UP) * 0.55
+	var reach := 7.4 + 2.4 * cos(0.25)
+	var aim := cam + f * reach
+	aim.y = cam.y - reach * tan(0.25)
+	return [cam, aim]
+
+
 ## A hard cut inside a take (hide it under a dark pulse): a static pcam at `pos` looking at `look`, raised at `at` seconds above
 ## the take's others with no tween. Joins the take's `pcams`. `rig` is the player's `<Name>Rig` node (rail and relay make it).
 static func cut_to(player: AnimationPlayer, name: String, pos: Vector3, look: Vector3, at: float, opts := {}) -> PhantomCamera3D:
