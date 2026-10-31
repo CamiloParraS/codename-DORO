@@ -102,6 +102,22 @@ func test_the_lift_door_blocks_the_corridor_until_intel_lift_is_reached() -> voi
 	d.free()
 
 
+func test_a_shut_lift_door_stands_behind_the_exit_and_blocks_nothing() -> void:
+	var core: Node = load(SCENE).instantiate()
+	var door: Node3D = core.get_node("LiftDoorShut")
+	assert_ne(door.get_parent().name, "NavRegion", "outside the bake")
+	var exit := CoreCine.exit_world()
+	var at: Vector3 = door.get_node("LeafW").position
+	assert_true(at.x > exit.x and absf(at.z - exit.z) < 1.0, "behind the Operative's exit, in the corridor mouth")
+	var meshes := 0
+	for n in door.find_children("*", "", true, false):
+		assert_false(n is CollisionObject3D or n is CollisionShape3D, "no body: spoof and sight pass through")
+		if n is MeshInstance3D:
+			meshes += 1
+	assert_true(meshes >= 2, "two leaves")
+	core.free()
+
+
 func test_the_director_speaks_once_when_the_operative_enters() -> void:
 	TranslationServer.set_locale("en")
 	var hud := _hud()
