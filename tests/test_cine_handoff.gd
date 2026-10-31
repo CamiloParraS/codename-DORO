@@ -57,7 +57,7 @@ func test_every_intro_ends_on_the_shoulder_rig_at_the_start_spot() -> void:
 			assert_eq(_end(clip, "%sRig/Cam:camera_3d_resource:fov" % key, FOV), FOV, "%s: fov track ends at the rig's" % who)
 		checked += 1
 		_area.free()
-	assert_eq(checked, 3, "Harbour, Relay Station and Annex")
+	assert_eq(checked, 4, "Harbour, Relay Station, Annex and Core")
 
 
 ## The clip's value on `path` at its last frame, or `fallback` when it has no such track.

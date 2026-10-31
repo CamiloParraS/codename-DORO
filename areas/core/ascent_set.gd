@@ -1,10 +1,9 @@
 ## The Ascent's set (tools/cine/core_ascent.gd builds it under the shaft strip): three dressings of the one shaft, one per
-## ending. show_variant() lights the chosen one, opens the car's back and roof to the sky, gives the take's camera that
+## ending. show_variant() lights the chosen one, tints the car's lamp, gives the take's camera that
 ## ending's sky and shake, and starts the fire; the rail, the clip and the camera never branch. The car's lamp flickers
 ## by AscentLogic. Hidden, and not processing, until the finale picks a variant.
 extends Node3D
 
-const OPENED := ["CabBack", "CabRoof"]   # the camera leaves the car backwards and upwards
 const CAMERA := "Cine/CineAscentRig/Cam"
 
 @export var skies: Dictionary = {}   # variant -> Environment (the Area's Mood, recoloured)
@@ -30,19 +29,11 @@ func show_variant(v: String) -> void:
 				(p as CPUParticles3D).emitting = on
 	var car := get_node("../..")
 	var area := car.get_parent()
-	var sky := area.get_node_or_null("Cine/AscentSkyline") as Node3D
-	if sky:
-		sky.visible = true
-	for n in OPENED:
-		var part := car.get_node_or_null(n) as Node3D
-		if part:
-			part.visible = false
 	var lamp := car.get_node_or_null("CabLamp") as OmniLight3D
 	if lamp:
 		if _lamp_energy < 0.0:
 			_lamp_energy = lamp.light_energy
-		if v == "gorgo":
-			lamp.light_color = Color(1.0, 0.3, 0.2)
+		lamp.light_color = {"pallas": Color(0.85, 0.92, 1.0), "nike": Color(1.0, 0.7, 0.4), "gorgo": Color(1.0, 0.3, 0.2)}[v]
 	var cam := area.get_node_or_null(CAMERA) as PhantomCamera3D
 	if cam:
 		cam.environment = skies.get(v)

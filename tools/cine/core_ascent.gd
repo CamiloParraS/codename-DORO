@@ -1,17 +1,15 @@
-## The Core's Ascent, built into areas/core/core.tscn by CoreCine.build: the finale's Epilogue plays over the lift rising out
-## of the shaft the Descent went down (the same DescentCab and its Shaft strip, sliding the other way). The camera
-## pulls back from the Operative, rises behind the car as the floors pass, and climbs out into the Harbour's sky.
-## One clip; what the floors show, the sky and the shake come from three sets (ascent_set.gd): Pallas calm, Nike half dead,
-## Gorgo on fire. Data in metres, car-relative (CoreCine.CAB). The take is short; the finale holds its last frame while
+## The Core's Ascent, built into areas/core/core.tscn by CoreCine.build: the finale's Epilogue plays over the lift rising in
+## the shaft the Descent went down (the same DescentCab and its Shaft strip, sliding the other way). The camera stays at
+## the gate and faces the Operative in the car, easing in; nothing else is modelled. One clip; what the light, the sky
+## and the shake do come from three sets (ascent_set.gd): Pallas calm, Nike half dead, Gorgo on fire. Data in metres, car-relative (CoreCine.CAB). The take is short; the finale holds its last frame while
 ## the Epilogue's lines finish.
 class_name CoreAscent
 extends RefCounted
 
-const LENGTH := 9.0
+const LENGTH := 8.5
 const FLOORS := 9        # one every FLOOR_GAP up the strip
 const FLOOR_GAP := 3.0
 const SHAKE := 1.0       # degrees at the rise out of the shaft, at trauma 1
-const SKYLINE := [[-34.0, 6.0, 7.0], [-20.0, 4.0, 11.0], [-6.0, 7.0, 6.0], [14.0, 5.0, 14.0], [30.0, 8.0, 9.0], [48.0, 5.0, 8.0]]  # x, width, height
 ## horizon, zenith, glow, fog depth end, per ending: calm blue dawn, grey with smoke, black and red.
 const SKIES := {
 	pallas = [Color(0.66, 0.8, 0.95), Color(0.2, 0.36, 0.7), Color(1.0, 0.85, 0.7), 260.0],
@@ -31,7 +29,6 @@ static func build(b: Object, car: Node3D, cine: Node3D) -> void:
 	_pallas(b, _group(set, "AscentPallas"))
 	_nike(b, _group(set, "AscentNike"))
 	_gorgo(b, _group(set, "AscentGorgo"))
-	_skyline(cine)
 	_take(cine)
 
 
@@ -119,8 +116,6 @@ static func _gorgo(b: Object, set: Node3D) -> void:
 		l.light_energy = 2.0
 		l.position = Vector3(0.5, _floor_y(i), 1.6)
 		set.add_child(l)
-		set.add_child(_particles(b, "Flames%d" % i, Vector3(0.5, _floor_y(i) - 0.6, 0.6), Vector3(1.6, 0.2, 0.3), Vector3(0, 2.5, 0.4),
-			b._glow_mat(Color(1.0, 0.55, 0.15), 3.0), Vector3(0.35, 0.35, 0.35), 18, 0.9))
 	set.add_child(_particles(b, "Smoke", Vector3(0, 2.0, 1.0), Vector3(2.8, 0.5, 0.8), Vector3(0, 2.2, 0.6),
 		_flat(Color(0.08, 0.07, 0.07)), Vector3(1.4, 1.4, 1.4), 26, 3.5))
 	set.add_child(_particles(b, "Debris", Vector3(0, 15.0, 1.5), Vector3(2.6, 0.2, 0.8), Vector3(0, -9.0, 0),
@@ -155,34 +150,14 @@ static func _flat(c: Color) -> StandardMaterial3D:
 	return m
 
 
-## Silhouettes of the Harbour at the horizon beyond the shaft's mouth, so the rise ends on somewhere. In the world, not on
-## the strip that slides; ascent_set.gd shows them with the set.
-static func _skyline(cine: Node3D) -> void:
-	var sky := Node3D.new()
-	sky.name = "AscentSkyline"
-	sky.visible = false
-	cine.add_child(sky)
-	var dark := _flat(Color(0.05, 0.05, 0.07))
-	for i in SKYLINE.size():
-		var s: Array = SKYLINE[i]
-		var m := MeshInstance3D.new()
-		m.name = "Block%d" % i
-		var mesh := BoxMesh.new()
-		mesh.size = Vector3(s[1], s[2] + 30.0, 4.0)
-		mesh.material = dark
-		m.mesh = mesh
-		m.position = CoreCine.CAB + Vector3(s[0], 2.0 + s[2] * 0.5 - (s[2] + 30.0) / 2.0, -60.0 - 6.0 * (i % 3))
-		sky.add_child(m)
-
-
-## The take: Phantom Camera rail up and back from the Operative; the strip slides down so the car rises.
+## The take: the camera stands just outside the car's open gate, looking in at the Operative, and eases in; the strip slides
+## down so the car rises. The three sets reach him as light (the lamp, the floors' fire) and the shake.
 static func _take(cine: Node3D) -> void:
 	var c := CoreCine.CAB
-	var points: Array[Vector3] = [c + Vector3(0.25, 1.75, 1.0), c + Vector3(0, 2.4, 2.8), c + Vector3(0, 4.0, 4.2),
-		c + Vector3(0, 9.0, 5.0), c + Vector3(0, 13.0, 5.5)]
-	var looks: Array[Vector3] = [c + Vector3(0, 1.6, 0.2), c + Vector3(0, 1.5, -1.5), c + Vector3(0, 5.0, -3.3),
-		c + Vector3(0, 13.0, -3.3), c + Vector3(0, 18.0, -40.0)]
-	var times: Array[float] = [0.0, 2.2, 5.0, 7.2, LENGTH]
+	var points: Array[Vector3] = [c + Vector3(0.35, 1.7, -2.95), c + Vector3(0.2, 1.65, -2.7), c + Vector3(0.05, 1.62, -2.4)]
+	var face := c + Vector3(0, 1.55, 0.3)
+	var looks: Array[Vector3] = [face + Vector3(-0.1, 0.0, 0.0), face, face + Vector3(0, 0.05, 0.0)]
+	var times: Array[float] = [0.0, 4.5, LENGTH]
 	var p := AreaCine.rail(cine, AscentLogic.KEY, points, looks, times, {fov = 62.0, min_s = 6.0, max_s = 10.0})
 	var cam := "%sRig/Cam" % AscentLogic.KEY
 	var noise := PhantomCameraNoise3D.new()
@@ -191,7 +166,6 @@ static func _take(cine: Node3D) -> void:
 	noise.rotational_noise = true
 	(cine.get_node(cam) as PhantomCamera3D).noise = noise
 	AreaCine.track(p, cam + ":noise:amplitude", [0.0, 2.0, 6.0, LENGTH], [0.3 * SHAKE, SHAKE, SHAKE, 0.4 * SHAKE])
-	AreaCine.track(p, cam + ":camera_3d_resource:fov", [0.0, 2.2, 6.0, LENGTH], [62.0, 70.0, 66.0, 55.0])
 	AreaCine.track(p, "../Operative:position", [0.0], [CoreCine.stand()], true)
 	AreaCine.track(p, "../Operative:cine_face", [0.0], [0.0], true)
 	AreaCine.track(p, "../Operative:cine_view", [0.0], [0.0], true)
