@@ -241,8 +241,7 @@ func _aigis_cue() -> void:
 	var at := Vector2(70 - 28 * (1.0 - e), 56)
 	var plate := Rect2(at + Vector2(-16, -14), Vector2(6 * HABIT_W + 20, 100))  # a smoke plate: the cue reads on a white wall too
 	c.draw_rect(plate, Color(HudPalette.GLASS, 0.78 * e))
-	c.draw_rect(plate, Color(HudPalette.CYAN, 0.35 * e), false, 1.0)
-	c.draw_rect(Rect2(plate.position, Vector2(3, plate.size.y)), Color(HudPalette.CYAN, e))
+	c.draw_rect(plate, Color(HudPalette.LIGHT, 0.26 * e), false, 1.0)  # the gear cards' frame: the cyan inside says Aigis
 	var eye := at + Vector2(13, 13)
 	c.draw_arc(eye, 12, 0, TAU, 32, HudPalette.CYAN, 2.0, true)
 	c.draw_arc(eye + Vector2(-4, -1), 3.2, 0, TAU, 16, HudPalette.CYAN, 2.0, true)

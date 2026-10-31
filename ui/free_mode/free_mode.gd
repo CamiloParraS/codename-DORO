@@ -15,7 +15,8 @@ var mission := 0
 var record: Dictionary
 var plan: Dictionary
 var _stage := Control.new()
-var _summary := Label.new()
+var _summary := Label.new()  # what Aigis deploys: the Preset, the Mission and the budget
+var _steps := VBoxContainer.new()  # then each pick, one per line
 var _presets := UiMenu.new(560)
 var _preset_rows: Array[Button] = []
 var _mission_cells: Array[Button] = []
@@ -85,11 +86,15 @@ func _ready() -> void:
 	sbox.content_margin_top = 24
 	sbox.content_margin_bottom = 26
 	sum.add_theme_stylebox_override("panel", sbox)
+	var sum_col := VBoxContainer.new()
+	sum_col.add_theme_constant_override("separation", 18)
+	sum_col.custom_minimum_size.x = 1080
+	_summary = _text("", 22, 0.24, HudPalette.CYAN)
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_summary.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	_summary.custom_minimum_size.x = 1080
-	_summary.add_theme_color_override("font_color", HudPalette.LIGHT)
-	sum.add_child(_summary)
+	sum_col.add_child(_summary)
+	_steps.add_theme_constant_override("separation", 10)
+	sum_col.add_child(_steps)
+	sum.add_child(sum_col)
 	mid.add_child(sum)
 	var act := HBoxContainer.new()
 	act.add_theme_constant_override("separation", 14)
@@ -225,7 +230,17 @@ func _refresh() -> void:
 	var steps := PackedStringArray(plan.picks.map(func(p: Dictionary) -> String:
 		return tr("ui.step.%s.%d" % [p.habit, p.level])))
 	_summary.text = tr("ui.free.summary").format({preset = tr("ui.preset." + preset), mission = tr("ui.mission_short.%d" % mission),
-		budget = plan.budget}) + "\n" + ("\n".join(steps) if steps else tr("ui.free.nothing"))
+		budget = plan.budget}).to_upper()
+	for c in _steps.get_children():
+		c.queue_free()
+	if steps.is_empty():
+		_steps.add_child(_text(tr("ui.free.nothing").to_upper(), 30, 0.08, HudPalette.LIGHT_3))
+	for i in steps.size():  # a numbered pick per line
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 22)
+		row.add_child(_text("%02d" % (i + 1), 30, 0.06, HudPalette.LIGHT_3))
+		row.add_child(_text(steps[i].to_upper(), 30, 0.08, HudPalette.LIGHT))
+		_steps.add_child(row)
 
 
 ## The finale for the picked Preset's record, then back here.

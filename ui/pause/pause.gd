@@ -22,6 +22,7 @@ var _objective := Label.new()
 var _mission := Label.new()
 var _menu := UiMenu.new(760)
 var _confirm_box := PanelContainer.new()
+var _confirm_dim := ColorRect.new()  # darkens the page behind the question
 var _confirm_menu := UiMenu.new(420)
 var _confirm_q := Label.new()
 var _on_yes := Callable()  # what YES does: the question asked last
@@ -152,10 +153,14 @@ func _build_confirm() -> void:
 	v.add_child(_confirm_q)
 	v.add_child(_confirm_menu)
 	_confirm_box.add_child(v)
+	_confirm_dim.color = Color(HudPalette.INK, 0.72)
+	_confirm_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_confirm_dim.visible = false
+	_stage.add_child(_confirm_dim)
 	_stage.add_child(_confirm_box)
 	_row(_confirm_menu, "ui.yes", func() -> void: _on_yes.call())
 	_row(_confirm_menu, "ui.no", func() -> void:
-		_confirm_box.hide()
+		_confirming(false)
 		_menu.show()
 		_resume.grab_focus())
 
@@ -172,6 +177,7 @@ func _layout() -> void:
 		if c.has_meta(&"band"):
 			c.size.x = d.x
 	_confirm_box.position = Vector2((d.x - 1000) / 2, 330)
+	_confirm_dim.size = d
 
 
 func _unhandled_input(e: InputEvent) -> void:
@@ -193,7 +199,7 @@ func _show(on: bool) -> void:
 		hud.visible = not on  # the busy HUD would ghost through the scrim
 	if on:
 		visible = true
-		_confirm_box.hide()
+		_confirming(false)
 		_menu.show()
 		HudPalette.fade(self)
 		_resume.grab_focus()
@@ -236,6 +242,11 @@ func _ask(question: String, on_yes: Callable) -> void:
 	_confirm_q.text = question
 	_on_yes = on_yes
 	_menu.hide()
-	_confirm_box.show()
+	_confirming(true)
 	_confirm_menu.focus_first(true)
 	_confirm_menu.open()
+
+
+func _confirming(on: bool) -> void:
+	_confirm_box.visible = on
+	_confirm_dim.visible = on

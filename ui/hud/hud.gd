@@ -3,7 +3,7 @@
 ## Radar top-right, life bottom-left, item and weapon cards bottom-right (the selector opens beside them when
 ## either changes), the live call and radio lines middle-left, and the text-free action prompt lower-middle.
 ## Only the crosshair stays on the 640x360 logical canvas, so its
-## pixel art keeps its grid. Lives on CanvasLayer 1 so the banding pass on layer 0 does not touch it.
+## pixel art keeps its grid. Lives on CanvasLayer 1, above the banding pass (layer -1).
 extends "res://ui/hud/hud_corners.gd"
 
 

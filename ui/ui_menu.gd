@@ -44,7 +44,8 @@ func _init(width := WIDTH, hints := false) -> void:
 	_desc.add_theme_font_override("font", HudPalette.tracked(HudPalette.LABEL, 22, 0.14))
 	_desc.add_theme_font_size_override("font_size", 22)
 	_desc.add_theme_color_override("font_color", HudPalette.LIGHT_2)
-	_desc.custom_minimum_size = Vector2(0, 30)
+	_desc.custom_minimum_size = Vector2(0, 52)  # its text sits at the bottom: a clear gap from the last plate
+	_desc.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_hints.custom_minimum_size = Vector2(0, 44)

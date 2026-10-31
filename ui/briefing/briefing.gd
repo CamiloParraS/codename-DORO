@@ -11,6 +11,7 @@ const GLYPHS: Dictionary = preload("res://ui/finale/finale.gd").GLYPHS
 const TAG := 112  # px from the margin to a Voice line's text: room for "() GLAUKOPIS"
 const MARGIN := 24
 const RIGHT_COL := 560.0  # px from the margin to a Habit row text column
+const OBJ_INDENT := 56.0  # px from the margin to an objective's text, past its number
 
 var record: Dictionary
 var plan: Dictionary
@@ -130,6 +131,7 @@ func _draw() -> void:
 	var x := 110.0
 	var body_w := minf(d.x - x * 2 - TAG, 1300.0)
 	var disp := HudPalette.DISPLAY
+	var obj_n := 0  # objectives are numbered, in the order the Mission asks for them
 	for i in _lines.size():
 		var kind: String = _lines[i][0]
 		var s := _blips[i].shown()
@@ -179,10 +181,13 @@ func _draw() -> void:
 					left -= l.length() + 1
 					y += 38
 				y += 14
-			"objective":
-				for l in HudPalette.wrap("- " + s, d.x - x * 2, HudPalette.FIGURE_MED, 28):
-					HudPalette.hud_text(self, Vector2(x, y), l, 28, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
+			"objective":  # a sand step number, then the objective in Barlow
+				obj_n += 1
+				HudPalette.hud_text(self, Vector2(x, y), "%02d" % obj_n, 24, HudPalette.SAND, HudPalette.tracked(disp, 24, 0.08), 0, false)
+				for l in HudPalette.wrap(s, d.x - x * 2 - OBJ_INDENT, HudPalette.FIGURE_MED, 28):
+					HudPalette.hud_text(self, Vector2(x + OBJ_INDENT, y), l, 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					y += 38
+				y += 6
 	var af := HudPalette.tracked(disp, 22, 0.24)
 	var ak := tr("ui.brief.any_key").to_upper()
 	HudPalette.hud_text(self, Vector2(x, d.y - 60), ak, 22, HudPalette.LIGHT_2, af, 0, false)
@@ -192,15 +197,15 @@ func _draw() -> void:
 		HudPalette.hud_text(self, Vector2(rx + kw + 14, d.y - 60), tr("ui.brief.requisition").to_upper(), 22, HudPalette.LIGHT_2, af, 0, false)
 
 
-## A Voice's mark in a thin cyan frame, then its name; the mark pulses while its line types.
+## A Voice's mark, then its name, both in Aigis cyan; the mark pulses while its line types. No frame: a box round
+## "[]" or "()" reads as a missing glyph.
 func _voice_head(at: Vector2, who: String, i: int, k: float) -> void:
 	var disp := HudPalette.DISPLAY
 	var glyph: String = GLYPHS[who]
 	var gf := HudPalette.tracked(disp, 26, 0.0)
 	var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
 	var pk := StoryMotion.pulse(_line_t if i == _typing_i and not _blips[i].done() else 99.0)
-	draw_rect(Rect2(at.x - 10, at.y - 28, w + 20, 38), Color(HudPalette.CYAN, 0.45), false, 1.5)
 	draw_set_transform((Vector2(at.x, at.y - 2) + Vector2(w / 2, -13)) * k, 0.0, Vector2(k, k) * pk)
 	draw_string(gf, Vector2(-w / 2, 13), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, HudPalette.CYAN)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
-	HudPalette.hud_text(self, Vector2(at.x + w + 24, at.y - 2), tr("ui.voice." + who).to_upper(), 26, HudPalette.CYAN, HudPalette.tracked(disp, 26, 0.2), 0, false)
+	HudPalette.hud_text(self, Vector2(at.x + w + 14, at.y - 2), tr("ui.voice." + who).to_upper(), 26, HudPalette.CYAN, HudPalette.tracked(disp, 26, 0.2), 0, false)

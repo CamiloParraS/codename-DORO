@@ -250,6 +250,9 @@ func _area(mission: int, as_mission: int) -> void:
 	Campaign.record = _record(mission)
 	Campaign.play(get_tree(), Campaign.record, MENU, true)
 	await wait(3.0)
+	for take: Cine in get_tree().root.find_children("*", "Cine", true, false):  # the intro take hides the HUD: land it
+		take.skip()
+	await wait(1.5)
 	TranslationServer.set_locale(lang)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	run.record = _record(as_mission)

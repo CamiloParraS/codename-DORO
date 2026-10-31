@@ -242,7 +242,7 @@ func _draw_aigis(d: Vector2) -> void:
 	if changed.is_empty():
 		HudPalette.hud_text(self, Vector2(80, 260), tr("ui.post.nothing").to_upper(), 34, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.2), 0, false)
 	var gap := 24.0
-	var h := clampf((d.y - 64.0 - 230.0 - 90.0 - gap * (changed.size() - 1)) / maxf(changed.size(), 1), 130.0, 230.0)
+	var h := clampf((d.y - 64.0 - 230.0 - 130.0 - gap * (changed.size() - 1)) / maxf(changed.size(), 1), 130.0, 200.0)
 	var w := d.x - 160.0
 	for i in changed.size():
 		var born := FIRST + i * CARD
@@ -255,7 +255,7 @@ func _draw_aigis(d: Vector2) -> void:
 		var unlocked := 0
 		for e: Dictionary in strip:
 			unlocked += int(e.level)
-		HudPalette.hud_text(self, Vector2(80, 230.0 + changed.size() * (h + gap) + 14), tr("ui.post.answers").format({n = unlocked}).to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.2), 0, false)
+		HudPalette.hud_text(self, Vector2(80, 230.0 + changed.size() * (h + gap) + 40), tr("ui.post.answers").format({n = unlocked}).to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.2), 0, false)
 	if _age >= FIRST + changed.size() * CARD + 0.4:
 		var ak := tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(self, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)

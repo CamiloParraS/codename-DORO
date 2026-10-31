@@ -1,5 +1,6 @@
 ## Autoload: the PSX look. 3D renders at 854x480 and is upscaled with nearest filtering at any window
-## size, then a banding pass runs on layer 0 so the HUD (layer 1+) stays crisp. Also owns the default
+## size, then a banding pass runs on layer -1, under every UI: the HUD, the menus, the Codec and the cards
+## (all on layer 0 and up) render crisp at full resolution and never pick up the dither or the fringe. Also owns the default
 ## sky and far fog as the world's fallback environment: an Area's own WorldEnvironment (its mood) wins.
 extends CanvasLayer
 
@@ -16,7 +17,7 @@ var _mat := ShaderMaterial.new()
 
 
 func _ready() -> void:
-	layer = 0
+	layer = -1  # under the root canvas: only the 3D is banded
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = SKY
