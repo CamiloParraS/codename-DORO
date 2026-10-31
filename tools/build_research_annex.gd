@@ -22,7 +22,9 @@ const LAND := [
 ## Solid boxes: [name, rect, h0, h1, material, tint].
 const SOLID := [
 	["FenceW", [3.8, 4, 0.2, 72], 0, 3, "metal", FENCE],
-	["FenceS", [4, 75.8, 58, 0.2], 0, 3, "metal", FENCE],
+	["FenceS1", [4, 75.8, 5.5, 0.2], 0, 3, "metal", FENCE],   # the hole (x 9.5-11.5) is where the intro take has the Operative walk in
+	["FenceS2", [11.5, 75.8, 50.5, 0.2], 0, 3, "metal", FENCE],
+	["GapSeal", [9.5, 75.8, 2, 0.2], 0, 3, "metal", FENCE],   # collision only (area_kit.gd SHELLED): in play the hole stays shut
 	["FenceN1", [4, 3.8, 32, 0.2], 0, 3, "metal", FENCE],
 	["FenceN2", [44, 3.8, 32, 0.2], 0, 3, "metal", FENCE],
 	["FenceE", [75.8, 4, 0.2, 26], 0, 3, "metal", FENCE],

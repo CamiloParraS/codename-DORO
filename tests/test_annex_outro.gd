@@ -1,8 +1,8 @@
 @tool
 extends McpTestSuite
 
-## The Research Annex's outro take, "Memory Loss": declared by Mission 3, short, one rail, the memory rack's lights die and
-## the next rack's follow, the line arrives late, ends on black, and drives nothing of the Operative but his walk.
+## The Research Annex's outro take, "Memory Loss": declared by Mission 3, short, one rail, he carries out to the Extraction
+## point, the line arrives late, ends on black, and drives nothing of the Operative but his walk.
 
 const SCENE := "res://areas/research_annex/research_annex.tscn"
 const KEY := "CineOutro"
@@ -33,31 +33,14 @@ func test_mission_three_declares_the_outro_and_it_resolves() -> void:
 	assert_eq(pcam.priority, 0, "no pcam is live until the take starts")
 
 
-func test_the_memory_rack_is_built() -> void:
+func test_he_walks_out_to_the_extraction_point() -> void:
 	_area = _annex()
-	var racks: Node = _area.get_node("Cine/OutroProps/Racks")
-	assert_true(racks.has_node(AnnexCine.MEMORY_RACK))
-	assert_true(racks.has_node(AnnexCine.NEXT_RACK))
-
-
-func test_the_memory_rack_goes_dark_then_the_next_while_the_rest_stay_green() -> void:
-	_area = _annex()
-	var p := Cine.take_of(_area, KEY)
-	var len := p.get_animation("take").length
-	var racks: Node = _area.get_node("Cine/OutroProps/Racks")
-	p.play("take")
-	p.seek(1.0, true)
-	for r in racks.get_children():
-		assert_eq(_led(r).emission, AnnexCine.GREEN, "%s starts green" % r.name)
-	p.seek(7.2, true)
-	assert_eq(_led(racks.get_node(AnnexCine.MEMORY_RACK)).emission, AnnexCine.BLACK, "the memory rack is dark")
-	assert_eq(_led(racks.get_node(AnnexCine.NEXT_RACK)).emission, AnnexCine.GREEN, "the next is not yet")
-	p.seek(len, true)
-	assert_eq(_led(racks.get_node(AnnexCine.NEXT_RACK)).emission, AnnexCine.BLACK, "the row beside it follows")
-	for r in racks.get_children():
-		if r.name != AnnexCine.MEMORY_RACK and r.name != AnnexCine.NEXT_RACK:
-			assert_eq(_led(r).emission, AnnexCine.GREEN, "%s is untouched" % r.name)
-	p.stop()
+	var clip := Cine.take_of(_area, KEY).get_animation("take")
+	var t := clip.find_track(NodePath("../Operative:position"), Animation.TYPE_VALUE)
+	var end: Vector3 = clip.value_track_interpolate(t, clip.length)
+	var pad: Vector3 = _area.get_node("Spots/Extraction").position
+	assert_true(Vector2(end.x, end.z).distance_to(Vector2(pad.x, pad.z)) < 3.0, "he stops at the pad: %s vs %s" % [end, pad])
+	assert_true(_area.find_children("OutroProps", "Node3D", true, false).is_empty(), "no stand-ins: the walk is the take")
 
 
 func test_the_line_arrives_late_and_leaves_before_the_black() -> void:
@@ -70,13 +53,8 @@ func test_the_line_arrives_late_and_leaves_before_the_black() -> void:
 	assert_eq(CineLogic.lower_third(len - CineLogic.FADE_OUT, len, at), 0.0, "gone before the fade")
 
 
-func test_the_stand_ins_cannot_raise_an_alert_and_the_take_only_walks_the_operative() -> void:
+func test_the_take_only_walks_the_operative() -> void:
 	_area = _annex()
-	var props: Node = _area.get_node("Cine/OutroProps")
-	assert_false(props.visible, "hidden in play")
-	assert_eq(props.find_children("*", "Guard", true, false).size(), 0)
-	for n in props.find_children("*", "CollisionObject3D", true, false):
-		assert_true(false, "no colliders: %s" % n.name)
 	var clip := Cine.take_of(_area, KEY).get_animation("take")
 	for i in clip.get_track_count():
 		var path := str(clip.track_get_path(i))
@@ -86,11 +64,7 @@ func test_the_stand_ins_cannot_raise_an_alert_and_the_take_only_walks_the_operat
 
 
 func test_black_is_total_at_the_end() -> void:
-	assert_true(CineLogic.black(9.6, 9.6) > 0.999)
-
-
-func _led(rack: Node) -> StandardMaterial3D:
-	return (rack.get_node("Led0") as MeshInstance3D).material_override as StandardMaterial3D
+	assert_true(CineLogic.black(9.0, 9.0) > 0.999)
 
 
 func _annex() -> Node:

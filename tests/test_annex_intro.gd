@@ -2,7 +2,7 @@
 extends McpTestSuite
 
 ## The Research Annex's intro take, "Twelve Months": declared by Mission 3, short, one rail, the seasons turn in the light and
-## end on the Area's real values, and no guard's cone can reach the Operative while it plays.
+## end on the Area's real values, he walks in through the fence's hole, and no guard's cone can reach him while it plays.
 
 const SCENE := "res://areas/research_annex/research_annex.tscn"
 const KEY := "CineIntro"
@@ -74,18 +74,33 @@ func test_the_stand_ins_cannot_raise_an_alert() -> void:
 		assert_true(false, "no colliders: %s" % n.name)
 
 
-func test_the_operative_stays_at_the_start_and_no_guard_cone_reaches_him() -> void:
+func test_the_operative_walks_in_through_the_fence_hole_and_no_guard_cone_reaches_him() -> void:
 	_area = _annex()
 	var p := Cine.take_of(_area, KEY)
-	assert_eq(p.get_animation("take").find_track(NodePath("../Operative:position"), Animation.TYPE_VALUE), -1, "the take never moves him")
+	var clip := p.get_animation("take")
+	var t := clip.find_track(NodePath("../Operative:position"), Animation.TYPE_VALUE)
+	assert_true(t >= 0, "the take walks him")
 	var start: Vector3 = _area.get_node("Spots/OperativeStart").position
+	assert_true(clip.track_get_key_value(t, 0).z > 75.8 - 40.0 + 1.0, "he begins outside the south fence")
+	var through: Vector3 = clip.value_track_interpolate(t, 5.1)
+	assert_true(absf(through.x - (AnnexCine.GAP[0] - 40.0)) < 0.5 and absf(through.z - (AnnexCine.GAP[1] - 40.0)) < 1.0, "he passes through the hole")
+	assert_true(clip.value_track_interpolate(t, clip.length).distance_to(start) < 0.1, "and ends on the start spot")
+	# the hole is open to the eye and shut to the body
+	var solid: Node = _area.get_node("NavRegion/Solid") if _area.has_node("NavRegion/Solid") else _area.find_child("Solid", true, false)
+	assert_true(solid.has_node("GapSeal"), "the hole is sealed in play")
+	assert_eq(solid.get_node("GapSeal").find_children("*", "MeshInstance3D", true, false).size(), 0, "and has no fence mesh")
 	var n := 0
 	for post: Marker3D in _area.get_node("GuardPosts").get_children():
 		n += 1
 		assert_true(post.position.distance_to(start) > GuardVision.FRONT_RANGE, "%s sees the start" % post.name)
 		for wp: Marker3D in post.get_children():
 			assert_true(wp.position.distance_to(start) > GuardVision.FRONT_RANGE, "%s's route sees the start" % post.name)
+		assert_true(post.position.distance_to(_w(AnnexCine.WALK_IN[0])) > GuardVision.FRONT_RANGE, "%s sees where he comes in" % post.name)
 	assert_true(n > 5)
+
+
+func _w(r: Array) -> Vector3:
+	return Vector3(r[1] - 40.0, 0.0, r[2] - 40.0)
 
 
 func _close(a: Color, b: Color) -> bool:
