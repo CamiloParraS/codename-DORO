@@ -291,15 +291,14 @@ func _live_call(dim: float) -> float:
 	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - CALL.x) - 18, HudPalette.FIGURE_MED, 24)
 	var rows := mini(full.size(), 4)
 	var box := Rect2(CALL, Vector2(CALL_W, maxf(FACE + 26, 62 + rows * 32)))
-	c.draw_rect(box, Color(HudPalette.GLASS, 0.74 * dim))
-	c.draw_rect(Rect2(box.position, Vector2(box.size.x, 2)), Color(MINT, dim))
+	HudPalette.plate(c, Rect2(box.position, box.size + Vector2(HudPalette.FADE_W, 0)), HudPalette.GLASS, 0.4 * dim, 0.92 * dim, false)  # borderless, dithering away on its inner side like the other plates
 	if tex:
 		_face.texture = tex
 		_face.position = (CALL + Vector2(12, 14)) * k
 		_face.size = Vector2.ONE * FACE * k
 		_face.modulate = Color(MINT, dim)
 		_face.visible = true
-		c.draw_rect(Rect2(CALL + Vector2(12, 14), Vector2.ONE * FACE), Color(MINT, 0.6 * dim), false, 1.0)
+		PixelKit.frame(c, PixelKit.snap(Rect2(CALL + Vector2(12, 14), Vector2.ONE * FACE)), Color(MINT, 0.7 * dim), 1)
 	var name_f := HudPalette.tracked(HudPalette.LABEL_BOLD, 18, 0.3)
 	var nm := _live.speaker_name().to_upper()
 	HudPalette.hud_text(c, Vector2(tx, CALL.y + 34), nm, 18, Color(MINT, dim), name_f, 0, false)

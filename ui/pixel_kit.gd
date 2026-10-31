@@ -163,3 +163,38 @@ static func wash(ci: CanvasItem, r: Rect2, col: Color, d0: float, d1: float, acr
 			var dens := lerpf(d0, d1, float(gx) / maxf(cols - 1, 1) if across else float(gy) / maxf(rows - 1, 1))
 			if (HudPalette.BAYER[(gy & 3) * 4 + (gx & 3)] + 0.5) / 16.0 < dens:
 				ci.draw_rect(Rect2(r.position.x + gx * px, r.position.y + gy * px, px, px), col)
+
+
+## A StyleBox in the chrome's pixels: `fill` with its top-right and bottom-left corners cut `cut` cells, an `edge`
+## frame one cell thick, and `top` for a one-cell line along the top edge. Content margins are set by the caller.
+class Box extends StyleBox:
+	var fill := Color(0, 0, 0, 0)
+	var edge := Color(0, 0, 0, 0)
+	var top := Color(0, 0, 0, 0)
+	var cut := 2
+
+	func _init(fill_ := Color(0, 0, 0, 0), edge_ := Color(0, 0, 0, 0), cut_ := 2, top_ := Color(0, 0, 0, 0)) -> void:
+		fill = fill_
+		edge = edge_
+		cut = cut_
+		top = top_
+
+	func _draw(item: RID, rect: Rect2) -> void:
+		var px := PixelKit.PX
+		var cols := roundi(rect.size.x / px)
+		var rows := roundi(rect.size.y / px)
+		for i in rows:
+			var x0 := maxi(0, cut - (rows - 1 - i))
+			var x1 := cols - maxi(0, cut - i)
+			var y := rect.position.y + i * px
+			var row := Rect2(rect.position.x + x0 * px, y, (x1 - x0) * px, px)
+			if fill.a > 0.0:
+				RenderingServer.canvas_item_add_rect(item, row, fill)
+			if edge.a > 0.0:
+				if i == 0 or i == rows - 1:
+					RenderingServer.canvas_item_add_rect(item, row, edge)
+				else:
+					RenderingServer.canvas_item_add_rect(item, Rect2(row.position.x, y, px, px), edge)
+					RenderingServer.canvas_item_add_rect(item, Rect2(row.end.x - px, y, px, px), edge)
+			if i == 0 and top.a > 0.0:
+				RenderingServer.canvas_item_add_rect(item, row, top)

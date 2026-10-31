@@ -20,7 +20,7 @@ var _steps := VBoxContainer.new()  # then each pick, one per line
 var _presets := UiMenu.new(560)
 var _preset_rows: Array[Button] = []
 var _mission_cells: Array[Button] = []
-var _outline: StyleBoxFlat  # the idle look of a cell, shared
+var _outline: StyleBox  # the idle look of a cell, shared
 var _custom := VBoxContainer.new()
 
 
@@ -77,10 +77,7 @@ func _ready() -> void:
 		custom_ratio = v
 		return "%.2f" % v)
 	var sum := PanelContainer.new()
-	var sbox := StyleBoxFlat.new()
-	sbox.bg_color = Color(HudPalette.GLASS, 0.74)
-	sbox.border_width_top = 3
-	sbox.border_color = HudPalette.CYAN
+	var sbox := PixelKit.Box.new(Color(HudPalette.GLASS, 0.74), Color(0, 0, 0, 0), 3, HudPalette.CYAN)
 	sbox.content_margin_left = 30
 	sbox.content_margin_right = 30
 	sbox.content_margin_top = 24
@@ -141,9 +138,8 @@ func _heading(key: String) -> Label:
 	return l
 
 
-func _fill(c: Color) -> StyleBoxFlat:
-	var s := StyleBoxFlat.new()
-	s.bg_color = c
+func _fill(c: Color) -> StyleBox:
+	var s := PixelKit.Box.new(c, Color(0, 0, 0, 0), 2)
 	s.content_margin_left = 24
 	s.content_margin_right = 24
 	s.content_margin_top = 14
@@ -158,10 +154,7 @@ func _cell(key: String, on_press: Callable) -> Button:
 	b.custom_minimum_size = Vector2(160, 70)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not _outline:
-		_outline = StyleBoxFlat.new()
-		_outline.bg_color = Color(0, 0, 0, 0)
-		_outline.set_border_width_all(2)
-		_outline.border_color = Color(HudPalette.LIGHT, 0.3)
+		_outline = PixelKit.Box.new(Color(0, 0, 0, 0.25), Color(HudPalette.LIGHT, 0.4), 2)
 		_outline.content_margin_left = 24
 		_outline.content_margin_right = 24
 	var line := _outline
