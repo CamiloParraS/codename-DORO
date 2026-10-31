@@ -5,3 +5,16 @@ for f in $(git diff --cached --name-only --diff-filter=A -- '*.gd' | grep -v '^a
   git ls-files --cached --error-unmatch "$f.uid" >/dev/null 2>&1 || {
     echo "pre-commit: stage $f.uid too (run godot --headless --path . --import)" >&2; exit 1; }
 done
+
+# Scripts, scenes and text still parse and the suite is green (~30 s). Skipped when nothing runnable is staged;
+# `SKIP_CHECKS=1 git commit` bypasses it. Checks the working tree, not the index.
+[ -n "$SKIP_CHECKS" ] && exit 0
+git diff --cached --name-only | grep -Eq '\.(gd|tscn|tres|csv|gdshader)$' || exit 0
+command -v godot >/dev/null 2>&1 || { echo "pre-commit: godot not on PATH, skipping the suite" >&2; exit 0; }
+out=$(godot --headless --path . --import 2>&1; godot --headless --path . tools/run_tests.tscn 2>&1)
+bad=$(printf '%s\n' "$out" | grep -E 'Parse Error|Compile Error|SCRIPT ERROR|^FAIL |^passed [0-9]+ failed [1-9]')
+if [ -n "$bad" ]; then
+  echo "pre-commit: scripts or tests are broken (SKIP_CHECKS=1 to bypass):" >&2
+  printf '%s\n' "$bad" | head -15 >&2
+  exit 1
+fi

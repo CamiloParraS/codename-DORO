@@ -33,6 +33,8 @@ Where things live:
 
 After adding a `class_name` run `godot --headless --path . --import` before the suite, or other scripts fail with "Identifier not declared".
 
+`docs/mechanics-map.md` maps each mechanic (Takedown, Scanner cones, Alert chain, Aigis, HUD…) to its file and test suite; open it before grepping for where a mechanic lives.
+
 `docs/GUIDE.md` has the asset flow and full folder tree.
 
 - Raw downloads go in `_raw/` (ignored by git and Godot); copy only the files you use into `assets/`.
