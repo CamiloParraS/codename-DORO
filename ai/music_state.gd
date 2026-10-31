@@ -33,3 +33,11 @@ static func ceiling_db(t: StringName) -> float:
 
 static func duck_db(call_playing: bool) -> float:
 	return DUCK_DB if call_playing else 0.0
+
+
+## How far gameplay SFX duck while a take plays (the take's own sounds sit on the Ambience bus).
+const TAKE_DUCK_DB := -12.0
+
+
+static func take_duck_db(playing: bool) -> float:
+	return TAKE_DUCK_DB if playing else 0.0

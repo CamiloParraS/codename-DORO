@@ -5,7 +5,6 @@ class_name CineLogic
 extends RefCounted
 
 const SKIP_HOLD := 0.6          # s the advance key is held to skip a take; a tap does nothing
-const SKIP_SHOW := 0.12         # s held before the progress ring appears
 const ASPECT := 2.39            # the bars frame the picture to this
 const RANGE := Vector2(2.0, 10.0)  # s, a take's length when it declares none: takes are short
 const LOWER_THIRD_AT := 0.3     # s into the take the lower-third starts fading in (over the first 2 s)
@@ -23,9 +22,15 @@ static func skip_done(held: float) -> bool:
 	return held >= SKIP_HOLD
 
 
-## Whether the skip ring is drawn.
+## Whether the skip ring is drawn: from the first frame the key is held, so the press is answered at once.
 static func ring_shown(held: float) -> bool:
-	return held >= SKIP_SHOW
+	return held > 0.0
+
+
+## Whether a Mission's intro and outro takes play: the campaign and Mission-select replays do (skippable); Free mode does not
+## (the Preset is the point). No settings toggle.
+static func plays(campaign: bool, replay: bool) -> bool:
+	return campaign or replay
 
 
 ## The lower-third's opacity `t` seconds into a take of `length`: in at `at` (default LOWER_THIRD_AT; a take may say its own

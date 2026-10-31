@@ -38,11 +38,22 @@ var _ending := false
 var _holding := false
 var _landing := 0.0
 var _at := 0.0                  # s into the take when it ended
+var _swallow := false           # control is back but the skip key is still down: the Operative stays locked until it is released
 
 
 ## The take's AnimationPlayer in `area`, or null.
 static func take_of(area: Node, key: String) -> AnimationPlayer:
 	return area.get_node_or_null("Cine/" + key) as AnimationPlayer
+
+
+## A take over `run`'s Area (a child of `run`: the Area is still setting up its own when an intro starts).
+static func launch(run: MissionRun, key: String, lines: Array, outro: bool, then: Callable) -> void:
+	var c := Cine.new()
+	c.name = "CineRunner"
+	run.add_child(c)
+	c.fade_out = outro
+	c.lines.assign(lines)
+	c.play(run.get_parent(), key, then)
 
 
 ## Plays `key` in `area`, then calls `then`. False (and `then` is called at once) when the Area has no such take.
@@ -72,6 +83,7 @@ func play(area: Node, key: String, then: Callable) -> bool:
 		_host = OperativeCam.host_of(_op.camera)
 	if _run:
 		_run.take_playing = true
+	Mixer.take(true)
 	if _hud:
 		_hud_shown = _hud.visible
 		_hud.visible = false
@@ -88,6 +100,10 @@ func play(area: Node, key: String, then: Callable) -> bool:
 
 
 func _process(delta: float) -> void:
+	if _swallow:  # the key that skipped must not also fire a Takedown or interact in the first frame of play
+		if not _advance_down():
+			_unlock()
+		return
 	if done or _holding:
 		return
 	if _ending:
@@ -100,13 +116,17 @@ func _process(delta: float) -> void:
 	_overlay.third = CineLogic.lower_third(t, len, float(_player.get_meta("third_at", CineLogic.LOWER_THIRD_AT)))
 	if fade_out:
 		_overlay.black = CineLogic.black(t, len)
-	var down := Input.is_action_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	var down := _advance_down()
 	_armed = _armed or not down
 	_held = _held + delta if down and _armed else 0.0
 	_overlay.skip = CineLogic.skip_progress(_held) if CineLogic.ring_shown(_held) else 0.0
 	_overlay.queue_redraw()
 	if CineLogic.skip_done(_held):
 		skip()
+
+
+static func _advance_down() -> bool:
+	return Input.is_action_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 
 
 ## Jump to the take's last frame and end it now (contract: seek to the end, tween skipped).
@@ -178,16 +198,25 @@ func _land() -> void:
 	if done:
 		return
 	if _op:
-		_op.cine = false
 		_op.moving = false
+		_swallow = skipped and _advance_down()
+		_op.cine = _swallow
 	if _hud:
 		_hud.visible = _hud_shown
 	_layer.queue_free()
 	_finish()
 
 
+func _unlock() -> void:
+	_swallow = false
+	if is_instance_valid(_op):
+		_op.cine = false
+	queue_free()
+
+
 func _finish() -> void:
 	done = true
+	Mixer.take(false)
 	if _run:
 		_run.take_playing = false
 	if fade_out:  # the black stays until the next screen has taken over, then clears under it
@@ -197,5 +226,10 @@ func _finish() -> void:
 			queue_free())
 	_then.call()
 	finished.emit(skipped)
-	if not fade_out:
+	if not fade_out and not _swallow:
 		queue_free()
+
+
+func _exit_tree() -> void:
+	if not done:
+		Mixer.take(false)  # freed mid-take (a scene change): no stuck duck

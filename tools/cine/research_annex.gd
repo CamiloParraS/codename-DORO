@@ -61,7 +61,7 @@ const SEASONS := [
 
 ## The shoulder rig's resting pose behind the start spot (pivot 1.45 up, 0.55 across and 2.33 back, aimed 7.4 ahead and down).
 static func _rig_pose() -> Array:
-	var yaw := deg_to_rad(START_FACING)
+	var yaw := -deg_to_rad(START_FACING)  # the marker is turned by minus its facing (build_research_annex.gd _marker)
 	var f := Vector2(-sin(yaw), -cos(yaw))  # forward in the diagram's x, y
 	var r := Vector2(cos(yaw), -sin(yaw))
 	var cam := Vector2(START[0], START[1]) + r * 0.55 - f * 2.33
@@ -193,7 +193,7 @@ static func outro(cine: Node) -> AnimationPlayer:
 		_rack(racks, n, RACKS[n])
 	var hum := AudioStreamPlayer3D.new()
 	hum.name = "Hum"
-	hum.bus = &"SFX"
+	hum.bus = &"Ambience"
 	hum.volume_db = -8.0
 	hum.position = _w([LED_X, RACKS[MEMORY_RACK], 1.0])
 	props.add_child(hum)
