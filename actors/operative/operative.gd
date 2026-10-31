@@ -181,9 +181,10 @@ func _throw_magazine() -> void:
 	throwing = false
 	if items.throw(carrying != null):
 		model.react("throw", 0.8, 1.75)  # the clip's wind-up and release; its slow recovery is cut
-		var land := _flight()[-1]
-		Guard.broadcast(get_tree(), land, GuardAlert.KNOCK_RANGE, "a thrown magazine")
-		Mix.sfx_at(self, &"mag_land", land)
+		# The guards hear it, and the clatter plays, when it touches down, not when it leaves the hand.
+		ThrownMagazine.launch(get_parent(), _flight()).landed.connect(func(land: Vector3) -> void:
+			Guard.broadcast(get_tree(), land, GuardAlert.KNOCK_RANGE, "a thrown magazine")
+			Mix.sfx_at(self, &"mag_land", land))
 
 
 ## Hitscan: the crosshair picks the aim point, the shot leaves the muzzle for it. Tranq: a hit on a standing guard's head Neutralizes it, on the body
