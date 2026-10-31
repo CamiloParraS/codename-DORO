@@ -110,7 +110,7 @@ func _shoot_back(delta: float) -> void:
 	var lands := randf() < Health.hit_chance(d, operative.moving and not operative.looks_walking())
 	_shot_effects(lands)
 	if lands:
-		operative.take_hit()
+		operative.take_hit(global_position)
 
 
 ## What the Operative sees and hears of a shot: the bang, a flash and tracer from the rifle's muzzle, then blood

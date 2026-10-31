@@ -20,6 +20,9 @@ const NoFulton := preload("res://areas/no_fulton.gd")
 const FULTON_TIME := 3.0      # seconds of the Fulton key held, standing still, beside a Neutralized guard (pw-feel 05)
 const FULTONS := 3            # balloons per Mission, refilled at its start; Requisition raises it (equip)
 
+const DEATH_TIME := 2.2  # s the Operative lies ragdolled before the Game Over screen
+const DEATH_PUSH := 4.0   # m/s the killing bullet shoves the body
+
 const HIDE_BODY_BELOW := 0.8  # hide the body when the camera is pushed closer than this
 
 var crouching := false
@@ -152,17 +155,23 @@ func ping(noise_range: float) -> void:
 	ping_age = 0.0
 
 
-## A guard's bullet landed. Dying opens the Game Over screen (MissionRun).
-func take_hit() -> void:
+## A guard's bullet landed (`from`: where it was fired, to shove a killed body away from it). Dying drops the
+## Operative as a ragdoll, and the Game Over screen (MissionRun) opens once it has lain there DEATH_TIME.
+func take_hit(from := Vector3.INF) -> void:
 	if health.dead():
 		return
 	health.hit()
-	model.react("hit")
 	kick(0.12)
 	Mixer.hit_stop(0.04)
 	Mixer.rumble(0.6, 1.0, 0.2)
-	if health.dead():
-		get_tree().call_group.call_deferred("checkpoint", "game_over")
+	if not health.dead():
+		model.react("hit")
+		return
+	var away := global_position - from if from != Vector3.INF else -global_basis.z
+	away.y = 0.0
+	model.drop(away.normalized() * DEATH_PUSH + Vector3.UP * 1.0, "spine_02")
+	get_tree().create_timer(DEATH_TIME, false, false, true).timeout.connect(
+		func() -> void: get_tree().call_group("checkpoint", "game_over"))
 
 
 ## What a Checkpoint keeps of the Operative: where it stands and looks, its guns and Voiceprints.
@@ -204,6 +213,7 @@ func restore(s: Dictionary) -> void:
 	items.scan_left = 0.0
 	throwing = false
 	health = Health.new()
+	model.get_up(0.0)
 	_pivot.global_position = global_position + Vector3.UP * (0.95 if crouching else 1.45)
 
 

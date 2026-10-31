@@ -39,6 +39,8 @@ func _ready() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
+	if health.dead():
+		return
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if _glance_left > 0.0:
 			return
@@ -100,6 +102,10 @@ func _physics_process(delta: float) -> void:
 	_recoil = move_toward(_recoil, 0.0, RECOIL_RECOVERY * delta)
 	health.tick(delta, get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT))
 	items.tick(delta)
+	if health.dead():  # lying where it fell: the ragdoll moves, the body only settles
+		velocity = Vector3(0, 0.0 if is_on_floor() else velocity.y - 20 * delta, 0)
+		move_and_slide()
+		return
 	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
@@ -269,6 +275,7 @@ func _process(delta: float) -> void:
 	_pivot.global_position = _pivot.global_position.lerp(get_global_transform_interpolated().origin + Vector3.UP * head, minf(1.0, 15 * delta))
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
-	model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task()), Vector2(velocity.x, velocity.z).length())
+	if not health.dead():  # a ragdoll is not driven by the clips
+		model.play(CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task()), Vector2(velocity.x, velocity.z).length())
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = not looking and _back_arm.get_hit_length() > HIDE_BODY_BELOW
