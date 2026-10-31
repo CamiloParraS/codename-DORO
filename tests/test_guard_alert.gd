@@ -429,6 +429,19 @@ func test_a_calling_guard_ignores_shouts_and_noise() -> void:
 	assert_eq(a.last_known, SPOT)
 
 
+func test_an_alerted_guard_turns_to_a_shot_or_footsteps_it_cannot_see_the_source_of() -> void:
+	var a := GuardAlert.new()
+	a.tick(1.0, 5.0, SPOT, "test", false)
+	a.radio(SPOT, "x")
+	assert_eq(a.state, GuardAlert.State.ALERT)
+	assert_eq(a.shot(Vector3(4, 0, 4)), "")
+	assert_eq(a.last_known, Vector3(4, 0, 4))
+	assert_eq(a.hear(Vector3(1, 0, 1), "footsteps"), "")
+	assert_eq(a.last_known, Vector3(1, 0, 1))
+	a.hear(Vector3(9, 0, 9), "a knock")
+	assert_eq(a.last_known, Vector3(1, 0, 1), "other noises are still ignored")
+
+
 func test_continuous_noise_moves_the_look_point_but_never_restarts_the_look_around() -> void:
 	var a := GuardAlert.new()
 	a.hear(SPOT, "footsteps")

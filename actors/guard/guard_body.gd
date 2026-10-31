@@ -7,6 +7,8 @@ const BODY_HITS_TO_KILL := 2  # rifle body hits that kill; a headshot kills outr
 const EYE := 1.6
 const PATROL_SPEED := 1.8
 const CAUTION_SPEED := 2.2
+const RETREAT_GRACE := 0.7  # s without sight before a guard stops acting as if it sees the Operative
+const RETREAT_SPEED := 3.5  # backing off from the Operative, still facing it
 const CHASE_SPEED := 5.0  # the Operative runs 4.8
 const PAUSE := 1.5        # seconds at each patrol point
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
@@ -51,6 +53,7 @@ var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
 var checkin := Checkin.new()
 var seen_rate := 0.0
+var _held := false  # was holding its ground last tick (Engage.holds' hysteresis)
 var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame
 var neutral_left := 0.0          # seconds until a Neutralized guard wakes

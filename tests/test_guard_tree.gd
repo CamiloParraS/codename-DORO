@@ -29,6 +29,15 @@ class StubGuard:
 	func chase(_delta: float) -> void:
 		calls.append("chase")
 
+	var close := false
+
+	func too_close() -> bool:
+		return close
+
+	func retreat(_delta: float) -> bool:
+		calls.append("retreat")
+		return false
+
 	func face(_pos: Vector3, _delta: float) -> void:
 		calls.append("face")
 
@@ -69,6 +78,15 @@ func test_alert_chases() -> void:
 	var t := _tree_for(GuardAlert.State.ALERT)
 	t[1].update(0.1)
 	assert_eq(t[0].calls, ["chase"])
+
+
+func test_alert_retreats_while_the_operative_is_too_close_and_keeps_at_it() -> void:
+	var t := _tree_for(GuardAlert.State.ALERT)
+	t[0].close = true
+	t[1].update(0.1)
+	t[0].close = false  # nearer than it was, the retreat is not asked again: it runs on
+	t[1].update(0.1)
+	assert_eq(t[0].calls, ["retreat", "retreat"])
 
 
 func test_evasion_searches_fast() -> void:

@@ -72,10 +72,16 @@ func test_reinforcements_stay_through_evasion_and_caution_and_leave_in_normal() 
 	assert_true(Reinforcements.leaves(AlertChain.Phase.NORMAL))
 
 
-func test_a_guard_that_sees_from_beyond_10_m_holds_and_closer_it_pushes() -> void:
+func test_a_guard_that_sees_holds_at_a_distance_pushes_up_to_it_and_backs_off_when_nearer() -> void:
 	var squad := [{pos = Vector3.ZERO, unseen = 0.0, last_known = Vector3.ZERO}]
 	assert_true(Engage.holds(0, true, 15.0, squad))
-	assert_false(Engage.holds(0, true, 8.0, squad))
+	assert_true(Engage.holds(0, true, Engage.KEEP_RANGE, squad))
+	assert_false(Engage.holds(0, true, Engage.KEEP_RANGE - 0.5, squad))
+	assert_false(Engage.holds(0, true, Health.RANGE - 1.0, squad), "not yet holding: starts inside the margin")
+	assert_true(Engage.holds(0, true, Health.RANGE - 1.0, squad, true), "already holding: stays to the edge")
+	assert_false(Engage.backs_off(true, Engage.KEEP_RANGE))
+	assert_true(Engage.backs_off(true, Engage.KEEP_RANGE - 0.5), "no band between backing off and holding")
+	assert_false(Engage.backs_off(false, 1.0), "out of sight it searches, it doesn't retreat")
 	assert_false(Engage.holds(0, true, Health.RANGE + 5.0, squad), "too far to shoot: close in")
 
 

@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://b27bjsr6t8vqr" path="res://actors/guard/bt/bt_turn_to_spot.gd" id="4_turn"]
 [ext_resource type="Script" uid="uid://duqt6b7x6v62t" path="res://actors/guard/bt/bt_patrol.gd" id="5_patrol"]
 [ext_resource type="Script" uid="uid://b3duoomqwyy1w" path="res://actors/guard/bt/bt_follow_order.gd" id="6_order"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_too_close.gd" id="7_close"]
+[ext_resource type="Script" path="res://actors/guard/bt/bt_retreat.gd" id="8_retreat"]
 
 [sub_resource type="BTCondition" id="in_alert"]
 script = ExtResource("1_state")
@@ -14,9 +16,27 @@ state = 2
 [sub_resource type="BTAction" id="chase"]
 script = ExtResource("2_chase")
 
+[sub_resource type="BTCondition" id="too_close"]
+script = ExtResource("7_close")
+
+[sub_resource type="BTAction" id="retreat"]
+script = ExtResource("8_retreat")
+
+[sub_resource type="BTTimeLimit" id="retreat_limit"]
+time_limit = 3.0
+children = [SubResource("retreat")]
+
+[sub_resource type="BTSequence" id="back_off"]
+custom_name = "Keep distance"
+children = [SubResource("too_close"), SubResource("retreat_limit")]
+
+[sub_resource type="BTSelector" id="engage"]
+custom_name = "Engage"
+children = [SubResource("back_off"), SubResource("chase")]
+
 [sub_resource type="BTSequence" id="alert"]
 custom_name = "Alert"
-children = [SubResource("in_alert"), SubResource("chase")]
+children = [SubResource("in_alert"), SubResource("engage")]
 
 [sub_resource type="BTCondition" id="in_evasion"]
 script = ExtResource("1_state")

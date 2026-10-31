@@ -136,6 +136,9 @@ func see_drop(pos: Vector3, name_: String) -> String:
 ## into Suspicion adds NOISE_FILL to the meter, so repeated noise escalates (footsteps never do: only sight alerts). A searching guard moves
 ## its search there.
 func hear(pos: Vector3, what: String) -> String:
+	if state == State.ALERT and not calling and what == "footsteps":
+		last_known = pos  # an alerted guard still turns to a runner it can't see
+		return ""
 	if state == State.ALERT or calling:
 		return ""
 	last_known = pos
@@ -161,6 +164,9 @@ func freed(pos: Vector3) -> String:
 
 ## A loud gunshot at pos reached this guard: a Radio call, not suspicion. A searching guard searches there.
 func shot(pos: Vector3) -> String:
+	if state == State.ALERT and not calling:
+		last_known = pos  # an alerted guard turns to a shot it can't see the shooter of
+		return ""
 	if state == State.ALERT or calling:
 		return ""
 	last_known = pos

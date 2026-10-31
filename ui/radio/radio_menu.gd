@@ -95,7 +95,7 @@ func shown(who: String) -> String:
 	var role: String = roles.get(who, "")
 	if role == "":
 		return who
-	var peers: Array = roles.keys().filter(func(g): return roles[g] == role)
+	var peers: Array = roles.keys().filter(func(g): return roles[g] == role).map(func(g): return String(g))  # keys may be StringNames
 	var label := tr("radio.role." + role)
 	if peers.size() < 2:
 		return label

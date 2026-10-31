@@ -115,13 +115,46 @@ func chase(delta: float) -> void:
 	if _fleeing():
 		_flee(delta)
 		return
+	if _has_sight() and Engage.backs_off(true, _flat_dist(operative.global_position)):
+		face(operative.global_position, delta)  # the retreat in the tree failed (cornered): stands and fires
+		return
 	if _holds():
-		if seen_rate > 0.0:
-			face(operative.global_position, delta)
+		_look_for(delta)
 		return
 	_walk_to(goal(), CHASE_SPEED, delta)
+	_look_for(delta)
+
+
+## Sight with a grace of RETREAT_GRACE s, so a flicker of the vision cone doesn't change what the guard is doing.
+func _has_sight() -> bool:
+	return seen_rate > 0.0 or (alert.saw and alert.unseen < RETREAT_GRACE)  # a guard the radio alerted hasn't seen it
+
+
+## Eyes on the Operative while in sight; without it, toward the last noise or sighting, and a sweep once there.
+func _look_for(delta: float) -> void:
 	if seen_rate > 0.0:
 		face(operative.global_position, delta)
+	elif not _has_sight() and (_held or arrived()):
+		if _flat_dist(alert.last_known) > 0.3:
+			face(alert.last_known, delta)
+		else:
+			rotation.y += sin(_clock * 1.1) * 1.5 * delta
+
+
+## The Operative is inside the distance a guard keeps (the tree's Retreat starts on it).
+func too_close() -> bool:
+	return not _fleeing() and _has_sight() and Engage.backs_off(true, _flat_dist(operative.global_position))
+
+
+## One step of a retreat, facing the Operative; true once it is Engage.RETREAT_TO m away.
+func retreat(delta: float) -> bool:
+	if _flat_dist(operative.global_position) >= Engage.RETREAT_TO:
+		return true
+	var away := global_position - operative.global_position
+	away.y = 0.0
+	_walk_to(global_position + away.normalized() * 3.0, RETREAT_SPEED, delta)
+	face(operative.global_position, delta)
+	return false
 
 
 ## Engage.holds for this guard among the alerted ones: a guard that sees the Operative from afar stands
@@ -136,7 +169,8 @@ func _holds() -> bool:
 			me = squad.size()
 		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known,
 			fresh = g.is_in_group("reinforcements") and not g.alert.saw})
-	return Engage.holds(me, seen_rate > 0.0, _flat_dist(operative.global_position), squad)
+	_held = Engage.holds(me, _has_sight(), _flat_dist(operative.global_position), squad, _held)
+	return _held
 
 
 func _flee(delta: float) -> void:
