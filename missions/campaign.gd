@@ -19,7 +19,7 @@ const CORE := "res://areas/core/core.tscn"
 const MISSIONS := [
 	{title = "MISSION 1: HARBOUR", area = HARBOUR, encounters = 3, targets = [],
 		intro = {name = "intro.m1.name", area = "intro.m1.area", stamp = "intro.m1.stamp"},
-		outro = {title = "outro.m1.title", line = "outro.m1.line"}, cine = {outro = "CineOutro"},
+		outro = {title = "outro.m1.title", line = "outro.m1.line"}, cine = {intro = "CineIntro", outro = "CineOutro"},
 		open = [["analyst", "live.m1.open.01"]],
 		codec = [["handler", "codec.m1.01"], ["operative", "codec.m1.02"], ["analyst", "codec.m1.03"], ["analyst", "codec.m1.04"], ["operative", "codec.m1.05"],
 			["handler", "codec.m1.06"], ["analyst", "codec.m1.07"], ["handler", "codec.m1.08"]], steps = [

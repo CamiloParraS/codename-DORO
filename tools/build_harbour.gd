@@ -446,10 +446,11 @@ func _build() -> void:
 
 # --- Harbour-only builders ---------------------------------------------------------------------
 
-## The Harbour's takes under $Cine (tools/cine/harbour.gd): the outro "Gap in the Fog".
+## The Harbour's takes under $Cine (tools/cine/harbour.gd): the intro "Fog Level" and the outro "Gap in the Fog".
 func _takes() -> void:
 	var cine := AreaCine.root(_root)
 	cine.owner = _root
+	HarbourCine.intro(cine)
 	HarbourCine.outro(cine)
 	_own(cine)
 
