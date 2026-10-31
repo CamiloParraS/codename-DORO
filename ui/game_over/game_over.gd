@@ -14,6 +14,7 @@ const BAR := Color("cbb3a8")
 const GROUND := Color("0a0506")
 const INK_HI := Color("f6e6df")
 const GRAIN := preload("res://ui/game_over/grain.gdshader")
+const FADE_IN := 2.0  # s the screen takes to come in over the Area
 
 var continues := 0
 var line: String = LINES.pick_random()
@@ -68,14 +69,9 @@ func _ready() -> void:
 	grain.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(grain)
 	add_child(UiScan.make())
-	var fade := ColorRect.new()  # a fade from black at the start
-	fade.color = Color.BLACK
-	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(fade)
-	var ft := create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	ft.tween_property(fade, "color:a", 0.0, 1.4).set_trans(UiMotion.TRANS).set_ease(UiMotion.EASE)
-	ft.tween_callback(fade.queue_free)
+	modulate.a = 0.0  # the whole screen comes in over the Operative still lying in the Area
+	var fade_in := create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	fade_in.tween_property(self, "modulate:a", 1.0, FADE_IN).set_trans(UiMotion.TRANS).set_ease(UiMotion.EASE)
 	_slide(title, -70.0, 0.5)
 	_slide(said, -70.0, 0.7)
 	_slide(opts, 70.0, 0.8)
