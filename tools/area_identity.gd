@@ -12,9 +12,9 @@ const LEAVES := {door = "door_steel", wood = "door_wood", glass = "door_window"}
 const SIGN_FONT := "res://assets/fonts/barlow_condensed_bold.ttf"
 ## Sign styles: [plate, lettering].
 const SIGN_STYLES := {
-	white = [Color(0.88, 0.88, 0.84), Color(0.08, 0.08, 0.1)], hazard = [Color(1.0, 0.75, 0.1), Color(0.05, 0.05, 0.05)],
-	red = [Color(0.72, 0.1, 0.08), Color(0.96, 0.95, 0.9)], blue = [Color(0.14, 0.28, 0.6), Color(0.96, 0.95, 0.9)],
-	green = [Color(0.12, 0.45, 0.22), Color(0.96, 0.95, 0.9)], dark = [Color(0.13, 0.14, 0.15), Color(1.0, 0.82, 0.3)],
+	white = [Color(0.66, 0.65, 0.6), Color(0.12, 0.12, 0.13)], hazard = [Color(0.72, 0.56, 0.16), Color(0.1, 0.09, 0.08)],
+	red = [Color(0.5, 0.17, 0.14), Color(0.8, 0.78, 0.72)], blue = [Color(0.2, 0.28, 0.45), Color(0.8, 0.78, 0.72)],
+	green = [Color(0.18, 0.36, 0.24), Color(0.8, 0.78, 0.72)], dark = [Color(0.16, 0.17, 0.18), Color(0.78, 0.66, 0.38)],
 }
 const LAMP_COLOUR := Color(1.0, 0.85, 0.6)
 
@@ -159,7 +159,7 @@ func _sign(parent: Node3D, s: Array) -> void:
 	l.font_size = roundi(height * 0.62 / l.pixel_size)
 	l.outline_size = 0
 	l.modulate = style[1]
-	l.shaded = false  # the lettering reads at night and in the Core's red, the plate takes the light
+	l.shaded = true  # painted lettering takes the light like the plate, so it doesn't glow against the wall
 	l.double_sided = false
 	l.alpha_cut = Label3D.ALPHA_CUT_DISCARD
 	l.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST

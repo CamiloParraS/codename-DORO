@@ -1358,7 +1358,7 @@ render_priority = 0
 shader = ExtResource("2_h8tju")
 shader_parameter/albedo_tex = ExtResource("5_t1a7m")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.88, 0.88, 0.84, 1)
+shader_parameter/tint = Color(0.66, 0.65, 0.6, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1371,7 +1371,7 @@ render_priority = 0
 shader = ExtResource("2_h8tju")
 shader_parameter/albedo_tex = ExtResource("5_t1a7m")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.14, 0.28, 0.6, 1)
+shader_parameter/tint = Color(0.2, 0.28, 0.45, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1388,7 +1388,7 @@ render_priority = 0
 shader = ExtResource("2_h8tju")
 shader_parameter/albedo_tex = ExtResource("5_t1a7m")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.12, 0.45, 0.22, 1)
+shader_parameter/tint = Color(0.18, 0.36, 0.24, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1405,7 +1405,7 @@ render_priority = 0
 shader = ExtResource("2_h8tju")
 shader_parameter/albedo_tex = ExtResource("5_t1a7m")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.72, 0.1, 0.08, 1)
+shader_parameter/tint = Color(0.5, 0.17, 0.14, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1418,7 +1418,7 @@ render_priority = 0
 shader = ExtResource("2_h8tju")
 shader_parameter/albedo_tex = ExtResource("5_t1a7m")
 shader_parameter/split = null
-shader_parameter/tint = Color(1, 0.75, 0.1, 1)
+shader_parameter/tint = Color(0.72, 0.56, 0.16, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -3014,47 +3014,41 @@ size = Vector3(9, 0.02, 0.15)
 material = SubResource("ShaderMaterial_qp7m6")
 size = Vector3(0.15, 0.02, 4.35)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_65oor"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.5, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_65oor"]
+render_priority = 0
+shader = ExtResource("2_h8tju")
+shader_parameter/albedo_tex = ExtResource("5_t1a7m")
+shader_parameter/split = null
+shader_parameter/tint = Color(0.22, 0.23, 0.25, 1)
+shader_parameter/tile_m = 2.0
+shader_parameter/side_tile_m = null
 
-[sub_resource type="SphereMesh" id="SphereMesh_23fhf"]
-material = SubResource("StandardMaterial3D_65oor")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_23fhf"]
+material = SubResource("ShaderMaterial_65oor")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01k0m"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.5, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_01k0m"]
+material = SubResource("ShaderMaterial_65oor")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_cj047"]
-material = SubResource("StandardMaterial3D_01k0m")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_cj047"]
+material = SubResource("ShaderMaterial_65oor")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qsn45"]
-shading_mode = 0
-albedo_color = Color(1, 0.15, 0.1, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ee2jm"]
-material = SubResource("StandardMaterial3D_qsn45")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jmg06"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qsn45"]
 shader = ExtResource("87_js31b")
 shader_parameter/horizon = Color(0.66, 0.7, 0.75, 1)
 shader_parameter/zenith = Color(0.45, 0.52, 0.6, 1)
 shader_parameter/glow = 0.3
 shader_parameter/disc = null
 
-[sub_resource type="Sky" id="Sky_dtlkq"]
-sky_material = SubResource("ShaderMaterial_jmg06")
+[sub_resource type="Sky" id="Sky_ee2jm"]
+sky_material = SubResource("ShaderMaterial_qsn45")
 radiance_size = 0
 
-[sub_resource type="Environment" id="Environment_6gy75"]
+[sub_resource type="Environment" id="Environment_jmg06"]
 background_mode = 2
-sky = SubResource("Sky_dtlkq")
+sky = SubResource("Sky_ee2jm")
 ambient_light_source = 2
 ambient_light_color = Color(0.72, 0.78, 0.85, 1)
 ambient_light_energy = 0.5
@@ -3081,33 +3075,33 @@ adjustment_enabled = true
 adjustment_contrast = 1.08
 adjustment_saturation = 1.12
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5dt8a"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_dtlkq"]
 size = Vector3(50, 4, 36)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_g08m1"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_6gy75"]
 size = Vector3(8, 3.5, 10)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_k7jso"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_5dt8a"]
 size = Vector3(4, 3, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_a0lcq"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_g08m1"]
 size = Vector3(1.5, 2, 1.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j1lns"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k7jso"]
 shading_mode = 0
 
+[sub_resource type="BoxMesh" id="BoxMesh_a0lcq"]
+material = SubResource("StandardMaterial3D_k7jso")
+size = Vector3(0.4, 0.1, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j1lns"]
+size = Vector3(1.5, 2, 1.5)
+
 [sub_resource type="BoxMesh" id="BoxMesh_4dry4"]
-material = SubResource("StandardMaterial3D_j1lns")
+material = SubResource("StandardMaterial3D_k7jso")
 size = Vector3(0.4, 0.1, 0.3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7v12k"]
-size = Vector3(1.5, 2, 1.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_uh30g"]
-material = SubResource("StandardMaterial3D_j1lns")
-size = Vector3(0.4, 0.1, 0.3)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_d2yfp"]
 
 [node name="ResearchAnnex" type="Node3D" unique_id=1055715180]
 script = ExtResource("1_6lk4e")
@@ -4832,10 +4826,11 @@ mesh = SubResource("BoxMesh_rl2m3")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_14p0_54p03" unique_id=698985658]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.annex"
 font = ExtResource("28_eo3uu")
 font_size = 74
@@ -4849,10 +4844,11 @@ mesh = SubResource("BoxMesh_sw4oh")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_15p0_30p77" unique_id=789531616]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.lab"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4866,10 +4862,11 @@ mesh = SubResource("BoxMesh_y37y3")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_23p0_41p23" unique_id=1243969080]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.lab"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4883,10 +4880,11 @@ mesh = SubResource("BoxMesh_0icay")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_32p0_30p77" unique_id=1138588287]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.clean_room"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4900,10 +4898,11 @@ mesh = SubResource("BoxMesh_u15kl")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_36p0_41p23" unique_id=523079900]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.clean_room"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4917,10 +4916,11 @@ mesh = SubResource("BoxMesh_5ix3k")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_47p0_30p77" unique_id=258345061]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.vault"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4934,10 +4934,11 @@ mesh = SubResource("BoxMesh_6jnc6")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_43p6_30p77" unique_id=1209618983]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.authorised"
 font = ExtResource("28_eo3uu")
 font_size = 43
@@ -4951,10 +4952,11 @@ mesh = SubResource("BoxMesh_6gi1g")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_13p0_28p23" unique_id=1311767868]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.lockers"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -4968,10 +4970,11 @@ mesh = SubResource("BoxMesh_gh23s")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_25p0_28p23" unique_id=1744297535]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.office"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -4985,10 +4988,11 @@ mesh = SubResource("BoxMesh_3q7gy")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_38p0_28p23" unique_id=1023408355]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.server"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -5002,10 +5006,11 @@ mesh = SubResource("BoxMesh_1jpyg")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_51p0_28p23" unique_id=1691173118]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.security"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -5019,10 +5024,11 @@ mesh = SubResource("BoxMesh_3el44")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_11p0_43p77" unique_id=596527488]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.reception"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -5036,10 +5042,11 @@ mesh = SubResource("BoxMesh_0e8yc")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_31p0_43p77" unique_id=1780294914]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.archive"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -5053,10 +5060,11 @@ mesh = SubResource("BoxMesh_e0twr")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_47p0_43p77" unique_id=1894116489]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.loading"
 font = ExtResource("28_eo3uu")
 font_size = 37
@@ -5070,10 +5078,11 @@ mesh = SubResource("BoxMesh_damng")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_56p03_52p2" unique_id=1675192672]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.loading"
 font = ExtResource("28_eo3uu")
 font_size = 50
@@ -5087,10 +5096,11 @@ mesh = SubResource("BoxMesh_wcp84")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_69p0_29p77" unique_id=1623899921]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.blasting"
 font = ExtResource("28_eo3uu")
 font_size = 62
@@ -7359,7 +7369,7 @@ mesh = SubResource("BoxMesh_q2ywt")
 
 [node name="Lamp0" type="MeshInstance3D" parent="Beacons" unique_id=1256961695]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.6, -4)
-mesh = SubResource("SphereMesh_23fhf")
+mesh = SubResource("BoxMesh_23fhf")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp0" unique_id=956630406]
 light_color = Color(1, 0.85, 0.5, 1)
@@ -7370,7 +7380,7 @@ omni_range = 4.0
 
 [node name="Lamp1" type="MeshInstance3D" parent="Beacons" unique_id=1256961696]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 2.6, 10)
-mesh = SubResource("SphereMesh_cj047")
+mesh = SubResource("BoxMesh_01k0m")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp1" unique_id=100614727]
 light_color = Color(1, 0.85, 0.5, 1)
@@ -7381,7 +7391,7 @@ omni_range = 4.0
 
 [node name="Lamp2" type="MeshInstance3D" parent="Beacons" unique_id=1256961697]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3.4, -9.4)
-mesh = SubResource("SphereMesh_ee2jm")
+mesh = SubResource("BoxMesh_cj047")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp2" unique_id=1392082696]
 light_color = Color(1, 0.15, 0.1, 1)
@@ -7396,7 +7406,7 @@ light_color = Color(0.95, 0.97, 1, 1)
 shadow_enabled = true
 
 [node name="Mood" type="WorldEnvironment" parent="." unique_id=1925583530]
-environment = SubResource("Environment_6gy75")
+environment = SubResource("Environment_jmg06")
 
 [node name="Spots" type="Node3D" parent="." unique_id=1274382804]
 
@@ -7563,7 +7573,7 @@ collision_layer = 0
 script = ExtResource("88_t22d4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/Lab" unique_id=1520173870]
-shape = SubResource("BoxShape3D_5dt8a")
+shape = SubResource("BoxShape3D_dtlkq")
 
 [node name="PumpCrawl" type="Area3D" parent="NoFulton" unique_id=116804250]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.75, 21)
@@ -7571,7 +7581,7 @@ collision_layer = 0
 script = ExtResource("88_t22d4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/PumpCrawl" unique_id=2135519322]
-shape = SubResource("BoxShape3D_g08m1")
+shape = SubResource("BoxShape3D_6gy75")
 
 [node name="Operative" type="CharacterBody3D" parent="." unique_id=589795370 instance=ExtResource("89_cgu8r")]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -32, 0, 32)
@@ -7588,7 +7598,7 @@ collision_layer = 0
 script = ExtResource("93_2gcq6")
 
 [node name="Shape" type="CollisionShape3D" parent="ExtractionPoint" unique_id=111841606]
-shape = SubResource("BoxShape3D_k7jso")
+shape = SubResource("BoxShape3D_5dt8a")
 
 [node name="Intel" type="Node3D" parent="." unique_id=1262456663]
 
@@ -7598,10 +7608,10 @@ collision_layer = 0
 script = ExtResource("94_fmgeb")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelVault" unique_id=1421653422]
-shape = SubResource("BoxShape3D_a0lcq")
+shape = SubResource("BoxShape3D_g08m1")
 
 [node name="Mesh" type="MeshInstance3D" parent="Intel/IntelVault" unique_id=1474517866]
-mesh = SubResource("BoxMesh_4dry4")
+mesh = SubResource("BoxMesh_a0lcq")
 
 [node name="ResearchFiles" type="Area3D" parent="Intel" unique_id=606600838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.6, 10)
@@ -7609,10 +7619,10 @@ collision_layer = 0
 script = ExtResource("94_fmgeb")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/ResearchFiles" unique_id=1818584390]
-shape = SubResource("BoxShape3D_7v12k")
+shape = SubResource("BoxShape3D_j1lns")
 
 [node name="Mesh" type="MeshInstance3D" parent="Intel/ResearchFiles" unique_id=250116098]
-mesh = SubResource("BoxMesh_uh30g")
+mesh = SubResource("BoxMesh_4dry4")
 
 [node name="IntelOffice" type="Area3D" parent="Intel" unique_id=698832014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 1.5, 22)
@@ -7622,7 +7632,7 @@ verb = "answer"
 guards = PackedStringArray("GuardA9")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelOffice" unique_id=1298080078]
-shape = SubResource("BoxShape3D_d2yfp")
+shape = SubResource("BoxShape3D_7v12k")
 
 [node name="Encounters" type="Node3D" parent="." unique_id=1703216033]
 

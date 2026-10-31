@@ -43,9 +43,8 @@ const D := {
 		["ceiling_lamp", [-14.8, 32, 3.8], 0],  # over the room's door
 		["mainframe", [-33.28, 27.9, 0], 90], ["mainframe", [-33.28, 35.9, 0], 90],  # the Core's banks, either side of the terminal
 	],
-	# the room's door in a striped blast frame (4 m, as the design has it), the Core's name over the terminal, its cables
+	# the room's door in a striped blast frame (4 m, as the design has it), its cables
 	doorways = [{at = [-14.15, 32], along_x = false, t = 0.3, wall_h = 4.3, head = 4.0, width = 2.0, out = 1.0, style = "blast", mat = "brick", tint = WALL}],
-	signs = [["sign.core", [-33.67, 32, 3.3], 90, 3.6, "red", 0.9]],
 	beacons = [[[-32.6, 27.9, 2.9], Color(0.3, 1, 0.45), 4.0, -1], [[-32.6, 35.9, 2.9], Color(0.3, 1, 0.45), 4.0, -1], [[-31.6, 32, 1.4], Color(1, 0.3, 0.1), 4.0, -1]],
 	trim = [["CoreCableN", [-32.9, 29.4, 0.2, 1.1], 0.0, 0.04, "metal", Color(0.06, 0.06, 0.06)], ["CoreCableS", [-32.9, 33.5, 0.2, 0.9], 0.0, 0.04, "metal", Color(0.06, 0.06, 0.06)]],
 	markings = [  # hazard paint round the terminal and along the gallery's foot

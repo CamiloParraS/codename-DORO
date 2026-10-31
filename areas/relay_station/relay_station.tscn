@@ -1084,7 +1084,7 @@ render_priority = 0
 shader = ExtResource("2_kxg4d")
 shader_parameter/albedo_tex = ExtResource("5_7kae4")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.14, 0.28, 0.6, 1)
+shader_parameter/tint = Color(0.2, 0.28, 0.45, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1097,7 +1097,7 @@ render_priority = 0
 shader = ExtResource("2_kxg4d")
 shader_parameter/albedo_tex = ExtResource("5_7kae4")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.72, 0.1, 0.08, 1)
+shader_parameter/tint = Color(0.5, 0.17, 0.14, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1110,7 +1110,7 @@ render_priority = 0
 shader = ExtResource("2_kxg4d")
 shader_parameter/albedo_tex = ExtResource("5_7kae4")
 shader_parameter/split = null
-shader_parameter/tint = Color(1, 0.75, 0.1, 1)
+shader_parameter/tint = Color(0.72, 0.56, 0.16, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -1131,7 +1131,7 @@ render_priority = 0
 shader = ExtResource("2_kxg4d")
 shader_parameter/albedo_tex = ExtResource("5_7kae4")
 shader_parameter/split = null
-shader_parameter/tint = Color(0.88, 0.88, 0.84, 1)
+shader_parameter/tint = Color(0.66, 0.65, 0.6, 1)
 shader_parameter/tile_m = 2.0
 shader_parameter/side_tile_m = null
 
@@ -2792,92 +2792,61 @@ size = Vector3(0.6, 0.02, 0.25)
 material = SubResource("ShaderMaterial_jw87y")
 size = Vector3(0.6, 0.02, 0.25)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b64qm"]
-shading_mode = 0
-albedo_color = Color(1, 0.1, 0.05, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b64qm"]
+render_priority = 0
+shader = ExtResource("2_kxg4d")
+shader_parameter/albedo_tex = ExtResource("5_7kae4")
+shader_parameter/split = null
+shader_parameter/tint = Color(0.22, 0.23, 0.25, 1)
+shader_parameter/tile_m = 2.0
+shader_parameter/side_tile_m = null
 
-[sub_resource type="SphereMesh" id="SphereMesh_nfnw2"]
-material = SubResource("StandardMaterial3D_b64qm")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_nfnw2"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3djv2"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_3djv2"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_qvdag"]
-material = SubResource("StandardMaterial3D_3djv2")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_qvdag"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_65u2j"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_65u2j"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_exiul"]
-material = SubResource("StandardMaterial3D_65u2j")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_exiul"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1q2rx"]
-shading_mode = 0
-albedo_color = Color(1, 0.8, 0.4, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_1q2rx"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_kffcr"]
-material = SubResource("StandardMaterial3D_1q2rx")
-radius = 0.15
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_kffcr"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8gi1i"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_8gi1i"]
+material = SubResource("ShaderMaterial_b64qm")
+size = Vector3(0.2, 0.3, 0.2)
 
-[sub_resource type="SphereMesh" id="SphereMesh_f8ut7"]
-material = SubResource("StandardMaterial3D_8gi1i")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_onvy8"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ii0lv"]
-material = SubResource("StandardMaterial3D_onvy8")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_itw68"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_yvc50"]
-material = SubResource("StandardMaterial3D_itw68")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_avb0k"]
-shading_mode = 0
-albedo_color = Color(0.3, 1, 0.45, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_swe2w"]
-material = SubResource("StandardMaterial3D_avb0k")
-radius = 0.15
-height = 0.3
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m688e"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f8ut7"]
 shader = ExtResource("75_rj77t")
 shader_parameter/horizon = Color(0.34, 0.18, 0.1, 1)
 shader_parameter/zenith = Color(0.03, 0.04, 0.1, 1)
 shader_parameter/glow = 0.6
 shader_parameter/disc = null
 
-[sub_resource type="Sky" id="Sky_bfxy3"]
-sky_material = SubResource("ShaderMaterial_m688e")
+[sub_resource type="Sky" id="Sky_onvy8"]
+sky_material = SubResource("ShaderMaterial_f8ut7")
 radiance_size = 0
 
-[sub_resource type="Environment" id="Environment_0vudb"]
+[sub_resource type="Environment" id="Environment_ii0lv"]
 background_mode = 2
-sky = SubResource("Sky_bfxy3")
+sky = SubResource("Sky_onvy8")
 ambient_light_source = 2
 ambient_light_color = Color(0.46, 0.44, 0.52, 1)
 ambient_light_energy = 1.35
@@ -2904,34 +2873,34 @@ adjustment_enabled = true
 adjustment_contrast = 1.08
 adjustment_saturation = 1.12
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_hbymy"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_itw68"]
 size = Vector3(4, 3, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_hm1we"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_yvc50"]
 size = Vector3(1.5, 2, 1.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ymgpj"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_avb0k"]
 shading_mode = 0
 
-[sub_resource type="BoxMesh" id="BoxMesh_k4ii6"]
-material = SubResource("StandardMaterial3D_ymgpj")
+[sub_resource type="BoxMesh" id="BoxMesh_swe2w"]
+material = SubResource("StandardMaterial3D_avb0k")
 size = Vector3(0.4, 0.1, 0.3)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_in6gp"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_m688e"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_nqvpb"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_bfxy3"]
 size = Vector3(5, 3, 5)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_lasim"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0vudb"]
 size = Vector3(14, 5, 10)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ljae4"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbymy"]
 size = Vector3(12, 3.5, 8)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_nrt46"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_hm1we"]
 size = Vector3(14, 3.7, 10)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8buhk"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ymgpj"]
 size = Vector3(10, 1.2, 10)
 
 [node name="RelayStation" type="Node3D" unique_id=834185124]
@@ -4069,10 +4038,11 @@ mesh = SubResource("BoxMesh_fd6kw")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_43p97_67p0" unique_id=789991045]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.garage"
 font = ExtResource("28_60elh")
 font_size = 74
@@ -4086,10 +4056,11 @@ mesh = SubResource("BoxMesh_tphmm")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_58p03_70p0" unique_id=726490584]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.no_smoking"
 font = ExtResource("28_60elh")
 font_size = 37
@@ -4103,10 +4074,11 @@ mesh = SubResource("BoxMesh_s60bo")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_57p68_64p8" unique_id=2143618637]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.keys"
 font = ExtResource("28_60elh")
 font_size = 37
@@ -4120,10 +4092,11 @@ mesh = SubResource("BoxMesh_bclq5")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_69p0_65p97" unique_id=2116047691]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.fuel"
 font = ExtResource("28_60elh")
 font_size = 56
@@ -4137,10 +4110,11 @@ mesh = SubResource("BoxMesh_ubltm")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_65p97_71p0" unique_id=1461129476]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.no_smoking"
 font = ExtResource("28_60elh")
 font_size = 37
@@ -4154,10 +4128,11 @@ mesh = SubResource("BoxMesh_tvyvg")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_58p0_46p03" unique_id=1306473819]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.mess"
 font = ExtResource("28_60elh")
 font_size = 56
@@ -4171,10 +4146,11 @@ mesh = SubResource("BoxMesh_8yupx")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_52p0_18p03" unique_id=1194789428]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.office"
 font = ExtResource("28_60elh")
 font_size = 56
@@ -4188,10 +4164,11 @@ mesh = SubResource("BoxMesh_ja3qc")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_37p0_14p03" unique_id=1459063507]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.96, 0.95, 0.9, 1)
+modulate = Color(0.8, 0.78, 0.72, 1)
 text = "sign.relay"
 font = ExtResource("28_60elh")
 font_size = 87
@@ -4205,10 +4182,11 @@ mesh = SubResource("BoxMesh_dilkk")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/@MeshInstance3D@14" unique_id=577320448]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.05, 0.05, 0.05, 1)
+modulate = Color(0.1, 0.09, 0.08, 1)
 text = "sign.high_voltage"
 font = ExtResource("28_60elh")
 font_size = 56
@@ -4222,10 +4200,11 @@ mesh = SubResource("BoxMesh_oppk8")
 [node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/Sign_24p6_50p03" unique_id=1708925173]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+shaded = true
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-modulate = Color(0.08, 0.08, 0.1, 1)
+modulate = Color(0.12, 0.12, 0.13, 1)
 text = "sign.barracks"
 font = ExtResource("28_60elh")
 font_size = 62
@@ -6399,7 +6378,7 @@ mesh = SubResource("BoxMesh_u1jcu")
 
 [node name="Lamp0" type="MeshInstance3D" parent="Beacons" unique_id=1400467671]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 34.4, -29)
-mesh = SubResource("SphereMesh_nfnw2")
+mesh = SubResource("BoxMesh_nfnw2")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp0" unique_id=1580435902]
 light_color = Color(1, 0.1, 0.05, 1)
@@ -6410,7 +6389,7 @@ omni_range = 10.0
 
 [node name="Lamp1" type="MeshInstance3D" parent="Beacons" unique_id=1400467672]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 7.2, -21.45)
-mesh = SubResource("SphereMesh_qvdag")
+mesh = SubResource("BoxMesh_3djv2")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp1" unique_id=724420223]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6421,7 +6400,7 @@ omni_range = 4.0
 
 [node name="Lamp2" type="MeshInstance3D" parent="Beacons" unique_id=1400467673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 6.1, -21.8)
-mesh = SubResource("SphereMesh_exiul")
+mesh = SubResource("BoxMesh_qvdag")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp2" unique_id=2015888192]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6432,7 +6411,7 @@ omni_range = 3.0
 
 [node name="Lamp3" type="MeshInstance3D" parent="Beacons" unique_id=1400467674]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 2.6, 24.8)
-mesh = SubResource("SphereMesh_kffcr")
+mesh = SubResource("BoxMesh_65u2j")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp3" unique_id=1159872513]
 light_color = Color(1, 0.8, 0.4, 1)
@@ -6443,7 +6422,7 @@ omni_range = 3.5
 
 [node name="Lamp4" type="MeshInstance3D" parent="Beacons" unique_id=1400467675]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.8, 6.1, -29.8)
-mesh = SubResource("SphereMesh_f8ut7")
+mesh = SubResource("BoxMesh_exiul")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp4" unique_id=303856834]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6454,7 +6433,7 @@ omni_range = 3.0
 
 [node name="Lamp5" type="MeshInstance3D" parent="Beacons" unique_id=1400467676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.2, 6.1, -29.8)
-mesh = SubResource("SphereMesh_ii0lv")
+mesh = SubResource("BoxMesh_1q2rx")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp5" unique_id=1595324803]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6465,7 +6444,7 @@ omni_range = 3.0
 
 [node name="Lamp6" type="MeshInstance3D" parent="Beacons" unique_id=1400467677]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.8, 6.1, -22.2)
-mesh = SubResource("SphereMesh_yvc50")
+mesh = SubResource("BoxMesh_kffcr")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp6" unique_id=739309124]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6476,7 +6455,7 @@ omni_range = 3.0
 
 [node name="Lamp7" type="MeshInstance3D" parent="Beacons" unique_id=1400467678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.2, 6.1, -22.2)
-mesh = SubResource("SphereMesh_swe2w")
+mesh = SubResource("BoxMesh_8gi1i")
 
 [node name="Light" type="OmniLight3D" parent="Beacons/Lamp7" unique_id=2030777093]
 light_color = Color(0.3, 1, 0.45, 1)
@@ -6492,7 +6471,7 @@ light_energy = 0.6
 shadow_enabled = true
 
 [node name="Mood" type="WorldEnvironment" parent="." unique_id=340110818]
-environment = SubResource("Environment_0vudb")
+environment = SubResource("Environment_ii0lv")
 
 [node name="Spots" type="Node3D" parent="." unique_id=493390860]
 
@@ -6647,7 +6626,7 @@ collision_layer = 0
 script = ExtResource("80_k7bol")
 
 [node name="Shape" type="CollisionShape3D" parent="ExtractionPoint" unique_id=831193982]
-shape = SubResource("BoxShape3D_hbymy")
+shape = SubResource("BoxShape3D_itw68")
 
 [node name="Intel" type="Node3D" parent="." unique_id=481464719]
 
@@ -6657,10 +6636,10 @@ collision_layer = 0
 script = ExtResource("81_xqimd")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelMess" unique_id=1414574738]
-shape = SubResource("BoxShape3D_hm1we")
+shape = SubResource("BoxShape3D_yvc50")
 
 [node name="Mesh" type="MeshInstance3D" parent="Intel/IntelMess" unique_id=1018776526]
-mesh = SubResource("BoxMesh_k4ii6")
+mesh = SubResource("BoxMesh_swe2w")
 
 [node name="IntelGarage" type="Area3D" parent="Intel" unique_id=1199185473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.5, 28)
@@ -6670,7 +6649,7 @@ verb = "answer"
 guards = PackedStringArray("GuardA2")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelGarage" unique_id=1297950017]
-shape = SubResource("BoxShape3D_in6gp")
+shape = SubResource("BoxShape3D_m688e")
 
 [node name="RelayConsole" type="Area3D" parent="Intel" unique_id=949761998]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -20)
@@ -6678,7 +6657,7 @@ collision_layer = 0
 script = ExtResource("83_u5me4")
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/RelayConsole" unique_id=1707177102]
-shape = SubResource("BoxShape3D_nqvpb")
+shape = SubResource("BoxShape3D_bfxy3")
 
 [node name="Encounters" type="Node3D" parent="." unique_id=1137322201]
 
@@ -6725,7 +6704,7 @@ collision_layer = 0
 script = ExtResource("84_ockd4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/Garage" unique_id=1971037662]
-shape = SubResource("BoxShape3D_lasim")
+shape = SubResource("BoxShape3D_0vudb")
 
 [node name="MessHut" type="Area3D" parent="NoFulton" unique_id=560125408]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4.75, 2)
@@ -6733,7 +6712,7 @@ collision_layer = 0
 script = ExtResource("84_ockd4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/MessHut" unique_id=639555616]
-shape = SubResource("BoxShape3D_ljae4")
+shape = SubResource("BoxShape3D_hbymy")
 
 [node name="Office" type="Area3D" parent="NoFulton" unique_id=421329315]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 7.85, -27)
@@ -6741,7 +6720,7 @@ collision_layer = 0
 script = ExtResource("84_ockd4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/Office" unique_id=1514373667]
-shape = SubResource("BoxShape3D_nrt46")
+shape = SubResource("BoxShape3D_hm1we")
 
 [node name="BarracksCrawl" type="Area3D" parent="NoFulton" unique_id=470901145]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 3.6, 5)
@@ -6749,4 +6728,4 @@ collision_layer = 0
 script = ExtResource("84_ockd4")
 
 [node name="Shape" type="CollisionShape3D" parent="NoFulton/BarracksCrawl" unique_id=1797229209]
-shape = SubResource("BoxShape3D_8buhk")
+shape = SubResource("BoxShape3D_ymgpj")

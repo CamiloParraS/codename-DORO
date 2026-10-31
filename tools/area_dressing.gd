@@ -360,16 +360,23 @@ func _beacons(beacons: Array) -> void:
 		var at := _p(bc[0])
 		var lamp := MeshInstance3D.new()
 		lamp.name = "Lamp%d" % g.get_child_count()
-		var sphere := SphereMesh.new()
-		sphere.radius = 0.15
-		sphere.height = 0.3
+		# a dark housing with a small lens set into it, not a glowing ball hanging in the air
+		lamp.mesh = _box_mesh(Vector3(0.2, 0.3, 0.2), _mat("metal", Color(0.22, 0.23, 0.25)))
+		lamp.position = at
+		_add(g, lamp)
+		var lens := MeshInstance3D.new()
+		lens.name = "Lens"
+		var dome := SphereMesh.new()
+		dome.radius = 0.07
+		dome.height = 0.14
 		var m := StandardMaterial3D.new()
 		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		m.albedo_color = bc[1]
-		sphere.material = m
-		lamp.mesh = sphere
-		lamp.position = at
-		_add(g, lamp)
+		dome.material = m
+		lens.mesh = dome
+		lens.position.y = -0.1
+		lens.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		lamp.add_child(lens)
 		var l := OmniLight3D.new()
 		l.name = "Light"
 		l.light_color = bc[1]
