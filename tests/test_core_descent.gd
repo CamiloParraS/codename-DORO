@@ -73,8 +73,9 @@ func test_the_operative_rides_in_a_sealed_car_and_ends_at_the_lift_exit() -> voi
 
 func test_reaching_the_lift_plays_the_descent_once_and_the_clock_holds() -> void:
 	_area = load(SCENE).instantiate()
-	(Engine.get_main_loop() as SceneTree).root.add_child(_area)
 	var run: MissionRun = _area.get_node("MissionRun")
+	run.cine = {none = true}  # the default record is Mission 1, whose intro take the Core has no node for
+	(Engine.get_main_loop() as SceneTree).root.add_child(_area)
 	var op = _area.get_node("Operative")
 	var before: float = run.rank.seconds
 	_area._descend()
