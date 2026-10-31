@@ -42,6 +42,7 @@ func _run() -> void:
 	var run := MissionRun.new()
 	run.name = "MissionRun"
 	run.cine = {intro = "CineTest"}
+	run.campaign = true
 	area.add_child(run)
 	var cine: Cine = run.get_node("CineRunner")
 	await _frames(3)
@@ -66,6 +67,7 @@ func _run() -> void:
 	var run2 := MissionRun.new()
 	run2.name = "MissionRun2"
 	run2.cine = {intro = "CineTest"}
+	run2.campaign = true
 	area.add_child(run2)
 	await _frames(3)
 	run2.get_node("CineRunner").skip()

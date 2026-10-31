@@ -98,5 +98,6 @@ func _start() -> Vector3:
 
 func _harbour() -> Node:
 	var a: Node = load(SCENE).instantiate()
+	a.get_node("MissionRun").campaign = true  # the campaign plays the take; Free mode does not
 	(Engine.get_main_loop() as SceneTree).root.add_child(a)
 	return a

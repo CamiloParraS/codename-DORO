@@ -114,6 +114,10 @@ _Avoid_: Mission intro, Aigis screen
 A radio conversation between the Operative and Metis, either full-screen with the game paused or as subtitles while play continues.
 _Avoid_: Cutscene, dialogue, transmission
 
+**Take**:
+A continuous, cut-free camera sequence in the live Area at its start or end, or the Core's lift ride. The campaign and Mission-select replays play it (a held key skips it); Free mode does not. A Codec call or the Briefing is not a Take.
+_Avoid_: Cutscene, cinematic
+
 **Hint**:
 A live Codec call in which Metis points a lost player at the current objective step, in two tiers (a direction, then the route), fired when the player idles or wanders, or on request from the radio menu.
 _Avoid_: Tip, tutorial prompt

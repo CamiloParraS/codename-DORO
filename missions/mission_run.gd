@@ -75,7 +75,9 @@ func _ready() -> void:
 	SessionLog.current.start_mission(record.mission, "%s, %s" % [get_parent().name, "campaign" if campaign else "replay" if replay else "free mode"])
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
-	if cine.has("intro"):  # a take replaces the card: after the Codec call the Area is up, so it plays here in every mode
+	if cine.has("intro") and not CineLogic.plays(campaign, replay):
+		pass  # Free mode: no take and no card, straight to the Preset
+	elif cine.has("intro"):  # a take replaces the card: after the Codec call the Area is up, so it plays here
 		_take(cine.intro, intro.values().map(func(k: String) -> String: return tr(k)), false, take_checkpoint)
 	elif not intro.is_empty() and not campaign:  # a title card holds play (and the clock) for its 2.3 s; the campaign's came before the Codec call (Briefing)
 		_card([intro.name, intro.area, intro.stamp], true, func() -> void: get_tree().paused = false)
@@ -205,12 +207,7 @@ func play_take(key: String, then := Callable()) -> void:
 
 ## A take over the live Area; `then` runs when control is back (an outro: when it has gone to black).
 func _take(key: String, lines: Array, outro: bool, then: Callable) -> void:
-	var c := Cine.new()
-	c.name = "CineRunner"
-	add_child(c)  # a child of this node: the Area is still setting up its own when the intro starts
-	c.fade_out = outro
-	c.lines.assign(lines)
-	c.play(get_parent(), key, then)
+	Cine.launch(self, key, lines, outro, then)
 
 
 func _overlay(screen: Control) -> void:
@@ -519,7 +516,9 @@ func _on_extraction() -> void:
 		_overlay(screen)
 		get_tree().paused = true
 	var outro: Dictionary = Campaign.MISSIONS[record.mission].get("outro", {})
-	if cine.has("outro"):  # ends on black, then the screen
+	if cine.has("outro") and not CineLogic.plays(campaign, replay):
+		show.call()  # Free mode: straight to the Rank page
+	elif cine.has("outro"):  # ends on black, then the screen
 		_take(cine.outro, [tr(outro.line)] if outro.has("line") else [], true, show)
 	elif outro.is_empty():
 		show.call()

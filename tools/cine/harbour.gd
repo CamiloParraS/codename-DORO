@@ -151,7 +151,7 @@ static func outro(cine: Node) -> AnimationPlayer:
 	var pole := _pole_camera(props, "PoleCamera", OUTRO_POLE, OUTRO_POLE_H, deg_to_rad(30.0))
 	var audio := AudioStreamPlayer3D.new()
 	audio.name = "Audio"
-	audio.bus = &"SFX"
+	audio.bus = &"Ambience"
 	audio.position = spot
 	props.add_child(audio)
 

@@ -95,7 +95,7 @@ func _hum() -> void:
 		s.loop = true
 		_hummer = AudioStreamPlayer.new()
 		_hummer.stream = s
-		_hummer.bus = Mixer.SFX
+		_hummer.bus = Mixer.AMBIENCE
 		add_child(_hummer)
 	if motor > 0.0 and not _hummer.playing:
 		_hummer.play()

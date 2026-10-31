@@ -69,6 +69,8 @@ const OUTDOOR_DB := -24.0  # crickets bed under open sky
 var _vol := {}             # bus -> linear 0..1
 var _duck := 0.0           # current music duck, dB (0 or MusicState.DUCK_DB)
 var _duck_to := 0.0
+var _sfx_duck := 0.0       # current SFX duck while a take plays, dB
+var _sfx_duck_to := 0.0
 var _state := MusicState.new()
 var _beat := AlertBeat.new()
 var _music := {}           # track -> AudioStreamPlayer
@@ -172,9 +174,16 @@ func codec_call(playing: bool) -> void:
 	_duck_to = MusicState.duck_db(playing)
 
 
+## A take (cinematics/cine.gd) starts or ends: gameplay SFX duck under it and come back. The music state is untouched.
+func take(playing: bool) -> void:
+	_sfx_duck_to = MusicState.take_duck_db(playing)
+
+
 func advance_duck(delta: float) -> void:
 	_duck = move_toward(_duck, _duck_to, DUCK_SPEED * delta)
+	_sfx_duck = move_toward(_sfx_duck, _sfx_duck_to, DUCK_SPEED * delta)
 	_apply(MUSIC)
+	_apply(SFX)
 
 
 func _exit_tree() -> void:
@@ -274,7 +283,7 @@ func _apply(bus: StringName) -> void:
 	var i := AudioServer.get_bus_index(bus)
 	if i < 0:
 		return
-	AudioServer.set_bus_volume_db(i, linear_to_db(volume(bus)) + (_duck if bus == MUSIC else 0.0))
+	AudioServer.set_bus_volume_db(i, linear_to_db(volume(bus)) + (_duck if bus == MUSIC else _sfx_duck if bus == SFX else 0.0))
 
 
 func _looped(sound: StringName, bus: StringName) -> AudioStreamPlayer:

@@ -26,8 +26,8 @@ func test_a_tap_never_skips_and_a_hold_does() -> void:
 	assert_false(CineLogic.skip_done(0.1))
 	assert_true(CineLogic.skip_done(CineLogic.SKIP_HOLD))
 	assert_eq(CineLogic.skip_progress(CineLogic.SKIP_HOLD / 2.0), 0.5)
-	assert_false(CineLogic.ring_shown(0.05), "no ring for a tap")
-	assert_true(CineLogic.ring_shown(0.3))
+	assert_false(CineLogic.ring_shown(0.0), "no ring until the key is down")
+	assert_true(CineLogic.ring_shown(1.0 / 60.0), "the ring answers within a frame of the press")
 
 
 func test_the_lower_third_is_in_during_the_first_two_seconds_and_gone_before_the_end() -> void:
@@ -136,7 +136,7 @@ func test_an_outro_ends_on_black_and_leaves_the_operative_locked() -> void:
 
 
 func test_a_mission_without_cine_still_plays_its_card() -> void:
-	var run := _mission_in_room({})
+	var run := _mission_in_room({}, false)
 	assert_false(run.take_playing)
 	assert_false(_area.get_node("Operative").cine)
 	assert_eq(run.find_children("*", "MissionCard", true, false).size(), 1, "Mission 1's intro card")
@@ -151,6 +151,51 @@ func test_a_missing_take_does_not_trap_the_player() -> void:
 	assert_false(c.play(_area, "NoSuchTake", func() -> void: _done += 1))
 	assert_eq(_done, 1, "then still runs")
 	assert_false(_area.get_node("Operative").cine)
+
+
+func test_the_campaign_and_replays_play_takes_and_free_mode_does_not() -> void:
+	assert_true(CineLogic.plays(true, false))
+	assert_true(CineLogic.plays(false, true))
+	assert_false(CineLogic.plays(false, false), "Free mode skips: the Preset is the point")
+	var run := _mission_in_room({intro = KEY}, false, true)
+	assert_true(run.take_playing, "a replay plays it")
+	_area.free()
+	run = _mission_in_room({intro = KEY}, false, false)
+	assert_false(run.take_playing, "Free mode: no take")
+	assert_false(_area.get_node("Operative").cine)
+	assert_false(run.has_node("CineRunner"))
+	assert_eq(run.find_children("*", "MissionCard", true, false).size(), 0, "and no card either")
+
+
+func test_the_key_that_skips_does_not_reach_the_first_frame_of_play() -> void:
+	var run := _mission_in_room({intro = KEY})
+	var op = _area.get_node("Operative")
+	var runner: Cine = run.get_node("CineRunner")
+	Input.action_press("ui_accept")
+	runner.skip()
+	assert_true(op.cine, "still locked while the skip key is down")
+	assert_false(run.take_playing, "the clocks run")
+	runner._process(0.016)
+	assert_true(op.cine, "held on")
+	Input.action_release("ui_accept")
+	runner._process(0.016)
+	assert_false(op.cine, "unlocked once the key is up")
+	assert_true(runner.is_queued_for_deletion())
+
+
+func test_gameplay_sfx_duck_under_a_take_and_come_back_even_after_a_skip() -> void:
+	var run := _mission_in_room({intro = KEY})
+	assert_eq(Mixer._sfx_duck_to, MusicState.TAKE_DUCK_DB, "ducked while it plays")
+	var music_duck: float = Mixer._duck_to
+	run.get_node("CineRunner").skip()
+	assert_eq(Mixer._sfx_duck_to, 0.0, "restored on a skip")
+	Mixer.advance_duck(10.0)
+	assert_eq(Mixer._sfx_duck, 0.0, "and the bus is back at full")
+	assert_eq(Mixer._duck_to, music_duck, "the music's own duck is untouched")
+	_area.free()
+	run = _mission_in_room({intro = KEY})
+	_area.free()  # a scene change mid-take
+	assert_eq(Mixer._sfx_duck_to, 0.0, "no stuck duck when the take is freed")
 
 
 func test_every_declared_take_exists_in_its_area() -> void:
@@ -192,12 +237,14 @@ func _room() -> Node:
 
 
 ## A MissionRun for Mission 1 in the test room with `cine` as given (the real Mission 1 declares none yet).
-func _mission_in_room(cine: Dictionary) -> MissionRun:
+func _mission_in_room(cine: Dictionary, campaign := true, replay := false) -> MissionRun:
 	_done = 0
 	_area = _room()
 	var run := MissionRun.new()
 	run.name = "MissionRun"
 	run.cine = cine if not cine.is_empty() else {none = true}  # empty would fall back to Mission 1's own takes
+	run.campaign = campaign
+	run.replay = replay
 	_area.add_child(run)
 	if run.has_node("CineRunner"):
 		run.get_node("CineRunner").finished.connect(func(_s: bool) -> void: _done += 1)
