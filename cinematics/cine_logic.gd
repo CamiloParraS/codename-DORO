@@ -28,10 +28,11 @@ static func ring_shown(held: float) -> bool:
 	return held >= SKIP_SHOW
 
 
-## The lower-third's opacity `t` seconds into a take of `length`: in at LOWER_THIRD_AT, held, out before the take ends.
-static func lower_third(t: float, length: float) -> float:
-	var out_at := minf(LOWER_THIRD_HOLD, length - LOWER_THIRD_IN - 0.2)
-	return minf(clampf((t - LOWER_THIRD_AT) / LOWER_THIRD_IN, 0.0, 1.0), clampf((out_at + LOWER_THIRD_IN - t) / LOWER_THIRD_IN, 0.0, 1.0))
+## The lower-third's opacity `t` seconds into a take of `length`: in at `at` (default LOWER_THIRD_AT; a take may say its own
+## in its metadata `third_at`), held, out before the take ends.
+static func lower_third(t: float, length: float, at := LOWER_THIRD_AT) -> float:
+	var out_at := minf(at - LOWER_THIRD_AT + LOWER_THIRD_HOLD, length - LOWER_THIRD_IN - 0.2)
+	return minf(clampf((t - at) / LOWER_THIRD_IN, 0.0, 1.0), clampf((out_at + LOWER_THIRD_IN - t) / LOWER_THIRD_IN, 0.0, 1.0))
 
 
 ## Opacity of an outro take's black at `t` of `length`: 0 until FADE_OUT before the end, then up to 1.

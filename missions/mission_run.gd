@@ -512,7 +512,7 @@ func _on_extraction() -> void:
 		get_tree().paused = true
 	var outro: Dictionary = Campaign.MISSIONS[record.mission].get("outro", {})
 	if cine.has("outro"):  # ends on black, then the screen
-		_take(cine.outro, [], true, show)
+		_take(cine.outro, [tr(outro.line)] if outro.has("line") else [], true, show)
 	elif outro.is_empty():
 		show.call()
 	else:  # fade out on the extraction beat, then the post-Mission screen
