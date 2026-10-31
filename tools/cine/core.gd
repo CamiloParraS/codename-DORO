@@ -39,6 +39,7 @@ static func build(b: Object) -> void:
 	_panel(b, car)
 	_gate(b, car)
 	_shaft(b, car)
+	_shell(car)
 	var lamp := OmniLight3D.new()
 	lamp.name = "CabLamp"
 	lamp.position = CAB + Vector3(0, 2.4, 0.3)
@@ -48,6 +49,7 @@ static func build(b: Object) -> void:
 	car.add_child(lamp)
 	var cine: Node3D = AreaCine.root(b._root)
 	_descent(cine)
+	CoreIntro.intro(cine)  # the Operative comes out of the water (Mission 4's cine.intro)
 	CoreAscent.build(b, car, cine)  # the finale's Ascent: the same car and shaft, the other way
 	cine.owner = b._root
 	b._own(car)
@@ -143,6 +145,27 @@ static func _shaft(b: Object, car: Node3D) -> void:
 		pipe.mesh = b._box_mesh(Vector3(6, 0.28, 0.28), b._mat("rust", Color(0.8, 0.55, 0.4)))
 		pipe.position = Vector3(0, 9.7 + i * 1.45, 0.22)
 		strip.add_child(pipe)
+
+
+## The fake walls: one box round the cab and the shaft strip whose faces point in (front faces culled), so from inside the
+## car the only things to see are its own steel and the shaft; from outside, or from any other camera, it is not there.
+## It sits at CAB, 100 m clear of the Area, and covers nothing that is played in.
+static func _shell(car: Node3D) -> void:
+	var m := StandardMaterial3D.new()
+	m.cull_mode = BaseMaterial3D.CULL_FRONT
+	m.albedo_texture = load("res://assets/textures/concrete_128.png")
+	m.albedo_color = Color(0.5, 0.5, 0.54)
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	m.uv1_triplanar = true
+	m.uv1_scale = Vector3(0.5, 0.5, 0.5)
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(6.4, 31.0, 6.0)
+	mesh.material = m
+	var shell := MeshInstance3D.new()
+	shell.name = "ShaftWalls"
+	shell.mesh = mesh
+	shell.position = CAB + Vector3(0, -3.5, -0.5)   # z from -3.5 (behind the strip) to 2.5 (behind the cab); y -19 to 12
+	car.add_child(shell)
 
 
 ## The take. Times in seconds; every tween is a value track on the cab (DescentCar's properties) or the Operative.

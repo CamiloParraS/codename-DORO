@@ -105,3 +105,15 @@ func test_the_car_lights_follow_the_missions_dominant_voice() -> void:
 		return (_area.get_node("DescentCab/Panel/Lamp" + v.capitalize()).mesh.material as StandardMaterial3D).emission_energy_multiplier)
 	assert_eq(Aigis.VOICES[e.find(e.max())], DescentLogic.dominant_of(run.record))
 	assert_eq(Aigis.VOICES[e.find(e.max())], "gorgo")
+
+
+func test_the_car_is_walled_in_from_the_inside_only() -> void:
+	_area = load(SCENE).instantiate()
+	var shell := _area.get_node("DescentCab/ShaftWalls") as MeshInstance3D
+	var m := shell.mesh.material as StandardMaterial3D
+	assert_eq(m.cull_mode, BaseMaterial3D.CULL_FRONT, "faces point in: seen from inside the car, not from outside")
+	var box := AABB(shell.position - shell.mesh.size / 2.0, shell.mesh.size)
+	assert_true(box.has_point(CoreCine.stand() + Vector3(0, 1.5, 0)), "the Operative stands inside it")
+	assert_true(box.encloses(AABB(CoreCine.CAB - Vector3(1.7, 0.3, 2.2), Vector3(3.4, 3.3, 4.4))), "round the whole cab")
+	assert_true(box.position.y < CoreCine.CAB.y - 18.0 and box.end.y > CoreCine.CAB.y + 9.0, "and the shaft strip's travel")
+	assert_true(absf(box.get_center().x) > 100.0 and box.position.distance_to(Vector3.ZERO) > 100.0, "far from anything played in")

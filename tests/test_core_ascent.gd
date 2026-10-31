@@ -119,3 +119,24 @@ func test_a_skip_holds_the_last_frame_and_tells_the_finale_to_leave() -> void:
 	assert_false(take.done)
 	take.release()
 	assert_true(take.done)
+
+
+func test_the_camera_faces_the_operative_in_the_car_from_its_gate() -> void:
+	_load()
+	var p := Cine.take_of(_area, AscentLogic.KEY)
+	var clip := p.get_animation("take")
+	assert_true(clip.length >= 8.0 and clip.length <= 9.0, "8 to 9 s")
+	var op := CoreCine.stand() + Vector3(0, 1.5, 0)
+	var rig := _area.get_node("Cine/CineAscentRig") as Node3D
+	for key in [&"Dolly", &"LookTarget"]:
+		var t := clip.find_track(NodePath("CineAscentRig/%s:position" % key), Animation.TYPE_VALUE)
+		for i in clip.track_get_key_count(t):
+			var v: Vector3 = rig.transform * clip.track_get_key_value(t, i)
+			if key == &"Dolly":
+				assert_true(v.distance_to(op) < 3.5, "never pulls back from him: %s" % v)
+				assert_true(v.z < CoreCine.CAB.z - 2.0, "stands outside the gate, facing in")
+			else:
+				assert_true(v.distance_to(op) < 0.5, "aimed at him")
+	assert_false(_area.has_node("Cine/AscentSkyline"), "no skyline to model")
+	_area.get_node(AscentLogic.SET).show_variant("gorgo")
+	assert_true(_area.get_node("DescentCab/CabRoof").visible and _area.get_node("DescentCab/CabBack").visible, "the car stays shut")

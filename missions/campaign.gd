@@ -47,7 +47,7 @@ const MISSIONS := [
 		{intel = "IntelVault", objective = "objective.m3.s2", call = [["analyst", "live.m3.s2.01"]], hint = ["hint.m3.s2.1", "hint.m3.s2.2"]},
 		{intel = "ResearchFiles", objective = "objective.m3.s3", call = [["analyst", "live.m3.s3.01"], ["analyst", "live.m3.s3.02"]], hint = ["hint.m3.s3.1", "hint.m3.s3.2"]},
 	]},
-	{title = "CORE", area = CORE, encounters = 3, targets = ["SECURITY DIRECTOR"],
+	{title = "CORE", area = CORE, encounters = 3, targets = ["SECURITY DIRECTOR"], cine = {intro = "CineIntro"},
 		open = [["analyst", "live.m4.open.01"]],
 		codec = [["handler", "codec.m4.01"], ["operative", "codec.m4.02"], ["handler", "codec.m4.03"], ["analyst", "codec.m4.04", "director"],
 			["analyst", "codec.m4.05", "director"], ["handler", "codec.m4.06"], ["analyst", "codec.m4.07"]], steps = [
