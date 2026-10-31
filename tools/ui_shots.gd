@@ -18,6 +18,7 @@ var radio_only := false
 var sizes: Array = ["854x480", "full"]
 var only: Array = []
 var taken: Array[String] = []  # PNG file names written by this run
+var _held: AlertChain  # the posed alert chain, re-asserted each frame: the running Area swaps its own in
 
 
 func _ready() -> void:
@@ -40,6 +41,11 @@ func _ready() -> void:
 	get_tree().root.add_child.call_deferred(stand_in)
 	(func() -> void: get_tree().current_scene = stand_in).call_deferred()
 	_run.call_deferred()
+
+
+func _process(_delta: float) -> void:
+	if _held:
+		AlertChain.area = _held
 
 
 func wait(s: float) -> void:
@@ -150,7 +156,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission_rank", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission_rank", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -201,6 +207,8 @@ func _play_shots(all: bool) -> void:
 	await wait(1.0)
 	await shoot("hud_normal")
 	hud.tip(tr("tutorial.holdup.prompt"))
+	await wait(0.8)
+	await shoot("hud_tip")
 	hud.live_call([["analyst", "live.m1.s1.01"]])
 	hud.say("METIS", tr("hint.m1.s2.2"))
 	hud.say("Foreman", tr("holdup.lift_code"))
@@ -282,7 +290,14 @@ func _phase(which: String) -> void:
 			c.tick(15.0, false)
 		if which == "caution":
 			c.tick(15.0, false)
+	_held = c
 	AlertChain.area = c
+	if which in ["alert", "evasion", "caution"]:  # MissionRun stands the chain down at once unless a guard is hunting, so alert them as its "alert" event does
+		var guards := get_tree().get_nodes_in_group("guards").filter(func(g: Guard) -> bool: return not g.is_down())
+		for g: Guard in guards:
+			g.on_radio(guards[0].global_position, "HQ")
+			if which == "evasion":
+				g.on_phase(AlertChain.Phase.EVASION)
 
 
 func _post(run: Node) -> void:
@@ -317,7 +332,7 @@ func _post(run: Node) -> void:
 ## The HUD in the three moods: Harbour, Core (darkest), Annex (brightest), each under Evasion and Alert.
 func _moods() -> void:
 	for m: Array in [["harbour", 0, 2], ["core", 3, 3], ["annex", 2, 2]]:
-		if not any_of(["hud_" + m[0], "phase_" + m[0]]):
+		if not any_of(["hud_" + m[0], "phase_%s_evasion" % m[0], "phase_%s_alert" % m[0]]):
 			continue
 		await _area(m[1], m[2])
 		var op: Node = get_tree().get_first_node_in_group("operative")
