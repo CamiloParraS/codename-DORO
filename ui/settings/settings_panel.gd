@@ -156,9 +156,10 @@ class SettingCtl extends Control:
 		var ink: Color = HudPalette.DARK_INK if on else HudPalette.LIGHT
 		var v: float = value.call()
 		if options.is_empty():
-			var track := Rect2(0, size.y / 2 - 4, CTL_W - 90.0, 8)
-			draw_rect(track, Color(ink, 0.25))
-			draw_rect(Rect2(track.position, Vector2(track.size.x * inverse_lerp(range_.x, range_.y, v), track.size.y)), ink)
+			var track := Rect2(0, size.y / 2 - 6, CTL_W - 90.0, 12)
+			var lit := PixelKit.PX * 2.0 * roundf(track.size.x * inverse_lerp(range_.x, range_.y, v) / (PixelKit.PX * 2.0))  # fills in 6 px cells
+			PixelKit.tone(self, Rect2(track.position + Vector2(lit, 0), Vector2(track.size.x - lit, track.size.y)), Color(ink, 0.5), 0.5)
+			PixelKit.cut_fill(self, Rect2(track.position, Vector2(lit, track.size.y)), ink, 0)
 			var pct := str(roundi(inverse_lerp(range_.x, range_.y, v) * 100.0))
 			var pf := HudPalette.tracked(HudPalette.DISPLAY, 30, 0.04)
 			draw_string(pf, Vector2(size.x - 70, size.y / 2 + 11), pct, HORIZONTAL_ALIGNMENT_RIGHT, 70, 30, ink)
@@ -171,7 +172,7 @@ class SettingCtl extends Control:
 			var active := i == int(v)
 			var cell := Rect2(x, size.y / 2 - 20, w, 40)
 			if active:
-				draw_rect(cell, ink)
+				PixelKit.cut_fill(self, PixelKit.snap(cell), ink, 2)
 			draw_string(f, Vector2(x + 18, size.y / 2 + 9), options[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 26, (HudPalette.LIGHT if on else HudPalette.DARK_INK) if active else Color(ink, 0.55))
 			x -= 6
 

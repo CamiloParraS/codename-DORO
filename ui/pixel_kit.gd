@@ -110,3 +110,34 @@ static func cut_fill(ci: CanvasItem, r: Rect2, col: Color, cut := 3, px := PX) -
 		var x0 := maxi(0, cut - (rows - 1 - i))
 		var x1 := cols - maxi(0, cut - i)
 		ci.draw_rect(Rect2(r.position.x + x0 * px, r.position.y + i * px, (x1 - x0) * px, px), col)
+
+
+## A wheel of `n` sectors between radii `r_in` and `r_out` about `c`, drawn as `px` cells in one pass: sector `hover`
+## in `on`, the rest in `off`. `gap` (radians) is left between sectors; the first one is centred straight up.
+static func wheel(ci: CanvasItem, c: Vector2, r_in: float, r_out: float, n: int, hover: int, on: Color, off: Color, gap := 0.04, px := 6.0) -> void:
+	var step := TAU / n
+	for gy in range(floori((c.y - r_out) / px), ceili((c.y + r_out) / px)):
+		for gx in range(floori((c.x - r_out) / px), ceili((c.x + r_out) / px)):
+			var cell := Vector2((gx + 0.5) * px, (gy + 0.5) * px)
+			var d := cell.distance_to(c)
+			if d < r_in or d > r_out:
+				continue
+			var a := fposmod(cell.angle_to_point(c) + PI - (-PI / 2) + step / 2, TAU)  # from the first sector's start, clockwise
+			var i := int(a / step) % n
+			if n > 1 and fposmod(a, step) < gap * 1.5 or n > 1 and step - fposmod(a, step) < gap * 1.5:
+				continue
+			ci.draw_rect(Rect2(gx * px, gy * px, px, px), on if i == hover else off)
+
+
+## A panel container that paints a stair-slanted slab behind its child (slanting its right edge `slant` px).
+class Slab extends PanelContainer:
+	var color := Color.WHITE
+	var slant := 36.0
+
+	func _init(col := Color.WHITE, lean := 36.0) -> void:
+		color = col
+		slant = lean
+		add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+
+	func _draw() -> void:
+		PixelKit.stair_fill(self, Rect2(Vector2.ZERO, size), color, slant)

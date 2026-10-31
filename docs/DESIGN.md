@@ -622,6 +622,6 @@ The game ships five screen families on purpose; the Overview's two materials (sm
 - **Don't** use Aigis Cyan for anything that is not Aigis: not Metis, not the Handler, not the player's gear, not focus rings.
 - **Don't** ship Konami assets: no MGS portraits, MSF logo, item icons, button art or screen captures.
 - **Don't** use neon, glows, coloured shadows, bloom or scanline overlays on panels and text; the only shadows are black. Two banded surfaces exist: the jammed Radar's rolling bands (they depict signal loss) and the full-screen `UiScan` layer on dark pages.
-- **Don't** imitate the PSX look's artefacts in the UI: no pixel fonts, no low-res UI textures, no blur or colour fringe. Pixel and dither chrome is the house style (Pixel Chrome); keep it to edges, fades and transitions, never behind body text, and never mix in a smooth gradient or a second cell size. Grain is allowed only on the game-over screen until it moves to the ordered dither.
+- **Don't** imitate the PSX look's artefacts in the UI: no pixel fonts, no low-res UI textures, no blur or colour fringe. Pixel and dither chrome is the house style (Pixel Chrome); keep it to edges, fades and transitions, never behind body text, and never mix in a smooth gradient or a second cell size. The game-over screen's film grain is now an ordered-dither vignette (`grain.gdshader`); no grain anywhere.
 - **Don't** let anything show through the jammed Radar.
 - **Don't** use pure black text on the menu grey; use Menu Ink.

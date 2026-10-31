@@ -299,7 +299,7 @@ func _draw() -> void:
 	var k := size.y / HudPalette.DESIGN_H
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var c := _centre() / k
-	draw_circle(c, RING_OUT + 46, Color(HudPalette.DARK_INK, 0.55))  # the radial's own backing; the world dim is the 3D look's
+	HudPalette.px_ring(self, c, RING_OUT + 46, 0.0, Color(HudPalette.DARK_INK, 0.55), 6.0)  # the radial's own backing, in pixels; the world dim is the 3D look's
 	_draw_referents(k)
 	var opts := menu.options()
 	var n := opts.size()
@@ -319,12 +319,11 @@ func _draw() -> void:
 	var hover := _hover()
 	var step := TAU / n
 	var mean := (RING_IN + RING_OUT) / 2
+	PixelKit.wheel(self, c, RING_IN, RING_OUT, n, hover, Color(RING_SAND, 0.72), Color(HudPalette.LIGHT, 0.12), 0.04 if n > 1 else 0.0)
 	for i in n:
 		var mid := -PI / 2 + i * step
 		var on := i == hover
 		var gap := 0.04 if n > 1 else 0.0
-		draw_arc(c, mean, mid - step / 2 + gap, mid + step / 2 - gap, 48,
-			Color(RING_SAND, 0.72) if on else Color(HudPalette.LIGHT, 0.12), RING_OUT - RING_IN, true)
 		var num := "%d " % (i + 1) if i < 9 else ""
 		var label := _label(opts[i][0])
 		var f := HudPalette.tracked(HudPalette.LABEL, 20, 0.12)

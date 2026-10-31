@@ -50,9 +50,8 @@ func _ready() -> void:
 		band.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		band.set_meta(&"band", true)
 		_stage.add_child(band)
-	var slab := PanelContainer.new()  # PAUSED, dark on a white slab
-	var sbox := StyleBoxFlat.new()
-	sbox.bg_color = HudPalette.LIGHT
+	var slab := PixelKit.Slab.new(HudPalette.LIGHT, 36.0)  # PAUSED, dark on a white slab with a stair-cut foot
+	var sbox := StyleBoxEmpty.new()
 	sbox.content_margin_left = 100
 	sbox.content_margin_right = 80
 	sbox.content_margin_top = 16
