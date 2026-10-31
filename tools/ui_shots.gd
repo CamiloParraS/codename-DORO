@@ -79,9 +79,10 @@ func shoot(name_: String) -> void:
 func scene(path: String) -> Node:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
+	TranslationServer.set_locale(lang)  # before the scene builds its labels: a filtered run skips the main menu, which applies the settings file's language
 	get_tree().change_scene_to_file(path)
 	await wait(0.3)
-	TranslationServer.set_locale(lang)  # the main menu applies the settings file's language
+	TranslationServer.set_locale(lang)
 	return get_tree().current_scene
 
 
@@ -149,7 +150,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission"]):
+	if not any_of(["hud_normal", "hud_busy", "radio", "hud_caution", "pause", "game_over", "post_mission_rank", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()

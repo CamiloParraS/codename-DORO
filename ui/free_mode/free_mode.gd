@@ -19,6 +19,7 @@ var _summary := Label.new()
 var _presets := UiMenu.new(560)
 var _preset_rows: Array[Button] = []
 var _mission_cells: Array[Button] = []
+var _outline: StyleBoxFlat  # the idle look of a cell, shared
 var _custom := VBoxContainer.new()
 
 
@@ -151,12 +152,14 @@ func _cell(key: String, on_press: Callable) -> Button:
 	b.text = key
 	b.custom_minimum_size = Vector2(160, 70)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var line := StyleBoxFlat.new()
-	line.bg_color = Color(0, 0, 0, 0)
-	line.set_border_width_all(2)
-	line.border_color = Color(HudPalette.LIGHT, 0.3)
-	line.content_margin_left = 24
-	line.content_margin_right = 24
+	if not _outline:
+		_outline = StyleBoxFlat.new()
+		_outline.bg_color = Color(0, 0, 0, 0)
+		_outline.set_border_width_all(2)
+		_outline.border_color = Color(HudPalette.LIGHT, 0.3)
+		_outline.content_margin_left = 24
+		_outline.content_margin_right = 24
+	var line := _outline
 	b.add_theme_stylebox_override("normal", line)
 	b.add_theme_stylebox_override("hover", line)
 	b.add_theme_stylebox_override("pressed", line)
@@ -182,7 +185,9 @@ func _pick_mission(k: int) -> void:
 	mission = k
 	for i in _mission_cells.size():
 		var on := i == k
-		_mission_cells[i].add_theme_stylebox_override("normal", _fill(HudPalette.LIGHT) if on else _mission_cells[i].get_theme_stylebox("hover"))
+		var look: StyleBox = _fill(HudPalette.LIGHT) if on else _outline  # hover and pressed too, or the chosen Mission loses its fill under the mouse
+		for state: String in ["normal", "hover", "pressed"]:
+			_mission_cells[i].add_theme_stylebox_override(state, look)
 		_mission_cells[i].add_theme_color_override("font_color", HudPalette.DARK_INK if on else HudPalette.LIGHT)
 	_refresh()
 

@@ -184,7 +184,7 @@ func _draw_rank(d: Vector2) -> void:
 		draw_polygon(pts, PackedColorArray([GRADE_EDGE, GRADE_MID, HudPalette.SAND, HudPalette.SAND, GRADE_MID, GRADE_EDGE]))
 		HudPalette.hud_text(self, bar.position + Vector2(30, 59), tr("ui.post.rank").to_upper(), 38, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.2), 0, false)
 		if _age >= STAMP_AT:
-			HudPalette.hud_text(self, bar.position + Vector2(bar.size.x - 40, 78), grade, 96, HudPalette.DARK_INK, HudPalette.DISPLAY, 2, false)
+			HudPalette.hud_text(self, bar.position + Vector2(bar.size.x - 40, 82), grade, 84, HudPalette.DARK_INK, HudPalette.DISPLAY, 2, false)  # Antonio's caps are 0.83 em: this centres them in the 92 px bar
 		y = bar.end.y
 	_chips(Vector2(80, 840))
 	if _age >= STAMP_AT:

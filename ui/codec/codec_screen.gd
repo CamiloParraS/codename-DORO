@@ -208,7 +208,7 @@ func _portrait(node: TextureRect, at: Vector2, id: String, speaking: bool, typin
 ## The speaker's name as a slanted slab under its portrait: cut on the outer-bottom corner.
 func _slab(at: Vector2, label: String, right: bool, on: bool) -> void:
 	var f := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.12)
-	var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 28).x + 46
+	var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 28)).x + 46  # measured at the size hud_text draws
 	var x := at.x + PORTRAIT.x - w if right else at.x
 	var pts := PackedVector2Array([Vector2(x, at.y), Vector2(x + w, at.y), Vector2(x + w, at.y + 52), Vector2(x, at.y + 52)])
 	if right:
@@ -247,7 +247,7 @@ func _subtitle(d: Vector2) -> void:
 		left -= full[i].length() + 1
 	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
 	var count := "%d / %d" % [talk.index + 1, talk.lines.size()]
-	HudPalette.hud_text(self, Vector2(d.x - 80, d.y - BAR - 24), next + "   " + count, 18, HudPalette.LIGHT_2, HudPalette.LABEL, 2, false)
+	HudPalette.hud_text(self, Vector2(d.x - 80, d.y - BAR - 24), next + "    " + count, 22, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)
 
 
 ## Static over the call: flicker bars, reseeded at 30 Hz.
