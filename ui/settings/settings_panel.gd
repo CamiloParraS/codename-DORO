@@ -160,8 +160,8 @@ class SettingCtl extends Control:
 			draw_rect(track, Color(ink, 0.25))
 			draw_rect(Rect2(track.position, Vector2(track.size.x * inverse_lerp(range_.x, range_.y, v), track.size.y)), ink)
 			var pct := str(roundi(inverse_lerp(range_.x, range_.y, v) * 100.0))
-			var f := HudPalette.tracked(HudPalette.DISPLAY, 30, 0.04)
-			draw_string(f, Vector2(size.x - 70, size.y / 2 + 11), pct, HORIZONTAL_ALIGNMENT_RIGHT, 70, 30, ink)
+			var pf := HudPalette.tracked(HudPalette.DISPLAY, 30, 0.04)
+			draw_string(pf, Vector2(size.x - 70, size.y / 2 + 11), pct, HORIZONTAL_ALIGNMENT_RIGHT, 70, 30, ink)
 			return
 		var f := HudPalette.tracked(HudPalette.DISPLAY, 26, 0.12)
 		var x := size.x

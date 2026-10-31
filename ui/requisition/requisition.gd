@@ -17,6 +17,15 @@ const ROW_H := 112.0
 const BOARD := Vector2(80, 230)
 const CELL := Vector2(122, 92)
 const WIPE_SECS := 0.3
+## The in-game gear icons (small, in the rank cells) and their large copies (the drawing panel), by upgrade.
+const GEAR_ICONS := {
+	scanner = preload("res://assets/ui/icons/scanner.svg"), magazines = preload("res://assets/ui/icons/magazine.svg"),
+	fultons = preload("res://assets/ui/icons/balloon.svg"), darts = preload("res://assets/ui/icons/tranq.svg"),
+}
+const BIG_ICONS := {
+	scanner = preload("res://assets/ui/icons/req_scanner.svg"), magazines = preload("res://assets/ui/icons/req_magazine.svg"),
+	fultons = preload("res://assets/ui/icons/req_balloon.svg"), darts = preload("res://assets/ui/icons/req_tranq.svg"),
+}
 
 var row := 0  # 0-3 the upgrades in Requisition.UPGRADES order, 4 CONTINUE
 var _age := 0.0  # since the picked row changed (real time)
@@ -207,7 +216,8 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 		var value: int = Requisition.BASE[u.stat] + u.step * (c + 1)
 		if c < bought:  # owned
 			draw_rect(cell, DARK)
-			HudPalette.hud_text(self, cell.get_center() + Vector2(0, 10), str(value), 40, HudPalette.LIGHT, _f(40, 0.02), 1, false)
+			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), HudPalette.LIGHT, INF)
+			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 14), str(value), 38, HudPalette.LIGHT, _f(38, 0.02), 2, false)
 		elif c == bought:  # next: white with its cost under it, dashed when out of reach
 			var poor: bool = g.points < u.price
 			draw_rect(cell, SHEET)
@@ -217,11 +227,13 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 				draw_rect(cell, DARK, false, 3.0)
 			if on and not poor:
 				draw_rect(cell.grow(7), RED, false, 4.0)
-			HudPalette.hud_text(self, cell.get_center() + Vector2(0, 4), str(value), 40, MUTED if poor else DARK, _f(40, 0.02), 1, false)
+			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 8), Vector2(44, 34)), MUTED if poor else DARK, INF)
+			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 8), str(value), 38, MUTED if poor else DARK, _f(38, 0.02), 2, false)
 			HudPalette.hud_text(self, Vector2(cell.position.x + 10, cell.end.y - 8), tr("ui.req.price").format({n = u.price}).to_upper(), 16, RED, _f(18, 0.1), 0, false)
 		else:  # far
 			_dashed(cell, Color(DARK, 0.3))
-			HudPalette.hud_text(self, cell.get_center() + Vector2(0, 10), str(value), 40, Color(DARK, 0.3), _f(40, 0.02), 1, false)
+			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), Color(DARK, 0.3), INF)
+			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 14), str(value), 38, Color(DARK, 0.3), _f(38, 0.02), 2, false)
 
 
 func _dashed(r: Rect2, col: Color) -> void:
@@ -247,7 +259,7 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	draw_rect(Rect2(art.position + Vector2(0, art.size.y), Vector2(art.size.x, 2)), DARK)
 	var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0  # the icon wipes in over 7 steps
 	var sway := Vector2(floorf(sin(Time.get_ticks_msec() / 1500.0) * 4.0), 0.0)  # a very slow 4 px sway
-	_icon(id, art.get_center() + sway, 1.0, DARK, art.position.x + art.size.x * wipe + 10.0)
+	_icon(id, art.get_center() + sway, g, DARK, art.position.x + art.size.x * wipe + 10.0)
 	var left: int = u.buys - g.bought.get(id, 0)
 	var eff := tr("ui.upgrade.%s.effect" % id).to_upper()
 	HudPalette.hud_text(self, r.position + Vector2(30, 520), eff, 24, DARK, _f(24, 0.16), 0, false)
@@ -262,33 +274,36 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else MUTED, _f(28, 0.2), 1, false)
 
 
-## A flat pictogram of the upgrade about 350 px wide, drawn only left of `clip_x` (the wipe).
-func _icon(id: String, c: Vector2, s: float, col: Color, clip_x: float) -> void:
-	var rects: Array[Rect2] = []
-	var circles: Array = []  # [center, radius]
-	var strokes: Array = []    # [from, to, width]
-	match id:
-		"scanner":
-			rects = [Rect2(-120, -60, 150, 120), Rect2(40, -30, 30, 60), Rect2(90, -50, 14, 100), Rect2(120, -70, 14, 140)]
-		"magazines":
-			rects = [Rect2(-110, -70, 70, 140), Rect2(-30, -70, 70, 140), Rect2(50, -70, 70, 140)]
-			strokes = [[Vector2(-110, -30), Vector2(-40, -30), 4.0], [Vector2(-30, -30), Vector2(40, -30), 4.0], [Vector2(50, -30), Vector2(120, -30), 4.0]]
-		"fultons":
-			circles = [[Vector2(0, -60), 80.0]]
-			strokes = [[Vector2(0, 20), Vector2(0, 80), 5.0]]
-			rects = [Rect2(-30, 80, 60, 50)]
-		"darts":
-			for i in 3:
-				strokes.append([Vector2(-130 + i * 10, -70 + i * 70), Vector2(100 + i * 10, -70 + i * 70), 10.0])
-				circles.append([Vector2(120 + i * 10, -70 + i * 70), 14.0])
-	for r in rects:
-		var x0 := c.x + r.position.x * s
-		var w := minf(r.size.x * s, clip_x - x0)
-		if w > 0.0:
-			draw_rect(Rect2(Vector2(x0, c.y + r.position.y * s), Vector2(w, r.size.y * s)), col)
-	for ci: Array in circles:
-		if c.x + ci[0].x * s < clip_x:
-			draw_circle(c + ci[0] * s, ci[1] * s, col)
-	for l: Array in strokes:
-		if c.x + l[0].x * s < clip_x:
-			draw_line(c + l[0] * s, c + l[1] * s, col, l[2])
+## `tex` fitted into `box` (centred, aspect kept), drawn only left of `clip_x` (the wipe; INF for none).
+func _icon_in(tex: Texture2D, box: Rect2, col: Color, clip_x: float, upscale := false) -> void:
+	var sc := minf(box.size.x / tex.get_width(), box.size.y / tex.get_height())
+	if not upscale:
+		sc = minf(sc, 1.0)
+	var sz := tex.get_size() * sc
+	var at := box.position + (box.size - sz) / 2.0
+	var w := minf(sz.x, clip_x - at.x)
+	if w <= 0.0:
+		return
+	draw_texture_rect_region(tex, Rect2(at, Vector2(w, sz.y)), Rect2(Vector2.ZERO, tex.get_size() * Vector2(w / sz.x, 1.0)), col)
+
+
+## The picked upgrade's gear icon at its drawn size, with what the upgrade adds under it: a pip for each one
+## owned (solid) and a red outlined pip for each the next buy brings, and "+N" in the corner. Clipped by the wipe.
+func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) -> void:
+	var u: Dictionary = Requisition.UPGRADES[id]
+	var have: int = g.value(id)
+	var left: int = u.buys - g.bought.get(id, 0)
+	_icon_in(BIG_ICONS[id], Rect2(c + Vector2(-200, -150), Vector2(400, 250)), col, clip_x, true)
+	var more: int = u.step if left > 0 else 0
+	var step := 30.0
+	var x0 := c.x - (have + more) * step / 2.0 + 4.0
+	for n in have + more:
+		var pip := Rect2(x0 + n * step, c.y + 120, 22, 22)
+		if pip.end.x > clip_x:
+			break
+		if n < have:
+			draw_rect(pip, col)
+		else:
+			draw_rect(pip, RED, false, 3.0)
+	if more > 0 and c.x + 280 < clip_x:
+		HudPalette.hud_text(self, c + Vector2(300, -110), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)

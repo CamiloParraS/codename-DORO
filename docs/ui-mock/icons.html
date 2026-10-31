@@ -1,0 +1,51 @@
+<!doctype html><meta charset="utf-8" /><title>icons</title>
+<body
+    style="margin: 0; background: #8a8d8f; font: 12px sans-serif; color: #fff"
+>
+    <div
+        id="a"
+        style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding: 24px;
+            align-items: end;
+        "
+    ></div>
+    <div
+        style="
+            background: #111;
+            padding: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: end;
+        "
+        id="b"
+    ></div>
+    <script>
+        const n = ["rifle", "tranq", "scanner", "magazine", "balloon"];
+        const m = [
+            "m_continue",
+            "m_new",
+            "m_load",
+            "m_missions",
+            "m_free",
+            "m_settings",
+            "m_quit",
+            "m_back",
+        ];
+        for (const [host, list, h] of [
+            [a, n, 150],
+            [b, n, 90],
+            [a, m, 64],
+            [b, m, 64],
+        ])
+            for (const k of list) {
+                const i = new Image();
+                i.src = "../../assets/ui/icons/" + k + ".svg";
+                i.style.height = h + "px";
+                host.append(i);
+            }
+    </script>
+</body>

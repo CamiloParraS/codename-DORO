@@ -313,8 +313,8 @@ func _draw() -> void:
 		HudPalette.hud_label(self, c + Vector2(0, 7), tr("radio.no_voiceprints"), 17, HudPalette.LIGHT_3, 0.14, HudPalette.LABEL, 1)
 		return
 	var grow := floorf(clampf(_age / RING_IN_SECS, 0.0, 1.0) * 6.0) / 6.0  # six hard steps from 88% to full size
-	var scale := 0.88 + 0.12 * grow
-	draw_set_transform(c * k * (1.0 - scale), 0.0, Vector2(k, k) * scale)
+	var pop := 0.88 + 0.12 * grow
+	draw_set_transform(c * k * (1.0 - pop), 0.0, Vector2(k, k) * pop)
 	modulate.a = grow
 	var hover := _hover()
 	var step := TAU / n
@@ -411,12 +411,12 @@ func _draw_referents(k: float) -> void:
 			spots.append([g.global_position, 1.8, key == "hot", menu.shown(String(g.name))])
 	if r.place_at != Vector3.INF:
 		spots.append([r.place_at, 2.0, r.place_hot, r.place])
-	var blink := int(Time.get_ticks_msec() / 200) % 2 == 0
+	var blink := int(Time.get_ticks_msec() / 200.0) % 2 == 0
 	var radar := RadarModel.rect(size / k)  # the Radar lives on the HUD's design canvas
 	var origin := RadarModel.flat(_operative.global_position)
 	var jammed := RadarModel.jammed(HudModel.phase(AlertChain.area)[0])
 	for s in spots:
-		var col := Color(HudPalette.LIGHT, (1.0 if int(Time.get_ticks_msec() / 600) % 2 == 0 else 0.55) if s[2] else 0.5)  # hot brackets blink at 1.2 s
+		var col := Color(HudPalette.LIGHT, (1.0 if int(Time.get_ticks_msec() / 600.0) % 2 == 0 else 0.55) if s[2] else 0.5)  # hot brackets blink at 1.2 s
 		var feet: Vector3 = s[0]
 		if cam.is_position_behind(feet) or not Rect2(Vector2.ZERO, size).grow(-EDGE).has_point(cam.unproject_position(feet)):
 			_edge_pointer(cam, feet, col, k)

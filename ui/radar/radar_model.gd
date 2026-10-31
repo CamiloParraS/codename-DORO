@@ -36,7 +36,7 @@ static func jammed(phase: String) -> bool:
 
 ## A guard with a pending Radio call flashes red on the Radar (150 ms on/off); cameras have no blip.
 static func call_flash(calling: bool, ticks_msec: int) -> bool:
-	return calling and (ticks_msec / 150) % 2 == 0
+	return calling and int(ticks_msec / 150.0) % 2 == 0
 
 
 const PING_TIME := 0.5  # s a noise ring takes to spread out to its range

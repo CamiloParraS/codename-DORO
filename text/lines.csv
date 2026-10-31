@@ -304,6 +304,7 @@ ui.hud.call,CALL >>,LLAMADA >>
 ui.hud.vp,VP,VOZ
 ui.hud.operative,OPERATIVE,OPERATIVO
 ui.hud.jammed,JAMMED,BLOQUEADO
+ui.hud.life,LIFE,VIDA
 ui.gear.tranq,TRANQ PISTOL,PISTOLA TRANQ.
 ui.gear.rifle,RIFLE,FUSIL
 ui.gear.scanner,SCANNER,ESCÁNER
@@ -324,6 +325,15 @@ ui.menu.mission_select,MISSION SELECT,SELECCIÓN DE MISIÓN
 ui.menu.free_mode,FREE MODE,MODO LIBRE
 ui.menu.settings,SETTINGS,AJUSTES
 ui.menu.quit,QUIT,SALIR
+ui.hint.select,Select,Elegir
+ui.hint.back,Back,Volver
+ui.menu.d.continue,Resume the latest unfinished slot,Retoma la última partida sin terminar
+ui.menu.d.new_game,Start over in an empty slot,Empieza de cero en una ranura vacía
+ui.menu.d.load,Pick up a saved game,Continúa una partida guardada
+ui.menu.d.mission_select,Replay a cleared Mission,Repite una misión superada
+ui.menu.d.free_mode,Practise in an Area with a Preset,Practica en un Área con un ajuste preestablecido
+ui.menu.d.settings,Language; sound; video; controls,Idioma; sonido; vídeo; controles
+ui.menu.d.quit,Close the game,Cierra el juego
 ui.menu.press_any,Press any key,Pulsa cualquier tecla
 ui.menu.protocol,Aigis Protocol,Protocolo Aigis
 ui.menu.recruits,Recruits,Reclutas

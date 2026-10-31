@@ -3,6 +3,10 @@
 ## the guards' and cameras' last reasons, and Glaukopis's last judgement (group "radio").
 extends CanvasLayer
 
+const FS := 22  # design px, on the 1080 canvas every screen shares
+const RIGHT_X := 1000.0  # design px
+
+var _root := Control.new()  # scaled from the 1080 design canvas, like the other full-screen pages
 var _left := Label.new()
 var _right := Label.new()
 
@@ -12,25 +16,40 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 	var bg := ColorRect.new()
-	bg.color = Color(0.02, 0.03, 0.04, 0.86)
+	bg.color = Color(HudPalette.DARK_INK, 0.92)
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
+	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_root)
 	var rule := ColorRect.new()  # the cyan header rule: this is Aigis's view
 	rule.color = HudPalette.CYAN
 	rule.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	rule.offset_bottom = 2
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(rule)
+	var mono := SystemFont.new()  # monospace so the columns line up; no face is shipped for it
+	mono.font_names = PackedStringArray(["Cascadia Mono", "Consolas", "Menlo", "DejaVu Sans Mono"])
+	mono.allow_system_fallback = true
 	for l: Label in [_left, _right]:
-		l.add_theme_font_override("font", HudPalette.BODY)  # monospace: the columns line up
-		l.add_theme_font_size_override("font_size", HudPalette.BODY_SIZE)
+		l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		l.add_theme_font_override("font", mono)
+		l.add_theme_font_size_override("font_size", FS)
 		l.add_theme_color_override("font_color", HudPalette.LIGHT)
-		l.add_theme_constant_override("line_spacing", -2)
+		l.add_theme_constant_override("line_spacing", 2)
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		add_child(l)
-	_left.position = Vector2(8, 6)
-	_right.position = Vector2(330, 6)
+		_root.add_child(l)
+	_left.position = Vector2(32, 20)
+	_right.position = Vector2(RIGHT_X, 20)
+	get_viewport().size_changed.connect(_fit)
+	_fit()
+
+
+func _fit() -> void:
+	var d := get_viewport().get_visible_rect().size
+	var k := d.y / HudPalette.DESIGN_H
+	_root.scale = Vector2(k, k)
+	_root.size = d / k
 
 
 func _input(e: InputEvent) -> void:

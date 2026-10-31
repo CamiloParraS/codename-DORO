@@ -160,4 +160,4 @@ func _still(d: Vector2) -> void:
 	var k := clampf(_t / STILL_SECONDS, 0.0, 1.0)
 	var r := Rect2(Vector2(-40.0, -20.0) * k, d * (1.0 + 0.15 * k))
 	draw_texture_rect(tex, r, true, HudPalette.STILL)
-	HudPalette.hud_text(self, Vector2(16, d.y - 16), s.credit, 16, HudPalette.EMPTY, HudPalette.FIGURE_MED, 0, false)
+	HudPalette.hud_text(self, Vector2(16, d.y - 16), s.credit, 16, HudPalette.LIGHT_3, HudPalette.FIGURE_MED, 0, false)

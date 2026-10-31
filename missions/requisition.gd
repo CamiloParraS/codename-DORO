@@ -5,12 +5,12 @@
 class_name Requisition
 extends RefCounted
 
-## id: {name, effect, key in the kit, base value, step per buy, buys, price}. 23 points buy all.
+## id: {name, effect, key in the kit, base value, step per buy, buys, price}. 13 points buy all.
 const UPGRADES := {
-	scanner = {name = "SCANNER CELLS", effect = "SCANNER CHARGES", stat = "scanner", step = 1, buys = 2, price = 3},
-	magazines = {name = "MAGAZINE POUCH", effect = "MAGAZINES", stat = "magazines", step = 2, buys = 2, price = 2},
-	fultons = {name = "SPARE BALLOON", effect = "FULTON BALLOONS", stat = "fultons", step = 1, buys = 2, price = 4},
-	darts = {name = "DART RESERVE", effect = "TRANQ DARTS", stat = "darts", step = 4, buys = 1, price = 5},
+	scanner = {name = "SCANNER CELLS", effect = "SCANNER CHARGES", stat = "scanner", step = 1, buys = 2, price = 2},
+	magazines = {name = "MAGAZINE POUCH", effect = "MAGAZINES", stat = "magazines", step = 2, buys = 2, price = 1},
+	fultons = {name = "SPARE BALLOON", effect = "FULTON BALLOONS", stat = "fultons", step = 1, buys = 2, price = 2},
+	darts = {name = "DART RESERVE", effect = "TRANQ DARTS", stat = "darts", step = 4, buys = 1, price = 3},
 }
 ## By Mission index (the Core has none): {id, name, effect, the kit key and value it sets}.
 const ITEMS := [

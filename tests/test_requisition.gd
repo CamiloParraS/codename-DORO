@@ -56,31 +56,31 @@ func test_the_core_unlocks_nothing_and_opens_no_screen() -> void:
 
 func test_the_screen_is_due_after_a_first_clear_only_with_something_to_buy() -> void:
 	var r := Requisition.new()
-	r.settle(0, 1, false, true)
+	r.settle(0, 0, false, true)
 	assert_true(r.due)
-	assert_false(r.worth_opening(), "1 point buys nothing")
+	assert_false(r.worth_opening(), "no points buy nothing")
 	r.settle(1, 1, false, true)
-	assert_true(r.worth_opening(), "2 points buy a Magazine pouch")
+	assert_true(r.worth_opening(), "1 point buys a Magazine pouch")
 
 
 func test_purchases_fail_below_the_price_or_at_the_cap() -> void:
 	var r := Requisition.new()
-	r.points = 2
-	assert_false(r.buy("scanner"), "3 needed")
-	assert_eq(r.points, 2)
+	r.points = 1
+	assert_false(r.buy("scanner"), "2 needed")
+	assert_eq(r.points, 1)
 	r.points = 100
 	assert_true(r.buy("darts"))
 	assert_false(r.buy("darts"), "one buy only")
 	assert_true(r.buy("magazines"))
 	assert_true(r.buy("magazines"))
 	assert_false(r.buy("magazines"), "capped at 8")
-	assert_eq(r.points, 100 - 5 - 2 - 2)
+	assert_eq(r.points, 100 - 3 - 1 - 1)
 	assert_false(r.buy("nonsense"))
 
 
-func test_everything_costs_23() -> void:
+func test_everything_costs_13() -> void:
 	var r := Requisition.new()
-	r.points = 23
+	r.points = 13
 	for id: String in Requisition.UPGRADES:
 		while r.buy(id):
 			pass
@@ -146,7 +146,7 @@ func test_a_continue_restores_the_checkpoint_recruits_and_abort_banks_none() -> 
 
 func test_the_operative_wears_its_kit() -> void:
 	var r := Requisition.new()
-	r.points = 23
+	r.points = 13
 	for id: String in Requisition.UPGRADES:
 		while r.buy(id):
 			pass
@@ -181,7 +181,7 @@ func test_the_screen_buys_the_picked_row_and_continue_closes_it() -> void:
 	var was := [Campaign.gear, Campaign.slot]
 	Campaign.slot = -1  # nothing written
 	Campaign.gear = Requisition.new()
-	Campaign.gear.points = 3
+	Campaign.gear.points = 2
 	Campaign.gear.signed = 2
 	var s: Control = load("res://ui/requisition/requisition.gd").new()
 	assert_contains(s.lines(), "RECRUITS SIGNED: 2")
