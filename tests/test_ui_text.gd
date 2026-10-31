@@ -13,12 +13,16 @@ func setup() -> void:
 	TranslationServer.set_locale("en")
 
 
+const COLUMN := 308.0  # design px: the HUD's live call text column (hud.gd: CALL_W less the portrait and padding)
+const FS := 24
+
+
 func _w(s: String) -> float:
-	return HudPalette.BODY.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.BODY_SIZE).x
+	return HudPalette.FIGURE_MED.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, FS).x
 
 
 func test_wrap_breaks_between_words_inside_the_width() -> void:
-	var lines := HudPalette.wrap("aaa bbb ccc", _w("aaa bbb"))
+	var lines := HudPalette.wrap("aaa bbb ccc", _w("aaa bbb"), HudPalette.FIGURE_MED, FS)
 	assert_eq(Array(lines), ["aaa bbb", "ccc"])
 
 
@@ -28,7 +32,7 @@ func test_a_line_that_fits_stays_whole() -> void:
 
 
 func test_a_word_wider_than_the_width_gets_its_own_line() -> void:
-	var lines := HudPalette.wrap("a supercalifragilistic b", _w("a sup"))
+	var lines := HudPalette.wrap("a supercalifragilistic b", _w("a sup"), HudPalette.FIGURE_MED, FS)
 	assert_eq(Array(lines), ["a", "supercalifragilistic", "b"])
 
 
@@ -36,13 +40,22 @@ func test_explicit_newlines_start_a_new_line() -> void:
 	assert_eq(Array(HudPalette.wrap("one\ntwo", 400)), ["one", "two"])
 
 
-func test_the_longest_hint_fits_the_live_call_column_in_both_languages() -> void:
+func test_every_hint_fits_the_live_call_card_in_both_languages() -> void:
+	var keys := []
+	var csv := FileAccess.open("res://text/lines.csv", FileAccess.READ)
+	while not csv.eof_reached():
+		var row := csv.get_csv_line()
+		if row[0].begins_with("hint.") and row[0] != "hint.none":
+			keys.append(row[0])
+	assert_true(keys.size() > 20, "found the hint keys")
+	var bad := []
 	for loc in ["en", "es"]:
 		TranslationServer.set_locale(loc)
-		var lines := HudPalette.wrap(tr("hint.m1.s2.2"), HudPalette.COLUMN)
-		assert_true(lines.size() <= 4, "%s: %d lines" % [loc, lines.size()])
-		for l in lines:
-			assert_true(_w(l) <= HudPalette.COLUMN, "%s overflows: %s" % [loc, l])
+		for k in keys:
+			var lines := HudPalette.wrap(tr(k), COLUMN)
+			if lines.size() > 4 or Array(lines).any(func(l: String) -> bool: return _w(l) > COLUMN):
+				bad.append("%s %s (%d lines)" % [loc, k, lines.size()])
+	assert_true(bad.is_empty(), "cut off by the live call card: " + ", ".join(bad))
 	TranslationServer.set_locale("en")
 
 
