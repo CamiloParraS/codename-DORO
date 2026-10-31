@@ -137,7 +137,7 @@ const OBJECTIVES := {IntelGarage = {at = [54, 68, 0], watch = "answer", guards =
 ## 102 degrees off both facings, outside the 60 degree side cones.
 const EAVESDROP := {EavesdropSpot = [74.5, 44, 3]}
 const START_FACING := 45
-## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## Set dressing (tools/area_dressing.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, the Crawlspace mouths, Ladders and ramp landings.
 const DRESS := [
 	# motor pool: fuel store by the fuel hut, stock by the start, floodlights on the south rail

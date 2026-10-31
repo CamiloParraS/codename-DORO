@@ -1,6 +1,8 @@
 ## The visual pass's fixed screenshots: loads an Area and saves one PNG per SHOTS camera to user://shots/,
 ## under psx_look and the Area's mood. Needs a window (not --headless):
 ##   godot --path . --script tools/shots.gd -- harbour
+## `-- <area> reach` instead shoots every reach spot the Area's last build wrote (user://reach/<area>.json), each
+## from a few metres back along the Operative's path: what the player sees on arriving.
 extends SceneTree
 
 ## [area scene, {shot: [camera position, look-at point]}] in world metres.
@@ -78,8 +80,17 @@ func _initialize() -> void:
 
 
 func _shoot() -> void:
-	var area: String = OS.get_cmdline_user_args()[0] if OS.get_cmdline_user_args().size() else "harbour"
-	var scene: Node = load(SHOTS[area][0]).instantiate()
+	var args := OS.get_cmdline_user_args()
+	var area: String = args[0] if args.size() else "harbour"
+	var entry: Array = SHOTS.get(area, [])
+	if args.size() > 1 and args[1] == "reach":
+		entry = _reach_shots(area)
+		area += "_reach"
+	if entry.is_empty():
+		push_error("no shots for %s" % area)
+		quit(1)
+		return
+	var scene: Node = load(entry[0]).instantiate()
 	root.add_child(scene)
 	if area == "menu":
 		scene.get_node("HudLayer").queue_free()
@@ -87,7 +98,7 @@ func _shoot() -> void:
 	cam.fov = 70
 	scene.add_child(cam)
 	DirAccess.make_dir_recursive_absolute("user://shots")
-	var shots: Dictionary = SHOTS[area][1]
+	var shots: Dictionary = entry[1]
 	for n in shots:
 		cam.look_at_from_position(shots[n][0], shots[n][1])
 		cam.make_current()
@@ -96,3 +107,17 @@ func _shoot() -> void:
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path), " at ", Engine.get_frames_per_second(), " fps")
 	quit()
+
+
+## [scene, {spot: [camera, look-at]}] from the build's user://reach/<area>.json, or empty if it never built.
+func _reach_shots(area: String) -> Array:
+	var path := "user://reach/%s.json" % area
+	if not FileAccess.file_exists(path):
+		push_error("%s is missing: rebuild with tools/build_%s.gd first" % [path, area])
+		return []
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var shots := {}
+	for n: String in data.shots:
+		var s: Array = data.shots[n]
+		shots[n] = [Vector3(s[0][0], s[0][1], s[0][2]), Vector3(s[1][0], s[1][1], s[1][2])]
+	return [data.scene, shots]

@@ -216,7 +216,7 @@ const CROSSINGS := [
 	["X13", 3, [[20, 42.6, 0], [11, 73, 0]]],
 ]
 
-## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## Set dressing (tools/area_dressing.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
 	# the freighter's hull and pointed bow round the Hull, Bow and BowTip boxes (they keep the collision)

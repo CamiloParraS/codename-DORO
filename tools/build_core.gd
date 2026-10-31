@@ -142,9 +142,8 @@ func _build() -> void:
 
 
 ## The Harbour's Clifftop slab holds the Core's rooms; the sky zone rebuilds it in pieces clear of them.
+## A zones build without the sky has no pieces, and drops the slab: it only times a part.
 func _clifftop_clear_of_the_core() -> void:
-	if not _zones.has("sky"):
-		return
 	var bd: Node3D = _root.get_node("Backdrop")
 	var old: MeshInstance3D = bd.get_node("Clifftop")
 	var material: Material = (old.mesh as BoxMesh).material

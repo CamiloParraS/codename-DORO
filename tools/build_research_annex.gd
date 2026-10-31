@@ -151,7 +151,7 @@ const OBJECTIVES := {IntelOffice = {at = [57, 62, 0], watch = "answer", guards =
 ## Where to record the security room's pair: on the strip under the room's north wall, 4.3 m from each seat.
 const EAVESDROP := {EavesdropSpot = [50, 16.8, 0]}
 const START_FACING := 45
-## Set dressing (tools/area_builder.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
+## Set dressing (tools/area_dressing.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, the Crawlspace mouths and stair feet.
 const DRESS := [
 	# corridor, passage and room lights (the roof's underside is at 4)
