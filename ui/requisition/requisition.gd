@@ -149,13 +149,16 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, d), PAPER)
-	PixelKit.wash(self, Rect2(0, 0, d.x, 230), Color(DARK, 0.1), 0.45, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground
-	PixelKit.wash(self, Rect2(0, d.y - 360, d.x, 240), Color(DARK, 0.1), 0.0, 0.5, false, 12.0)
+	PixelKit.wash(self, Rect2(0, 0, d.x, 200), Color(DARK, 0.06), 0.1, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground, kept faint
+	PixelKit.wash(self, Rect2(0, d.y - 340, d.x, 220), Color(DARK, 0.06), 0.0, 0.12, false, 12.0)
+	var ids: Array = Requisition.UPGRADES.keys()
+	if row < ids.size():  # the picked gear, huge and faint behind everything, wiping in as the pick changes
+		var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0
+		_icon_in(BIG_ICONS[ids[row]], Rect2(560, 190, 1160, 770), Color(DARK, 0.065), 560.0 + 1160.0 * wipe, true)
 	var g := Campaign.gear
 	_title()
 	_ranks(g)
 	_points(d, g.points)
-	var ids: Array = Requisition.UPGRADES.keys()
 	for i in ids.size():
 		_upgrade_row(i, ids[i], g)
 	var y := BOARD.y + ids.size() * ROW_H + 36.0
@@ -275,7 +278,7 @@ func _ghost(r: Rect2, col: Color, tone: float) -> void:
 
 ## The drawing panel: the picked upgrade's name, a flat icon, effect and the buy bar.
 func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
-	var r := Rect2(d.x - 80 - 700, 150, 700, 790)
+	var r := Rect2(d.x - 80 - 700, 150, 700, 560)
 	r = PixelKit.snap(r)
 	PixelKit.cut_fill(self, r, Color(SHEET, 0.93), 6)
 	PixelKit.frame(self, r, DARK, 6)
@@ -284,17 +287,16 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	var id: String = ids[row]
 	var u: Dictionary = Requisition.UPGRADES[id]
 	HudPalette.hud_text(self, r.position + Vector2(30, 80), tr("ui.upgrade.%s" % id).to_upper(), 54, DARK, _f(54, 0.04), 0, false)
-	var art := Rect2(r.position + Vector2(30, 130), Vector2(r.size.x - 60, 330))
+	var art := Rect2(r.position + Vector2(30, 130), Vector2(r.size.x - 60, 150))
 	draw_rect(Rect2(art.position, Vector2(art.size.x, 2)), DARK)
 	draw_rect(Rect2(art.position + Vector2(0, art.size.y), Vector2(art.size.x, 2)), DARK)
-	var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0  # the icon wipes in over 7 steps
-	var sway := Vector2(floorf(sin(Time.get_ticks_msec() / 1500.0) * 4.0), 0.0)  # a very slow 4 px sway
-	_icon(id, art.get_center() + sway, g, DARK, art.position.x + art.size.x * wipe + 10.0)
+	var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0  # the pips wipe in over 7 steps
+	_icon(id, art.get_center() - Vector2(0, 100), g, DARK, art.position.x + art.size.x * wipe + 10.0)
 	var left: int = u.buys - g.bought.get(id, 0)
 	var eff := tr("ui.upgrade.%s.effect" % id).to_upper()
-	HudPalette.hud_text(self, r.position + Vector2(30, 520), eff, 24, DARK, _f(24, 0.16), 0, false)
+	HudPalette.hud_text(self, r.position + Vector2(30, 340), eff, 24, DARK, _f(24, 0.16), 0, false)
 	var v := str(g.value(id)) + ("  >  %d" % (g.value(id) + u.step) if left > 0 else "")
-	HudPalette.hud_text(self, r.position + Vector2(r.size.x - 30, 530), v, 56, DARK, _f(56, 0.02), 2, false)
+	HudPalette.hud_text(self, r.position + Vector2(r.size.x - 30, 350), v, 56, DARK, _f(56, 0.02), 2, false)
 	var can: bool = g.can_buy(id)
 	var bar := Rect2(r.position + Vector2(30, r.size.y - 94), Vector2(r.size.x - 60, 68))
 	bar = PixelKit.snap(bar)
@@ -318,13 +320,11 @@ func _icon_in(tex: Texture2D, box: Rect2, col: Color, clip_x: float, upscale := 
 	draw_texture_rect_region(tex, Rect2(at, Vector2(w, sz.y)), Rect2(Vector2.ZERO, tex.get_size() * Vector2(w / sz.x, 1.0)), col)
 
 
-## The picked upgrade's gear icon at its drawn size, with what the upgrade adds under it: a pip for each one
-## owned (solid) and a red outlined pip for each the next buy brings, and "+N" in the corner. Clipped by the wipe.
+## What the picked upgrade adds: a pip for each one owned (solid) and a red outlined pip for each the next buy brings, and "+N" in the corner. Clipped by the wipe.
 func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) -> void:
 	var u: Dictionary = Requisition.UPGRADES[id]
 	var have: int = g.value(id)
 	var left: int = u.buys - g.bought.get(id, 0)
-	_icon_in(BIG_ICONS[id], Rect2(c + Vector2(-200, -150), Vector2(400, 250)), col, clip_x, true)
 	var more: int = u.step if left > 0 else 0
 	var step := 30.0
 	var x0 := c.x - (have + more) * step / 2.0 + 4.0
@@ -336,8 +336,8 @@ func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) ->
 			draw_rect(pip, col)
 		else:
 			PixelKit.frame(self, pip, RED, 0)
-	if more > 0 and c.x + 280 < clip_x:
-		HudPalette.hud_text(self, c + Vector2(300, -110), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
+	if more > 0 and c.x + 250 < clip_x:
+		HudPalette.hud_text(self, c + Vector2(290, 85), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
 
 
 ## A cost in Recruits, singular for one.
