@@ -22,6 +22,7 @@ const BACKDROP_DIM := Color(0.4, 0.4, 0.45)  # the backdrop under a menu page
 const SMOKE_HI := Color("16191bb8")  # the prompt's action disc
 const HAIRLINE := Color("f2f4f342")
 const SAND := Color("d4bc8a")  # the Operative's own readouts: brackets, gear names, life, the Radar's arrow
+const GOLD := Color("e6c15a")  # a slight hue on the Radar's objective
 const SAND_DIM := Color("d4bc8a80")
 const MINT := Color("8fd9c0")  # the live call card and the Codec
 const CYAN := Color("a9d6dc")  # Aigis, and nothing else

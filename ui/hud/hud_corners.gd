@@ -13,7 +13,6 @@ const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
 const MINT := HudPalette.MINT  # the live call card's tint
 const WEAPON_FADE := 18  # dither pixels in the weapon card's fade, longer than the other plates'
 const WEAPON_INSET := 76.0  # px the weapon card's content starts in from its edge
-const CARD_INSET := 46.0  # px a gear card's content starts in from its edge
 const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corners are cut by
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
@@ -189,7 +188,7 @@ func _radar(d: Vector2) -> void:
 			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
 			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
-			HudPalette.px_poly(c, PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT)
+			HudPalette.px_poly(c, PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))  # white with a slight gold hue
 	var f := RadarModel.facing(_operative.look_basis)
 	var arrow := PackedVector2Array([o + f * 17, o + f.rotated(2.55) * 14, o - f * 5, o + f.rotated(-2.55) * 14])
 	var rim := Geometry2D.offset_polygon(arrow, 2.5, Geometry2D.JOIN_MITER)  # a dark pixel rim round the sand arrow
@@ -364,12 +363,12 @@ func _gear(d: Vector2) -> void:
 	_canvas.draw_rect(Rect2(track.position, Vector2(track.size.x * clampf(_rounds, 0.0, 1.0), track.size.y)), HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT)
 	var it: Items = _operative.items
 	var ir := _item_rect(d)
-	_card(ir)
-	ir = Rect2(ir.position.x + CARD_INSET, ir.position.y, ir.size.x - CARD_INSET, ir.size.y)
+	_card(ir, WEAPON_FADE)  # the same dithered width as the weapon card
+	ir = Rect2(ir.position.x + WEAPON_INSET, ir.position.y, ir.size.x - WEAPON_INSET, ir.size.y)
 	var live: bool = it.scanning() or _operative.throwing
 	var split := ir.end.x - 108.0  # the item on the left, the Fulton balloons on the right
 	var scanner: bool = it.selected == Items.Kind.SCANNER
-	_sil(&"scanner" if scanner else &"magazine", Vector2(ir.position.x + 50, ir.end.y - 12), 0.68, HudPalette.LIGHT if live else Color(HudPalette.LIGHT, 0.86))
+	_sil(&"scanner" if scanner else &"magazine", Vector2(ir.position.x + 50, ir.end.y - 10), 0.92 if scanner else 0.68, HudPalette.LIGHT if live else Color(HudPalette.LIGHT, 0.86))
 	_card_name(ir.position + Vector2(112, 46), tr("ui.gear.scanner" if scanner else "ui.gear.magazine"), HudPalette.LIGHT)
 	HudPalette.hud_text(_canvas, Vector2(split - 14, ir.end.y - 18), str(it.count()), 34, HudPalette.DMG if it.count() == 0 else HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.04), 2, false)
 	_canvas.draw_line(Vector2(split, ir.position.y + 10), Vector2(split, ir.end.y - 10), Color(HudPalette.LIGHT, 0.25), 1.0)
