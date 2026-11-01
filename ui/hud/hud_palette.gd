@@ -151,8 +151,8 @@ const FADE_W := DITHER_BAND * DITHER_PX  # a plate's dithered edge, which conten
 
 ## A borderless plate: `tint` rising from alpha `a0` at the dithered edge to `a1` at the far one, the dithered edge
 ## (`fade_left`: the left one) crumbling away in an ordered-dither band whose pixels crawl slowly, as if fading out.
-## `cells` widens the dithered edge. `cut` slants two opposite corners (the dithered edge's top and the far edge's bottom) by that many px, on a 45 degree line.
-static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true, cut := 0.0, cells := DITHER_BAND) -> void:
+## `cells` widens the dithered edge. `run` makes the far edge's top slant that many px wide instead of `cut` (a shallower angle; not `fade_left`). `cut` slants two opposite corners (the dithered edge's top and the far edge's bottom) by that many px, on a 45 degree line.
+static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, fade_left := true, cut := 0.0, cells := DITHER_BAND, run := 0.0) -> void:
 	var band := cells * DITHER_PX
 	var body := Rect2(r.position.x + band, r.position.y, r.size.x - band, r.size.y) if fade_left else Rect2(r.position, Vector2(r.size.x - band, r.size.y))
 	var lo := Color(tint, a0)  # the body starts here and the dither pixels are this strong
@@ -162,7 +162,7 @@ static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, f
 		if fade_left:
 			shape = PackedVector2Array([r.position + Vector2(cut, 0), Vector2(r.end.x, r.position.y), r.end - Vector2(cut, 0), Vector2(r.position.x, r.end.y), Vector2(r.position.x, r.position.y + cut)])
 		else:
-			shape = PackedVector2Array([r.position, Vector2(r.end.x - cut, r.position.y), Vector2(r.end.x, r.position.y + cut), r.end, Vector2(r.position.x + cut, r.end.y), Vector2(r.position.x, r.end.y - cut)])
+			shape = PackedVector2Array([r.position, Vector2(r.end.x - (run if run > 0.0 else cut), r.position.y), Vector2(r.end.x, r.position.y + cut), r.end, Vector2(r.position.x + cut, r.end.y), Vector2(r.position.x, r.end.y - cut)])
 	var body_shape := PackedVector2Array([body.position, Vector2(body.end.x, body.position.y), body.end, Vector2(body.position.x, body.end.y)])
 	for poly in Geometry2D.intersect_polygons(shape, body_shape):
 		var cols := PackedColorArray()
@@ -172,7 +172,7 @@ static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, f
 		ci.draw_polygon(poly, cols)
 	var t := int(Time.get_ticks_msec() / 700.0)  # the pattern crawls a cell every 700 ms
 	var w := cells * DITHER_PX
-	var mask := _dither_mask(r.size, cells, fade_left, cut, t & 3)
+	var mask := _dither_mask(r.size, cells, fade_left, cut, t & 3, run)
 	ci.draw_texture_rect_region(mask, Rect2(r.end.x - w if not fade_left else r.position.x, r.position.y, w, r.size.y),
 			Rect2(0, 0, cells, r.size.y / DITHER_PX), lo, false, false)  # no clip_uv: it would pull a part-row back onto the row above
 
@@ -183,8 +183,8 @@ static var _masks := {}  # [size, cells, fade_left, cut, phase] -> CanvasTexture
 ## A plate's dithered band as a texture, one texel per dither pixel (white where it is lit), drawn nearest-filtered
 ## over the band and tinted: the same squares a draw_rect per lit cell gave, in one draw. The crawl repeats every
 ## 4 steps, so each plate shape needs at most 4.
-static func _dither_mask(size: Vector2, cells: int, fade_left: bool, cut: float, phase: int) -> CanvasTexture:
-	var key := [size if cut > 0.0 else Vector2(0, ceilf(size.y / DITHER_PX)), cells, fade_left, cut, phase]
+static func _dither_mask(size: Vector2, cells: int, fade_left: bool, cut: float, phase: int, run := 0.0) -> CanvasTexture:
+	var key := [size if cut > 0.0 else Vector2(0, ceilf(size.y / DITHER_PX)), cells, fade_left, cut, phase, run]
 	if _masks.has(key):
 		return _masks[key]
 	if _masks.size() > 256:  # a plate whose size animates would otherwise grow this without end
@@ -195,7 +195,7 @@ static func _dither_mask(size: Vector2, cells: int, fade_left: bool, cut: float,
 		if fade_left:
 			shape = PackedVector2Array([Vector2(cut, 0), Vector2(r.end.x, 0), r.end - Vector2(cut, 0), Vector2(0, r.end.y), Vector2(0, cut)])
 		else:
-			shape = PackedVector2Array([Vector2.ZERO, Vector2(r.end.x - cut, 0), Vector2(r.end.x, cut), r.end, Vector2(cut, r.end.y), Vector2(0, r.end.y - cut)])
+			shape = PackedVector2Array([Vector2.ZERO, Vector2(r.end.x - (run if run > 0.0 else cut), 0), Vector2(r.end.x, cut), r.end, Vector2(cut, r.end.y), Vector2(0, r.end.y - cut)])
 	var rows := ceili(size.y / DITHER_PX)
 	var img := Image.create_empty(cells, rows, false, Image.FORMAT_RGBA8)
 	for cx in cells:

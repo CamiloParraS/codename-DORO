@@ -92,7 +92,7 @@ func _life(d: Vector2) -> void:
 	var well := Rect2(70, d.y - 70 - rows * px, cols * px, rows * px)
 	var low := life < 0.25
 	var warn := low and int(Time.get_ticks_msec() / 300.0) % 2 == 0
-	HudPalette.plate(c, well.grow_individual(8, 8, HudPalette.FADE_W + 24, 8), HudPalette.GLASS, 0.35, 0.92, false, LIFE_CUT * px + 14.0)
+	HudPalette.plate(c, well.grow_individual(8, 8, HudPalette.FADE_W + 24, 8), HudPalette.GLASS, 0.35, 0.92, false, LIFE_CUT * px + 14.0, HudPalette.DITHER_BAND, HudPalette.FADE_W)  # the top-right slant runs the whole dithered band: ~30 degrees
 	var full := smoothstep(0.96, 1.0, life)  # at full life the fill takes a faint green hue
 	var ink := HudPalette.LIGHT.lerp(HudPalette.FULL_GREEN, 0.16 * full)
 	var edge := Color(HudPalette.LIGHT, 0.7)
