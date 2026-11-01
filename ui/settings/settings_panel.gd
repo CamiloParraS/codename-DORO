@@ -48,6 +48,7 @@ func _ready() -> void:
 	_toggle("ui.settings.invert_y", "inv", "invert_y")
 	_toggle("ui.settings.fullscreen", "fs", "fullscreen")
 	_toggle("ui.settings.reduce_motion", "motion", "reduce_motion")
+	_fps_row()
 	var back := _list.add_row("ui.back", func() -> void:
 		Mixer.click()
 		closed.emit()
@@ -139,6 +140,25 @@ func _toggle(text: String, icon: String, key: String) -> void:
 	b.gui_input.connect(func(e: InputEvent) -> void:
 		if e.is_action_pressed("ui_left") or e.is_action_pressed("ui_right"):
 			flip.call(e.is_action_pressed("ui_right"))
+			Mixer.play(&"tick")
+			b.accept_event())
+
+
+## The max-FPS row: 60 / 120 / 144 pills; left/right step, press cycles.
+func _fps_row() -> void:
+	var ctl := SettingCtl.new()
+	ctl.options = GameSettings.FPS_CAPS.map(func(f: int) -> String: return str(f))
+	ctl.value = func() -> float: return GameSettings.FPS_CAPS.find(_values.max_fps)
+	var step := func(dir: int) -> void:
+		var i: int = clampi(GameSettings.FPS_CAPS.find(_values.max_fps) + dir, 0, GameSettings.FPS_CAPS.size() - 1) if dir != 0 \
+				else posmod(GameSettings.FPS_CAPS.find(_values.max_fps) + 1, GameSettings.FPS_CAPS.size())
+		_put("max_fps", GameSettings.FPS_CAPS[i])
+		ctl.queue_redraw()
+	var b := _row("ui.settings.max_fps", "fs", ctl)
+	b.pressed.connect(func() -> void: step.call(0))
+	b.gui_input.connect(func(e: InputEvent) -> void:
+		if e.is_action_pressed("ui_left") or e.is_action_pressed("ui_right"):
+			step.call(1 if e.is_action_pressed("ui_right") else -1)
 			Mixer.play(&"tick")
 			b.accept_event())
 

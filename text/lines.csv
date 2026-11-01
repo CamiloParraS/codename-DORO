@@ -361,6 +361,7 @@ ui.settings.language,LANGUAGE,IDIOMA
 ui.settings.fullscreen,FULLSCREEN,PANTALLA COMPLETA
 ui.settings.volume,MASTER VOLUME,VOLUMEN GENERAL
 ui.settings.reduce_motion,REDUCE MOTION,REDUCIR MOVIMIENTO
+ui.settings.max_fps,MAX FPS,FPS MÁXIMOS
 ui.on,ON,SÍ
 ui.off,OFF,NO
 ui.pause.title,PAUSED,PAUSA

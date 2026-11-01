@@ -5,7 +5,8 @@ extends RefCounted
 
 const PATH := "user://settings.json"
 const LANGUAGES := ["en", "es"]
-const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false}
+const FPS_CAPS := [60, 120, 144]
+const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false, max_fps = 60}
 const SENS_RANGE := Vector2(0.0005, 0.008)
 
 static var current: Dictionary = DEFAULTS.duplicate()
@@ -26,6 +27,8 @@ static func load_file(path := PATH) -> Dictionary:
 			out.fullscreen = d.fullscreen
 		if d.get("reduce_motion") is bool:
 			out.reduce_motion = d.reduce_motion
+		if d.get("max_fps") is float and int(d.max_fps) in FPS_CAPS:
+			out.max_fps = int(d.max_fps)
 		if d.get("volume") is float:
 			out.volume = clampf(d.volume, 0.0, 1.0)
 	return out
@@ -43,3 +46,4 @@ static func apply(settings: Dictionary) -> void:
 	TranslationServer.set_locale(settings.language)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 	AudioServer.set_bus_volume_db(0, linear_to_db(settings.volume))
+	Engine.max_fps = settings.max_fps
