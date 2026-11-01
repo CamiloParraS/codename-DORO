@@ -50,7 +50,7 @@ Which file owns which mechanic. Terms are the `docs/GLOSSARY.md` ones. Rules liv
 | A Mission in play (steps, Checkpoint, Continue, Extraction) | `missions/mission_run.gd` | `test_checkpoint.gd` |
 | What Aigis deploys into a Mission | `missions/deployment.gd` | `test_deployment.gd` |
 | Requisition (Recruits into gear) | `missions/requisition.gd`, `ui/requisition/` | `test_requisition.gd` |
-| Save slots, tutorial, HQ radio | `missions/save_slots.gd`, `tutorial.gd`, `hq_radio.gd` | `test_campaign.gd` |
+| Save slots, tutorial (Mission 1's tips, first-sighting grace, Rank lesson), HQ radio | `missions/save_slots.gd`, `tutorial.gd`, `hq_radio.gd`; tips drawn in `ui/hud/hud.gd` | `test_campaign.gd`, `test_tutorial.gd`, `test_rank.gd` |
 | Final debate, ending | `ai/finale.gd`, `ui/finale/finale.gd`, `areas/core/` | `test_finale.gd`, `test_core.gd` |
 
 ## Areas

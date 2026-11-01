@@ -500,7 +500,8 @@ The base HUD surface.
 
 ### Keycap prompt
 A key drawn as a key.
-- **HUD keycap:** a 42px square, 6px radius, ink face, dark-ink legend (Barlow 700 20px), HUD keycap lift. **Small:** 30px, 4px radius, 14px legend. **Wide:** auto width with 8px side padding, for LMB / RMB.
+- **HUD keycap:** a 42px square, 6px radius, ink face, dark-ink legend (Barlow 700 20px), HUD keycap lift. **Small:** 30px, 4px radius, 14px legend. **Wide:** auto width with 8px side padding, for named keys (SHIFT, TAB, WHEEL). **Mouse:** LMB / RMB / MMB are drawn, not spelled: a square keycap holding a small dark-ink pixel mouse (2px cells, 2.5px on a full keycap) with the pressed button filled.
+- **Tutorial tip:** top-left, where the Aigis cue sits from Mission 2 on (Mission 1 has no cue; a tip hides it), sliding in from the edge as the cue does. The verb in tracked Antonio on a sand slab whose right edge slants in, then its steps one per row on a glass plate that dithers away on its inner side, a 3px sand edge on its left, in tracked Barlow Condensed Bold caps with small keycaps inline. Prompts name InputMap actions (`[interact]`), so the keycap shows the real binding.
 - **Contextual prompt:** keycap, then a 76px round action disc 14px to its right (smoke-hi, 1px hairline) holding a 50px solid ink pictogram of the action. No text.
 - **Legend:** always the bound input's name, read from the input map, never a decorative glyph.
 

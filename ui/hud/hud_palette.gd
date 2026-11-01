@@ -94,14 +94,49 @@ const CORNER_STEPS := 5  # segments per rounded corner
 
 ## A key drawn as a key (docs/DESIGN.md Keycap), top-left at `p`, `legend` being the bound input's name. Returns its width.
 static func keycap(ci: CanvasItem, p: Vector2, legend: String, small := false, a := 1.0) -> float:
-	var side := 33.0 if small else 42.0  # whole chrome pixels
+	var side := keycap_side(small)
 	var fs := legible(ci, 14 if small else 20)
-	var w := ceilf(maxf(side, FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16) / PixelKit.PX) * PixelKit.PX
+	var w := keycap_width(ci, legend, small)
 	var cap := Rect2(p, Vector2(w, side))
 	PixelKit.cut_fill(ci, Rect2(p + Vector2(0, PixelKit.PX), cap.size), Color(0, 0, 0, KEY_LIFT * a), 1)  # the key's lift: one pixel row of black
 	PixelKit.cut_fill(ci, cap, Color(LIGHT, a), 1)
-	hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
+	if MOUSE_GLYPH.has(legend):
+		_mouse(ci, cap.get_center(), legend, Color(DARK_INK, a), small)
+	else:
+		hud_text(ci, Vector2(p.x + w / 2, p.y + side / 2 + fs * 0.36), legend, fs, Color(DARK_INK, a), FIGURE, 1, false)
 	return w
+
+
+## The mouse buttons are drawn, not spelled: a small mouse, its pressed button filled (docs/DESIGN.md Keycap), in
+## cells of 2 design px (2.5 on a full keycap) so it sits well inside the key. Rows of the 9x11 glyph: # outline,
+## L / R the left and right buttons, | the split between them (the wheel, widened, for MMB and WHEEL).
+const MOUSE_ROWS := ["..##|##..", ".#LL|RR#.", "#LLL|RRR#", "#LLL|RRR#", "#########", "#.......#", "#.......#", "#.......#", "#.......#", ".#.....#.", "..#####.."]
+const MOUSE_GLYPH := {LMB = "L", RMB = "R", MMB = "|", WHEEL = "|"}  # the wheel lit for MMB and WHEEL
+
+
+static func _mouse(ci: CanvasItem, centre: Vector2, legend: String, ink: Color, small := true) -> void:
+	var px := 2.0 if small else 2.5
+	var origin := (centre - Vector2(9, 11) * px / 2.0).round()
+	var lit: String = MOUSE_GLYPH[legend]
+	for y in MOUSE_ROWS.size():
+		var row: String = MOUSE_ROWS[y]
+		for x in row.length():
+			var cell := row[x]
+			if cell == "#" or cell == "|" or cell == lit or (lit == "|" and y in [2, 3] and x in [3, 5]):  # MMB: a wider wheel
+				ci.draw_rect(Rect2(origin + Vector2(x, y) * px, Vector2(px, px)), ink)
+
+
+## A keycap's height in design px.
+static func keycap_side(small := false) -> float:
+	return 33.0 if small else 42.0  # whole chrome pixels
+
+
+## The width keycap() draws `legend` at on `ci`, in design px (its legend grows with legible()).
+static func keycap_width(ci: CanvasItem, legend: String, small := false) -> float:
+	if MOUSE_GLYPH.has(legend):
+		return keycap_side(small)  # square: the glyph, not the name
+	var fs := legible(ci, 14 if small else 20)
+	return ceilf(maxf(keycap_side(small), FIGURE.get_string_size(legend, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 16) / PixelKit.PX) * PixelKit.PX
 
 
 ## The outline of `r`, corners rounded to `radius`, as a track in `track` filled clockwise from the top-left to

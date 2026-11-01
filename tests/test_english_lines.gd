@@ -38,7 +38,9 @@ func test_drafted_lines_are_not_placeholders() -> void:
 		if _is_voice(k):
 			continue
 		assert_ne(String(t[k]).strip_edges(), "", k + " is empty")
-		assert_true(rx.search(t[k]) == null, k + " is a placeholder: " + t[k])
+		var m := rx.search(t[k])
+		var action := m != null and InputMap.has_action(m.get_string().trim_prefix("[").trim_suffix("]"))  # a tip's [crouch] names its key
+		assert_true(m == null or action, k + " is a placeholder: " + t[k])
 
 
 func test_english_stays_inside_the_word_cap() -> void:

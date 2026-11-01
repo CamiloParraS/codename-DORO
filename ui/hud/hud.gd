@@ -47,8 +47,7 @@ func _process(delta: float) -> void:
 	if _operative and _operative.aiming:
 		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
 	_subs.tick(delta)
-	if _subs.lines.size() < Subtitles.SHOWN:  # two radio lines own the lower middle: the tip waits, its clock too
-		_tip_left = maxf(_tip_left - delta, 0.0)
+	_tip_left = maxf(_tip_left - delta, 0.0)
 	if _live and _call_out < 0.0:
 		_call_age += delta
 		var p := _live.advance(delta, true)
@@ -90,10 +89,16 @@ func say(who: String, text: String) -> void:
 	_subs.add(who, text)
 
 
-## Mission 1's tutorial prompt (call_group "tutorial_tip").
-func tip(text: String) -> void:
+## Mission 1's tutorial prompt (call_group "tutorial_tip"): `text` its steps, `title` the verb on its sand slab.
+func tip(text: String, title := "") -> void:
 	_tip = text
+	_tip_title = title
 	_tip_left = TIP_TIME
+
+
+## The tip on screen was done (call_group "tutorial_tip"): it fades out over TIP_OUT.
+func tip_done() -> void:
+	_tip_left = minf(_tip_left, TIP_OUT)
 
 
 ## A live Codec call (call_group "codec_live"): play goes on while it runs.
@@ -179,12 +184,14 @@ func _draw_design() -> void:
 	_voiceprints(d)
 	_phase(d)
 	if not radio_open:
-		_aigis_cue()
+		if _tip_left <= 0.0:  # a tip takes the top-left corner (Mission 1 has no cue anyway)
+			_aigis_cue()
 		_gear(d)
 		_selector(d)
 	var dim := 0.3 if radio_open else 1.0
 	_live_call(dim)
-	_tutorial_tip(d, _subtitles(d, dim))
+	_subtitles(d, dim)
+	_tutorial_tip()
 	_prompt(d)
 
 
@@ -201,7 +208,7 @@ func _prompt(d: Vector2) -> void:
 	for p: Dictionary in parts:
 		var w := 76.0
 		if p.action != "":
-			w += HudPalette.FIGURE.get_string_size(Prompts.key(p.action), HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 16 + 14
+			w += HudPalette.keycap_width(_canvas, Prompts.key(p.action)) + 14
 		widths.append(maxf(w, 76.0))
 		total += widths.back()
 	total += 28.0 * (parts.size() - 1)
@@ -306,9 +313,11 @@ func _live_call(dim: float) -> float:
 	var frame := 1 if _live.typing() and int(Time.get_ticks_msec() / 160.0) % 2 == 0 else 0
 	var tex := _portrait(who, frame)
 	var tx := CALL.x + 12 + FACE + 16
-	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - CALL.x) - 18, HudPalette.FIGURE_MED, 24)
-	var rows := mini(full.size(), 4)
-	var box := Rect2(CALL, Vector2(CALL_W, maxf(FACE + 26, 62 + rows * 32)))
+	var call_fs := HudPalette.legible(c, 24)  # wrapped at the size it is drawn at, so a small window loses no words
+	var call_row := maxf(32.0, call_fs * 1.3)
+	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - CALL.x) - 18, HudPalette.FIGURE_MED, call_fs)
+	var rows := full.size()
+	var box := Rect2(CALL, Vector2(CALL_W, maxf(FACE + 26, 62 + rows * call_row)))
 	HudPalette.plate(c, Rect2(box.position, box.size + Vector2(HudPalette.FADE_W, 0)), HudPalette.GLASS, 0.4 * dim, 0.92 * dim, false)  # borderless, dithering away on its inner side like the other plates
 	if tex:
 		_face.texture = tex
@@ -330,7 +339,7 @@ func _live_call(dim: float) -> float:
 		var l: String = full[i]
 		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 24, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
 		left -= l.length() + 1
-		y += 32
+		y += call_row
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	return box.end.y + 24
 
@@ -347,10 +356,12 @@ func _portrait(who: String, frame: int) -> Texture2D:
 func _subtitles(d: Vector2, dim: float) -> float:
 	var blocks: Array = []  # [who, rows, alpha], oldest first
 	var total := 0.0
+	var fs := HudPalette.legible(_canvas, 26)  # wrapped at the size it is drawn at, so a small window keeps SUB_W
+	var row_h := maxf(34.0, fs * 1.3)
 	for l: Dictionary in _subs.lines:
-		var rows := HudPalette.wrap(l["text"], SUB_W, HudPalette.FIGURE_MED, 26)
+		var rows := HudPalette.wrap(l["text"], SUB_W, HudPalette.FIGURE_MED, fs)
 		blocks.append([_who(l["who"]), rows, minf(Subtitles.alpha(l["age"]), clampf(l["age"] / 0.2, 0.0, 1.0)) * dim])
-		total += 28 + rows.size() * 34 + 10
+		total += 28 + rows.size() * row_h + 10
 	var y := SUB_BOTTOM - total
 	var top := y
 	for b: Array in blocks:
@@ -358,40 +369,121 @@ func _subtitles(d: Vector2, dim: float) -> float:
 		y += 28
 		for row: String in b[1]:
 			HudPalette.hud_text(_canvas, Vector2(d.x / 2, y + 22), row, 26, Color(HudPalette.LIGHT, b[2]), HudPalette.FIGURE_MED, 1)
-			y += 34
+			y += row_h
 		y += 10
 	return top
 
 
-## Mission 1's tutorial line, centred in the lower middle, just above the subtitles (or where they would be).
-func _tutorial_tip(d: Vector2, above: float) -> void:
+## Mission 1's tutorial tip, top-left where the Aigis cue sits from Mission 2 on, sliding in from the edge as the cue
+## does: the verb on a sand slab whose right edge slants in, and under it the steps, one per row, on a glass plate
+## that dithers away on its inner side, in tracked condensed caps with each [KEY] drawn as a key. A step wider than
+## TIP_W wraps between its words; every width is measured at the size it is drawn at.
+func _tutorial_tip() -> void:
 	if _tip_left <= 0.0:
 		return
-	if _subs.lines.size() >= Subtitles.SHOWN:
-		return
-	var a := minf(clampf(_tip_left, 0.0, 1.0), clampf((TIP_TIME - _tip_left) / 0.25, 0.0, 1.0))
-	var parts := _tip_parts(_tip)
-	if _tip_width(parts) <= SUB_W:  # one line of keycaps and words: each [KEY] drawn as a key, a double space as a gap
-		var x := d.x / 2 - _tip_width(parts) / 2
-		var top := above - 16 - 34
-		for part: Array in parts:
-			match part[0]:
-				"key":
-					x += HudPalette.keycap(_canvas, Vector2(x, top), part[1], true, a) + 8
-				"gap":
-					x += 30
-				_:
-					HudPalette.hud_text(_canvas, Vector2(x, top + 26), part[1], 26, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED)
-					x += HudPalette.FIGURE_MED.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x + 8
-		return
-	var rows := HudPalette.wrap(_tip, SUB_W, HudPalette.FIGURE_MED, 26)
-	var y := above - 16 - rows.size() * 34
-	for i in rows.size():
-		HudPalette.hud_text(_canvas, Vector2(d.x / 2, y + 26 + i * 34), rows[i], 26, Color(HudPalette.LIGHT, a), HudPalette.FIGURE_MED, 1)
+	var c := _canvas
+	var age := TIP_TIME - _tip_left
+	var a := minf(clampf(_tip_left / TIP_OUT, 0.0, 1.0), clampf(age / 0.12, 0.0, 1.0))
+	var e := _enter(age, 0.2)
+	var at := Vector2(roundf(70 - 28 * (1.0 - e)), 56)
+	var fs := HudPalette.legible(c, 24)
+	var font := _tip_font()
+	var row_h := maxf(HudPalette.keycap_side(true) + 10.0, fs * 1.45)
+	var rows: Array = []
+	var step: Array = []
+	for part: Array in _tip_parts(_tip) + [["gap", ""]]:
+		if part[0] == "gap":
+			if not step.is_empty():
+				rows.append_array(_tip_rows(step, TIP_W))
+			step = []
+		else:
+			step.append(part)
+	var bw := 0.0
+	for r: Array in rows:
+		bw = maxf(bw, _row_width(r))
+	var title := _tip_title.to_upper()
+	var y := at.y
+	if title != "":  # the verb's slab
+		var tfs := HudPalette.legible(c, 26)
+		var tfont := HudPalette.tracked(HudPalette.DISPLAY, tfs, 0.3)
+		var th := 44.0
+		var ws := 22.0 + tfont.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x + 18.0 + 16.0
+		c.draw_colored_polygon(PackedVector2Array([Vector2(at.x - 16, y), Vector2(at.x - 16 + ws, y), Vector2(at.x - 16 + ws - 16, y + th), Vector2(at.x - 16, y + th)]), Color(HudPalette.SAND, a))
+		HudPalette.hud_text(c, Vector2(at.x + 6, y + th / 2 + tfs * 0.36), title, tfs, Color(HudPalette.DARK_INK, a), tfont, 0, false)
+		y += th
+	var plate := Rect2(at.x - 16, y, bw + 16 + 30 + HudPalette.FADE_W, rows.size() * row_h + TIP_PAD.y * 2)
+	HudPalette.plate(c, plate, HudPalette.GLASS, 0.35 * a, TIP_PLATE * a, false)
+	c.draw_rect(Rect2(plate.position, Vector2(3, plate.size.y)), Color(HudPalette.SAND, 0.7 * a))  # the sand edge ties the steps to their verb
+	var ry := y + TIP_PAD.y
+	for r: Array in rows:
+		var x := at.x + 6
+		for part: Array in r:
+			if part[0] == "key":
+				x += HudPalette.keycap(c, Vector2(x, ry + (row_h - HudPalette.keycap_side(true)) / 2), part[1], true, a) + TIP_SPACE
+			else:
+				HudPalette.hud_text(c, Vector2(x, ry + row_h / 2 + fs * 0.36), part[1], fs, Color(HudPalette.LIGHT, a), font, 0, false)
+				x += _word_width(part[1]) + TIP_SPACE
+		ry += row_h
 
 
-## A tip split into ["key", "RMB"], ["text", "AIM FROM BEHIND"] and ["gap", ""] parts: `[KEY]` tokens, the words
-## between them, and the double spaces the tutorial lines use to separate their steps.
+## The tip's parts in rows no wider than max_w: whole steps (the parts between gaps) where they fit, and a step
+## too wide for a row of its own broken between its words.
+func _tip_rows(parts: Array, max_w: float) -> Array:
+	var steps: Array = [[]]
+	for p: Array in parts:
+		if p[0] == "gap":
+			steps.append([])
+		else:
+			steps.back().append(p)
+	var rows: Array = [[]]
+	for step: Array in steps:
+		var joined: Array = rows.back() + ([["gap", ""]] if not rows.back().is_empty() else []) + step
+		if rows.back().is_empty() or _row_width(joined) <= max_w:
+			rows[-1] = joined
+		else:
+			rows.append(step)
+	var out: Array = []
+	for r: Array in rows:
+		if _row_width(r) <= max_w:
+			out.append(r)
+			continue
+		var cur: Array = []
+		for p: Array in r:
+			var pieces: Array = [p] if p[0] != "text" else Array(p[1].split(" ", false)).map(func(word: String) -> Array: return ["text", word])
+			for q: Array in pieces:
+				if not cur.is_empty() and _row_width(cur + [q]) > max_w:
+					out.append(cur)
+					cur = []
+				if not (cur.is_empty() and q[0] == "gap"):
+					cur.append(q)
+		out.append(cur)
+	return out
+
+
+func _row_width(row: Array) -> float:
+	var w := 0.0
+	for part: Array in row:
+		match part[0]:
+			"key":
+				w += HudPalette.keycap_width(_canvas, part[1], true) + TIP_SPACE
+			"gap":
+				w += TIP_GAP
+			_:
+				w += _word_width(part[1]) + TIP_SPACE
+	return maxf(w - TIP_SPACE, 0.0)
+
+
+func _word_width(s: String) -> float:
+	return _tip_font().get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(_canvas, 24)).x
+
+
+## The tip's steps: tracked condensed caps, like the HUD's labels.
+func _tip_font() -> Font:
+	return HudPalette.tracked(HudPalette.LABEL_BOLD, HudPalette.legible(_canvas, 24), 0.08)
+
+
+## A tip split into ["key", "RMB"], ["text", "AIM FROM BEHIND"] and ["gap", ""] parts: `[KEY]` tokens (an InputMap
+## action's name, `[aim]`, shows its binding), the words between them, and the double spaces between steps.
 static func _tip_parts(tip: String) -> Array:
 	var out: Array = []
 	for chunk: String in tip.split("  "):
@@ -404,23 +496,11 @@ static func _tip_parts(tip: String) -> Array:
 			var piece := rest
 			if open == 0 and close > 0:
 				piece = rest.left(close + 1)
-				out.append(["key", piece.trim_prefix("[").trim_suffix("]")])
+				var token := piece.trim_prefix("[").trim_suffix("]")
+				out.append(["key", Prompts.key(token) if InputMap.has_action(token) else token])  # [interact] shows its binding
 			elif open > 0:
 				piece = rest.left(open)
 			if not piece.begins_with("[") and piece.strip_edges() != "":
 				out.append(["text", piece.strip_edges()])
 			rest = rest.substr(piece.length())
 	return out
-
-
-static func _tip_width(parts: Array) -> float:
-	var w := 0.0
-	for part: Array in parts:
-		match part[0]:
-			"key":
-				w += maxf(34.0, HudPalette.FIGURE.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 16) + 8
-			"gap":
-				w += 30
-			_:
-				w += HudPalette.FIGURE_MED.get_string_size(part[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x + 8
-	return w

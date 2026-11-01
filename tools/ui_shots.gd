@@ -160,7 +160,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_tip", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -211,9 +211,14 @@ func _play_shots(all: bool) -> void:
 	op.voiceprints.held.append_array(["GuardPA", "Kostas", "Dimos", "Eleni"])
 	await wait(1.0)
 	await shoot("hud_normal")
-	hud.tip(tr("tutorial.holdup.prompt"))
+	hud._subs.lines.clear()  # Mission 1's own first tip and Metis line may be up: the shot shows the longest tip alone over one line
+	hud.say("METIS", tr("tutorial.holdup.line"))
+	hud.tip(tr("tutorial.holdup.prompt"), tr("tutorial.holdup.title"))
 	await wait(0.8)
 	await shoot("hud_tip")
+	hud.tip(tr("tutorial.scanner.prompt"), tr("tutorial.scanner.title"))  # the longest tip, with the wheel
+	await wait(0.8)
+	await shoot("hud_tip_long")
 	hud.live_call([["analyst", "live.m1.s1.01"]])
 	hud.say("METIS", tr("hint.m1.s2.2"))
 	hud.say("Foreman", tr("holdup.lift_code"))
@@ -329,6 +334,7 @@ func _post(run: Node) -> void:
 	after.points.downs = maxi(int(after.points.get("downs", 0)) - 60, 0)
 	s.strip = MissionTally.strip(run.record, after)
 	s.voice_key = "post.pallas.clean"
+	s.lesson_key = s.rank.lesson_key()  # Mission 1: the Rank page names the best of the run; the later pages keep the voice line
 	s.dossier = _fake_route(run)
 	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)

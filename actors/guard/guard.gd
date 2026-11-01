@@ -342,7 +342,7 @@ func _sense() -> float:
 	var facing := -global_basis.z
 	var caution := AlertChain.area.phase == AlertChain.Phase.CAUTION
 	var rate := GuardVision.fill_rate(offset, facing, operative.looks_crouched(), operative.moving, operative.looks_walking(),
-		AlertChain.CAUTION_REACH if caution else 1.0) * (AlertChain.CAUTION_FILL if caution else 1.0)
+		AlertChain.CAUTION_REACH if caution else 1.0) * (AlertChain.CAUTION_FILL if caution else 1.0) * sight_scale
 	if rate == 0.0:
 		return 0.0
 	var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid()])

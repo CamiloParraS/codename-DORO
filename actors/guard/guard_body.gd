@@ -55,6 +55,7 @@ var operative: Node3D               # the Operative
 var alert := GuardAlert.new()
 var checkin := Checkin.new()
 var seen_rate := 0.0
+var sight_scale := 1.0  # how fast this guard's meter fills on sight; Mission 1's deck starts lower (Tutorial.GRACE, MissionRun)
 var _held := false  # was holding its ground last tick (Engage.holds' hysteresis)
 var last_reason := ""            # for the debug overlay
 var _saw := ""                   # what _sense() saw this frame

@@ -3853,10 +3853,10 @@ size = Vector3(0.5, 0.02, 9)
 
 [sub_resource type="Curve3D" id="Curve3D_euo3x"]
 _data = {
-"points": PackedVector3Array(0, -0.06666667, -0.083333336, 0, 0.06666667, 0.083333336, 28, -0.8, -56, 0, -0.36666667, -1.0833334, 0, 0.36666667, 1.0833334, 28, -0.4, -55.5, -0.33333334, -0.6666667, -1.5, 0.33333334, 0.6666667, 1.5, 28, 1.4, -49.5, -0.7416668, -0.43999997, -1.1949997, 0.7416668, 0.43999997, 1.1949997, 30, 3.6, -46.5, -0.40833345, -0.073333345, -0.6949997, 0.40833345, 0.073333345, 0.6949997, 32.45, 4.04, -42.33, 0, 0, 0, 0, 0, 0, 32.45, 4.04, -42.33),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0)
+"points": PackedVector3Array(0, -0.06666667, -0.083333336, 0, 0.06666667, 0.083333336, 28, -0.8, -56, 0, -0.36666667, -1.0833334, 0, 0.36666667, 1.0833334, 28, -0.4, -55.5, -0.33333334, -0.6666667, -1.5, 0.33333334, 0.6666667, 1.5, 28, 1.4, -49.5, -0.9666665, -0.6666667, -2.1666667, 0.9666665, 0.6666667, 2.1666667, 30, 3.6, -46.5, -0.5666669, -0.2166667, -2, 0.5666669, 0.2166667, 2, 33.8, 5.4, -36.5, 0.22499974, 0.22666669, 0.971667, -0.22499974, -0.22666669, -0.971667, 33.4, 4.9, -34.5, 0.15833347, 0.14333336, 1.3050003, -0.15833347, -0.14333336, -1.3050003, 32.45, 4.04, -42.33, 0, 0, 0, 0, 0, 0, 32.45, 4.04, -42.33),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
-point_count = 6
+point_count = 8
 
 [sub_resource type="Resource" id="Resource_4avvj"]
 script = ExtResource("102_txa0n")
@@ -3864,7 +3864,7 @@ duration = 0.0
 transition = 1
 
 [sub_resource type="Animation" id="Animation_q7enc"]
-length = 9.0
+length = 10.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -3872,10 +3872,10 @@ tracks/0/path = NodePath("CineIntroRig/Dolly:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 2, 4, 6, 7.8, 9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 2, 4, 6, 7, 8.3, 9.4, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(28, -0.8, -56), Vector3(28, -0.4, -55.5), Vector3(28, 1.4, -49.5), Vector3(30, 3.6, -46.5), Vector3(32.45, 4.04, -42.33), Vector3(32.45, 4.04, -42.33)]
+"values": [Vector3(28, -0.8, -56), Vector3(28, -0.4, -55.5), Vector3(28, 1.4, -49.5), Vector3(30, 3.6, -46.5), Vector3(33.8, 5.4, -36.5), Vector3(33.4, 4.9, -34.5), Vector3(32.45, 4.04, -42.33), Vector3(32.45, 4.04, -42.33)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -3884,10 +3884,10 @@ tracks/1/path = NodePath("CineIntroRig/LookTarget:position")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 2, 4, 6, 7.8, 9),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 2, 4, 6, 7, 8.3, 9.4, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(22, -0.6, -49), Vector3(32, 1, -44), Vector3(33, 3.2, -41.5), Vector3(33, 3.2, -40), Vector3(32.45, 1.57, -32.6), Vector3(32.45, 1.57, -32.6)]
+"values": [Vector3(22, -0.6, -49), Vector3(32, 1, -44), Vector3(33, 3.2, -41.5), Vector3(33, 3.2, -40), Vector3(30.8, 2.6, -21), Vector3(30.8, 2.6, -21), Vector3(32.45, 1.57, -32.6), Vector3(32.45, 1.57, -32.6)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -8124,48 +8124,48 @@ multimesh = SubResource("MultiMesh_j6aq6")
 script = ExtResource("83_g8dw8")
 transforms = PackedFloat32Array(-0.12703037, 0, -1.1694576, 0, 1.1763365, 0, 1.1694576, 0, -0.12703037, 41.46393, 0.2889105, -78.29855, 1.3650595, 0, 0.29418978, 0, 1.3964007, 0, -0.29418978, 0, 1.3650595, 48.680424, 0.3148973, -84.16224, -1.2238003, 0, -0.055316005, 0, 1.2250499, 0, 0.055316005, 0, -1.2238003, 47.070526, 0.29466292, -78.27661, -0.5963736, 0, -0.56822646, 0, 0.82373714, 0, 0.56822646, 0, -0.5963736, 27.445587, 0.24727297, -77.240685, -0.6737919, 0, -0.8574774, 0, 1.0905334, 0, 0.8574774, 0, -0.6737919, 36.858753, 0.27877823, -85.64037, -0.97017723, 0, -0.44944683, 0, 1.069227, 0, 0.44944683, 0, -0.97017723, 37.78573, 0.27626222, -85.8556, -0.70396197, 0, -1.1563778, 0, 1.3537991, 0, 1.1563778, 0, -0.70396197, 66.63403, 0.3098666, -77.670494, -0.34413373, 0, -0.97832364, 0, 1.0370849, 0, 0.97832364, 0, -0.34413373, 64.12262, 0.27246666, -85.05937, 0.60693693, 0, 0.5333612, 0, 0.80798924, 0, -0.5333612, 0, 0.60693693, 50.24046, 0.24541333, -84.67129, -1.3762268, 0, 0.02767249, 0, 1.376505, 0, -0.02767249, 0, -1.3762268, 35.164722, 0.31254786, -84.60621, 1.1443285, 0, 0.1961047, 0, 1.1610103, 0, -0.1961047, 0, 1.1443285, 62.955208, 0.28710067, -77.34217, 0.70867294, 0, 0.9342926, 0, 1.1726551, 0, -0.9342926, 0, 0.70867294, 45.97643, 0.28847575, -84.233734, -0.5777586, 0, -1.0013382, 0, 1.1560637, 0, 1.0013382, 0, -0.5777586, 23.274626, 0.28651655, -78.512535, -0.22381757, 0, 1.1394793, 0, 1.1612525, 0, -1.1394793, 0, -0.22381757, 35.547184, 0.28712928, -84.92875, 0.5317727, 0, -1.0290204, 0, 1.1583028, 0, 1.0290204, 0, 0.5317727, 39.30305, 0.28678095, -78.77362, -1.4263186, 0, -0.044033624, 0, 1.4269981, 0, 0.044033624, 0, -1.4263186, 44.4131, 0.31851047, -84.72963, 0.47897443, 0, -0.6494824, 0, 0.8069968, 0, 0.6494824, 0, 0.47897443, 32.762016, 0.24529615, -85.36446, -0.79524475, 0, -0.7507788, 0, 1.0936558, 0, 0.7507788, 0, -0.79524475, 30.760473, 0.27914697, -85.46389, 0.8155901, 0, 0.7851366, 0, 1.1320895, 0, -0.7851366, 0, 0.8155901, 58.939545, 0.28368548, -84.799286, -1.0226396, 0, 0.43797156, 0, 1.1124797, 0, -0.43797156, 0, -1.0226396, 52.067947, 0.2813698, -78.92328, 0.9432741, 0, 0.31296477, 0, 0.9938375, 0, -0.31296477, 0, 0.9432741, 56.08137, 0.26735967, -85.75651, 1.1701025, 0, 0.07679413, 0, 1.1726198, 0, -0.07679413, 0, 1.1701025, 50.291233, 0.28847158, -77.41097, 1.2236195, 0, -0.38930658, 0, 1.2840577, 0, 0.38930658, 0, 1.2236195, 36.580753, 0.30163103, -85.80308, -1.1160837, 0, 0.043993555, 0, 1.1169505, 0, -0.043993555, 0, -1.1160837, 43.867836, 0.28189775, -77.234795, 0.94122577, 0, 1.0712107, 0, 1.4259727, 0, -1.0712107, 0, 0.94122577, 47.28363, 0.31838936, -84.045204, 0.2015948, 0, 0.8173934, 0, 0.8418862, 0, -0.8173934, 0, 0.2015948, 28.153845, 0.24941614, -85.63387, -1.0121907, 0, -1.0218529, 0, 1.4383022, 0, 1.0218529, 0, -1.0121907, 43.552647, 0.31984532, -77.18713, 0.13592434, 0, 1.4443316, 0, 1.4507134, 0, -1.4443316, 0, 0.13592434, 36.872475, 0.32131094, -78.18989, -0.657049, 0, -0.6456541, 0, 0.92118543, 0, 0.6456541, 0, -0.657049, 37.34658, 0.25878036, -78.30121, 0.7314669, 0, -0.6378186, 0, 0.97049284, 0, 0.6378186, 0, 0.7314669, 59.62666, 0.26460296, -78.40745, -1.291689, 0, -0.207743, 0, 1.3082881, 0, 0.207743, 0, -1.291689, 27.886908, 0.3044923, -78.62641, -1.3410825, 0, 0.8622986, 0, 1.5943842, 0, -0.8622986, 0, -1.3410825, 36.71698, 0.33827665, -77.68266, -0.9097302, 0, 1.3070714, 0, 1.5924964, 0, -1.3070714, 0, -0.9097302, 41.437458, 0.3380537, -78.699005, 0.35470182, 0, -1.0406421, 0, 1.0994314, 0, 1.0406421, 0, 0.35470182, 36.90122, 0.27982897, -78.44173, -0.80863386, 0, -1.0475545, 0, 1.3233515, 0, 1.0475545, 0, -0.80863386, 28.849985, 0.3062711, -84.92946, -0.80709094, 0, 0.5082489, 0, 0.95378864, 0, -0.5082489, 0, -0.80709094, 62.88634, 0.2626304, -77.42204, -0.8748005, 0, 0.58992314, 0, 1.0551233, 0, -0.58992314, 0, -0.8748005, 44.995552, 0.27459675, -78.62854, -0.8330365, 0, -1.2692047, 0, 1.5181669, 0, 1.2692047, 0, -0.8330365, 65.96179, 0.32927635, -78.380264, 1.2620918, 0, -0.4555832, 0, 1.3418016, 0, 0.4555832, 0, 1.2620918, 59.213943, 0.30844983, -84.18342, -0.98247075, 0, -0.9642109, 0, 1.3765724, 0, 0.9642109, 0, -0.98247075, 51.316025, 0.31255582, -85.74273)
 
-[node name="@Node3D@14" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350464]
+[node name="@Node3D@16" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350466]
 
-[node name="UtilityPole_m6p0_m90p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1594361482]
+[node name="UtilityPole_m6p0_m90p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=2094724172]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, -130)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_m90p0" unique_id=402687886 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_m90p0" unique_id=1510957264 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1594253671]
+[node name="UtilityPole_m6p0_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=2094616361]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, -100)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_m60p0" unique_id=1304305963 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_m60p0" unique_id=265091693 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_m30p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1594145860]
+[node name="UtilityPole_m6p0_m30p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=2094508550]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, -70)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_m30p0" unique_id=58440392 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_m30p0" unique_id=1166709770 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_0p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=234092804]
+[node name="UtilityPole_m6p0_0p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1934396998]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, -40)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_0p0" unique_id=1542866824 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_0p0" unique_id=1721362506 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_30p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1282651863]
+[node name="UtilityPole_m6p0_30p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1558115417]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, -10)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_30p0" unique_id=1553742491 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_30p0" unique_id=1001649053 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1282759674]
+[node name="UtilityPole_m6p0_60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1558223228]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, 20)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_60p0" unique_id=652124414 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_60p0" unique_id=100030976 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_m6p0_90p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=1282867485]
+[node name="UtilityPole_m6p0_90p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1558331039]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -46, 18.5, 50)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_m6p0_90p0" unique_id=1897989985 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_m6p0_90p0" unique_id=1345896547 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
 [node name="UtilityPoleWires" type="Node3D" parent="Backdrop/Surroundings" unique_id=1370809164]
@@ -8620,336 +8620,336 @@ transform = Transform3D(-1, 0, 0, 0, 0.9985808, -0.053257592, 0, -0.053257592, -
 cast_shadow = 0
 mesh = SubResource("BoxMesh_w0elk")
 
-[node name="@Node3D@15" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350465]
+[node name="@Node3D@17" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350467]
 
-[node name="UtilityPole_35p2_m88p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15" unique_id=1761884697]
+[node name="UtilityPole_35p2_m88p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=114763739]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.8, 4.5, -128)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15/UtilityPole_35p2_m88p0" unique_id=1522551133 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/UtilityPole_35p2_m88p0" unique_id=483336863 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_35p2_m64p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15" unique_id=1761808467]
+[node name="UtilityPole_35p2_m64p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=114687509]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.8, 4.5, -104)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15/UtilityPole_35p2_m64p0" unique_id=858553623 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/UtilityPole_35p2_m64p0" unique_id=1966823001 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_35p2_m40p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15" unique_id=1761732237]
+[node name="UtilityPole_35p2_m40p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=114611279]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.8, 4.5, -80)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15/UtilityPole_35p2_m40p0" unique_id=194556113 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/UtilityPole_35p2_m40p0" unique_id=1302825491 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_35p2_m16p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15" unique_id=1761630960]
+[node name="UtilityPole_35p2_m16p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=114510002]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.8, 4.5, -56)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15/UtilityPole_35p2_m16p0" unique_id=846304884 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/UtilityPole_35p2_m16p0" unique_id=1954574262 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_35p2_1p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15" unique_id=752877869]
+[node name="UtilityPole_35p2_1p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=305698415]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.8, 4.5, -39)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@15/UtilityPole_35p2_1p0" unique_id=163636081 instance=ExtResource("90_gfl72")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/UtilityPole_35p2_1p0" unique_id=342131763 instance=ExtResource("90_gfl72")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="@Node3D@16" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350466]
+[node name="@Node3D@18" type="Node3D" parent="Backdrop/Surroundings" unique_id=2027350468]
 
-[node name="Wire0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787672]
+[node name="Wire0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239962]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -3.7500002, 8.34, -125.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_o4evt")
 
-[node name="Wire1" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787673]
+[node name="Wire1" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239963]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -3.7500002, 8.1, -120.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_m4e83")
 
-[node name="Wire2" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787674]
+[node name="Wire2" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239964]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -3.7500002, 8.02, -116)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_mtnmo")
 
-[node name="Wire3" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787675]
+[node name="Wire3" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239965]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -3.7500002, 8.1, -111.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_wspmg")
 
-[node name="Wire4" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787676]
+[node name="Wire4" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239966]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -3.7500002, 8.34, -106.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_k3mix")
 
-[node name="Wire5" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787677]
+[node name="Wire5" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239967]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -4.8, 8.34, -125.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_i5358")
 
-[node name="Wire6" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787678]
+[node name="Wire6" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239968]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -4.8, 8.1, -120.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_mxouw")
 
-[node name="Wire7" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787679]
+[node name="Wire7" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239969]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.8, 8.02, -116)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_x5b1t")
 
-[node name="Wire8" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787680]
+[node name="Wire8" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239970]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -4.8, 8.1, -111.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_564e5")
 
-[node name="Wire9" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1279787681]
+[node name="Wire9" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1715239971]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -4.8, 8.34, -106.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_3e565")
 
-[node name="Wire10" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803945]
+[node name="Wire10" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343979]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -5.8500004, 8.34, -125.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_h0l7j")
 
-[node name="Wire11" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803946]
+[node name="Wire11" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343980]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -5.8500004, 8.1, -120.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_igynw")
 
-[node name="Wire12" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803947]
+[node name="Wire12" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343981]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -5.8500004, 8.02, -116)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_ffdsg")
 
-[node name="Wire13" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803948]
+[node name="Wire13" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343982]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -5.8500004, 8.1, -111.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_dntn5")
 
-[node name="Wire14" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803949]
+[node name="Wire14" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343983]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -5.8500004, 8.34, -106.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_l2top")
 
-[node name="Wire15" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803950]
+[node name="Wire15" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343984]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -3.7500002, 8.34, -101.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_4lcm5")
 
-[node name="Wire16" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803951]
+[node name="Wire16" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343985]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -3.7500002, 8.1, -96.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_enevf")
 
-[node name="Wire17" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803952]
+[node name="Wire17" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343986]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -3.7500002, 8.02, -92)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8vqcd")
 
-[node name="Wire18" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803953]
+[node name="Wire18" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343987]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -3.7500002, 8.1, -87.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_wci3x")
 
-[node name="Wire19" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803954]
+[node name="Wire19" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768343988]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -3.7500002, 8.34, -82.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_g2mlg")
 
-[node name="Wire20" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803978]
+[node name="Wire20" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344012]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -4.8, 8.34, -101.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_tak8q")
 
-[node name="Wire21" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803979]
+[node name="Wire21" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344013]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -4.8, 8.1, -96.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_k2h75")
 
-[node name="Wire22" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803980]
+[node name="Wire22" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344014]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.8, 8.02, -92)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_u72bm")
 
-[node name="Wire23" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803981]
+[node name="Wire23" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344015]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -4.8, 8.1, -87.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8yme0")
 
-[node name="Wire24" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803982]
+[node name="Wire24" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344016]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -4.8, 8.34, -82.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_075ao")
 
-[node name="Wire25" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803983]
+[node name="Wire25" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344017]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -5.8500004, 8.34, -101.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_2v3cb")
 
-[node name="Wire26" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803984]
+[node name="Wire26" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344018]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -5.8500004, 8.1, -96.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_w8omf")
 
-[node name="Wire27" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803985]
+[node name="Wire27" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344019]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -5.8500004, 8.02, -92)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_dkxcy")
 
-[node name="Wire28" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803986]
+[node name="Wire28" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344020]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.03331483, 0, -0.03331483, -0.9994449, -5.8500004, 8.1, -87.2)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_euxt4")
 
-[node name="Wire29" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430803987]
+[node name="Wire29" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344021]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.0665189, 0, -0.0665189, -0.99778515, -5.8500004, 8.34, -82.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_pdub7")
 
-[node name="Wire30" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804011]
+[node name="Wire30" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344045]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -3.7500002, 8.34, -77.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_r5jp0")
 
-[node name="Wire31" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804012]
+[node name="Wire31" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344046]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -3.7500002, 8.1, -72.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_bovvt")
 
-[node name="Wire32" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804013]
+[node name="Wire32" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344047]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -3.7500002, 8.02, -68)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_pmhv2")
 
-[node name="Wire33" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804014]
+[node name="Wire33" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344048]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.0333148, 0, -0.0333148, -0.9994449, -3.7500002, 8.1, -63.199997)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_j1hv1")
 
-[node name="Wire34" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804015]
+[node name="Wire34" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344049]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.066518955, 0, -0.066518955, -0.99778515, -3.7500002, 8.34, -58.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8c1ec")
 
-[node name="Wire35" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804016]
+[node name="Wire35" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344050]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -4.8, 8.34, -77.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_nrbqh")
 
-[node name="Wire36" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804017]
+[node name="Wire36" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344051]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -4.8, 8.1, -72.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_acwh4")
 
-[node name="Wire37" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804018]
+[node name="Wire37" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344052]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.8, 8.02, -68)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_wk3as")
 
-[node name="Wire38" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804019]
+[node name="Wire38" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344053]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.0333148, 0, -0.0333148, -0.9994449, -4.8, 8.1, -63.199997)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_j43nm")
 
-[node name="Wire39" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804020]
+[node name="Wire39" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344054]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.066518955, 0, -0.066518955, -0.99778515, -4.8, 8.34, -58.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8dq54")
 
-[node name="Wire40" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804044]
+[node name="Wire40" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344078]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, 0.0665189, 0, 0.0665189, -0.99778515, -5.8500004, 8.34, -77.6)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_23uwk")
 
-[node name="Wire41" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804045]
+[node name="Wire41" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344079]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, 0.03331483, 0, 0.03331483, -0.9994449, -5.8500004, 8.1, -72.8)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_tj7d6")
 
-[node name="Wire42" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804046]
+[node name="Wire42" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344080]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -5.8500004, 8.02, -68)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_2ll4s")
 
-[node name="Wire43" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804047]
+[node name="Wire43" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344081]
 transform = Transform3D(-1, 0, 0, 0, 0.9994449, -0.0333148, 0, -0.0333148, -0.9994449, -5.8500004, 8.1, -63.199997)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_k4mwq")
 
-[node name="Wire44" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804048]
+[node name="Wire44" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344082]
 transform = Transform3D(-1, 0, 0, 0, 0.99778515, -0.066518955, 0, -0.066518955, -0.99778515, -5.8500004, 8.34, -58.4)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_2qulr")
 
-[node name="Wire45" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804049]
+[node name="Wire45" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344083]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, 0.09370341, 0, 0.09370341, -0.99560016, -3.7500002, 8.34, -54.3)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_ixfbb")
 
-[node name="Wire46" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804050]
+[node name="Wire46" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344084]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, 0.047006793, 0, 0.047006793, -0.99889463, -3.7500002, 8.1, -50.9)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8yn53")
 
-[node name="Wire47" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804051]
+[node name="Wire47" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344085]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -3.7500002, 8.02, -47.5)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_jmhhk")
 
-[node name="Wire48" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804052]
+[node name="Wire48" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344086]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, -0.047006793, 0, -0.047006793, -0.99889463, -3.7500002, 8.1, -44.1)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_i4d30")
 
-[node name="Wire49" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804053]
+[node name="Wire49" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344087]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, -0.09370341, 0, -0.09370341, -0.99560016, -3.7500002, 8.34, -40.7)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_ut5fo")
 
-[node name="Wire50" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804077]
+[node name="Wire50" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344111]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, 0.09370341, 0, 0.09370341, -0.99560016, -4.8, 8.34, -54.3)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_8xnow")
 
-[node name="Wire51" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804078]
+[node name="Wire51" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344112]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, 0.047006793, 0, 0.047006793, -0.99889463, -4.8, 8.1, -50.9)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_kjibl")
 
-[node name="Wire52" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804079]
+[node name="Wire52" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344113]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.8, 8.02, -47.5)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_6tc5v")
 
-[node name="Wire53" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804080]
+[node name="Wire53" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344114]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, -0.047006793, 0, -0.047006793, -0.99889463, -4.8, 8.1, -44.1)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_g31r2")
 
-[node name="Wire54" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804081]
+[node name="Wire54" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344115]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, -0.09370341, 0, -0.09370341, -0.99560016, -4.8, 8.34, -40.7)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_mc375")
 
-[node name="Wire55" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804082]
+[node name="Wire55" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344116]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, 0.09370341, 0, 0.09370341, -0.99560016, -5.8500004, 8.34, -54.3)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_5enaw")
 
-[node name="Wire56" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804083]
+[node name="Wire56" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344117]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, 0.047006793, 0, 0.047006793, -0.99889463, -5.8500004, 8.1, -50.9)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_77gg8")
 
-[node name="Wire57" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804084]
+[node name="Wire57" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344118]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -5.8500004, 8.02, -47.5)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_jhrul")
 
-[node name="Wire58" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804085]
+[node name="Wire58" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344119]
 transform = Transform3D(-1, 0, 0, 0, 0.99889463, -0.047006793, 0, -0.047006793, -0.99889463, -5.8500004, 8.1, -44.1)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_dd680")
 
-[node name="Wire59" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1430804086]
+[node name="Wire59" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=768344120]
 transform = Transform3D(-1, 0, 0, 0, 0.99560016, -0.09370341, 0, -0.09370341, -0.99560016, -5.8500004, 8.34, -40.7)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_xrlpf")
@@ -9460,13 +9460,13 @@ transform = Transform3D(-0.9396926, 0, 0.34202015, 0, 1, 0, -0.34202015, 0, -0.9
 [node name="GuardPosts" type="Node3D" parent="." unique_id=1098423699]
 
 [node name="PostO1" type="Marker3D" parent="GuardPosts" unique_id=1484438344 groups=["guard_post"]]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 30, 2, -23)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 28, 2, -21)
 metadata/hold = 6.0
 metadata/role = "patroller"
 metadata/enc = 1
 
 [node name="Route1" type="Marker3D" parent="GuardPosts/PostO1" unique_id=1032923191]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.500002, 0, 1.9073486e-06)
 metadata/hold = 4.0
 
 [node name="PostO2" type="Marker3D" parent="GuardPosts" unique_id=1484438345 groups=["guard_post"]]
@@ -9795,7 +9795,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.95, -1.1)
 material_override = SubResource("StandardMaterial3D_gpnbc")
 mesh = SubResource("BoxMesh_bnc2r")
 
-[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=880583637]
+[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=880583639]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.95, -1.1)
 material_override = SubResource("StandardMaterial3D_5wi5k")
 mesh = SubResource("BoxMesh_bnc2r")
@@ -9856,14 +9856,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
 script = ExtResource("104_alqs6")
 kind = 0
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175997]
+[node name="@MeshInstance3D@26" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175999]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)
 
-[node name="@MeshInstance3D@22" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@24" unique_id=315831657]
+[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@26" unique_id=723620397]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 mesh = SubResource("CylinderMesh_sj7kv")
 
-[node name="@Sprite3D@23" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@24" unique_id=717478047]
+[node name="@Sprite3D@25" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@26" unique_id=558124003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 modulate = Color(1, 0.45, 0.15, 1)
 pixel_size = 0.125

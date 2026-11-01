@@ -24,6 +24,7 @@ const FADE := HudPalette.FADE  # s from clear to the dimmed screen
 
 var strip: Array = []   # MissionTally.strip()
 var voice_key := ""     # VoiceLines.post_key: the Dominant Voice's line, "" for none
+var lesson_key := ""    # Rank.lesson_key: Mission 1's lesson, said on the Rank page in place of the voice line
 var rank := Rank.new()  # the attempt's counters
 var par := 0.0          # Rank.par for the Mission
 var mission_name := ""  # shown under the header, "" for none
@@ -156,11 +157,12 @@ func _draw() -> void:
 			SAW.draw_page(self, d)
 		_:
 			_draw_aigis(d)
-	if voice_key != "":  # the Metis ticker
+	var said := lesson_key if view == "rank" and lesson_key != "" else voice_key
+	if said != "":  # the Metis ticker
 		draw_rect(Rect2(0, d.y - 64, d.x, 64), Color.BLACK)
 		draw_rect(Rect2(0, d.y - 64, 130, 64), HudPalette.DMG)
 		HudPalette.hud_text(self, Vector2(65, d.y - 24), "METIS", 18, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 18, 0.3), 1, false)
-		HudPalette.hud_text(self, Vector2(160, d.y - 22), tr(voice_key), 22, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
+		HudPalette.hud_text(self, Vector2(160, d.y - 22), tr(said), 22, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
 
 
 ## The header slab: dark text on a light plate cut at its right foot, the Mission under it.
@@ -227,7 +229,7 @@ func _chips(at: Vector2) -> void:
 		var ok := b in got
 		var label := tr("ui.bonus." + b.to_lower().replace(" ", "_")).to_upper()
 		var f := HudPalette.tracked(HudPalette.DISPLAY, 20, 0.2)
-		var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 36
+		var w := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 20)).x + 36  # at the size it is drawn at
 		var r := Rect2(x, at.y, w, 46)
 		if ok:
 			PixelKit.stair_fill(self, r, HudPalette.SAND, 8.0)

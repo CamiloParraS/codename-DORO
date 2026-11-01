@@ -38,28 +38,50 @@ live.m1.s1.01,The yard foreman carries the lift code. Find him in the container 
 live.m1.s2.01,That's the code. The lift controls are in the operations building by the cliff.,"Ese es el código. Los controles del montacargas están en el edificio de operaciones, junto al acantilado."
 live.m1.s3.01,Code accepted. Get out by the slipway before they check that panel.,Código aceptado. Sal por la rampa antes de que revisen ese panel.
 intel.m1.manifest,The panel logs the lift's manifests. Every load that goes down is cleared by the radio relay station.,El panel registra los manifiestos del montacargas. Cada carga que baja la autoriza la estación de radio.
-tutorial.crouch.prompt,[C] CROUCH: SLOWER BUT QUIETER,[C] AGACHARSE: MÁS LENTO PERO MÁS SILENCIOSO
-tutorial.crouch.line,Guard ahead. Crouch and he'll hear you less.,Guardia al frente. Agáchate y te oirá menos.
-tutorial.takedown.prompt,[E] CHOKE FROM BEHIND: HE GOES DOWN QUIETLY,[E] ESTRANGULAR POR LA ESPALDA: CAE EN SILENCIO
+tutorial.crouch.title,CROUCH,AGACHARSE
+tutorial.crouch.prompt,[crouch] QUIETER  SLOWER TO SPOT,[crouch] MÁS SILENCIOSO  TARDAN MÁS EN VERTE
+tutorial.crouch.line,Guard ahead. Stay low: he'll hear you less and take longer to spot you.,Guardia al frente. Agáchate: te oirá menos y tardará más en verte.
+tutorial.weapons.title,WEAPONS,ARMAS
+tutorial.weapons.prompt,"[weapon_tranq] TRANQ PISTOL  [weapon_rifle] RIFLE: LOUD, IT KILLS","[weapon_tranq] PISTOLA TRANQ.  [weapon_rifle] FUSIL: RUIDOSO, MATA"
+tutorial.weapons.line,"You carry two. The tranq keeps it quiet; the rifle is loud, and it kills.",Llevas dos. La tranquilizante es silenciosa; el fusil hace ruido y mata.
+tutorial.takedown.title,TAKEDOWN,DERRIBO
+tutorial.takedown.prompt,GET BEHIND HIM  [interact] CHOKE HIM OUT,PONTE A SU ESPALDA  [interact] DUÉRMELO
 tutorial.takedown.line,"Get behind him and choke him out. No noise, no alarm.","Ponte a su espalda y duérmelo. Sin ruido, sin alarma."
-tutorial.carry.prompt,[E] CARRY THE BODY: HIDE IT BEFORE ANYONE FINDS IT,[E] CARGAR EL CUERPO: ESCÓNDELO ANTES DE QUE LO ENCUENTREN
+tutorial.carry.title,CARRY,CARGAR
+tutorial.carry.prompt,[interact] PICK HIM UP  HIDE HIM OUT OF SIGHT,[interact] CÁRGALO  ESCÓNDELO DE LA VISTA
 tutorial.carry.line,A body left in the open gets found. Pick him up and hide him.,Un cuerpo a la vista se encuentra. Cárgalo y escóndelo.
-tutorial.tranq.prompt,[1] TRANQ PISTOL: [RMB] AIM  [LMB] FIRE,[1] PISTOLA TRANQUILIZANTE: [RMB] APUNTAR  [LMB] DISPARAR
+tutorial.tranq.title,TRANQ PISTOL,PISTOLA TRANQ.
+tutorial.tranq.prompt,[aim] AIM  [fire] FIRE A SLEEP DART  GO FOR THE HEAD,[aim] APUNTA  [fire] DISPARA UN DARDO  MEJOR A LA CABEZA
 tutorial.tranq.line,The tranq pistol is silent. Aim for the head and he's out cold.,La pistola tranquilizante es silenciosa. Apunta a la cabeza y cae dormido.
-tutorial.eavesdrop.prompt,STAY CLOSE WHILE HE CALLS IN: YOUR RADIO RECORDS HIS VOICE,QUÉDATE CERCA MIENTRAS REPORTA: TU RADIO GRABA SU VOZ
-tutorial.eavesdrop.line,Guards check in by radio. Stay near one while he talks and we'll get his Voiceprint.,Los guardias reportan por radio. Quédate cerca mientras habla y tendremos su huella de voz.
-tutorial.radio.prompt,[Q] RADIO MENU: SPOOF A TRANSMISSION WITH A VOICEPRINT,[Q] MENÚ DE RADIO: FALSIFICA UNA TRANSMISIÓN CON UNA HUELLA DE VOZ
+tutorial.eavesdrop.title,VOICEPRINT,HUELLA DE VOZ
+tutorial.eavesdrop.prompt,STAY CLOSE WHILE THEY TALK  YOUR RADIO RECORDS THEM,QUÉDATE CERCA MIENTRAS HABLAN  TU RADIO LOS GRABA
+tutorial.eavesdrop.line,Stay close while they talk and your radio will lift their Voiceprints.,Quédate cerca mientras hablan y tu radio captará sus huellas de voz.
+tutorial.radio.title,RADIO,RADIO
+tutorial.radio.prompt,[radio] OPEN THE RADIO  SEND A CALL IN HIS VOICE,[radio] ABRE LA RADIO  ENVÍA UNA LLAMADA CON SU VOZ
 tutorial.radio.line,Got a Voiceprint. Open the radio and I can send a call in his voice.,Tenemos una huella de voz. Abre la radio y puedo enviar una llamada con su voz.
-tutorial.scanner.prompt,[F] SCANNER: SHOWS GUARD VISION CONES FOR 10 SECONDS,[F] ESCÁNER: MUESTRA LOS CONOS DE VISIÓN DE LOS GUARDIAS 10 SEGUNDOS
-tutorial.scanner.line,Use the Scanner. You'll see where they're looking before they see you.,Usa el escáner. Verás hacia dónde miran antes de que te vean.
-tutorial.magazine.prompt,[F] MAGAZINE: HOLD TO AIM  RELEASE TO THROW AS A DISTRACTION,[F] CARGADOR: MANTÉN PARA APUNTAR  SUELTA PARA LANZARLO COMO DISTRACCIÓN
-tutorial.magazine.line,Throw a magazine and the noise pulls him away from his post.,Lanza un cargador y el ruido lo aparta de su puesto.
-tutorial.holdup.prompt,[RMB] AIM FROM BEHIND  [E] HOLD UP  HOLD [E] TO QUESTION HIM,[RMB] APUNTA POR LA ESPALDA  [E] MANOS ARRIBA  MANTÉN [E] PARA INTERROGARLO
-tutorial.holdup.line,"That's the Foreman. Get behind him, aim, and he'll talk. Keep the gun on him.","Ese es el capataz. Ponte a su espalda, apúntale y hablará. No dejes de apuntarle."
-tutorial.fulton.prompt,[G] HOLD BESIDE HIM: FULTON HIM OUT  NOT INDOORS,[G] MANTÉN A SU LADO: SÁCALO CON EL FULTON  NO BAJO TECHO
+tutorial.scanner.title,SCANNER,ESCÁNER
+tutorial.scanner.prompt,[item_next] SELECT THE SCANNER  [item_use] SEE WHERE GUARDS ARE LOOKING,[item_next] ELIGE EL ESCÁNER  [item_use] VE HACIA DÓNDE MIRAN LOS GUARDIAS
+tutorial.scanner.line,Both ways off this ship are watched. Use the Scanner: you'll see where every guard is looking.,Las dos salidas del barco están vigiladas. Usa el escáner: verás hacia dónde mira cada guardia.
+tutorial.magazine.title,MAGAZINE,CARGADOR
+tutorial.magazine.prompt,[item_next] SELECT THE MAGAZINE  HOLD [item_use] AIM  RELEASE TO THROW,[item_next] ELIGE EL CARGADOR  MANTÉN [item_use] APUNTA  SUELTA PARA LANZAR
+tutorial.magazine.line,Throw a magazine past him. The noise pulls him off his post.,Lanza un cargador más allá de él. El ruido lo aparta de su puesto.
+tutorial.holdup.title,HOLD-UP,MANOS ARRIBA
+tutorial.holdup.prompt,[aim] AIM FROM BEHIND  [interact] HOLD UP  HOLD [interact] QUESTION,[aim] APUNTA POR LA ESPALDA  [interact] ENCAÑONA  MANTÉN [interact] INTERROGA
+tutorial.holdup.line,Get behind him and aim: he'll freeze and talk. Keep the gun on him.,Ponte a su espalda y apúntale: se quedará quieto y hablará. No dejes de apuntarle.
+tutorial.fulton.title,FULTON,FULTON
+tutorial.fulton.prompt,HOLD [fulton] BESIDE HIM  OUTDOORS ONLY,MANTÉN [fulton] A SU LADO  SOLO AL AIRE LIBRE
 tutorial.fulton.line,"Out in the open you can send him up on a balloon. He won't be found, and he's ours.","Al aire libre puedes mandarlo arriba en un globo. No lo encontrarán, y es nuestro."
-tutorial.caution.prompt,CAUTION: THEY'RE SEARCHING AND SEE FARTHER  STAY OUT OF SIGHT UNTIL IT ENDS,PRECAUCIÓN: ESTÁN BUSCANDO Y VEN MÁS LEJOS  NO TE DEJES VER HASTA QUE TERMINE
+tutorial.caution.title,CAUTION,PRECAUCIÓN
+tutorial.caution.prompt,THEY'RE SEARCHING  STAY OUT OF SIGHT UNTIL IT ENDS,ESTÁN BUSCANDO  NO TE DEJES VER HASTA QUE TERMINE
 tutorial.caution.line,They know something's wrong. Lie low a minute and they'll settle down.,Saben que algo va mal. Escóndete un minuto y se calmarán.
+tutorial.spotted.title,SEEN,TE HAN VISTO
+tutorial.spotted.prompt,BREAK HIS LINE OF SIGHT  HE'LL LOSE INTEREST,SAL DE SU VISTA  PERDERÁ EL INTERÉS
+tutorial.spotted.line,He's seen something. Get out of his sight and he'll let it go.,Ha visto algo. Sal de su vista y lo dejará estar.
+rank.lesson.ghost,"No Alert, no bodies found, nobody dead. That's the job done right.","Sin alertas, sin cuerpos encontrados, sin muertos. Así se hace el trabajo."
+rank.lesson.unseen,"They never knew you were there. Next time, leave them all breathing.","Nunca supieron que estuviste ahí. La próxima vez, déjalos a todos con vida."
+rank.lesson.clean,"Nobody died. Next time, stay out of sight and hide what you put down.","Nadie murió. La próxima vez, no te dejes ver y esconde a quien derribes."
+rank.lesson.quiet,"No Alert called. Next time, hide the bodies and leave them breathing.","Nadie dio la alarma. La próxima vez, esconde los cuerpos y déjalos con vida."
+rank.lesson.rough,"Rough one. Stay out of their sight, hide the bodies, and the Rank will follow.","Ha sido duro. No te dejes ver, esconde los cuerpos y el rango llegará."
 live.m2.s1.01,Keys recovered. Now the console on the summit.,Claves recuperadas. Ahora la consola de la cima.
 intel.m2.keys,These keys sign the relay's broadcasts. Not one of them belongs to a person.,Estas claves firman las emisiones de la estación. Ninguna pertenece a una persona.
 live.m2.s2.01,Relay is down. Every guard on the island will be looking for the cause.,La estación está caída. Todos los guardias buscarán la causa.

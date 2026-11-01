@@ -107,3 +107,21 @@ func test_the_post_mission_screen_is_rank_then_aigis_and_replays_stop_at_rank() 
 func test_every_letter_has_a_codename() -> void:
 	for l in Rank.LETTERS:
 		assert_true(Rank.TITLES.has(l), "codename for " + l)
+
+
+func test_mission_1_names_the_best_of_the_run() -> void:
+	var r := Rank.new()
+	assert_eq(r.lesson_key(), "rank.lesson.ghost", "no Alert, nothing found, nobody dead")
+	r.kills = 1
+	assert_eq(r.lesson_key(), "rank.lesson.unseen")
+	r.found = 1
+	assert_eq(r.lesson_key(), "rank.lesson.quiet", "no Alert still counts")
+	r.alerts = 1
+	assert_eq(r.lesson_key(), "rank.lesson.rough")
+	r.kills = 0
+	assert_eq(r.lesson_key(), "rank.lesson.clean", "nobody died")
+	for lang in ["en", "es"]:
+		TranslationServer.set_locale(lang)
+		for t in ["ghost", "unseen", "clean", "quiet", "rough"]:
+			assert_ne(tr("rank.lesson." + t), "rank.lesson." + t, t + " " + lang)
+	TranslationServer.set_locale("en")

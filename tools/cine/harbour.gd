@@ -263,11 +263,12 @@ static func _launch(parent: Node) -> Node3D:
 
 # ---- Intro: "Fog Level" -----------------------------------------------------------------------
 # Just above the water, a Metis launch crosses the frame trailing its wake and the camera rises past it to the freighter's
-# bow, where the Operative steps aboard onto the start spot; it settles to the shoulder rig, so control returns with no cut.
-# The bow is a guard-free start (nearest post 17 m away, past a guard's 16 m reach) and he never leaves it. ~9 s.
+# bow, where the Operative steps aboard onto the start spot; it rises over his head to hold on the first problem, O1 pacing
+# across the deck with his back to the bow, then settles to the shoulder rig, so control returns with no cut.
+# The bow is a guard-free start (nearest post 19 m away, past a guard's 16 m reach) and he never leaves it. ~10 s.
 
 const INTRO_KEY := "CineIntro"
-const INTRO_LEN := 9.0
+const INTRO_LEN := 10.0
 const DECK_H := 2.0
 const SEA_H := -1.6
 const INTRO_START := [73.0, 0.0, DECK_H]  # OperativeStart (build_harbour.gd SPOTS); he faces south, into the ship
@@ -278,14 +279,17 @@ const INTRO_BOAT_FROM := [62.0, -9.0, SEA_H + 0.3]  # the launch runs west to ea
 const INTRO_BOAT_TO := [86.0, -9.0, SEA_H + 0.3]
 const INTRO_BOAT_T := 5.5
 
-## The camera (one rail): [at s, camera [x, y, h], aim [x, y, h]]. The last two shots are the shoulder rig's resting pose
+## The camera (one rail): [at s, camera [x, y, h], aim [x, y, h]]. The glimpse looks down the deck at O1's loop (build_harbour.gd
+## PostO1, x 68 to 73.5 at y 19), high enough to see over the hatches. The last two shots are the shoulder rig's resting pose
 ## behind the start spot (pivot 1.45 up, arm 0.55 across and 2.4 back, tilted 0.25 rad; operative.gd), held for the aim to settle.
 const INTRO_SHOTS := [
 	[0.0, [68.0, -16.0, SEA_H + 0.8], [62.0, -9.0, SEA_H + 1.0]],   # a hand above the water, on the launch coming in
 	[2.0, [68.0, -15.5, SEA_H + 1.2], [72.0, -4.0, 1.0]],            # the launch passes; the aim slides to the hull
 	[4.0, [68.0, -9.5, 1.4], [73.0, -1.5, 3.2]],                     # rising up the hull as he steps aboard
 	[6.0, [70.0, -6.5, 3.6], [73.0, 0.0, 3.2]],
-	[7.8, [72.45, -2.33, 4.04], [72.45, 7.4, 1.57]],
+	[7.0, [73.8, 3.5, 5.4], [70.8, 19.0, 2.6]],                      # the glimpse: over his head and the hatches, to O1's back
+	[8.3, [73.4, 5.5, 4.9], [70.8, 19.0, 2.6]],                      # held, a slow push
+	[9.4, [72.45, -2.33, 4.04], [72.45, 7.4, 1.57]],                 # back down to his shoulder
 	[INTRO_LEN, [72.45, -2.33, 4.04], [72.45, 7.4, 1.57]],
 ]
 

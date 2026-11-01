@@ -207,6 +207,8 @@ func mission_1() -> void:
 
 	# sight lines as drawn
 	check(await seen(op, "GuardO1", start, false, 15.0) == 0.0, "E1: the start is out of O1's cones for his whole loop")
+	for lane in [["middle", at(73, 6, 2)], ["between the hatches", at(73, 11, 2)], ["port", at(66.5, 11, 2)], ["starboard", at(79.5, 11, 2)]]:
+		check(await seen(op, "GuardO1", lane[1], false, 20.0) == 0.0, "E1: O1 never sees the bow's %s lane, standing (a safe first stretch)" % lane[0])
 	check(await seen(op, "GuardO1", at(69.5, 7, 2), true, 15.0) == 0.0, "E1: the port hatch hides a crouched Operative from O1")
 	check(await seen(op, "GuardO1", at(79.9, 22, 2), true, 15.0) == 0.0, "E1: O1 never sees the starboard rail beside him")
 	check(await seen(op, "GuardO5", at(66, 38, 2), false, 6.0) > 0.0, "E1: O5's sweep covers the port rail north of him")

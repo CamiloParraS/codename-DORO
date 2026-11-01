@@ -4,7 +4,13 @@ extends Control
 
 const FLASH_TIME := 1.0
 const TICK_TIME := 6.0  # s a Habit Aigis just logged stays lit on the strip
-const TIP_TIME := 6.0
+const TIP_TIME := Tutorial.WAIT_MAX  # s a tip stays up waiting to be done (tip_done fades it sooner)
+const TIP_OUT := 0.3  # s a done tip takes to fade
+const TIP_PAD := Vector2(26, 8)  # the tip's plate round its rows, design px
+const TIP_PLATE := 0.92  # the steps' glass at its edge (the Aigis cue's), so the tip reads over the lit deck and the fog
+const TIP_SPACE := 10.0  # between a tip's words and keys
+const TIP_GAP := 34.0  # between a tip's steps (a double space in its text)
+const TIP_W := 560.0  # the widest row of a tip's steps in the top-left corner
 const VP_SHOWN := 3  # Voiceprint names listed before "+n"
 const SELECT_TIME := 1.4  # s the selector stays open after the last change
 const SELECT_WIPE := 0.2  # s the strip takes to open, in 6 hard steps
@@ -42,6 +48,7 @@ var _crosshairs := {}  # file name -> texture
 var _operative: Node3D
 var _subs := Subtitles.new()
 var _tip := ""         # Mission 1's tutorial prompt (call_group "tutorial_tip"), TIP_TIME seconds
+var _tip_title := ""   # the tip's verb, on its sand slab
 var _tip_left := 0.0
 var _live: CodecCall  # the live Codec call in progress, if any
 var _call_age := 0.0  # s the live call card has been up, for its slide-in

@@ -40,6 +40,15 @@ func bonuses() -> Array[String]:
 	return out
 
 
+## Mission 1's closing lesson (text key rank.lesson.<trait>): the best thing this run did, as Metis names it on
+## the Rank page. ghost: no Alert, nothing found, nobody killed; unseen: no Alert or found body; clean: nobody
+## killed; quiet: no Alert; else rough, with what to work on.
+func lesson_key() -> String:
+	var unseen := alerts == 0 and found == 0
+	var trait_ := "ghost" if unseen and kills == 0 else "unseen" if unseen else "clean" if kills == 0 else "quiet" if alerts == 0 else "rough"
+	return "rank.lesson." + trait_
+
+
 ## This attempt as a Mission Record entry.
 func stats(par_seconds: float) -> Dictionary:
 	return {rank = grade(par_seconds), time = seconds, kills = kills, alerts = alerts}

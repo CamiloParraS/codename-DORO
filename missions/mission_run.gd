@@ -42,7 +42,7 @@ var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
 var cine := {}                     # the takes this Mission plays ({intro, outro}: nodes under the Area's Cine); Campaign.cine_of unless set before _ready
 var take_playing := false          # a take (Cine) is on: the Rank clock, the Session log and the live calls hold; the tree is not paused
 var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame
-var _items := {}                   # Scanner charges and Magazines last frame: a drop is a use
+var _items := {}                   # Scanner charges, Magazines and the gun in hand last frame: a drop is a use, a new gun a switch
 var _holding := false              # some guard was held up last frame
 var _carried: Node                 # what the Operative carried last frame, for the log
 var _carried_name := ""
@@ -272,7 +272,7 @@ func _physics_process(delta: float) -> void:
 		var alerting: bool = AlertChain.area.phase in [AlertChain.Phase.ALERT, AlertChain.Phase.EVASION]
 		SessionLog.current.tick(delta, alerting)
 		_guide(delta, alerting)
-	_teach()
+	_teach(0.0 if get_tree().paused else delta)
 
 
 ## Ticks the AlertChain and passes its events to the guards. Only a completed call counts as an Alert
@@ -346,7 +346,7 @@ func _hint(tier: int) -> void:
 
 ## Mission 1's tutorial: a prompt on the HUD and one Metis radio line the first time a verb matters in the
 ## Encounter that teaches it; a verb the player does unprompted is spent (or, LINE_ONLY, gets just the line).
-func _teach() -> void:
+func _teach(delta: float) -> void:
 	var op: Node3D = get_tree().get_first_node_in_group("operative")
 	if not op:
 		return
@@ -365,7 +365,10 @@ func _teach() -> void:
 		_carried = carried
 		_carried_name = str(carried.name) if carried else ""
 	var holding := false
+	var deck_sees := false  # a deck guard sees the Operative: the first sighting is a lesson (Tutorial.sighted)
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
+		g.sight_scale = tutorial.sight_scale(record.mission, campaign, g.encounter)
+		deck_sees = deck_sees or (g.encounter == 1 and g.seen_rate > 0.0)
 		var key := "down" if g.is_down() else "guard" if g.alert.state in [GuardAlert.State.PATROL, GuardAlert.State.SUSPICION] else ""
 		if key != "":
 			world[key] = minf(world[key], MissionPlaces.flat(op, g))
@@ -378,20 +381,24 @@ func _teach() -> void:
 		world.spot = minf(world.spot, MissionPlaces.flat(op, s))
 	var doing := {crouch = op.crouching, carry = op.carrying != null, eavesdrop = not op.voiceprints.held.is_empty(),
 		holdup = holding, scanner = op.items.charges < _items.get("charges", op.items.charges),
-		magazine = op.items.magazines < _items.get("magazines", op.items.magazines),
+		magazine = op.items.magazines < _items.get("magazines", op.items.magazines), weapons = op.gun() != _items.get("gun", op.gun()),
 		caution = AlertChain.area.phase == AlertChain.Phase.CAUTION}
-	_items = {charges = op.items.charges, magazines = op.items.magazines}
+	_items = {charges = op.items.charges, magazines = op.items.magazines, gun = op.gun()}
 	if holding and not _holding:
 		SessionLog.current.count("holdup")
 	_holding = holding
-	var verb := tutorial.update(record.mission, campaign, Tutorial.relevant(world))
+	var verb := tutorial.sighted(record.mission, campaign, enc, deck_sees)
+	if verb == "":
+		verb = tutorial.update(record.mission, campaign, Tutorial.relevant(world), delta)
 	if verb != "":
-		get_tree().call_group("tutorial_tip", "tip", tr(Tutorial.prompt_key(verb)))
+		get_tree().call_group("tutorial_tip", "tip", tr(Tutorial.prompt_key(verb)), tr(Tutorial.title_key(verb)))
 		_metis_line(verb)
 		SessionLog.current.tip(verb)
 	for v: String in doing:
 		if doing[v]:
 			_metis_line(tutorial.done(v, record.mission, campaign))
+	if tutorial.cleared():
+		get_tree().call_group("tutorial_tip", "tip_done")  # done: the tip fades, the next follows a beat later
 
 
 func _metis_line(verb: String) -> void:
@@ -517,6 +524,7 @@ func _on_extraction() -> void:
 	screen.rank_only = not campaign  # replays and Free mode: the Rank page only
 	screen.strip = MissionTally.strip(record, after)
 	screen.voice_key = VoiceLines.post_key(Aigis.resolve_ending(Aigis.lethality_ratio(after)), VoiceLines.lethality_zero(tally.counts))
+	screen.lesson_key = rank.lesson_key() if record.mission == 0 and campaign else ""  # Mission 1: Metis names the best of the run
 	var show := func() -> void:
 		_overlay(screen)
 		get_tree().paused = true
