@@ -45,6 +45,8 @@ var _subs := Subtitles.new()
 var _tip := ""         # Mission 1's tutorial prompt (call_group "tutorial_tip"), TIP_TIME seconds
 var _tip_left := 0.0
 var _live: CodecCall  # the live Codec call in progress, if any
+var _call_age := 0.0  # s the live call card has been up, for its slide-in
+var _call_out := -1.0  # s since the last line finished (the card slides out); -1 while the call runs
 var _select := ""  # "weapon" or "item" while the selector is open
 var _select_left := 0.0
 var _select_age := 0.0  # s since the selector opened (unscaled), for its wipe

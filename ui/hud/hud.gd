@@ -6,6 +6,9 @@
 ## pixel art keeps its grid. Lives on CanvasLayer 1, above the banding pass (layer -1).
 extends "res://ui/hud/hud_corners.gd"
 
+const CALL_IN_SECS := 0.28   # the live call card slides in from the left and fades up
+const CALL_OUT_SECS := 0.2   # and slides back out, faster, when the call ends
+const CALL_SLIDE := 48.0     # design px of travel
 const CROSSHAIR_PX := 30.0  # logical px a side; the textures are 48, so this shrinks them to 5/8
 
 
@@ -46,12 +49,19 @@ func _process(delta: float) -> void:
 	_subs.tick(delta)
 	if _subs.lines.size() < Subtitles.SHOWN:  # two radio lines own the lower middle: the tip waits, its clock too
 		_tip_left = maxf(_tip_left - delta, 0.0)
-	if _live:
+	if _live and _call_out < 0.0:
+		_call_age += delta
 		var p := _live.advance(delta, true)
 		if not p.is_empty():
 			Mixer.blip(p.back())
 		if _live.done():
+			_live.index = _live.lines.size() - 1  # the last line stays drawn while the card slides out
+			_call_out = 0.0
+	elif _live:
+		_call_out += delta
+		if _call_out >= CALL_OUT_SECS:
 			_live = null
+			_call_out = -1.0
 	for g in get_tree().get_nodes_in_group("guards"):
 		var now: bool = g.alert.state == GuardAlert.State.ALERT
 		if now and not _was_alert.get(g, false):
@@ -89,6 +99,8 @@ func tip(text: String) -> void:
 ## A live Codec call (call_group "codec_live"): play goes on while it runs.
 func live_call(lines: Array) -> void:
 	_live = CodecCall.new(lines)
+	_call_age = 0.0
+	_call_out = -1.0
 
 
 func _read_run() -> void:
@@ -284,6 +296,12 @@ func _live_call(dim: float) -> float:
 		return CALL.y
 	var c := _canvas
 	var k := _k()
+	var e := _enter(_call_age, CALL_IN_SECS)  # 0 -> 1 in, 1 -> 0 out (ease-in, so it leaves briskly)
+	if _call_out >= 0.0:
+		e = 1.0 - pow(clampf(_call_out / CALL_OUT_SECS, 0.0, 1.0), 2.0)
+	var slide := -(1.0 - e) * CALL_SLIDE
+	dim *= e
+	c.draw_set_transform(Vector2(slide, 0) * k, 0.0, Vector2(k, k))
 	var who := "handler" if _live.speaker() == "operative" else _live.portrait()
 	var frame := 1 if _live.typing() and int(Time.get_ticks_msec() / 160.0) % 2 == 0 else 0
 	var tex := _portrait(who, frame)
@@ -294,7 +312,7 @@ func _live_call(dim: float) -> float:
 	HudPalette.plate(c, Rect2(box.position, box.size + Vector2(HudPalette.FADE_W, 0)), HudPalette.GLASS, 0.4 * dim, 0.92 * dim, false)  # borderless, dithering away on its inner side like the other plates
 	if tex:
 		_face.texture = tex
-		_face.position = (CALL + Vector2(12, 14)) * k
+		_face.position = (CALL + Vector2(12 + slide, 14)) * k
 		_face.size = Vector2.ONE * FACE * k
 		_face.modulate = Color(MINT, dim)
 		_face.visible = true
@@ -313,6 +331,7 @@ func _live_call(dim: float) -> float:
 		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 24, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
 		left -= l.length() + 1
 		y += 32
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	return box.end.y + 24
 
 
