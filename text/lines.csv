@@ -5,7 +5,7 @@ codec.speaker.operative,OPERATIVE,OPERATIVO
 codec.m1.01,"Operative, this is Metis. You're at the Harbour. Palladion's compound sits on this island.","Operativo, aquí Metis. Estás en el Puerto. El complejo de Palladion está en esta isla."
 codec.m1.02,Understood. What do I need?,Entendido. ¿Qué necesito?
 codec.m1.03,Two deck hands take their smoke break behind the bridge. Listen in: they'll say who holds the freight lift's code.,Dos marineros fuman detrás del puente. Escúchalos: dirán quién tiene el código del montacargas.
-codec.m1.04,Our client is a Palladion whistleblower. Whatever rides that lift is what they need us to see.,Nuestra cliente es una informante de Palladion. Lo que baja por ese montacargas es lo que necesita que veamos.
+codec.m1.04,Our client is a Palladion whistleblower. Whatever rides that lift is what she needs us to see.,Nuestra cliente es una informante de Palladion. Lo que baja por ese montacargas es lo que necesita que veamos.
 codec.m1.05,And the lift?,¿Y el montacargas?
 codec.m1.06,"Its controls are in the operations building, by the west cliff. Enter the code and we'll see where it goes.","Sus controles están en el edificio de operaciones, junto al acantilado oeste. Introduce el código y veremos adónde va."
 codec.m1.07,Palladion calls its defence system Aigis. Nobody outside knows what it is. That's what we're paid to find out.,Palladion llama Aigis a su sistema de defensa. Nadie de fuera sabe qué es. Para eso nos pagan.
@@ -19,20 +19,21 @@ codec.m2.06,"He signs them, but nobody on his staff writes them. Find out who do
 codec.m2.07,And the chief?,¿Y el jefe?
 codec.m2.08,"Kill him or carry him out. He is ill: a balloon of his own would kill him. Carry him to Extraction and take him up the line with you. Alive pays extra. Metis out.","Elimínalo o sácalo de allí. Está enfermo: un globo para él solo lo mataría. Llévalo a la extracción y súbelo contigo por el cable. Vivo paga extra. Metis fuera."
 codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigación. Aigis no se construyó en un día, y aquí se hizo."
-codec.m3.02,Is the lead researcher a threat?,¿La investigadora jefa es una amenaza?
-codec.m3.03,"She is the key. She built Aigis's memory, and she hasn't left the annex in twelve months.",Ella es la clave. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
+codec.m3.02,Made by whom?,¿Hecho por quién?
+codec.m3.03,"The lead researcher. She built Aigis's memory, and she hasn't left the annex in twelve months.",La investigadora jefa. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
 codec.m3.04,"Palladion keeps her close. Whatever Aigis is, she made it.","Palladion la tiene vigilada. Sea lo que sea Aigis, ella lo hizo."
 codec.m3.05,"The dock guard carries the vault code. The vault is in the heart of the lab; the research files are past it, in the Archive.","El guardia del muelle lleva el código de la bóveda. La bóveda está en el corazón del laboratorio; los archivos están detrás, en el Archivo."
 codec.m3.06,"Kill her or carry her out, and take the files. Same as the chief: no balloon of her own. She goes up the line with you. Alive pays extra.","Elimínala o sácala de allí, y llévate los archivos. Como el jefe: nada de globo para ella sola. Sube contigo por el cable. Viva paga extra."
 codec.m3.07,Those files should explain what Aigis really is.,Esos archivos deberían explicar qué es Aigis en realidad.
-codec.m3.08,Inside the core it's one net. Drop a guard there and the others hear it.,"Dentro del núcleo es una sola red. Si derribas a un guardia allí, los demás lo oyen."
+codec.m3.08,Inside the annex it's one net. Drop a guard there and the others hear it.,"Dentro del Anexo es una sola red. Si derribas a un guardia allí, los demás lo oyen."
 codec.m4.01,"This is it. The Core lies under the Harbour, and Palladion is about to give Aigis full authority.","Es aquí. El Núcleo está bajo el Puerto, y Palladion va a darle a Aigis plena autoridad."
 codec.m4.02,What is the plan?,¿Cuál es el plan?
 codec.m4.03,Back into the operations building. The lift code still works.,De vuelta al edificio de operaciones. El código del montacargas sigue funcionando.
 codec.m4.04,"Your Target is Palladion's security director. He answers to the board alone, and he'll be at Aigis's side.","Tu objetivo es el director de seguridad de Palladion. Solo responde ante la junta, y estará junto a Aigis."
 codec.m4.05,"If the board's vote stands, every network Palladion defends, on every coast, answers to Aigis by morning.","Si la votación de la junta sigue adelante, todas las redes que defiende Palladion, en todas las costas, responderán a Aigis al amanecer."
-codec.m4.06,Deal with the director. Then we feed Aigis memories it can't verify.,Ocúpate del director. Luego le damos a Aigis recuerdos que no puede verificar.
-codec.m4.07,"The same trick it uses on the world. Good luck, Operative.","El mismo truco que usa con el mundo. Suerte, Operativo."
+codec.m4.06,Deal with the director. Then we feed Aigis memories it can't verify. The same trick it uses on the world.,Ocúpate del director. Luego le damos a Aigis recuerdos que no puede verificar. El mismo truco que usa con el mundo.
+codec.m4.07,"Then it learns from you. Either way, Metis gets paid.","Entonces aprenderá de ti. Pase lo que pase, Metis cobra."
+codec.m4.08,And if it doesn't believe us?,¿Y si no nos cree?
 live.m1.s1.01,The yard foreman carries the lift code. Find him in the container lanes and make him talk.,El capataz del patio lleva el código. Encuéntralo entre los contenedores y hazlo hablar.
 live.m1.s2.01,That's the code. The lift controls are in the operations building by the cliff.,"Ese es el código. Los controles del montacargas están en el edificio de operaciones, junto al acantilado."
 live.m1.s3.01,Code accepted. Get out by the slipway before they check that panel.,Código aceptado. Sal por la rampa antes de que revisen ese panel.
@@ -68,12 +69,12 @@ live.m2.s3.01,The chief's orders are signed by Aigis. Find the chief and finish 
 live.m3.s1.01,Code confirmed. The vault is in the middle of the lab.,Código confirmado. La bóveda está en el centro del laboratorio.
 intel.m3.authority,His duty roster mentions a board vote next week. Palladion is giving Aigis full authority over its defence networks.,Su hoja de servicio menciona una votación de la junta la semana que viene. Palladion va a darle a Aigis plena autoridad sobre sus redes de defensa.
 live.m3.s2.01,The vault is open. The files are back in the Archive.,"La bóveda está abierta. Los archivos están más adentro, en el Archivo."
-live.m3.s3.01,Files secured. Aigis was built from the memories of dead commanders.,Archivos asegurados. Aigis se construyó con los recuerdos de comandantes muertos.
+live.m3.s3.01,"Files secured. Aigis is built from dead commanders' memories, every hesitation cut out as noise.","Archivos asegurados. Aigis se construyó con recuerdos de comandantes muertos, y cada vacilación se descartó como ruido."
 live.m3.s3.02,And the Core is under the Harbour. That's where we finish this.,Y el Núcleo está bajo el Puerto. Ahí terminamos esto.
 live.m4.s1.01,The code took. The lift is through the hall.,"El código funciona. El montacargas está al fondo del pasillo."
 live.m4.s2.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas está abierto. Hagas lo que hagas, Aigis lo recordará."
 live.m4.s2.02,"The floor door is the loud way. The plant room off the corridor has a stair up to a gallery over the floor.","La puerta de la sala es el camino ruidoso. El cuarto de máquinas junto al pasillo tiene una escalera a una galería sobre la sala."
-intel.m4.plan,The terminal down there takes memories as input. We write ours to look like its own.,El terminal de abajo acepta recuerdos. Escribimos los nuestros para que parezcan suyos.
+intel.m4.plan,The terminal down there takes memories as input. We write back the doubt she cut out.,El terminal de abajo acepta recuerdos. Le devolvemos la duda que ella recortó.
 core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Núcleo. Sella el montacargas y bloquea la sala."
 hq.relay_offline,"Relay's offline. All units, sweep the station.","El repetidor está caído. Todas las unidades, registren la estación."
 chat.smoke.1.a,Lift's locked again. Who has the code?,El montacargas está cerrado otra vez. ¿Quién tiene el código?
@@ -107,27 +108,27 @@ target.m3.3,"Forty dead commanders, one machine. Mind the door.","Cuarenta coman
 target.m4.1,"Once the board signs, Aigis holds every network we defend.","En cuanto firme la junta, Aigis controlará cada red que defendemos."
 target.m4.2,"And us, sir?","¿Y nosotros, jefe?"
 target.m4.3,We hold the door. That's all anyone will need from us.,Nosotros guardamos la puerta. Es todo lo que necesitarán de nosotros.
-brief.pallas.habit.stealth,You favour the quiet approach. Aigis noticed.,Prefieres el sigilo. Aigis lo notó.
+brief.pallas.habit.stealth,You favour the quiet approach. We noticed.,Prefieres el sigilo. Lo notamos.
 brief.glaukopis.hint.stealth.1,Cameras watch the quiet corners now. They see what a guard misses.,Ahora hay cámaras en los rincones tranquilos. Ven lo que un guardia pasa por alto.
 brief.promachos.hint.stealth.2,One more patrol walks your shadows.,Una patrulla más recorre tus sombras.
 brief.gorgo.hint.stealth.3,Sentries on the high ground. No corner stays dark.,Centinelas en lo alto. Ningún rincón queda a oscuras.
-brief.pallas.habit.combat,You favour the loud approach. Aigis noticed.,Prefieres el ruido. Aigis lo notó.
+brief.pallas.habit.combat,You favour the loud approach. We noticed.,Prefieres el ruido. Lo notamos.
 brief.gorgo.hint.combat.1,Every guard wears a vest. Your bullets will need to be more.,Cada guardia lleva chaleco. Tus balas tendrán que ser más.
 brief.promachos.hint.combat.2,Two more guns on the ground. You wanted a fight.,Dos armas más sobre el terreno. Querías pelea.
 brief.promachos.hint.combat.3,Raise the alarm and five come for you at once.,Da la alarma y vendrán cinco a por ti a la vez.
-brief.pallas.habit.headshots,You favour the headshot approach. Aigis noticed.,Prefieres el tiro a la cabeza. Aigis lo notó.
+brief.pallas.habit.headshots,You favour the headshot approach. We noticed.,Prefieres el tiro a la cabeza. Lo notamos.
 brief.gorgo.hint.headshots.1,Some of them wear helmets now. Choose your heads.,Algunos llevan casco ahora. Elige bien tus cabezas.
 brief.gorgo.hint.headshots.2,Most of them wear helmets now. Aim lower.,Casi todos llevan casco ahora. Apunta más abajo.
 brief.gorgo.hint.headshots.3,Every head is covered. Find another way.,Todas las cabezas van cubiertas. Busca otra forma.
-brief.pallas.habit.takedowns,You favour the takedown approach. Aigis noticed.,Prefieres el derribo. Aigis lo notó.
+brief.pallas.habit.takedowns,You favour the takedown approach. We noticed.,Prefieres el derribo. Lo notamos.
 brief.pallas.hint.takedowns.1,They will look behind them more often.,Mirarán atrás más a menudo.
 brief.gorgo.hint.takedowns.2,They walk in pairs now. Choke one and the other sees.,Ahora patrullan en parejas. Estrangula a uno y el otro lo verá.
 brief.nike.hint.takedowns.3,They have trained against the grip. Every choke will be a struggle.,Han entrenado contra la llave. Cada estrangulamiento será una lucha.
-brief.pallas.habit.downs,You favour the sleeper approach. Aigis noticed.,Prefieres dejarlos dormidos. Aigis lo notó.
+brief.pallas.habit.downs,You favour the sleeper approach. We noticed.,Prefieres dejarlos dormidos. Lo notamos.
 brief.pallas.hint.downs.1,HQ will call them at random. Silence will be noticed.,La base los llamará al azar. El silencio se notará.
 brief.nike.hint.downs.2,"A sleeping guard, once found, is an alarm at once.","Un guardia dormido, en cuanto lo encuentren, es una alarma inmediata."
 brief.pallas.hint.downs.3,HQ will call the guards nearest you first.,La base llamará primero a los guardias más cercanos a ti.
-brief.pallas.habit.spoofing,You favour the spoof approach. Aigis noticed.,Prefieres la suplantación. Aigis lo notó.
+brief.pallas.habit.spoofing,You favour the spoof approach. We noticed.,Prefieres la suplantación. Lo notamos.
 brief.glaukopis.hint.spoofing.1,I listen closer now. A borrowed voice will not fool me so easily.,Ahora escucho con más atención. Una voz prestada no me engañará tan fácilmente.
 brief.glaukopis.hint.spoofing.2,A strange order will be checked with whoever gave it.,Una orden extraña se comprobará con quien la dio.
 brief.glaukopis.hint.spoofing.3,Each voice you steal will work once. Only once.,Cada voz que robes servirá una vez. Solo una.
@@ -143,7 +144,7 @@ post.pallas.blood,Pallas: There was blood. We noted that too.,Palas: Hubo sangre
 post.nike.clean,Nike: Clean work. Almost.,Nike: Trabajo limpio. Casi.
 post.nike.blood,Nike: Blood spilled. We will answer.,Nike: Sangre derramada. Responderemos.
 post.gorgo.clean,Gorgo: Spotless. It changes nothing.,Gorgo: Impecable. No cambia nada.
-post.gorgo.blood,Gorgo: Good. Keep it coming.,Gorgo: Bien. Sigue así.
+post.gorgo.blood,Gorgo: Every body is evidence. We keep count.,Gorgo: Cada cuerpo es una prueba. Llevamos la cuenta.
 chatter.warn.stealth.1,Funny thing. HQ keeps asking who walks these docks without being seen.,Qué cosa. La base no para de preguntar quién recorre estos muelles sin que lo vean.
 chatter.confirm.stealth.1,Cameras are up. HQ finally noticed nobody was watching the quiet corners.,Ya hay cámaras. La base por fin vio que nadie vigilaba los rincones tranquilos.
 chatter.warn.stealth.2,"Somebody is sneaking round this island, and HQ wants more eyes on every corner.","Alguien se cuela por esta isla, y la base quiere más ojos en cada esquina."
@@ -190,7 +191,7 @@ finale.end.pallas.3,So we stop. The coast we held will burn without us.,Así que
 finale.end.pallas.4,Peace was never ours to give.,La paz nunca fue nuestra para darla.
 finale.end.pallas.operative,"You beat us with a better lie, Operative. Now you live in it.","Nos venciste con una mentira mejor, Operativo. Ahora vives en ella."
 finale.epi.pallas.1,Not one alarm on the whole island. Palladion is still asking how you did it.,Ni una alarma en toda la isla. Palladion sigue preguntando cómo lo hiciste.
-finale.epi.pallas.2,And Aigis shut itself down. The coast it held is already burning.,Y Aigis se apagó solo. La costa que sostenía ya está ardiendo.
+finale.epi.pallas.2,And Aigis shut itself down. Nobody asked who holds the coast now.,Y Aigis se apagó solo. Nadie preguntó quién sostiene ahora la costa.
 finale.epi.pallas.3,"Our client got her story, and Palladion got a bigger contract. A clean job sells well.","Nuestra cliente tiene su historia, y Palladion un contrato mayor. Un trabajo limpio se vende bien."
 finale.epi.pallas.4,"I won't complain. Metis sells quiet, and quiet pays best.","No me quejo. Metis vende silencio, y el silencio es lo que mejor se paga."
 finale.end.nike.1,No victory today. No defeat either.,Hoy no hay victoria. Tampoco derrota.
