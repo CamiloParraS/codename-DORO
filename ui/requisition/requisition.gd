@@ -154,7 +154,10 @@ func _draw() -> void:
 	var ids: Array = Requisition.UPGRADES.keys()
 	if row < ids.size():  # the picked gear, huge and faint behind everything, wiping in as the pick changes
 		var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0
-		_icon_in(BIG_ICONS[ids[row]], Rect2(560, 190, 1160, 770), Color(DARK, 0.065), 560.0 + 1160.0 * wipe, true)
+		var kk := size.y / HudPalette.DESIGN_H
+		draw_set_transform(Vector2(1010, 600) * kk, -0.15, Vector2(kk, kk))  # tilted a little about the art's centre
+		_icon_in(BIG_ICONS[ids[row]], Rect2(-400, -290, 800, 580), Color(DARK, 0.045), -400.0 + 800.0 * wipe, true)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(kk, kk))
 	var g := Campaign.gear
 	_title()
 	_ranks(g)
