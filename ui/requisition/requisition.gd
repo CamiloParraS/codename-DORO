@@ -16,6 +16,7 @@ const RED := HudPalette.DMG
 const ROW_H := 112.0
 const BOARD := Vector2(80, 230)
 const CELL := Vector2(123, 93)  # whole chrome pixels
+const SHADOW := Vector2(6, 6)  # a gear card's drop shadow, two chrome pixels
 const SLOTS := 4  # rank columns, filled or empty, as in Peace Walker's R&D grid
 const WIPE_SECS := 0.3
 ## The in-game gear icons (small, in the rank cells) and their large copies (the drawing panel), by upgrade.
@@ -149,8 +150,8 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, d), PAPER)
-	PixelKit.wash(self, Rect2(0, 0, d.x, 120), Color(DARK, 0.08), 0.18, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground, kept faint
-	PixelKit.wash(self, Rect2(0, d.y - 240, d.x, 120), Color(DARK, 0.08), 0.0, 0.2, false, 12.0)
+	PixelKit.wash(self, Rect2(0, 0, d.x, 120), Color(DARK, 0.1), 0.36, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground, kept faint
+	PixelKit.wash(self, Rect2(0, d.y - 240, d.x, 120), Color(DARK, 0.1), 0.0, 0.4, false, 12.0)
 	var ids: Array = Requisition.UPGRADES.keys()
 	if row < ids.size():  # the picked gear, huge and faint behind everything, wiping in as the pick changes
 		var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0
@@ -222,8 +223,8 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 	var y := BOARD.y + i * ROW_H
 	var on := row == i
 	var bought: int = g.bought.get(id, 0)
-	HudPalette.hud_text(self, Vector2(BOARD.x, y + 52), tr("ui.upgrade.%s" % id).to_upper(), 26, RED if on else DARK, _f(26, 0.1), 0, false)
-	HudPalette.hud_text(self, Vector2(BOARD.x, y + 80), tr("ui.upgrade.%s.effect" % id).to_upper(), 16, MUTED, _f(16, 0.2), 0, false)
+	HudPalette.hud_text(self, Vector2(BOARD.x, y + 52), tr("ui.upgrade.%s" % id).to_upper(), 30, RED if on else DARK, _f(30, 0.1), 0, false)
+	HudPalette.hud_text(self, Vector2(BOARD.x, y + 83), tr("ui.upgrade.%s.effect" % id).to_upper(), 18, MUTED, _f(18, 0.2), 0, false)
 	if on:
 		HudPalette.px_poly(self, PackedVector2Array([Vector2(BOARD.x - 27, y + 38), Vector2(BOARD.x - 9, y + 52), Vector2(BOARD.x - 27, y + 66)]), RED)
 	draw_rect(Rect2(BOARD.x + 250, y + 40, 600, 3), Color(DARK, 0.35))
@@ -235,11 +236,13 @@ func _upgrade_row(i: int, id: String, g: Requisition) -> void:
 		var cell := Rect2(BOARD.x + 250 + c * 150, y + 4, CELL.x, CELL.y)
 		var value: int = Requisition.BASE[u.stat] + u.step * (c + 1)
 		if c < bought:  # owned
+			PixelKit.cut_fill(self, Rect2(cell.position + SHADOW, cell.size), Color(0, 0, 0, 0.26), 3)  # a pixel shadow lifts the card
 			PixelKit.cut_fill(self, cell, DARK)
 			_icon_in(GEAR_ICONS[id], Rect2(cell.position + Vector2(10, 14), Vector2(44, 34)), HudPalette.LIGHT, INF)
 			HudPalette.hud_text(self, Vector2(cell.end.x - 10, cell.get_center().y + 14), str(value), 38, HudPalette.LIGHT, _f(38, 0.02), 2, false)
 		elif c == bought:  # next: white with its cost under it, dashed when out of reach
 			var poor: bool = g.points < u.price
+			PixelKit.cut_fill(self, Rect2(cell.position + SHADOW, cell.size), Color(0, 0, 0, 0.26), 3)
 			PixelKit.cut_fill(self, cell, SHEET)
 			if poor:
 				_ghost(cell, MUTED, 0.0)
