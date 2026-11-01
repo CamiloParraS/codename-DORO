@@ -284,9 +284,9 @@ func _ghost(r: Rect2, col: Color, tone: float) -> void:
 
 ## The drawing panel: the picked upgrade's name, a flat icon, effect and the buy bar.
 func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
-	var r := Rect2(d.x - 80 - 700, 150, 700, 560)
+	var r := Rect2(d.x - 80 - 700, 150, 700, 500)
 	r = PixelKit.snap(r)
-	PixelKit.cut_fill(self, r, Color(SHEET, 0.93), 6)
+	PixelKit.cut_fill(self, r, Color(SHEET, 0.84), 6)
 	PixelKit.frame(self, r, DARK, 6)
 	if row >= ids.size():
 		return
