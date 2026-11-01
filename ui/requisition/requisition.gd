@@ -149,8 +149,8 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var d := size / k
 	draw_rect(Rect2(Vector2.ZERO, d), PAPER)
-	PixelKit.wash(self, Rect2(0, 0, d.x, 200), Color(DARK, 0.08), 0.18, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground, kept faint
-	PixelKit.wash(self, Rect2(0, d.y - 340, d.x, 220), Color(DARK, 0.08), 0.0, 0.2, false, 12.0)
+	PixelKit.wash(self, Rect2(0, 0, d.x, 120), Color(DARK, 0.08), 0.18, 0.0, false, 12.0)  # the paper's shading, dithered like Peace Walker's halftone ground, kept faint
+	PixelKit.wash(self, Rect2(0, d.y - 240, d.x, 120), Color(DARK, 0.08), 0.0, 0.2, false, 12.0)
 	var ids: Array = Requisition.UPGRADES.keys()
 	if row < ids.size():  # the picked gear, huge and faint behind everything, wiping in as the pick changes
 		var wipe := floorf(clampf(_age / WIPE_SECS, 0.0, 1.0) * 7.0) / 7.0
@@ -176,24 +176,24 @@ func _draw() -> void:
 		HudPalette.hud_text(self, Vector2(BOARD.x + 300, iy + 20), tr("ui.item.%s.effect" % it.id).to_upper(), 18, ink, _f(18, 0.12), 0, false)
 		var state := tr("ui.req.unlocked") if have else tr("ui.req.s_on").format({n = i + 1})
 		HudPalette.hud_text(self, Vector2(BOARD.x + 1000, iy + 20), state.to_upper(), 18, RED if have else MUTED, _f(18, 0.14), 2, false)
-	var cr := Rect2(BOARD.x, _continue_y(), 400, 48)
+	var cr := Rect2(BOARD.x, _continue_y(), 400, 56)
 	var cont := row == ids.size()
 	PixelKit.cut_fill(self, PixelKit.snap(cr), RED if cont else DARK, 3)
-	HudPalette.hud_text(self, cr.position + Vector2(24, 35), tr("ui.menu.continue").to_upper(), 30, HudPalette.LIGHT, _f(30, 0.14), 0, false)
+	HudPalette.hud_text(self, cr.position + Vector2(24, 39), tr("ui.menu.continue").to_upper(), 30, HudPalette.LIGHT, _f(30, 0.14), 0, false)
 	_panel(d, ids, g)
 	var line := metis()
-	draw_rect(Rect2(0, d.y - 90, d.x, 42), DARK)
-	draw_rect(Rect2(0, d.y - 90, 110, 42), RED)
-	HudPalette.hud_text(self, Vector2(55, d.y - 62), "METIS", 18, HudPalette.LIGHT, _f(18, 0.3), 1, false)
+	draw_rect(Rect2(0, d.y - 120, d.x, 56), DARK)
+	draw_rect(Rect2(0, d.y - 120, 110, 56), RED)
+	HudPalette.hud_text(self, Vector2(55, d.y - 84), "METIS", 18, HudPalette.LIGHT, _f(18, 0.3), 1, false)
 	if line != "":
-		HudPalette.hud_text(self, Vector2(136, d.y - 61), line, 21, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-	draw_rect(Rect2(0, d.y - 48, d.x, 48), HudPalette.GROUND)
+		HudPalette.hud_text(self, Vector2(136, d.y - 83), line, 21, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+	draw_rect(Rect2(0, d.y - 64, d.x, 64), HudPalette.GROUND)
 	var hx := 80.0
 	for hint: Array in [[["UP", "DOWN"], "pick"], [["ENTER"], "buy"], [["ESC"], "continue"]]:
 		for legend: String in hint[0]:
-			hx += HudPalette.keycap(self, Vector2(hx, d.y - 41), legend, true) + 6
+			hx += HudPalette.keycap(self, Vector2(hx, d.y - 50), legend, true) + 6
 		var verb := tr("ui.req.hint." + hint[1]).to_upper()
-		HudPalette.hud_text(self, Vector2(hx + 8, d.y - 17), verb, 20, HudPalette.LIGHT_2, _f(20, 0.16), 0, false)
+		HudPalette.hud_text(self, Vector2(hx + 8, d.y - 24), verb, 20, HudPalette.LIGHT_2, _f(20, 0.16), 0, false)
 		hx += _f(20, 0.16).get_string_size(verb, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 56
 
 
