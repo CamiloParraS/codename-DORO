@@ -14,6 +14,7 @@ const EFFECTS := {
 }
 
 var _mat := ShaderMaterial.new()
+var _lens_mat := ShaderMaterial.new()
 
 
 func _ready() -> void:
@@ -39,6 +40,17 @@ func _ready() -> void:
 	post.material = _mat
 	add_child(post)
 
+	# The lens sits above the HUD (layer 1) and the Codec, under the take's bars (3): it bends everything beneath it.
+	var lens_layer := CanvasLayer.new()
+	lens_layer.layer = 2
+	var lens := ColorRect.new()
+	lens.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	lens.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_lens_mat.shader = load("res://assets/shaders/hud_lens.gdshader")
+	lens.material = _lens_mat
+	lens_layer.add_child(lens)
+	add_child(lens_layer)
+
 	get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_NEAREST
 	get_window().size_changed.connect(_update_scale)
 	_update_scale()
@@ -47,6 +59,11 @@ func _ready() -> void:
 ## 3D scale that makes the internal height 480 (854 wide at 16:9) whatever the window size.
 func _update_scale() -> void:
 	get_viewport().scaling_3d_scale = clampf(float(INTERNAL_HEIGHT) / get_window().size.y, 0.05, 1.0)
+
+
+## The lens' bend: 0 is flat, 0.03-0.08 is subtle.
+func set_lens(strength: float) -> void:
+	_lens_mat.set_shader_parameter(&"strength", strength)
 
 
 ## Switch one of EFFECTS (fringe, scanlines) on or off.
