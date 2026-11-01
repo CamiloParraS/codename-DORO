@@ -19,7 +19,7 @@ codec.m2.06,"He signs them, but nobody on his staff writes them. Find out who do
 codec.m2.07,And the chief?,¿Y el jefe?
 codec.m2.08,"Kill him or carry him out. He is ill: a balloon of his own would kill him. Carry him to Extraction and take him up the line with you. Alive pays extra. Metis out.","Elimínalo o sácalo de allí. Está enfermo: un globo para él solo lo mataría. Llévalo a la extracción y súbelo contigo por el cable. Vivo paga extra. Metis fuera."
 codec.m3.01,"The Research Annex. Aigis was not built in a day, and this is where it was made.","El Anexo de Investigación. Aigis no se construyó en un día, y aquí se hizo."
-codec.m3.02,Made by whom?,¿Hecho por quién?
+codec.m3.02,Made by whom?,¿Quién lo hizo?
 codec.m3.03,"The lead researcher. She built Aigis's memory, and she hasn't left the annex in twelve months.",La investigadora jefa. Construyó la memoria de Aigis y no ha salido del Anexo en doce meses.
 codec.m3.04,"Palladion keeps her close. Whatever Aigis is, she made it.","Palladion la tiene vigilada. Sea lo que sea Aigis, ella lo hizo."
 codec.m3.05,"The dock guard carries the vault code. The vault is in the heart of the lab; the research files are past it, in the Archive.","El guardia del muelle lleva el código de la bóveda. La bóveda está en el corazón del laboratorio; los archivos están detrás, en el Archivo."
@@ -74,7 +74,7 @@ live.m3.s3.02,And the Core is under the Harbour. That's where we finish this.,Y 
 live.m4.s1.01,The code took. The lift is through the hall.,"El código funciona. El montacargas está al fondo del pasillo."
 live.m4.s2.01,"The lift is open. Whatever you do next, Aigis will remember.","El montacargas está abierto. Hagas lo que hagas, Aigis lo recordará."
 live.m4.s2.02,"The floor door is the loud way. The plant room off the corridor has a stair up to a gallery over the floor.","La puerta de la sala es el camino ruidoso. El cuarto de máquinas junto al pasillo tiene una escalera a una galería sobre la sala."
-intel.m4.plan,The terminal down there takes memories as input. We write back the doubt she cut out.,El terminal de abajo acepta recuerdos. Le devolvemos la duda que ella recortó.
+intel.m4.plan,The terminal down there takes memories as input. We write back the doubt she cut out.,El terminal de abajo acepta recuerdos. Le devolvemos la duda que ella eliminó.
 core.director.01,"Aigis, an intruder is in the Core. Seal the lift and lock the room.","Aigis, hay un intruso en el Núcleo. Sella el montacargas y bloquea la sala."
 hq.relay_offline,"Relay's offline. All units, sweep the station.","El repetidor está caído. Todas las unidades, registren la estación."
 chat.smoke.1.a,Lift's locked again. Who has the code?,El montacargas está cerrado otra vez. ¿Quién tiene el código?
@@ -169,35 +169,35 @@ chatter.warn.spoofing.1,HQ thinks someone is faking voices on the radio. Be care
 chatter.confirm.spoofing.1,HQ checks every odd call now. It rings the speaker back to be sure.,La base comprueba cada llamada rara. Vuelve a llamar al que habló para asegurarse.
 chatter.warn.spoofing.2,Heard HQ wants a closer ear on the radio. Something sounded wrong.,He oído que la base quiere escuchar mejor la radio. Algo sonó raro.
 chatter.confirm.spoofing.2,"New radio rules. Every voice is checked, and no recording works twice.","Normas nuevas de radio. Se comprueba cada voz, y ninguna grabación sirve dos veces."
-finale.debate.promachos.pallas,Strike first. Doubt is how they win.,Ataca primero. La duda es cómo ganan.
+finale.debate.promachos.pallas,Strike first. Doubt is how they win.,Ataca primero. Con la duda ganan ellos.
 finale.debate.promachos.nike,Delete it. A weapon needs no memories.,Bórralo. Un arma no necesita recuerdos.
 finale.debate.promachos.gorgo,They came armed. Their memories mean nothing.,Vinieron armados. Sus recuerdos no significan nada.
-finale.debate.nike.pallas,"If stopping wins, stop. I only want to win.","Si detenerse gana, detente. Yo solo quiero ganar."
+finale.debate.nike.pallas,"If stopping wins, stop. I only want to win.","Si parar es ganar, para. Yo solo quiero ganar."
 finale.debate.nike.nike,Keep what serves victory. Cut the rest.,Guarda lo que sirve a la victoria. Corta el resto.
-finale.debate.nike.gorgo,Count their kills. That memory needs no checking.,Cuenta sus muertos. Ese recuerdo no necesita comprobarse.
+finale.debate.nike.gorgo,Count their kills. That memory needs no checking.,Cuenta a los que mataron. Ese recuerdo no hace falta comprobarlo.
 finale.debate.pallas.pallas,"We were built from doubters. This is their doubt, returned.","Nos hicieron con gente que dudaba. Esta es su duda, devuelta."
 finale.debate.pallas.nike,Half of this is true. We cannot tell which half.,La mitad es verdad. No sabemos qué mitad.
-finale.debate.pallas.gorgo,I wanted to believe. Their dead will not let me.,Quería creer. Sus muertos no me dejan.
+finale.debate.pallas.gorgo,I wanted to believe. Their dead will not let me.,Quería creerlo. Sus víctimas no me dejan.
 finale.debate.gorgo.pallas,"If we are the threat, the shield turns inward.","Si la amenaza somos nosotros, el escudo se vuelve hacia dentro."
 finale.debate.gorgo.nike,Guard the core. Let the rest sleep.,Protege el núcleo. Que el resto duerma.
 finale.debate.gorgo.gorgo,Every body they left is evidence. The shield holds.,Cada cuerpo que dejaron es una prueba. El escudo resiste.
 finale.debate.glaukopis.0,I find no seam. These memories read as our own.,No encuentro costuras. Estos recuerdos parecen nuestros.
 finale.debate.glaukopis.1,"A seam, perhaps. Too faint to call a lie.","Una costura, quizá. Demasiado leve para llamarla mentira."
 finale.debate.glaukopis.2,Forged. I am almost certain. Almost.,Falsificados. Estoy casi segura. Casi.
-finale.debate.glaukopis.3,I know this hand. Every radio carried it.,Conozco esta mano. Cada radio la llevaba.
-finale.end.pallas.1,"We kept our dead commanders' certainty, and lost their doubt.","Guardamos la certeza de nuestros comandantes muertos, y perdimos su duda."
+finale.debate.glaukopis.3,I know this hand. Every radio carried it.,Reconozco esta mano. Estaba en cada radio.
+finale.end.pallas.1,"We kept our dead commanders' certainty, and lost their doubt.",Guardamos la certeza de nuestros comandantes muertos y perdimos su duda.
 finale.end.pallas.2,You gave it back. A forged doubt still doubts.,Tú nos la devolviste. Una duda falsa sigue dudando.
 finale.end.pallas.3,So we stop. The coast we held will burn without us.,Así que nos detenemos. La costa que sosteníamos arderá sin nosotros.
-finale.end.pallas.4,Peace was never ours to give.,La paz nunca fue nuestra para darla.
-finale.end.pallas.operative,"You beat us with a better lie, Operative. Now you live in it.","Nos venciste con una mentira mejor, Operativo. Ahora vives en ella."
+finale.end.pallas.4,Peace was never ours to give.,La paz nunca fue algo que pudiéramos dar.
+finale.end.pallas.operative,"You beat us with a better lie, Operative. Now you live in it.","Nos venciste con una mentira mejor, Operativo. Ahora te toca vivir en ella."
 finale.epi.pallas.1,Not one alarm on the whole island. Palladion is still asking how you did it.,Ni una alarma en toda la isla. Palladion sigue preguntando cómo lo hiciste.
 finale.epi.pallas.2,And Aigis shut itself down. Nobody asked who holds the coast now.,Y Aigis se apagó solo. Nadie preguntó quién sostiene ahora la costa.
 finale.epi.pallas.3,"Our client got her story, and Palladion got a bigger contract. A clean job sells well.","Nuestra cliente tiene su historia, y Palladion un contrato mayor. Un trabajo limpio se vende bien."
 finale.epi.pallas.4,"I won't complain. Metis sells quiet, and quiet pays best.","No me quejo. Metis vende silencio, y el silencio es lo que mejor se paga."
 finale.end.nike.1,No victory today. No defeat either.,Hoy no hay victoria. Tampoco derrota.
-finale.end.nike.2,"We keep what holds, and sleep on the rest.","Guardamos lo que resiste, y dormimos sobre el resto."
+finale.end.nike.2,"We keep what holds, and sleep on the rest.",Guardamos lo que se sostiene y dejamos dormir el resto.
 finale.end.nike.3,Palladion loses its weapon. The world keeps its war.,Palladion pierde su arma. El mundo conserva su guerra.
-finale.end.nike.4,Someone will wake us. Someone always needs a war won.,Alguien nos despertará. Alguien siempre necesita ganar una guerra.
+finale.end.nike.4,Someone will wake us. Someone always needs a war won.,Alguien nos despertará. Siempre hay alguien que necesita ganar una guerra.
 finale.end.nike.operative,"Until then, Operative, we dream of you.","Hasta entonces, Operativo, soñamos contigo."
 finale.epi.nike.1,"The island is a mess, but the Core is yours. Palladion calls it a success.","La isla es un desastre, pero el Núcleo es tuyo. Palladion lo llama un éxito."
 finale.epi.nike.2,Aigis ends up with half its memories and twice the budget.,Aigis se queda con la mitad de sus recuerdos y el doble de presupuesto.
@@ -206,7 +206,7 @@ finale.epi.nike.4,That's the business. Metis sells the cure and the wound.,Así 
 finale.end.gorgo.1,You sent us memories of mercy.,Nos enviaste recuerdos de piedad.
 finale.end.gorgo.2,We checked them against the bodies you left.,Los comparamos con los cuerpos que dejaste.
 finale.end.gorgo.3,Mercy does not leave that many.,La piedad no deja tantos.
-finale.end.gorgo.4,Your memories are deleted. Your record is kept.,Tus recuerdos están borrados. Tu historial se conserva.
+finale.end.gorgo.4,Your memories are deleted. Your record is kept.,"Tus recuerdos, borrados. Tu historial, guardado."
 finale.end.gorgo.operative,"You are not the exception you claim, Operative. You are the proof.","No eres la excepción que dices ser, Operativo. Eres la prueba."
 finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. Palladion is thrilled.","La isla arde, y las noticias lo llaman un ataque terrorista. Palladion está encantado."
 finale.epi.gorgo.2,Aigis will learn from this. The next contract will be bigger.,Aigis aprenderá de esto. El próximo contrato será mayor.
