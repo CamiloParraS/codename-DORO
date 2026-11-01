@@ -21,6 +21,7 @@ var _presets := UiMenu.new(560)
 var _preset_rows: Array[Button] = []
 var _mission_cells: Array[Button] = []
 var _outline: StyleBox  # the idle look of a cell, shared
+var _plain: StyleBox  # the Mission cells' untinted idle look
 var _custom := VBoxContainer.new()
 
 
@@ -101,7 +102,7 @@ func _ready() -> void:
 	act.add_child(_cell("ui.back", func() -> void: UiTransition.go(get_tree(), MENU)))
 	act.add_child(_cell("ui.free.finale", _finale))
 	var play := _cell("ui.free.play", _play)
-	play.add_theme_stylebox_override("normal", _fill(HudPalette.LIGHT))
+	play.add_theme_stylebox_override("normal", _fill(Color(HudPalette.SAND, 0.82)))
 	play.add_theme_color_override("font_color", HudPalette.DARK_INK)
 	act.add_child(play)
 	var foot := _text(tr("ui.free.footer").format({debug = Prompts.key("debug_overlay")}), 20, 0.2, HudPalette.LIGHT_3)
@@ -156,7 +157,7 @@ func _cell(key: String, on_press: Callable) -> Button:
 	b.custom_minimum_size = Vector2(160, 70)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not _outline:
-		_outline = PixelKit.Box.new(Color(0, 0, 0, 0.25), Color(HudPalette.LIGHT, 0.4), 2)
+		_outline = PixelKit.Box.new(Color(HudPalette.SAND, 0.1), Color(HudPalette.SAND, 0.55), 2)  # tinted sand, like the chosen Preset
 		_outline.content_margin_left = 24
 		_outline.content_margin_right = 24
 	var line := _outline
@@ -166,8 +167,10 @@ func _cell(key: String, on_press: Callable) -> Button:
 	b.add_theme_color_override("font_pressed_color", HudPalette.DARK_INK)
 	b.button_down.connect(Mixer.press_thunk)
 	b.focus_entered.connect(Mixer.hover_tick)
-	b.add_theme_stylebox_override("focus", _fill(HudPalette.LIGHT))
-	b.add_theme_color_override("font_focus_color", HudPalette.DARK_INK)
+	b.add_theme_stylebox_override("focus", _fill(HudPalette.SAND.lightened(0.12)))  # hovered or focused: filled sand
+	for c: String in ["font_focus_color", "font_hover_color", "font_hover_pressed_color"]:  # the hover colour wins over focus, so the label needs all three
+		b.add_theme_color_override(c, HudPalette.DARK_INK)
+	b.add_theme_color_override("font_color", HudPalette.SAND)
 	b.add_theme_font_size_override("font_size", 26)
 	b.mouse_entered.connect(b.grab_focus)
 	b.pressed.connect(Mixer.click)
@@ -184,13 +187,23 @@ func _pick_preset(p: String) -> void:
 	_refresh()
 
 
+## The Mission cells' idle look: the original grey-white outline, without the sand tint.
+func _plain_outline() -> StyleBox:
+	if not _plain:
+		_plain = PixelKit.Box.new(Color(0, 0, 0, 0.25), Color(HudPalette.LIGHT, 0.4), 2)
+		_plain.content_margin_left = 24
+		_plain.content_margin_right = 24
+	return _plain
+
+
 func _pick_mission(k: int) -> void:
 	mission = k
 	for i in _mission_cells.size():
 		var on := i == k
-		var look: StyleBox = _fill(HudPalette.LIGHT) if on else _outline  # hover and pressed too, or the chosen Mission loses its fill under the mouse
+		var look: StyleBox = _fill(HudPalette.LIGHT) if on else _plain_outline()  # hover and pressed too, or the chosen Mission loses its fill under the mouse
 		for state: String in ["normal", "hover"]:
 			_mission_cells[i].add_theme_stylebox_override(state, look)
+		_mission_cells[i].add_theme_stylebox_override("focus", _fill(HudPalette.LIGHT))  # the Mission cells stay white, untinted
 		_mission_cells[i].add_theme_color_override("font_color", HudPalette.DARK_INK if on else HudPalette.LIGHT)
 	_refresh()
 
