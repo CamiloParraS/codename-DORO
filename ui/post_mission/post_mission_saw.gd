@@ -44,8 +44,10 @@ static func draw_page(s: Control, d: Vector2) -> void:
 	var area := Rect2(80, 200, d.x - 80 - 640, d.y - 200 - 64 - 50)
 	var plan: Dictionary = s.floor_plan
 	var fit := _fit(pts, marks, area, plan)
-	s.draw_rect(area, Color(HudPalette.GLASS, 0.6))
-	s.draw_rect(Rect2(area.position, Vector2(area.size.x, 3)), HudPalette.CYAN)
+	area = PixelKit.snap(area)
+	PixelKit.cut_fill(s, area, Color(HudPalette.GLASS, 0.6), 5)
+	PixelKit.frame(s, area, Color(HudPalette.CYAN, 0.45), 5)
+	PixelKit.cut_fill(s, Rect2(area.position + Vector2(15, 0), Vector2(180, 6)), HudPalette.CYAN, 0)  # the cyan tab on the plan's top edge
 	_grid(s, area, fit)
 	_floor(s, plan, fit)
 	var every: float = dossier.get("every", SessionLog.PATH_EVERY)
@@ -57,70 +59,74 @@ static func draw_page(s: Control, d: Vector2) -> void:
 				line.append(_to(pts[i - 1].lerp(pts[i], (t - (i - 1) * every) / every), fit))
 			break
 		line.append(_to(pts[i], fit))
-	if line.size() >= 2:
-		s.draw_polyline(line, Color(HudPalette.CYAN, 0.7), 3.0, true)
+	var fresh := maxi(0, line.size() - 14)  # the last stretch is bright, what it walked earlier settles dim
+	for i in range(1, line.size()):
+		PixelKit.line(s, line[i - 1], line[i], Color(HudPalette.CYAN, 0.95 if i >= fresh else 0.5), 1)
 	if not pts.is_empty():  # where the Operative came in
-		s.draw_rect(Rect2(_to(pts[0], fit) - Vector2(7, 7), Vector2(14, 14)), HudPalette.LIGHT, false, 2.0)
+		PixelKit.frame(s, Rect2(PixelKit.snap(Rect2(_to(pts[0], fit) - Vector2(9, 9), Vector2.ZERO)).position, Vector2(18, 18)), HudPalette.LIGHT, 0)
 	for m: Array in marks:
 		if m[1] <= t:
 			var born: float = FIRST + m[1] / total_t(dossier) * SAW_SECS
 			_mark(s, m[0], _to(Vector2(m[2], m[3]), fit), 1.6 if s._age - born < POP else 1.0)
 	if not line.is_empty():
-		s.draw_circle(line[line.size() - 1], 7.0, HudPalette.LIGHT)
+		var head: Vector2 = line[line.size() - 1]
+		HudPalette.px_ring(s, head, 7.0, 0.0, HudPalette.LIGHT)
+		if int(Time.get_ticks_msec() / 400.0) % 2 == 0:  # the head blinks a ring
+			HudPalette.px_ring(s, head, 15.0, 3.0, Color(HudPalette.LIGHT, 0.6))
 	@warning_ignore("integer_division")
 	var clock := "T+ %d:%02d" % [int(t) / 60, int(t) % 60]
-	HudPalette.hud_text(s, area.position + Vector2(area.size.x - 24, 44), clock, 26, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.2), 2, false)
-	_legend(s, Vector2(area.end.x + 60, area.position.y + 30), marks, t)
+	_legend(s, Vector2(area.end.x + 60, area.position.y), marks, t, clock)
 	if s._age >= done_at(s):
 		var ak := s.tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(s, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)
 
 
-## What each mark means and how many the route has reached, then Aigis's note under them.
-static func _legend(s: Control, at: Vector2, marks: Array, t: float) -> void:
-	var f := HudPalette.tracked(HudPalette.DISPLAY, 26, 0.2)
+## What each mark means and how many the route has reached, on a stack of plates, then the Mission clock big under them.
+static func _legend(s: Control, at: Vector2, marks: Array, t: float, clock: String) -> void:
+	var f := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.2)
 	var y := at.y
 	for kind: String in LEGEND:
 		var n := marks.filter(func(m: Array) -> bool: return m[0] == kind and m[1] <= t).size()
-		_mark(s, kind, Vector2(at.x + 14, y - 9), 1.0)
-		HudPalette.hud_text(s, Vector2(at.x + 50, y), s.tr("ui.post.saw." + kind).to_upper(), 26, HudPalette.LIGHT_2, f, 0, false)
-		HudPalette.hud_text(s, Vector2(at.x + 500, y), "%02d" % n, 30, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.08), 2, false)
-		y += 62
-	y += 30
-	for l in HudPalette.wrap(s.tr("ui.post.saw.note"), 500, HudPalette.FIGURE_MED, 28):
-		HudPalette.hud_text(s, Vector2(at.x, y), l, 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-		y += 38
+		var row := Rect2(at.x, y, 540, 60)
+		PixelKit.stair_fill(s, row, Color(HudPalette.GLASS, 0.75), 15.0)
+		PixelKit.cut_fill(s, Rect2(row.position, Vector2(6, row.size.y)), HudPalette.DMG if kind == "alert" or kind == "kill" else HudPalette.SAND if kind == "down" else HudPalette.LIGHT, 0)
+		_mark(s, kind, Vector2(at.x + 44, y + 30), 1.0)
+		HudPalette.hud_text(s, Vector2(at.x + 84, y + 40), s.tr("ui.post.saw." + kind).to_upper(), 28, HudPalette.LIGHT_2 if n > 0 else HudPalette.LIGHT_3, f, 0, false)
+		HudPalette.hud_text(s, Vector2(at.x + 500, y + 43), "%02d" % n, 38, HudPalette.LIGHT if n > 0 else HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.06), 2, false)
+		y += 72
+	y += 22
+	PixelKit.dashes(s, Vector2(at.x, y), 540.0, Color(HudPalette.LIGHT, 0.3), 2, 2)
+	HudPalette.hud_text(s, Vector2(at.x, y + 110), clock, 96, HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 96, 0.04), 0, false)
 
 
 ## A mark's shape: Down a sand dot, kill a red cross, spotted a light ring, Alert a red triangle.
 static func _mark(s: Control, kind: String, p: Vector2, k: float) -> void:
 	match kind:
 		"down":
-			s.draw_circle(p, 8.0 * k, HudPalette.SAND)
+			HudPalette.px_ring(s, p, 9.0 * k, 0.0, HudPalette.SAND)
 		"kill":
-			var r := 9.0 * k
-			s.draw_line(p - Vector2(r, r), p + Vector2(r, r), HudPalette.DMG, 4.0)
-			s.draw_line(p + Vector2(-r, r), p + Vector2(r, -r), HudPalette.DMG, 4.0)
+			var r := 10.0 * k
+			PixelKit.line(s, p - Vector2(r, r), p + Vector2(r, r), HudPalette.DMG, 1)
+			PixelKit.line(s, p + Vector2(-r, r), p + Vector2(r, -r), HudPalette.DMG, 1)
 		"spotted":
-			s.draw_arc(p, 13.0 * k, 0.0, TAU, 24, HudPalette.LIGHT, 2.5)
+			HudPalette.px_ring(s, p, 14.0 * k, 3.0, HudPalette.LIGHT)
 		"alert":
-			var r := 13.0 * k
-			s.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -r), p + Vector2(r, r * 0.8), p + Vector2(-r, r * 0.8)]), HudPalette.DMG)
+			var r := 14.0 * k
+			HudPalette.px_poly(s, PackedVector2Array([p + Vector2(0, -r), p + Vector2(r, r * 0.8), p + Vector2(-r, r * 0.8)]), HudPalette.DMG)
 
 
 static func _grid(s: Control, area: Rect2, fit: Array) -> void:
 	var lo: Vector2 = fit[0]
 	var span: Vector2 = (area.size / fit[1]) as Vector2
 	var gx := ceilf(lo.x / GRID) * GRID
-	while gx < lo.x + span.x:
+	while gx < lo.x + span.x:  # the grid is a field of pixel dots, one per crossing
 		var x: float = _to(Vector2(gx, 0), fit).x
-		s.draw_line(Vector2(x, area.position.y), Vector2(x, area.end.y), Color(HudPalette.LIGHT, 0.06), 1.0)
+		var gy := ceilf(lo.y / GRID) * GRID
+		while gy < lo.y + span.y:
+			var y: float = _to(Vector2(0, gy), fit).y
+			s.draw_rect(Rect2(floorf(x / 3.0) * 3.0, floorf(y / 3.0) * 3.0, 3, 3), Color(HudPalette.CYAN, 0.22))
+			gy += GRID
 		gx += GRID
-	var gy := ceilf(lo.y / GRID) * GRID
-	while gy < lo.y + span.y:
-		var y: float = _to(Vector2(0, gy), fit).y
-		s.draw_line(Vector2(area.position.x, y), Vector2(area.end.x, y), Color(HudPalette.LIGHT, 0.06), 1.0)
-		gy += GRID
 
 
 ## The Area's floor under the route (FloorPlan): one faint fill, its outline brighter. Screen-space arrays

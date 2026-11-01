@@ -198,3 +198,16 @@ class Box extends StyleBox:
 					RenderingServer.canvas_item_add_rect(item, Rect2(row.end.x - px, y, px, px), edge)
 			if i == 0 and top.a > 0.0:
 				RenderingServer.canvas_item_add_rect(item, row, top)
+
+
+## A line from `a` to `b` as `px` cells snapped to the grid, `width` cells thick.
+static func line(ci: CanvasItem, a: Vector2, b: Vector2, col: Color, width := 1, px := PX) -> void:
+	var n := maxi(1, ceili(a.distance_to(b) / (px * 0.5)))
+	var last := Vector2(INF, INF)
+	var half := (width - 1) * px / 2.0
+	for i in n + 1:
+		var p := a.lerp(b, float(i) / n)
+		var cell := Vector2(floorf(p.x / px), floorf(p.y / px)) * px
+		if cell != last:
+			ci.draw_rect(Rect2(cell - Vector2(half, half), Vector2(width * px, width * px)), col)
+			last = cell

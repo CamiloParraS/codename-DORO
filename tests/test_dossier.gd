@@ -79,7 +79,7 @@ func test_every_evidence_shift_and_dissent_line_is_keyed_with_its_number() -> vo
 			assert_true("{n}" in String(t.get(VoiceLines.chatter_key(h, "evidence", v), "")))
 		for step: Array in Aigis.LADDERS[h]:
 			assert_has_key(t, "brief.%s.dissent.%s" % [step[0], h])
-	for k in ["ui.post.saw", "ui.post.saw.note"] + Dossier.MARKS.map(func(m: String) -> String: return "ui.post.saw." + m):
+	for k in ["ui.post.saw"] + Dossier.MARKS.map(func(m: String) -> String: return "ui.post.saw." + m):
 		assert_has_key(t, k)
 
 

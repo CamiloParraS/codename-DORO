@@ -284,7 +284,7 @@ func _ghost(r: Rect2, col: Color, tone: float) -> void:
 
 ## The drawing panel: the picked upgrade's name, a flat icon, effect and the buy bar.
 func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
-	var r := Rect2(d.x - 80 - 700, 150, 700, 500)
+	var r := Rect2(d.x - 80 - 580, 150, 580, 560)
 	r = PixelKit.snap(r)
 	PixelKit.cut_fill(self, r, Color(SHEET, 0.84), 6)
 	PixelKit.frame(self, r, DARK, 6)
@@ -342,8 +342,8 @@ func _icon(id: String, c: Vector2, g: Requisition, col: Color, clip_x: float) ->
 			draw_rect(pip, col)
 		else:
 			PixelKit.frame(self, pip, RED, 0)
-	if more > 0 and c.x + 250 < clip_x:
-		HudPalette.hud_text(self, c + Vector2(290, 85), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
+	if more > 0 and c.x + 200 < clip_x:
+		HudPalette.hud_text(self, c + Vector2(236, 85), "+%d" % more, 64, RED, _f(64, 0.04), 2, false)
 
 
 ## A cost in Recruits, singular for one.
