@@ -61,7 +61,31 @@ const SHOTS := {
 		bow = [Vector3(48, 3, -50), Vector3(10, 7, -20)],
 		water = [Vector3(55, 1.5, 10), Vector3(20, 6, -10)],
 	}],
-	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview = [Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
+	## More backdrop candidates, one set per Area (the menu cycles through ui/main_menu/backdrop_*.png).
+	menu_relay = ["res://areas/relay_station/relay_station.tscn", {
+		mast = [Vector3(-20, 9, -12), Vector3(-3, 18, -29)],
+		summit = [Vector3(-20, 8.5, -20), Vector3(10, 0, 40)],
+		yard = [Vector3(-26, 3, 32), Vector3(-10, 1, 29)],
+		mess = [Vector3(14, 6, 2.5), Vector3(16, 4.2, -2)],
+	}],
+	menu_annex = ["res://areas/research_annex/research_annex.tscn", {
+		front = [Vector3(-22, 2.5, 26), Vector3(-22, 2, 14)],
+		dock = [Vector3(10, 2.5, 28), Vector3(17, 1.5, 22)],
+		quarry = [Vector3(19, 3, -2), Vector3(35, -10, 25)],
+		corridor = [Vector3(-30, 1.7, -10.5), Vector3(13, 1.2, -10.5)],
+	}],
+	menu_core = ["res://areas/core/core.tscn", {
+		yard = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)],
+		entrance = [Vector3(-33, 1.7, -8), Vector3(-45, 2.5, -8)],
+		room = [Vector3(-56, 2.5, -14), Vector3(-72, 1, -4)],
+	}],
+	menu_harbour = ["res://areas/harbour/harbour.tscn", {
+		mid = [Vector3(19, 4.5, -12), Vector3(-12, 1, -6)],
+		bow = [Vector3(31, 5.5, -39), Vector3(31, 2, -18)],
+		crane = [Vector3(16, 9.5, -20.5), Vector3(-5, 0, -2)],
+		lanes = [Vector3(-12, 2.5, 6), Vector3(4, 1, 22)],
+	}],
+	relay_station = ["res://areas/relay_station/relay_station.tscn", {overview =[Vector3(45, 28, 55), Vector3(5, 0, 0)]}],
 	## World = diagram metres - 40, floor h up. The set dressing pass: Garage, yard, mess, office, summit.
 	relay_tour = ["res://areas/relay_station/relay_station.tscn", {
 		garage_out = [Vector3(-8, 2.5, 21), Vector3(4, 1.5, 27)],
@@ -175,8 +199,10 @@ func _shoot() -> void:
 		return
 	var scene: Node = load(entry[0]).instantiate()
 	root.add_child(scene)
-	if area == "menu":
-		scene.get_node("HudLayer").queue_free()
+	if area.begins_with("menu"):
+		var hud := scene.get_node_or_null("HudLayer")
+		if hud:
+			hud.queue_free()
 	var cam := Camera3D.new()
 	cam.fov = 70
 	scene.add_child(cam)

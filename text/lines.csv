@@ -360,6 +360,7 @@ ui.menu.d.quit,Close the game,Cierra el juego
 ui.menu.press_any,Press any key,Pulsa cualquier tecla
 ui.menu.protocol,Aigis Protocol,Protocolo Aigis
 ui.menu.recruits,Recruits,Reclutas
+ui.menu.feed,Feed,Cámara
 ui.menu.col.rank,RANK,RANGO
 ui.menu.col.time,TIME,TIEMPO
 ui.menu.col.kills,KILLS,MUERTES

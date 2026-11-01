@@ -2,14 +2,13 @@
 ## Free mode, Settings, Quit. New game and Load pick one of the three slots; overwriting asks first.
 ## Mission select picks a slot, then one of its cleared Missions (with its Mission Record) to replay.
 ## Loading a complete slot goes to the Briefing, which replays the finale and returns here.
-## Drawn in design px (1080 tall) under a scaled stage: the drifting backdrop and scanlines are one UiScan, the
-## list is a UiMenu. Press any key leaves the title; the logo fades up and the prompt breathes (still under reduced motion).
+## Drawn in design px (1080 tall) under a scaled stage: the backdrop is a MenuBackdrop slideshow of the Areas, the
+## scanlines one UiScan above it, the list a UiMenu. Press any key leaves the title; the logo fades up and the prompt breathes (still under reduced motion).
 extends Control
 
 const BRIEFING := "res://ui/briefing/briefing.tscn"
 const FREE_MODE := "res://ui/free_mode/free_mode.tscn"
 const SettingsPanel := preload("res://ui/settings/settings_panel.gd")
-const DIAL_SECS := 120.0   # s per turn of the dial
 const BAND := Vector2(1100, 52)
 
 var _stage := Control.new()
@@ -18,9 +17,9 @@ var _logo := Control.new()
 var _band := Control.new()
 var _press: Label
 var _slot := Label.new()
-var _dial := Control.new()
+var _dial := MenuDial.new()
+var _backdrop := MenuBackdrop.new()
 var _on_title := true
-var _t := 0.0
 
 
 func _ready() -> void:
@@ -33,15 +32,17 @@ func _ready() -> void:
 	bg.color = HudPalette.INK
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	var scan := UiScan.make(HudPalette.BACKDROP, true, true, Color(0.7, 0.7, 0.74))
-	add_child(scan)
+	add_child(_backdrop)  # the Areas in turn, each pushing in and panning
+	add_child(UiScan.make(null, true))
 	_shade()
+	add_child(_backdrop.feed)  # its caption and brackets over the shade, so they read
 	_stage.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(_stage)
 	_build_title()
 	_stage.add_child(_menu)
 	_slot.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 26, 0.2))
 	_slot.add_theme_font_size_override("font_size", 26)
+	_slot.add_theme_color_override("font_color", HudPalette.LIGHT_3)  # quiet, like the feed caption above
 	_stage.add_child(_slot)
 	resized.connect(_layout)
 	_layout()
@@ -80,6 +81,8 @@ func _layout() -> void:
 	var d := _stage.size
 	_menu.position = Vector2(d.x - 640, 340)
 	_dial.position = Vector2(d.x - 1310, -80)
+	if not _on_title:
+		_backdrop.feed.clear_from = (_menu.position.x - 40.0) * k
 
 
 func _label(text: String, font_size: int, em: float, col: Color, weight := 400, font: Font = HudPalette.DISPLAY) -> Label:
@@ -98,10 +101,6 @@ func _label(text: String, font_size: int, em: float, col: Color, weight := 400, 
 
 
 func _build_title() -> void:
-	_dial.size = Vector2(1240, 1240)
-	_dial.pivot_offset = _dial.size / 2
-	_dial.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_dial.draw.connect(_draw_dial)
 	_stage.add_child(_dial)
 	_logo.position = Vector2(110, 250)
 	_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -141,30 +140,6 @@ func _build_title() -> void:
 	_stage.add_child(_press)
 
 
-## One thin set of rings, turning very slowly (120 s per turn).
-func _draw_dial() -> void:
-	var c := _dial.size / 2
-	var col := HudPalette.SOFT
-	_dial.draw_arc(c, 486, 0, TAU, 160, Color(col, 0.34 * 0.55), 2.0, true)
-	_dial.draw_arc(c, 420, 0, TAU, 160, Color(col, 0.34 * 0.5), 1.5, true)
-	for i in 18:  # segmented band
-		var a := TAU * i / 18.0
-		_dial.draw_arc(c, 392, a, a + TAU / 18.0 - 0.09, 12, Color(col, 0.34 * 0.42), 44.0, true)
-	for i in 36:
-		var a := TAU * i / 36.0
-		_dial.draw_arc(c, 366, a, a + TAU / 36.0 - 0.06, 8, Color(col, 0.34 * 0.6), 6.0, true)
-	_dial.draw_arc(c, 300, 0, TAU, 128, Color(col, 0.34 * 0.7), 3.0, true)
-
-
-func _reduced() -> bool:
-	return GameSettings.current.get("reduce_motion", false)
-
-
-func _process(delta: float) -> void:
-	_t += delta
-	_dial.rotation = TAU * _t / DIAL_SECS
-
-
 ## The logo and band fade up in turn; the prompt breathes. The menu is hidden.
 func _title() -> void:
 	_on_title = true
@@ -173,6 +148,8 @@ func _title() -> void:
 	_press.show()
 	_logo.show()
 	_dial.show()
+	_dial.dim(false)
+	_backdrop.feed.clear_from = INF
 	_band.show()
 	UiMotion.rise([_logo, _band], 0.18, 0.7)
 	_press.modulate.a = 1.0
@@ -192,6 +169,8 @@ func _input(e: InputEvent) -> void:
 
 func _main() -> void:
 	_menu.show()
+	_dial.dim(true)
+	_backdrop.feed.clear_from = (_menu.position.x - 40.0) * _stage.scale.x  # no brackets under the list
 	_menu.clear()
 	var cont := SaveSlots.continue_slot()
 	if cont >= 0:
