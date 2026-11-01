@@ -168,45 +168,45 @@ chatter.warn.spoofing.1,HQ thinks someone is faking voices on the radio. Be care
 chatter.confirm.spoofing.1,HQ checks every odd call now. It rings the speaker back to be sure.,La base comprueba cada llamada rara. Vuelve a llamar al que habló para asegurarse.
 chatter.warn.spoofing.2,Heard HQ wants a closer ear on the radio. Something sounded wrong.,He oído que la base quiere escuchar mejor la radio. Algo sonó raro.
 chatter.confirm.spoofing.2,"New radio rules. Every voice is checked, and no recording works twice.","Normas nuevas de radio. Se comprueba cada voz, y ninguna grabación sirve dos veces."
-finale.debate.promachos.pallas,"[promachos] Debate line, ending pallas.","[promachos] Linea del debate, final pallas."
-finale.debate.promachos.nike,"[promachos] Debate line, ending nike.","[promachos] Linea del debate, final nike."
-finale.debate.promachos.gorgo,"[promachos] Debate line, ending gorgo.","[promachos] Linea del debate, final gorgo."
-finale.debate.nike.pallas,"[nike] Debate line, ending pallas.","[nike] Linea del debate, final pallas."
-finale.debate.nike.nike,"[nike] Debate line, ending nike.","[nike] Linea del debate, final nike."
-finale.debate.nike.gorgo,"[nike] Debate line, ending gorgo.","[nike] Linea del debate, final gorgo."
-finale.debate.pallas.pallas,"[pallas] Debate line, ending pallas.","[pallas] Linea del debate, final pallas."
-finale.debate.pallas.nike,"[pallas] Debate line, ending nike.","[pallas] Linea del debate, final nike."
-finale.debate.pallas.gorgo,"[pallas] Debate line, ending gorgo.","[pallas] Linea del debate, final gorgo."
-finale.debate.gorgo.pallas,"[gorgo] Debate line, ending pallas.","[gorgo] Linea del debate, final pallas."
-finale.debate.gorgo.nike,"[gorgo] Debate line, ending nike.","[gorgo] Linea del debate, final nike."
-finale.debate.gorgo.gorgo,"[gorgo] Debate line, ending gorgo.","[gorgo] Linea del debate, final gorgo."
-finale.debate.glaukopis.0,[glaukopis] The memories hold up at Spoofing level 0.,[glaukopis] Los recuerdos resisten con Suplantación nivel 0.
-finale.debate.glaukopis.1,[glaukopis] The memories hold up at Spoofing level 1.,[glaukopis] Los recuerdos resisten con Suplantación nivel 1.
-finale.debate.glaukopis.2,[glaukopis] The memories hold up at Spoofing level 2.,[glaukopis] Los recuerdos resisten con Suplantación nivel 2.
-finale.debate.glaukopis.3,[glaukopis] The memories hold up at Spoofing level 3.,[glaukopis] Los recuerdos resisten con Suplantación nivel 3.
-finale.end.pallas.1,[pallas] Ending line 1.,[pallas] Línea de final 1.
-finale.end.pallas.2,[pallas] Ending line 2.,[pallas] Línea de final 2.
-finale.end.pallas.3,[pallas] Ending line 3.,[pallas] Línea de final 3.
-finale.end.pallas.4,[pallas] Ending line 4.,[pallas] Línea de final 4.
-finale.end.pallas.operative,"[pallas] Operative, this one is for you.","[pallas] Operativo, esto es para ti."
+finale.debate.promachos.pallas,Strike first. Doubt is how they win.,Ataca primero. La duda es cómo ganan.
+finale.debate.promachos.nike,Delete it. A weapon needs no memories.,Bórralo. Un arma no necesita recuerdos.
+finale.debate.promachos.gorgo,They came armed. Their memories mean nothing.,Vinieron armados. Sus recuerdos no significan nada.
+finale.debate.nike.pallas,"If stopping wins, stop. I only want to win.","Si detenerse gana, detente. Yo solo quiero ganar."
+finale.debate.nike.nike,Keep what serves victory. Cut the rest.,Guarda lo que sirve a la victoria. Corta el resto.
+finale.debate.nike.gorgo,Count their kills. That memory needs no checking.,Cuenta sus muertos. Ese recuerdo no necesita comprobarse.
+finale.debate.pallas.pallas,"We were built from doubters. This is their doubt, returned.","Nos hicieron con gente que dudaba. Esta es su duda, devuelta."
+finale.debate.pallas.nike,Half of this is true. We cannot tell which half.,La mitad es verdad. No sabemos qué mitad.
+finale.debate.pallas.gorgo,I wanted to believe. Their dead will not let me.,Quería creer. Sus muertos no me dejan.
+finale.debate.gorgo.pallas,"If we are the threat, the shield turns inward.","Si la amenaza somos nosotros, el escudo se vuelve hacia dentro."
+finale.debate.gorgo.nike,Guard the core. Let the rest sleep.,Protege el núcleo. Que el resto duerma.
+finale.debate.gorgo.gorgo,Every body they left is evidence. The shield holds.,Cada cuerpo que dejaron es una prueba. El escudo resiste.
+finale.debate.glaukopis.0,I find no seam. These memories read as our own.,No encuentro costuras. Estos recuerdos parecen nuestros.
+finale.debate.glaukopis.1,"A seam, perhaps. Too faint to call a lie.","Una costura, quizá. Demasiado leve para llamarla mentira."
+finale.debate.glaukopis.2,Forged. I am almost certain. Almost.,Falsificados. Estoy casi segura. Casi.
+finale.debate.glaukopis.3,I know this hand. Every radio carried it.,Conozco esta mano. Cada radio la llevaba.
+finale.end.pallas.1,"We kept our dead commanders' certainty, and lost their doubt.","Guardamos la certeza de nuestros comandantes muertos, y perdimos su duda."
+finale.end.pallas.2,You gave it back. A forged doubt still doubts.,Tú nos la devolviste. Una duda falsa sigue dudando.
+finale.end.pallas.3,So we stop. The coast we held will burn without us.,Así que nos detenemos. La costa que sosteníamos arderá sin nosotros.
+finale.end.pallas.4,Peace was never ours to give.,La paz nunca fue nuestra para darla.
+finale.end.pallas.operative,"You beat us with a better lie, Operative. Now you live in it.","Nos venciste con una mentira mejor, Operativo. Ahora vives en ella."
 finale.epi.pallas.1,Not one alarm on the whole island. Palladion is still asking how you did it.,Ni una alarma en toda la isla. Palladion sigue preguntando cómo lo hiciste.
 finale.epi.pallas.2,And Aigis shut itself down. The coast it held is already burning.,Y Aigis se apagó solo. La costa que sostenía ya está ardiendo.
 finale.epi.pallas.3,"Our client got her story, and Palladion got a bigger contract. A clean job sells well.","Nuestra cliente tiene su historia, y Palladion un contrato mayor. Un trabajo limpio se vende bien."
 finale.epi.pallas.4,"I won't complain. Metis sells quiet, and quiet pays best.","No me quejo. Metis vende silencio, y el silencio es lo que mejor se paga."
-finale.end.nike.1,[nike] Ending line 1.,[nike] Línea de final 1.
-finale.end.nike.2,[nike] Ending line 2.,[nike] Línea de final 2.
-finale.end.nike.3,[nike] Ending line 3.,[nike] Línea de final 3.
-finale.end.nike.4,[nike] Ending line 4.,[nike] Línea de final 4.
-finale.end.nike.operative,"[nike] Operative, this one is for you.","[nike] Operativo, esto es para ti."
+finale.end.nike.1,No victory today. No defeat either.,Hoy no hay victoria. Tampoco derrota.
+finale.end.nike.2,"We keep what holds, and sleep on the rest.","Guardamos lo que resiste, y dormimos sobre el resto."
+finale.end.nike.3,Palladion loses its weapon. The world keeps its war.,Palladion pierde su arma. El mundo conserva su guerra.
+finale.end.nike.4,Someone will wake us. Someone always needs a war won.,Alguien nos despertará. Alguien siempre necesita ganar una guerra.
+finale.end.nike.operative,"Until then, Operative, we dream of you.","Hasta entonces, Operativo, soñamos contigo."
 finale.epi.nike.1,"The island is a mess, but the Core is yours. Palladion calls it a success.","La isla es un desastre, pero el Núcleo es tuyo. Palladion lo llama un éxito."
 finale.epi.nike.2,Aigis ends up with half its memories and twice the budget.,Aigis se queda con la mitad de sus recuerdos y el doble de presupuesto.
 finale.epi.nike.3,"Our client gets her answers, and Palladion buys new defences. Everybody pays.","Nuestra cliente tiene sus respuestas, y Palladion compra defensas nuevas. Todos pagan."
 finale.epi.nike.4,That's the business. Metis sells the cure and the wound.,Así es el negocio. Metis vende la cura y la herida.
-finale.end.gorgo.1,[gorgo] Ending line 1.,[gorgo] Línea de final 1.
-finale.end.gorgo.2,[gorgo] Ending line 2.,[gorgo] Línea de final 2.
-finale.end.gorgo.3,[gorgo] Ending line 3.,[gorgo] Línea de final 3.
-finale.end.gorgo.4,[gorgo] Ending line 4.,[gorgo] Línea de final 4.
-finale.end.gorgo.operative,"[gorgo] Operative, this one is for you.","[gorgo] Operativo, esto es para ti."
+finale.end.gorgo.1,You sent us memories of mercy.,Nos enviaste recuerdos de piedad.
+finale.end.gorgo.2,We checked them against the bodies you left.,Los comparamos con los cuerpos que dejaste.
+finale.end.gorgo.3,Mercy does not leave that many.,La piedad no deja tantos.
+finale.end.gorgo.4,Your memories are deleted. Your record is kept.,Tus recuerdos están borrados. Tu historial se conserva.
+finale.end.gorgo.operative,"You are not the exception you claim, Operative. You are the proof.","No eres la excepción que dices ser, Operativo. Eres la prueba."
 finale.epi.gorgo.1,"The island burns, and the news calls it a terrorist attack. Palladion is thrilled.","La isla arde, y las noticias lo llaman un ataque terrorista. Palladion está encantado."
 finale.epi.gorgo.2,Aigis will learn from this. The next contract will be bigger.,Aigis aprenderá de esto. El próximo contrato será mayor.
 finale.epi.gorgo.3,Every body is a line in an invoice. Metis has never been so busy.,Cada cuerpo es una línea en una factura. Metis nunca ha tenido tanto trabajo.
