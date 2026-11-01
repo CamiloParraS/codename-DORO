@@ -45,6 +45,7 @@ func _ready() -> void:
 	rule.size = Vector2(1760, 3)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_stage.add_child(rule)
+	UiMotion.grow_x(rule)  # the rule draws on from the left as the page opens
 	_presets.position = Vector2(80, 200)
 	_stage.add_child(_presets)
 	var presets: Array = Aigis.PRESETS.keys() + ["custom"]
@@ -97,7 +98,7 @@ func _ready() -> void:
 	act.add_theme_constant_override("separation", 14)
 	act.position = Vector2(1840 - 560, 940)
 	_stage.add_child(act)
-	act.add_child(_cell("ui.back", func() -> void: get_tree().change_scene_to_file(MENU)))
+	act.add_child(_cell("ui.back", func() -> void: UiTransition.go(get_tree(), MENU)))
 	act.add_child(_cell("ui.free.finale", _finale))
 	var play := _cell("ui.free.play", _play)
 	play.add_theme_stylebox_override("normal", _fill(HudPalette.LIGHT))
@@ -113,6 +114,7 @@ func _ready() -> void:
 	_pick_mission(0)
 	_presets.focus_first()
 	_presets.open()
+	UiMotion.rise(_mission_cells, 0.06)  # the Mission cells come up one after another
 	HudPalette.fade(self)
 
 
@@ -160,7 +162,10 @@ func _cell(key: String, on_press: Callable) -> Button:
 	var line := _outline
 	b.add_theme_stylebox_override("normal", line)
 	b.add_theme_stylebox_override("hover", line)
-	b.add_theme_stylebox_override("pressed", line)
+	b.add_theme_stylebox_override("pressed", PixelKit.Box.new(Color(HudPalette.SAND, 0.95), Color(0, 0, 0, 0), 2))  # the press flashes sand
+	b.add_theme_color_override("font_pressed_color", HudPalette.DARK_INK)
+	b.button_down.connect(Mixer.press_thunk)
+	b.focus_entered.connect(Mixer.hover_tick)
 	b.add_theme_stylebox_override("focus", _fill(HudPalette.LIGHT))
 	b.add_theme_color_override("font_focus_color", HudPalette.DARK_INK)
 	b.add_theme_font_size_override("font_size", 26)
@@ -184,7 +189,7 @@ func _pick_mission(k: int) -> void:
 	for i in _mission_cells.size():
 		var on := i == k
 		var look: StyleBox = _fill(HudPalette.LIGHT) if on else _outline  # hover and pressed too, or the chosen Mission loses its fill under the mouse
-		for state: String in ["normal", "hover", "pressed"]:
+		for state: String in ["normal", "hover"]:
 			_mission_cells[i].add_theme_stylebox_override(state, look)
 		_mission_cells[i].add_theme_color_override("font_color", HudPalette.DARK_INK if on else HudPalette.LIGHT)
 	_refresh()

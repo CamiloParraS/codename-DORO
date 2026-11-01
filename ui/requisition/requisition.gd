@@ -31,6 +31,8 @@ const BIG_ICONS := {
 
 var row := 0  # 0-3 the upgrades in Requisition.UPGRADES order, 4 CONTINUE
 var _age := 0.0  # since the picked row changed (real time)
+var _open := 0.0  # since the screen opened: the rows slide in one after another
+var _flash := 0.0  # 1 as a buy lands, falling to 0: the buy bar and the bought card flash
 
 
 func _ready() -> void:
@@ -41,6 +43,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_age += delta
+	_open += delta
+	_flash = maxf(_flash - delta / 0.22, 0.0)
 	queue_redraw()
 
 
@@ -73,7 +77,7 @@ func _pick(i: int) -> void:
 		return
 	row = i
 	_age = 0.0
-	Mixer.play(&"tick")
+	Mixer.hover_tick()
 
 
 ## The design-px row under a screen point, -1 for none.
@@ -97,6 +101,7 @@ func press() -> void:
 		close()
 	elif Campaign.gear.buy(Requisition.UPGRADES.keys()[row]):
 		Mixer.click()
+		_flash = 1.0
 		Campaign.save()
 		queue_redraw()
 
@@ -164,7 +169,13 @@ func _draw() -> void:
 	_ranks(g)
 	_points(d, g.points)
 	for i in ids.size():
+		var born := i * 0.07  # each row slides in from the left, 60 px, in 0.28 s
+		if _open < born and not UiMotion.reduced():
+			continue
+		var e := 1.0 if UiMotion.reduced() else 1.0 - pow(1.0 - clampf((_open - born) / 0.28, 0.0, 1.0), 3.0)
+		draw_set_transform(Vector2(roundf(-60.0 * (1.0 - e)) * k, 0.0), 0.0, Vector2(k, k))
 		_upgrade_row(i, ids[i], g)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	var y := BOARD.y + ids.size() * ROW_H + 36.0
 	HudPalette.hud_text(self, Vector2(BOARD.x, y), tr("ui.req.items").to_upper(), 26, DARK, _f(26, 0.2), 0, false)
 	draw_rect(Rect2(BOARD.x, y + 10, 1000, 3), DARK)
@@ -309,6 +320,8 @@ func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
 	PixelKit.cut_fill(self, bar, DARK if can else Color(DARK, 0.1), 4)
 	if not can:
 		PixelKit.frame(self, bar, Color(DARK, 0.35), 4)  # a dim bar, not just a pale one: it reads as unavailable by shape too
+	if _flash > 0.45:  # the buy lands: the bar flashes
+		PixelKit.cut_fill(self, bar, RED, 4)
 	var label := tr("ui.req.max") if left <= 0 else _price(u.price)
 	HudPalette.hud_text(self, bar.get_center() + Vector2(0, 10), label.to_upper(), 28, HudPalette.LIGHT if can else MUTED, _f(28, 0.2), 1, false)
 

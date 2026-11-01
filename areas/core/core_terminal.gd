@@ -38,4 +38,4 @@ func use() -> void:
 	if finale:
 		finale.begin()  # ponytail: ticket 32 puts the finale in this group
 	elif leave_to != "":
-		get_tree().change_scene_to_file(leave_to)
+		UiTransition.go(get_tree(), leave_to)

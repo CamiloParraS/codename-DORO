@@ -185,7 +185,7 @@ func game_over() -> void:
 	_game_over.quit.connect(func() -> void:
 		abort()
 		get_tree().paused = false
-		get_tree().change_scene_to_file(MENU))
+		UiTransition.go(get_tree(), MENU))
 	_overlay(_game_over)
 	get_tree().paused = true
 
@@ -544,7 +544,7 @@ func _on_extraction() -> void:
 		get_tree().paused = false
 		finished.emit(after)
 		if return_to:
-			get_tree().change_scene_to_file(return_to))
+			UiTransition.go(get_tree(), return_to))
 
 
 ## The Core's commit is the last Mission: its slot is marked complete at the Core terminal instead.

@@ -229,11 +229,23 @@ func click() -> void:
 	play(&"ui_click")
 
 
+## The lighter, higher tick of a button taking the pointer, and the low thunk of one going down: with the release's
+## click they make a press three sounds long.
+func hover_tick() -> void:
+	play(&"tick", UI, 1.35, -7.0)
+
+
+func press_thunk() -> void:
+	play(&"tick", UI, 0.72, -3.0)
+
+
 ## A non-positional one-shot of `sound` on `bus` (stings, clicks, the radio squelch).
-func play(sound: StringName, bus := UI) -> void:
+func play(sound: StringName, bus := UI, pitch := 1.0, db := 0.0) -> void:
 	var p := AudioStreamPlayer.new()
 	p.stream = load(pick(sound))
 	p.bus = bus
+	p.pitch_scale = pitch
+	p.volume_db = db
 	p.finished.connect(p.queue_free)
 	add_child(p)
 	p.play()

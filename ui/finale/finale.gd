@@ -129,7 +129,7 @@ func _leave() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	Mixer.stop_blips()
-	get_tree().change_scene_to_file(leave_to)
+	UiTransition.go(get_tree(), leave_to)
 
 
 func _play(lines: Array) -> void:

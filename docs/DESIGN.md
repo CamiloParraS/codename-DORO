@@ -575,6 +575,7 @@ The HUD's chrome language, shared by every screen through `HudPalette.plate()`, 
 - **Icons:** pixel-art SVGs (`shape-rendering="crispEdges"`) drawn with nearest-neighbour filtering at an integer scale.
 - **Type:** Barlow, Barlow Condensed and Antonio stay smooth; only chrome is pixels.
 - **Motion:** the crawl and the stepped wipes freeze under the reduced-motion toggle.
+- **Clicks:** a button has three beats: a light high tick on hover (`Mixer.hover_tick`), a low thunk on press with the plate flashing white and jolting 6 px (`UiMenu._Plate.kick`, sand flash on Free mode cells, a red flash on the Requisition buy bar), then the release's click. Screens change through a dither sweep (`UiTransition.go`), never a bare scene swap; reduced motion makes both instant.
 - **Paper:** the grey menu ground keeps Peace Walker's light grey; the dither carries the style (frames, ghost tiers as flat `tone` fills, stepped selection bracket), not a dark palette.
 
 ### Motion

@@ -120,7 +120,7 @@ func add_row(text: String, on_press := Callable(), danger := false, icon := "", 
 		b.add_child(cell)
 		cells.append(cell)
 	b.focus_entered.connect(func() -> void:
-		Mixer.play(&"tick")
+		Mixer.hover_tick()
 		_desc.text = desc
 		plate.select(true, SELECT_SECS)
 		if glyph:
@@ -133,6 +133,9 @@ func add_row(text: String, on_press := Callable(), danger := false, icon := "", 
 			glyph.modulate = REST if not b.disabled else Color(HudPalette.LIGHT, 0.3)
 		for cell in cells:
 			cell.add_theme_color_override("font_color", REST))
+	b.button_down.connect(func() -> void:
+		Mixer.press_thunk()
+		plate.kick())
 	b.mouse_entered.connect(func() -> void:
 		if not b.disabled:
 			b.grab_focus())
@@ -209,7 +212,22 @@ func _draw_hints() -> void:
 class _Plate extends Control:
 	var danger := false
 	var t := 0.0  # 0 at rest .. 1 selected
+	var kick_t := 0.0  # 1 as a press lands, falling to 0
 	var _tw: Tween
+	var _kt: Tween
+
+	## The press: the plate flashes white and jolts 6 px right, then settles, in 0.16 s.
+	func kick() -> void:
+		if UiMotion.reduced():
+			return
+		if _kt:
+			_kt.kill()
+		kick_t = 1.0
+		queue_redraw()
+		_kt = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).set_ignore_time_scale(true)
+		_kt.tween_method(func(v: float) -> void:
+			kick_t = v
+			queue_redraw(), 1.0, 0.0, 0.16)
 
 	func select(on: bool, secs: float) -> void:
 		if _tw:
@@ -226,12 +244,14 @@ class _Plate extends Control:
 
 	func _draw() -> void:
 		var q := t  # the wipe moves a grid cell at a time on its own; quantising t as well made it stutter
-		var x := -snappedf(UiMenu.REACH * q, PixelKit.PX)
+		var x := -snappedf(UiMenu.REACH * q, PixelKit.PX) + snappedf(6.0 * kick_t, PixelKit.PX)
 		var r := Rect2(x, 0, size.x - x, size.y)
 		var lit := HudPalette.DMG if danger else HudPalette.LIGHT
 		PixelKit.ramp(self, Rect2(r.position.x, 0, 30, size.y), UiMenu.PLATE, 5)  # the resting plate crumbles away on its left, as the HUD's do
 		PixelKit.stair_fill(self, Rect2(r.position.x + 30, 0, r.size.x - 30, size.y), UiMenu.PLATE, UiMenu.SLANT)
 		PixelKit.stair_fill(self, r, Color(lit, 0.95), UiMenu.SLANT, q)  # the light plate wipes in, its edge dithered
+		if kick_t > 0.5:  # the press's flash
+			PixelKit.stair_fill(self, r, Color.WHITE, UiMenu.SLANT)
 		if q < 1.0:  # the resting plate's stair along its slanted edge
 			PixelKit.stair_edge(self, r, Color(HudPalette.LIGHT, 0.25 * (1.0 - q)), UiMenu.SLANT)
 		draw_rect(Rect2(x, 0, 6, size.y), Color(HudPalette.MARK_RED if danger else HudPalette.DMG, 0.35 + 0.65 * q))

@@ -27,6 +27,7 @@ var _confirm_menu := UiMenu.new(420)
 var _confirm_q := Label.new()
 var _on_yes := Callable()  # what YES does: the question asked last
 var _resume: Button
+var _slab: Control  # the PAUSED slab, which wipes in on every open
 
 
 func _ready() -> void:
@@ -50,7 +51,8 @@ func _ready() -> void:
 		band.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		band.set_meta(&"band", true)
 		_stage.add_child(band)
-	var slab := PixelKit.Slab.new(HudPalette.LIGHT, 36.0)  # PAUSED, dark on a white slab with a stair-cut foot
+	var slab := PixelKit.Slab.new(HudPalette.LIGHT, 36.0)
+	_slab = slab  # PAUSED, dark on a white slab with a stair-cut foot
 	var sbox := StyleBoxEmpty.new()
 	sbox.content_margin_left = 100
 	sbox.content_margin_right = 80
@@ -203,6 +205,7 @@ func _show(on: bool) -> void:
 		HudPalette.fade(self)
 		_resume.grab_focus()
 		_menu.open()
+		UiMotion.wipe(_slab, true, 6, 0.2)
 	else:
 		HudPalette.fade(self, false).finished.connect(hide)
 
@@ -224,7 +227,7 @@ func _quit() -> void:
 
 func _leave(scene: String) -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file(scene)
+	UiTransition.go(get_tree(), scene)
 
 
 func _settings() -> void:

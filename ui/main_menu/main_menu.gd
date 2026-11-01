@@ -199,7 +199,7 @@ func _main() -> void:
 	_row("ui.menu.new_game", func() -> void: _slots(true), "m_new", "new_game")
 	_row("ui.menu.load", func() -> void: _slots(false), "m_load", "load")
 	_row("ui.menu.mission_select", _select_slot, "m_missions", "mission_select")
-	_row("ui.menu.free_mode", func() -> void: get_tree().change_scene_to_file(FREE_MODE), "m_free", "free_mode")
+	_row("ui.menu.free_mode", func() -> void: UiTransition.go(get_tree(), FREE_MODE), "m_free", "free_mode")
 	_row("ui.menu.settings", _settings, "m_settings", "settings")
 	_row("ui.menu.quit", func() -> void: get_tree().quit(), "m_quit", "quit", true)
 	_summary(cont)
@@ -278,7 +278,7 @@ func _new_game(slot: int) -> void:
 	Campaign.start()
 	Campaign.slot = slot
 	Campaign.save()
-	get_tree().change_scene_to_file(BRIEFING)
+	UiTransition.go(get_tree(), BRIEFING)
 
 
 func _play_slot(slot: int) -> void:
@@ -287,7 +287,7 @@ func _play_slot(slot: int) -> void:
 	Campaign.missions = s.missions
 	Campaign.gear = s.gear
 	Campaign.slot = slot
-	get_tree().change_scene_to_file(BRIEFING)
+	UiTransition.go(get_tree(), BRIEFING)
 
 
 func _settings() -> void:
