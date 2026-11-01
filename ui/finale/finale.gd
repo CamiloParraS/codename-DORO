@@ -8,6 +8,8 @@ extends Control
 const MENU := "res://ui/main_menu/main_menu.tscn"
 const SLOW := 0.3        # time scale while the order is on screen
 const STILL_SECONDS := 20.0
+const BED_FADE := 2.5    # seconds for an ending's bed to fade in, and out into the Epilogue
+const GLITCH_DB := -3.0  # the glitch under each new debate line
 const GLYPHS := {promachos = "/\\", nike = ">>", pallas = "[]", gorgo = "XX", glaukopis = "()"}
 
 var model: Finale
@@ -18,6 +20,7 @@ var _blip: VoiceBlip
 var _t := 0.0
 var _line_t := 0.0  # since the current line began: its glyph's pulse
 var _still_tex: Texture2D
+var _bed: AudioStreamPlayer  # the ending's sound bed (Finale.BEDS)
 var _ascending := false  # the Epilogue runs over the live Area: this control draws nothing under it
 
 
@@ -68,6 +71,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		"order":
 			Engine.time_scale = 1.0
 			model.transmit()
+			Mixer.play(&"finale_transmit")
 			_play(Finale.debate(model.band, model.spoofing))
 		"debate", "ending":
 			if not _blip.done():
@@ -84,8 +88,10 @@ func _advance() -> void:
 	model.next()
 	_t = 0.0
 	if model.stage == "ending":
+		_bed_in()
 		_play(Finale.ending(model.band))
 	elif model.stage == "epilogue":
+		_bed_out(BED_FADE)
 		_blip = null
 		var codec := CodecScreen.new(Finale.epilogue(model.band))
 		var take := _ascend()
@@ -129,6 +135,7 @@ func _leave() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	Mixer.stop_blips()
+	_bed_out(0.3)
 	UiTransition.go(get_tree(), leave_to)
 
 
@@ -141,6 +148,35 @@ func _show(i: int) -> void:
 	_i = i
 	_line_t = 0.0
 	_blip = VoiceBlip.new(tr(_lines[i][1]), _lines[i][0])
+	if model.stage == "debate":
+		Mixer.play(&"finale_glitch", Mixer.UI, 1.0, GLITCH_DB)  # a Voice cutting in
+
+
+## The ending's bed fading in under its still, and its one-shot. Runs while the tree is paused (this control always processes).
+func _bed_in() -> void:
+	var b: Dictionary = Finale.BEDS[model.band]
+	var s: AudioStream = load(b.path)
+	if s is AudioStreamOggVorbis:
+		s.loop = b.loop
+	_bed = AudioStreamPlayer.new()
+	_bed.stream = s
+	_bed.bus = Mixer.AMBIENCE
+	_bed.volume_db = Mixer.SILENT
+	add_child(_bed)
+	_bed.play()
+	create_tween().tween_property(_bed, "volume_db", b.db, BED_FADE)
+	if b.has("hit"):
+		Mixer.play(b.hit, Mixer.AMBIENCE)
+
+
+func _bed_out(secs: float) -> void:
+	if _bed == null:
+		return
+	var b := _bed
+	_bed = null
+	var t := b.create_tween()
+	t.tween_property(b, "volume_db", Mixer.SILENT, secs)
+	t.tween_callback(b.queue_free)
 
 
 func _draw() -> void:
@@ -189,5 +225,5 @@ func _still(d: Vector2) -> void:
 	var tex: Texture2D = _still_tex
 	var k := clampf(_t / STILL_SECONDS, 0.0, 1.0)
 	var r := Rect2(Vector2(-40.0, -20.0) * k, d * (1.0 + 0.15 * k))
-	draw_texture_rect(tex, r, true, HudPalette.STILL)
+	draw_texture_rect(tex, r, false, HudPalette.STILL)
 	HudPalette.hud_text(self, Vector2(16, d.y - 16), s.credit, 16, HudPalette.LIGHT_3, HudPalette.FIGURE_MED, 0, false)

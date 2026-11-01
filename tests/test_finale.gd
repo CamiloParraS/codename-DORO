@@ -140,6 +140,14 @@ func test_every_band_has_a_credited_still() -> void:
 			assert_ne(s.credit, "")
 
 
+func test_every_band_has_a_sound_bed() -> void:
+	for band: String in BANDS:
+		var b: Dictionary = Finale.BEDS[band]
+		assert_true(load(b.path) is AudioStream, band)
+		if b.has("hit"):
+			assert_true(Mix.STREAMS.has(b.hit), band)
+
+
 func test_the_epilogue_ends_on_the_recruits() -> void:
 	for band: String in BANDS:
 		assert_eq(Finale.epilogue(band).back(), ["handler", "finale.epi.recruits"], band)

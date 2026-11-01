@@ -57,6 +57,9 @@ const STREAMS := {
 	&"beep": "res://assets/audio/sfx_radio_on.ogg",
 	&"thump": "res://assets/audio/sfx_body_fall.ogg",
 	&"radio_static": "res://assets/audio/sfx_radio_static.ogg",
+	&"finale_transmit": "res://assets/audio/sfx_finale_transmit.ogg",
+	&"finale_glitch": "res://assets/audio/sfx_finale_glitch.ogg",
+	&"finale_steam": "res://assets/audio/sfx_finale_steam.ogg",
 }
 const STEP_DB := -2.0           # a standing (run) footstep
 const CROUCH_STEP_DB := -14.0   # a crouched footstep: much quieter than STEP_DB...

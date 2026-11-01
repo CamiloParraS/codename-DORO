@@ -8,11 +8,18 @@ const ORDER := "Transmit memories"
 const STAGES := ["order", "debate", "ending", "epilogue", "over"]
 const ENDING_LINES := 5          # 4-6 per ending; the last is addressed to the Operative
 const EPILOGUE := ["handler", "analyst", "handler", "analyst"]
-## ponytail: stand-in stills (CC0 textures already in the project) until real stock stills are chosen.
+## One still per ending, photos under the Unsplash License (credited on screen and in docs/CREDITS.md).
 const STILLS := {
-	"pallas": [{path = "res://assets/textures/stone_07_128.png", credit = "ambientCG / Poly Haven, CC0 1.0"}],
-	"nike": [{path = "res://assets/textures/metal_05_128.png", credit = "ambientCG / Poly Haven, CC0 1.0"}],
-	"gorgo": [{path = "res://assets/textures/brick_07_128.png", credit = "Tiny Texture Pack 2, Screaming Brain Studios, CC0 1.0"}],
+	"pallas": [{path = "res://assets/stills/pallas_island_fog.jpg", credit = "Jakub Flis / Unsplash"}],
+	"nike": [{path = "res://assets/stills/nike_dish_dusk.jpg", credit = "Alec Favale / Unsplash"}],
+	"gorgo": [{path = "res://assets/stills/gorgo_lava_sea.jpg", credit = "Sebastien Gabriel / Unsplash"}],
+}
+## Each ending's sound under its still: a bed faded in on the Ambience bus (db: its level; the files are
+## already loudness-matched, the sea about 3 dB over the lava), and an optional one-shot (a Mixer sound) as the ending starts.
+const BEDS := {
+	"pallas": {path = "res://assets/audio/ambience_finale_sea.ogg", db = 0.0, loop = true},
+	"nike": {path = "res://assets/audio/sfx_finale_shutdown.ogg", db = 0.0, loop = false},
+	"gorgo": {path = "res://assets/audio/ambience_finale_lava.ogg", db = 0.0, loop = true, hit = &"finale_steam"},
 }
 
 var band: String      # the Dominant Voice, which is the ending
