@@ -7,6 +7,7 @@ extends "res://actors/guard/guard_moves.gd"
 ## drops (up until now) is seen by its partners.
 func neutralize() -> void:
 	var dropped := not is_down()
+	_drop_item()  # darted, choked or killed: what he carried falls out
 	AlertChain.area.stop_call(self)
 	_cut_call()
 	_vstate = GuardAlert.State.PATROL
@@ -226,6 +227,7 @@ func answer(op: Node3D) -> void:
 		"scan":
 			op.items.scan_left = op.items.scan_time
 	radio_say(tr("holdup." + what))
+	_drop_item()
 
 
 ## Searched while Down: what a Hold-up would have got out of him is on the body (his scripted answer; a
@@ -236,6 +238,19 @@ func frisk(_op: Node3D) -> void:
 	answered = true
 	if holdup_answer != "":
 		get_tree().call_group("radio_log", "say", "INTEL", tr("search." + holdup_answer))
+		_drop_item()
+
+
+var _dropped := false  # his item is already on the floor
+
+## What his scripted answer leaves on the floor at his feet (DroppedItem), if it has a picture.
+func _drop_item() -> void:
+	if _dropped:
+		return
+	_dropped = true
+	var kind := DroppedItem.kind_for(holdup_answer)
+	if kind != &"":
+		DroppedItem.drop(get_parent(), kind, global_position + Vector3(0, 1.1, 0), global_position + Vector3(0.35, 0, 0.25))
 
 
 ## Can a Fulton take it: Neutralized (darted, choked) or kneeling at gunpoint; never the dead.
