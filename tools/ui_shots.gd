@@ -216,7 +216,7 @@ func _play_shots(all: bool) -> void:
 	hud.tip(tr("tutorial.holdup.prompt"), tr("tutorial.holdup.title"))
 	await wait(0.8)
 	await shoot("hud_tip")
-	hud.tip(tr("tutorial.scanner.prompt"), tr("tutorial.scanner.title"))  # the longest tip, with the wheel
+	hud.tip(tr("tutorial.tranq.prompt"), tr("tutorial.tranq.title"))  # the longest tip: aim, fire and crouch
 	await wait(0.8)
 	await shoot("hud_tip_long")
 	hud.live_call([["analyst", "live.m1.s1.01"]])

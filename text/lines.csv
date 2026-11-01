@@ -50,9 +50,9 @@ tutorial.takedown.line,"Get behind him and choke him out. No noise, no alarm.","
 tutorial.carry.title,CARRY,CARGAR
 tutorial.carry.prompt,[interact] PICK HIM UP  HIDE HIM OUT OF SIGHT,[interact] CÁRGALO  ESCÓNDELO DE LA VISTA
 tutorial.carry.line,A body left in the open gets found. Pick him up and hide him.,Un cuerpo a la vista se encuentra. Cárgalo y escóndelo.
-tutorial.tranq.title,TRANQ PISTOL,PISTOLA TRANQ.
-tutorial.tranq.prompt,[aim] AIM  [fire] FIRE A SLEEP DART  GO FOR THE HEAD,[aim] APUNTA  [fire] DISPARA UN DARDO  MEJOR A LA CABEZA
-tutorial.tranq.line,The tranq pistol is silent. Aim for the head and he's out cold.,La pistola tranquilizante es silenciosa. Apunta a la cabeza y cae dormido.
+tutorial.tranq.title,SNEAK,SIGILO
+tutorial.tranq.prompt,"[aim] AIM  [fire] FIRE A SLEEP DART AT THE HEAD  [crouch] CROUCH: QUIETER, HARDER TO SPOT",[aim] APUNTA  [fire] DISPARA UN DARDO A LA CABEZA  [crouch] AGÁCHATE: MÁS SIGILO
+tutorial.tranq.line,Guard ahead. Stay low and he'll hear you less. The tranq is silent: aim for the head and he's out cold.,Guardia al frente. Agáchate y te oirá menos. La tranquilizante es silenciosa: apunta a la cabeza y cae dormido.
 tutorial.eavesdrop.title,VOICEPRINT,HUELLA DE VOZ
 tutorial.eavesdrop.prompt,STAY CLOSE WHILE THEY TALK  YOUR RADIO RECORDS THEM,QUÉDATE CERCA MIENTRAS HABLAN  TU RADIO LOS GRABA
 tutorial.eavesdrop.line,Stay close while they talk and your radio will lift their Voiceprints.,Quédate cerca mientras hablan y tu radio captará sus huellas de voz.

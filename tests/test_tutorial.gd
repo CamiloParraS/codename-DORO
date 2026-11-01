@@ -26,13 +26,11 @@ func _do(t: Tutorial, verb: String) -> void:
 	t.update(0, true, {}, maxf(Tutorial.MIN_SHOW, Tutorial.BEAT))
 
 
-func test_the_start_teaches_aiming_then_crouch_then_switching_weapons() -> void:
+func test_the_start_teaches_sneaking_then_switching_weapons() -> void:
 	var t := Tutorial.new()
 	var start := Tutorial.relevant(_world({guard = 19.0}))
 	assert_eq(t.update(0, true, start), "tranq", "O1 in view from the start: no walking up to him first")
 	_do(t, "tranq")
-	assert_eq(t.update(0, true, start), "crouch")
-	_do(t, "crouch")
 	assert_eq(t.update(0, true, start), "weapons")
 	_do(t, "weapons")
 	assert_eq(t.update(0, true, start), "", "nothing else from the start: the magazine waits until he is close")
@@ -40,7 +38,7 @@ func test_the_start_teaches_aiming_then_crouch_then_switching_weapons() -> void:
 
 func test_closing_on_a_guard_teaches_the_holdup_then_the_magazine_then_up_close_the_takedown() -> void:
 	var t := Tutorial.new()
-	for v in ["tranq", "crouch", "weapons"]:
+	for v in ["tranq", "weapons"]:
 		t.done(v, 0, true)
 	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 12.0}))), "", "the magazine waits for the Hold-up")
 	var closing := Tutorial.relevant(_world({guard = 8.0}))
@@ -61,7 +59,7 @@ func test_a_tip_stays_until_done_then_the_next_follows_a_beat_later() -> void:
 	assert_true(t.cleared(), "done: the HUD fades it")
 	assert_false(t.cleared(), "once")
 	assert_eq(t.update(0, true, near, Tutorial.BEAT - 0.1), "", "a beat before the next")
-	assert_eq(t.update(0, true, near, 0.1), "crouch")
+	assert_eq(t.update(0, true, near, 0.1), "weapons")
 
 
 func test_a_tip_done_at_once_is_still_up_for_min_show() -> void:
@@ -70,19 +68,19 @@ func test_a_tip_done_at_once_is_still_up_for_min_show() -> void:
 	assert_eq(t.update(0, true, near), "tranq")
 	t.done("tranq", 0, true)
 	assert_eq(t.update(0, true, near, Tutorial.BEAT), "", "the beat is over but the tip was barely up")
-	assert_eq(t.update(0, true, near, Tutorial.MIN_SHOW - Tutorial.BEAT), "crouch")
+	assert_eq(t.update(0, true, near, Tutorial.MIN_SHOW - Tutorial.BEAT), "weapons")
 
 
 func test_a_tip_never_done_gives_way_after_wait_max() -> void:
 	var t := Tutorial.new()
 	var near := Tutorial.relevant(_world({guard = 19.0}))
 	assert_eq(t.update(0, true, near), "tranq")
-	assert_eq(t.update(0, true, near, Tutorial.WAIT_MAX), "crouch", "the player who never fires still gets the next tip")
+	assert_eq(t.update(0, true, near, Tutorial.WAIT_MAX), "weapons", "the player who never fires still gets the next tip")
 
 
 func test_the_scanner_comes_last_once_the_eavesdrop_is_spent() -> void:
 	var t := Tutorial.new()
-	for v in ["tranq", "crouch", "weapons", "magazine", "takedown", "carry"]:
+	for v in ["tranq", "weapons", "magazine", "takedown", "carry"]:
 		t.done(v, 0, true)
 	var deck := Tutorial.relevant(_world({guard = 19.0}))
 	assert_eq(t.update(0, true, deck), "", "no Scanner tip before the smoke break")
@@ -110,7 +108,7 @@ func test_a_tip_done_before_the_cut_does_not_come_back() -> void:
 	t.done("tranq", 0, true)
 	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 8.0})), Tutorial.MIN_SHOW), "holdup")
 	t.done("holdup", 0, true)
-	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 19.0})), Tutorial.MIN_SHOW), "crouch", "not the aim tip again")
+	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 19.0})), Tutorial.MIN_SHOW), "weapons", "not the aim tip again")
 
 
 func test_nothing_relevant_nothing_shown() -> void:
@@ -154,7 +152,7 @@ func test_every_verb_is_tipped_by_an_encounter_or_is_line_only() -> void:
 	var all := Tutorial.VERBS.duplicate()
 	all.sort()
 	assert_eq(got, all)
-	var cases := {tranq = {guard = 20.0}, crouch = {guard = 20.0}, weapons = {guard = 20.0}, magazine = {guard = 12.0},
+	var cases := {tranq = {guard = 20.0}, weapons = {guard = 20.0}, magazine = {guard = 12.0},
 		takedown = {guard = 3.0}, carry = {down = 1.5}, eavesdrop = {spot = 4.0}, scanner = {guard = 20.0},
 		holdup = {guard = 8.0}, fulton = {fulton = true, enc = 2}}
 	for verb: String in cases:
@@ -163,9 +161,9 @@ func test_every_verb_is_tipped_by_an_encounter_or_is_line_only() -> void:
 
 func test_a_verb_done_unprompted_never_gets_its_tip() -> void:
 	var t := Tutorial.new()
-	assert_eq(t.done("crouch", 0, true), "", "a tipped verb gets no line when done")
+	assert_eq(t.done("weapons", 0, true), "", "a tipped verb gets no line when done")
 	t.done("tranq", 0, true)
-	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 19.0}))), "weapons", "crouch was already done: straight to the next")
+	assert_eq(t.update(0, true, Tutorial.relevant(_world({guard = 8.0}))), "holdup", "weapons were already switched: straight to the next")
 
 
 func test_a_line_only_verb_gets_metis_once_on_first_use() -> void:
@@ -206,7 +204,7 @@ func test_the_sighting_tip_takes_the_screen_and_the_next_waits_until_it_is_shake
 	t.done("tranq", 0, true)
 	assert_eq(t.update(0, true, near, Tutorial.MIN_SHOW), "", "still seen: the sighting tip stays")
 	t.sighted(0, true, 1, false)
-	assert_eq(t.update(0, true, near, Tutorial.BEAT), "crouch", "shaken off: the next a beat later")
+	assert_eq(t.update(0, true, near, Tutorial.BEAT), "weapons", "shaken off: the next a beat later")
 
 
 func test_every_verb_has_a_prompt_a_title_and_a_metis_line_in_both_languages() -> void:

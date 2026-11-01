@@ -389,18 +389,21 @@ func _tutorial_tip() -> void:
 	var fs := HudPalette.legible(c, 24)
 	var font := _tip_font()
 	var row_h := maxf(HudPalette.keycap_side(true) + 10.0, fs * 1.45)
-	var rows: Array = []
+	var rows: Array = []  # [indent, parts]: a wrapped step's later rows line up under its words, past its key
 	var step: Array = []
 	for part: Array in _tip_parts(_tip) + [["gap", ""]]:
-		if part[0] == "gap":
-			if not step.is_empty():
-				rows.append_array(_tip_rows(step, TIP_W))
-			step = []
-		else:
+		if part[0] != "gap":
 			step.append(part)
+			continue
+		if not step.is_empty():
+			var hang := HudPalette.keycap_width(c, step[0][1], true) + TIP_SPACE if step[0][0] == "key" else 0.0
+			var wrapped := _tip_rows(step, TIP_W)
+			for i in wrapped.size():
+				rows.append([hang if i > 0 else 0.0, wrapped[i]])
+		step = []
 	var bw := 0.0
 	for r: Array in rows:
-		bw = maxf(bw, _row_width(r))
+		bw = maxf(bw, r[0] + _row_width(r[1]))
 	var title := _tip_title.to_upper()
 	var y := at.y
 	if title != "":  # the verb's slab
@@ -416,8 +419,8 @@ func _tutorial_tip() -> void:
 	c.draw_rect(Rect2(plate.position, Vector2(3, plate.size.y)), Color(HudPalette.SAND, 0.7 * a))  # the sand edge ties the steps to their verb
 	var ry := y + TIP_PAD.y
 	for r: Array in rows:
-		var x := at.x + 6
-		for part: Array in r:
+		var x: float = at.x + 6 + r[0]
+		for part: Array in r[1]:
 			if part[0] == "key":
 				x += HudPalette.keycap(c, Vector2(x, ry + (row_h - HudPalette.keycap_side(true)) / 2), part[1], true, a) + TIP_SPACE
 			else:

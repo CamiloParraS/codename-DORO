@@ -2,8 +2,8 @@
 ## contextual prompt under the verb's name and one Metis radio line (text keys tutorial.<verb>.prompt / .title /
 ## .line). Each verb once, and never once the player has done it unprompted (MGS2's veteran flags). Only in the
 ## campaign's Mission 1.
-## The deck (Encounter 1) paces its tips by place: at the safe start, O1 in view, aiming the tranq pistol, crouch and
-## switching weapons; closing on a guard, the Hold-up, then the magazine; up close the takedown, then carry; at the smoke break the
+## The deck (Encounter 1) paces its tips by place: at the safe start, O1 in view, sneaking (aim, fire, crouch: one tip,
+## tranq) and switching weapons; closing on a guard, the Hold-up, then the magazine; up close the takedown, then carry; at the smoke break the
 ## eavesdrop; and last the Scanner, once the eavesdrop is spent (looking at the guarded exits; in the yard if the
 ## player left without it). The yard (2): Hold-up (if the deck never taught it) then Fulton. Operations (3): nothing. LINE_ONLY verbs get no
 ## prompt, only Metis's line the first time they are used.
@@ -17,8 +17,8 @@
 class_name Tutorial
 extends RefCounted
 
-const VERBS := ["tranq", "crouch", "weapons", "holdup", "magazine", "takedown", "carry", "eavesdrop", "scanner", "radio", "fulton", "caution"]  # teaching order
-const BY_ENCOUNTER := {1: ["tranq", "crouch", "weapons", "holdup", "magazine", "takedown", "carry", "eavesdrop", "scanner"], 2: ["scanner", "holdup", "fulton"]}
+const VERBS := ["tranq", "weapons", "holdup", "magazine", "takedown", "carry", "eavesdrop", "scanner", "radio", "fulton", "caution"]  # teaching order
+const BY_ENCOUNTER := {1: ["tranq", "weapons", "holdup", "magazine", "takedown", "carry", "eavesdrop", "scanner"], 2: ["scanner", "holdup", "fulton"]}
 const LINE_ONLY := ["radio", "caution"]
 const NEEDS := {carry = ["takedown", "tranq"], scanner = ["eavesdrop"], magazine = ["holdup"]}  # any one of them spent
 const URGENT := ["holdup", "carry", "eavesdrop"]  # a chance that passes: cuts in once the tip up has had MIN_SHOW; the one cut off comes back
@@ -49,7 +49,6 @@ static func relevant(world: Dictionary) -> Dictionary:
 	var here: Array = BY_ENCOUNTER.get(world.enc, [])
 	var near := {
 		tranq = world.guard <= IN_VIEW,
-		crouch = world.guard <= IN_VIEW,
 		weapons = world.guard <= IN_VIEW,
 		magazine = world.guard <= CLOSING,
 		takedown = world.guard <= 4.0,
