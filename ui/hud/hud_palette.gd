@@ -171,16 +171,47 @@ static func plate(ci: CanvasItem, r: Rect2, tint: Color, a0: float, a1: float, f
 			cols.append(hi.lerp(lo, u) if not fade_left else lo.lerp(hi, u))
 		ci.draw_polygon(poly, cols)
 	var t := int(Time.get_ticks_msec() / 700.0)  # the pattern crawls a cell every 700 ms
-	var rows := ceili(r.size.y / DITHER_PX)
+	var w := cells * DITHER_PX
+	var mask := _dither_mask(r.size, cells, fade_left, cut, t & 3)
+	ci.draw_texture_rect_region(mask, Rect2(r.end.x - w if not fade_left else r.position.x, r.position.y, w, r.size.y),
+			Rect2(0, 0, cells, r.size.y / DITHER_PX), lo, false, false)  # no clip_uv: it would pull a part-row back onto the row above
+
+
+static var _masks := {}  # [size, cells, fade_left, cut, phase] -> CanvasTexture
+
+
+## A plate's dithered band as a texture, one texel per dither pixel (white where it is lit), drawn nearest-filtered
+## over the band and tinted: the same squares a draw_rect per lit cell gave, in one draw. The crawl repeats every
+## 4 steps, so each plate shape needs at most 4.
+static func _dither_mask(size: Vector2, cells: int, fade_left: bool, cut: float, phase: int) -> CanvasTexture:
+	var key := [size if cut > 0.0 else Vector2(0, ceilf(size.y / DITHER_PX)), cells, fade_left, cut, phase]
+	if _masks.has(key):
+		return _masks[key]
+	if _masks.size() > 256:  # a plate whose size animates would otherwise grow this without end
+		_masks.clear()
+	var r := Rect2(Vector2.ZERO, size)
+	var shape := PackedVector2Array()
+	if cut > 0.0:  # as plate's, at the origin
+		if fade_left:
+			shape = PackedVector2Array([Vector2(cut, 0), Vector2(r.end.x, 0), r.end - Vector2(cut, 0), Vector2(0, r.end.y), Vector2(0, cut)])
+		else:
+			shape = PackedVector2Array([Vector2.ZERO, Vector2(r.end.x - cut, 0), Vector2(r.end.x, cut), r.end, Vector2(cut, r.end.y), Vector2(0, r.end.y - cut)])
+	var rows := ceili(size.y / DITHER_PX)
+	var img := Image.create_empty(cells, rows, false, Image.FORMAT_RGBA8)
 	for cx in cells:
 		var dens := (cx + 0.5) / cells  # 0 at the dying edge, 1 where it meets the body
-		var x := r.position.x + cx * DITHER_PX if fade_left else r.end.x - (cx + 1) * DITHER_PX
+		var tx := cx if fade_left else cells - 1 - cx
+		var x := cx * DITHER_PX if fade_left else r.end.x - (cx + 1) * DITHER_PX
 		for ry in rows:
-			if (BAYER[((ry + t) & 3) * 4 + ((cx + t * 3) & 3)] + 0.5) / 16.0 < dens:
-				var y := r.position.y + ry * DITHER_PX
-				if cut > 0.0 and not Geometry2D.is_point_in_polygon(Vector2(x, y) + Vector2(DITHER_PX, DITHER_PX) / 2.0, shape):
+			if (BAYER[((ry + phase) & 3) * 4 + ((cx + phase * 3) & 3)] + 0.5) / 16.0 < dens:
+				if cut > 0.0 and not Geometry2D.is_point_in_polygon(Vector2(x, ry * DITHER_PX) + Vector2(DITHER_PX, DITHER_PX) / 2.0, shape):
 					continue
-				ci.draw_rect(Rect2(x, y, DITHER_PX, minf(DITHER_PX, r.end.y - y)), lo)
+				img.set_pixel(tx, ry, Color.WHITE)
+	var tex := CanvasTexture.new()
+	tex.diffuse_texture = ImageTexture.create_from_image(img)
+	tex.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_masks[key] = tex
+	return tex
 
 
 ## `pts` filled as chunky pixels: every `px`-sized cell of the canvas grid whose centre falls inside the polygon.

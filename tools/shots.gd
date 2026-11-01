@@ -49,6 +49,11 @@ const SHOTS := {
 		cliff = [Vector3(5, 3, -25), Vector3(-45, 14, -55)],
 		crane_north = [Vector3(16, 10, -21), Vector3(20, 0, -80)],
 		bow_out = [Vector3(42, 7, -56), Vector3(31, 0, -38)],
+		bay_east = [Vector3(30, 16, -5), Vector3(75, 3, 40)],
+		far_shore = [Vector3(20, 3, -12), Vector3(84, 10, 0)],
+		far_south = [Vector3(5, 10, 40), Vector3(-10, 8, 84)],
+		town = [Vector3(-12, 14, 5), Vector3(-60, 16, 15)],
+		bay_north = [Vector3(30, 16, -5), Vector3(80, 3, -30)],
 	}],
 	## Candidates for the main menu's backdrop (ui/main_menu/backdrop.png), shot with the HUD hidden.
 	menu = ["res://areas/harbour/harbour.tscn", {

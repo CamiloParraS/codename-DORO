@@ -94,27 +94,46 @@ func _life(d: Vector2) -> void:
 	var full := smoothstep(0.96, 1.0, life)  # at full life the fill takes a faint green hue
 	var ink := HudPalette.LIGHT.lerp(HudPalette.FULL_GREEN, 0.16 * full)
 	var edge := Color(HudPalette.LIGHT, 0.7)
+	# One pixel row at a time, but rows that repeat the one above (same columns, same colour) merge into one
+	# taller rect: the same pixels in a fraction of the draws. Rows never overlap, so each layer can go in turn.
+	var ground: Array = []  # each a run: [first row, row count, x0, width, colour] in gauge pixels
+	var lefts: Array = []
+	var rights: Array = []
+	var fills: Array = []
 	for i in rows:  # top-right and bottom-left corners are cut on a stair, like the menu plates' slant
 		var x0 := maxi(0, LIFE_CUT - (rows - 1 - i))
 		var x1 := cols - maxi(0, LIFE_CUT - i)
-		var y := well.position.y + i * px
-		c.draw_rect(Rect2(well.position.x + x0 * px, y, (x1 - x0) * px, px), Color(0.0, 0.0, 0.0, 0.4))
+		_row_run(ground, i, x0, x1 - x0, Color(0.0, 0.0, 0.0, 0.4))
 		if i == 0 or i == rows - 1:
-			c.draw_rect(Rect2(well.position.x + x0 * px, y, (x1 - x0) * px, px), edge)
+			_row_run(fills, i, x0, x1 - x0, edge)  # the top and bottom frame rows
 			continue
-		c.draw_rect(Rect2(well.position.x + x0 * px, y, px, px), edge)
-		c.draw_rect(Rect2(well.position.x + (x1 - 1) * px, y, px, px), edge)
+		_row_run(lefts, i, x0, 1, edge)
+		_row_run(rights, i, x1 - 1, 1, edge)
 		if i < 2 or i > rows - 3:
 			continue
 		var frac := (rows - 2.5 - i) / (rows - 4)  # how far up the gauge this row is
 		var col := HudPalette.DMG if frac <= _lost and frac > life else (HudPalette.DMG if warn else ink) if frac <= life else Color(0, 0, 0, 0)
 		if col.a > 0.0:
-			c.draw_rect(Rect2(well.position.x + (x0 + 2) * px, y, (x1 - x0 - 4) * px, px), col)
+			_row_run(fills, i, x0 + 2, x1 - x0 - 4, col)
+	for runs: Array in [ground, lefts, rights, fills]:
+		for r: Array in runs:
+			c.draw_rect(Rect2(well.position.x + r[2] * px, well.position.y + r[0] * px, r[3] * px, r[1] * px), r[4])
 	for q in [0.25, 0.5, 0.75]:
 		var ty: float = well.end.y - well.size.y * q
 		c.draw_line(Vector2(well.end.x + 4, ty), Vector2(well.end.x + 12, ty), Color(HudPalette.LIGHT, 0.55), 1.0)
 	HudPalette.hud_label(c, Vector2(well.position.x, well.position.y - 14), tr("ui.hud.life"), 16, HudPalette.LIGHT_2, 0.2, HudPalette.LABEL, 0)
 	HudPalette.hud_text(c, Vector2(well.position.x - 2, well.end.y + 28), "%d" % roundi(life * 100.0), 24, HudPalette.DMG if low else ink, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.04), 0, true)
+
+
+## Row `i` of a pixel gauge (columns x0 to x0 + w, colour col) onto `runs`: it extends the last run when it
+## carries straight on from it, else starts a new one.
+func _row_run(runs: Array, i: int, x0: int, w: int, col: Color) -> void:
+	if not runs.is_empty():
+		var last: Array = runs.back()
+		if last[0] + last[1] == i and last[2] == x0 and last[3] == w and last[4] == col:
+			last[1] += 1
+			return
+	runs.append([i, 1, x0, w, col])
 
 
 ## Top-right disc, north-up: range rings and compass ticks in sand, guards as triangles on their facing
@@ -132,9 +151,12 @@ func _radar(d: Vector2) -> void:
 	c.draw_arc(o, rad - 1, 0, TAU, 96, Color(HudPalette.LIGHT, 0.85), 2.0, true)
 	for ring in [rad * 0.32, rad * 0.645]:  # range rings at 50 and 100 of 155
 		c.draw_arc(o, ring, 0, TAU, 72, Color(HudPalette.LIGHT, 0.25), 1.0, true)
-	for dir: Vector2 in [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]:  # dashed cross and edge ticks
+	var dashes := PackedVector2Array()  # the dashed cross, as one draw; the arms only meet in the middle, where no dash falls
+	for dir: Vector2 in [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]:
 		for n in 25:
-			c.draw_line(o + dir * (n * 6.0 + 4.0), o + dir * (n * 6.0 + 7.0), Color(HudPalette.LIGHT, 0.25), 1.0)
+			dashes.append_array([o + dir * (n * 6.0 + 4.0), o + dir * (n * 6.0 + 7.0)])
+	c.draw_multiline(dashes, Color(HudPalette.LIGHT, 0.25), 1.0)
+	for dir: Vector2 in [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]:  # edge ticks, over the dashes they cross
 		c.draw_line(o + dir * rad, o + dir * (rad - 12), Color(HudPalette.LIGHT, 0.9), 2.0)
 	HudPalette.hud_text(c, o + Vector2(0, -rad + 29), "N", 17, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 17, 0.12), 1, false)
 	var origin := RadarModel.flat(_operative.global_position)

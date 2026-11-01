@@ -19,7 +19,7 @@ const LAND := [
 	[[4, 56, 72, 20], "ground", 0, Color.WHITE],  # motor pool
 	[[4, 32, 72, 24], "ground", 3, SNOW],         # barracks terrace
 	[[4, 4, 72, 28], "ground", 6, SNOW],          # summit
-	[[76, 40, 12, 8], "ground", 3, Color.WHITE],  # the road in from the east
+	[[76, 40, 20, 8], "ground", 3, Color.WHITE],  # the road in from the east, out to x 96
 	[[68, 56, 2, 4], "stone", 3, Color.WHITE],    # RoadRamp1's landing
 	[[68, 32, 2, 4], "stone", 6, Color.WHITE],    # RoadRamp2's landing
 	[[54, 18, 2, 2.5], "stone", 10, Color.WHITE], # the office stair's landing, onto the roof
@@ -203,7 +203,7 @@ const WOODS := [  # [model, rects, count, scale from, to, seed]
 	["pine", [[-70, -50, 66, 126]], 55, 2.0, 3.2, 33], ["pine", [[84, -50, 70, 126]], 50, 2.0, 3.2, 34],
 	["pine", [[-40, -60, 160, 56]], 45, 2.0, 3.2, 35], ["dead_tree", [[-60, 80, 200, 60]], 14, 1.2, 1.8, 36],
 ]
-const WOODS_CLEAR := [[0, 0, 80, 76], [76, 36, 140, 16]]
+const WOODS_CLEAR := [[0, 0, 80, 76], [76, 36, 140, 16], [-26, 116, 90, 28], [-44, 26, 10, 10]]  # + the valley outpost, the west hut
 const PYLONS := [[-70, 100], [-10, 97], [50, 96], [110, 97], [170, 100]]  # inside the fog's 80 m from the motor pool
 const ROAD_POLES := [[92, 38.7], [112, 38.7], [132, 38.7], [152, 38.7], [172, 38.7], [192, 38.7]]
 const PEAKS := [["mountain_a", [-20, -60], 0, 1.0], ["mountain_b", [60, -68], 40, 1.1], ["mountain_a", [140, -40], 120, 0.9],
@@ -380,6 +380,11 @@ func _surroundings() -> void:
 	for k in 2:
 		_scatter(g, "Rocks%d" % k, ["boulder_a", "boulder_b"][k], [[-50, 78, 180, 50], [-40, -30, 36, 100], [84, -30, 40, 60]], 35,
 			_ground_h, 1.0, 3.0, 40 + k, WOODS_CLEAR, 1.0, ["terrain", SNOW_FIELD], true)  # clear 1 m, skin, cast shadows
+	_scatter(g, "CliffRocks", "boulder_b", [[-30, -26, 140, 26], [-45, -4, 40, 84]], 70, _ground_h, 2.0, 5.0, 60, WOODS_CLEAR, 0.5,
+		["terrain", SNOW_FIELD], true)  # the north and west cliff faces were bare slabs
+	_scatter(g, "RavineRocks", "boulder_a", [[84, 26, 110, 10], [84, 52, 110, 10]], 45, _ground_h, 1.5, 4.0, 61, WOODS_CLEAR, 0.0,
+		["terrain", SNOW_FIELD], true)  # the road out runs between two walls
+	_dress(g, IDENTITY.backdrop.map(func(it: Array) -> Array: return [it[0], [it[1][0], it[1][1], _ground_h(it[1][0], it[1][1]) - 0.1 + (it[1][2] if it[1].size() > 2 else 0.0)]] + it.slice(2)), false)
 	_dress(g, PEAKS.map(func(pk: Array) -> Array:
 		return [pk[0], [pk[1][0], pk[1][1], _peak_base(pk)], pk[2], pk[3], "terrain", SNOW_FIELD]), false)
 	_power_line(g, "pylon", PYLONS.map(func(p: Array) -> Array: return [p[0], p[1], _ground_h(p[0], p[1]) - 0.2]))

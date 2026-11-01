@@ -520,6 +520,9 @@ func _backdrop() -> void:
 	m.set_shader_parameter("sky", MOODS[String(_root.name).to_snake_case()].fog)  # glassy at a slant: lamps and the low sun glint on it
 	plane.material = m
 	sea.mesh = plane
+	# Its swell moves with TIME, so as a caster it would re-render every lamp's shadow near the water every frame
+	# (and the sun's cascades) for a shadow nothing sits under to receive.
+	sea.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	sea.position = Vector3(0, SEA_H, 0)
 	_add(bd, sea)
 	# ground under the backdrop: the clifftop, the north shore, the breakwater, the far shores (no collision)
@@ -558,7 +561,7 @@ func _land_floor(mat: String) -> float:
 func _surroundings() -> void:
 	var g := _group(_root.get_node("Backdrop"), "Surroundings")
 	g.owner = _root
-	_dress(g, SURROUNDINGS, false)
+	_dress(g, SURROUNDINGS + IDENTITY.backdrop, false)
 	_instances(g, "Pilings", "piling", PILINGS.map(func(p: Array) -> Array: return [[p[0], p[1], PIER_FLOOR - 4.0], 0.0, 1.0]))
 	for w in CLIFF_WOODS:
 		_scatter(g, w[0].to_pascal_case() + "Woods", w[0], [[-45, -95, 40, 270]], w[1], 14.0, w[2], w[3], w[4], CLIFF_CLEAR, 3.0)

@@ -61,5 +61,19 @@ const D := {
 	backdrop = [
 		["mine_cart", [70, 40], 90], ["mine_cart", [72.2, 40.6], 80], ["conveyor", [78, 50], 0], ["gravel", [74, 43], 0, 2.0],
 		["tnt", [67.5, 36.5], 0], ["tnt", [67.8, 36.8], 30], ["detonator", [66.8, 35.8], 45], ["bucket", [71, 38], 0],
+		# a working quarry: a crane (the boom, a third element of h above the ground, hangs off the tower toward the pit's middle),
+		# a crusher belt, a generator and a shed for the site office, barriers round the haul road, lamps on the floor
+		["crane_tower", [100, 38], 0, 2.0], ["crane_boom", [93, 38, 16], 180, 2.0], ["shed", [76, 94], 0, 1.2],
+		["conveyor", [102, 80], 90], ["conveyor", [98, 92], 0], ["generator", [86, 40], 0], ["gas_cylinders", [88.6, 40.6], 20],
+		["engine_hoist", [84, 66], 250], ["sandbags", [66, 54], 0], ["jersey_barrier", [88, 76], 0], ["jersey_barrier", [92, 76], 0],
+		["pipe_arch", [80, 90], 90], ["drum", [100, 45], 0], ["drum", [101, 46], 20], ["pallet_stack", [96, 50], 30],
+		["mine_cart", [90, 86], 20], ["pickaxe", [72, 58], 50], ["shovel", [72.8, 58.4], 10], ["lamp_post", [88, 48], 90], ["lamp_post", [78, 88], 0],
+		["mound", [100, 92], 20, 2.2, "ground", Color(0.75, 0.72, 0.68)], ["van", [70, 92], 200],
+		# out on the plain: a works to the west, tanks and a stack to the south, a mast and dish on the rim, a container yard
+		["block_long", [-70, 12], 90, 1.2], ["block_hall", [-60, -30], 0], ["tank_wide", [-45, 72], 0], ["block_hall", [34, 112], 0, 1.1],
+		["chimney", [10, 104], 0, 2.4], ["tank_tall", [70, 108], 0, 3.0], ["lattice_mast", [-30, 96], 0, 1.5], ["sat_dish", [98, -24], 200, 2.0],
+		["shed", [100, 0], 0, 1.3], ["container_a", [20, 98], 0, 7.4, "cargo", Color(0.75, 0.55, 0.45)],
+		["container_b", [23.2, 98], 0, 7.4, "cargo", Color(0.55, 0.65, 0.75)], ["container_a", [26.4, 98], 0, 7.4, "cargo", Color(0.6, 0.6, 0.6)],
+		["container_b", [21.6, 98], 0, 7.4, "cargo", Color.WHITE],
 	],
 }

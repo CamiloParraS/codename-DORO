@@ -225,7 +225,8 @@ const WOODS := [  # [model, rects, count, scale from, to, seed]
 	["poplar", [[-70, -70, 60, 200], [-10, 84, 72, 60], [-70, -80, 100, 60]], 70, 1.6, 2.4, 52],
 	["pine_small", [[-30, -40, 30, 140], [0, 82, 60, 20]], 40, 1.6, 2.6, 53], ["dead_tree", [[-60, -60, 220, 200]], 12, 1.2, 1.8, 54],
 ]
-const WOODS_CLEAR := [[-2, -2, 84, 84], [30, -120, 20, 125], [58, 26, 200, 200]]  # 6 m off the fences, the road, the pit
+const WOODS_CLEAR := [[-2, -2, 84, 84], [30, -120, 20, 125], [58, 26, 200, 200],  # 6 m off the fences, the road, the pit
+	[-80, -2, 24, 40], [-72, -44, 26, 28], [-60, 58, 26, 28], [-4, 92, 40, 26], [60, 98, 24, 20], [90, -8, 18, 18]]  # the works, the tanks, the yard
 const PYLONS := [[-100, -40], [-40, -42], [20, -44], [80, -46], [140, -48]]
 const ROAD_POLES := [[45.5, -108], [45.5, -84], [45.5, -60], [45.5, -36], [45.5, -12]]
 ## Spoof destinations. SpoofHall takes the Archive guard out through the hall door, never into a corridor.
@@ -405,7 +406,7 @@ func _surroundings() -> void:
 	g.owner = _root
 	_heightfield(g, "Plain", GROUND_RECT, 4.0, _ground_h, GROUND_HOLES, "terrain", TERRAIN, "res://areas/research_annex/plain.res")
 	_dress(bd, (BACKDROP_DRESS + IDENTITY.backdrop).map(func(it: Array) -> Array:
-		var at: Array = [it[1][0], it[1][1], _ground_h(it[1][0], it[1][1])]
+		var at: Array = [it[1][0], it[1][1], _ground_h(it[1][0], it[1][1]) + (it[1][2] if it[1].size() > 2 else 0.0)]
 		return [it[0], at] + it.slice(2)), false)
 	for w in WOODS:
 		_scatter(g, w[0].to_pascal_case() + "Woods", w[0], w[1], w[2], _ground_h, w[3], w[4], w[5], WOODS_CLEAR, 1.0)

@@ -44,6 +44,16 @@ const D := {
 		[[45.0, 68.4, 7.1, 0.2], 0, 0, HAZARD], [[45.0, 68.4, 0.2, 3.3], 0, 0, HAZARD], [[51.9, 68.4, 0.2, 3.3], 0, 0, HAZARD],
 		[[56.9, 66, 0.6, 2], 0.25, 0, HAZARD],  # the east door's threshold, where the Hold-up comes in
 	],
+	# past the rails, mesh-only (build_relay_station.gd _surroundings), standing on the hillside at [x, y]: a valley outpost
+	# south of the motor pool with its sodium lamps, masts on the north ridge, a hut up the west slope
+	backdrop = [
+		["shed", [10, 128], 0, 1.4], ["shed", [26, 134], 90, 1.2], ["shed", [-6, 138], 0, 1.2], ["water_tower", [58, 124], 0, 6.0],
+		["tank_wide", [-18, 126], 0, 0.8], ["van", [16, 130], 30], ["lattice_mast", [68, 140], 0, 1.6],
+		["lamp_post", [18, 122], 0], ["lamp_post", [34, 130], 0], ["lamp_post", [2, 132], 180],
+		["jersey_barrier", [14, 124], 0], ["jersey_barrier", [18, 124], 0], ["pallet_stack", [22, 128], 20], ["drum", [24, 130], 0],
+		["lattice_mast", [-45, -30], 0, 2.0], ["lattice_mast", [75, -34], 0, 1.6], ["sat_dish", [-20, -22], 150, 1.5],
+		["shed", [-40, 30], 90, 1.0],
+	],
 	beacons = [
 		[[37, 11, 34.4], Color(1, 0.1, 0.05), 10.0, -1],  # the aircraft warning lamp on the antenna
 		[[40.2, 18.55, 7.2], Color(0.3, 1, 0.45), 4.0, -1], [[41.9, 18.2, 6.1], Color(0.3, 1, 0.45), 3.0, -1],  # the console's status lamps
