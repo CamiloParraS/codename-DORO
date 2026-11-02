@@ -131,3 +131,23 @@ func test_aim_drift_follows_the_sway_and_stays_small() -> void:
 func test_drift_px_is_zero_at_centre_and_y_is_screen_down() -> void:
 	assert_eq(Locomotion.drift_px(Vector2.ZERO, 50.0, 360.0), Vector2.ZERO)
 	assert_true(Locomotion.drift_px(Vector2(0, 1), 50.0, 360.0).y < 0.0, "up in the world is up the screen")
+
+
+func test_aiming_faces_the_camera_even_on_the_move() -> void:
+	var yaw := 0.7
+	var right := Vector3(1, 0, 0)
+	assert_true(is_equal_approx(Locomotion.heading(true, true, right, yaw), yaw), "strafing right still faces the crosshair")
+	assert_true(is_equal_approx(Locomotion.heading(true, false, Vector3.ZERO, yaw), yaw))
+	assert_true(is_equal_approx(Locomotion.heading(false, true, right, yaw), atan2(-1.0, 0.0)), "not aiming: faces the way it moves")
+	assert_true(is_nan(Locomotion.heading(false, false, Vector3.ZERO, yaw)), "still and not aiming: holds its heading")
+
+
+func test_a_strafe_picks_the_nearest_of_eight_ways() -> void:
+	assert_eq(Locomotion.strafe_dir(Vector2(0, 1)), "forward")
+	assert_eq(Locomotion.strafe_dir(Vector2(1, 0)), "right")
+	assert_eq(Locomotion.strafe_dir(Vector2(-1, 0)), "left")
+	assert_eq(Locomotion.strafe_dir(Vector2(0, -1)), "backward")
+	assert_eq(Locomotion.strafe_dir(Vector2(0.7, 0.7)), "forward_right")
+	assert_eq(Locomotion.strafe_dir(Vector2(-0.7, -0.7)), "backward_left")
+	assert_eq(Locomotion.strafe_dir(Vector2(1, 0.3)), "right", "mostly sideways is sideways")
+	assert_eq(Locomotion.strafe_dir(Vector2.ZERO), "")

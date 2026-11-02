@@ -13,8 +13,13 @@ func test_operative_clip_priority() -> void:
 	assert_eq(clip.call(true, true, true, true, true, false), "takedown", "a choke beats everything")
 	assert_eq(clip.call(false, true, true, true, true, true), "carry", "carrying beats aim and crouch")
 	assert_eq(clip.call(false, true, false, false, false, false), "carry_idle", "carrying but standing still")
-	assert_eq(clip.call(false, false, true, true, true, false), "crouch_aim", "aiming crouched keeps it low")
-	assert_eq(clip.call(false, false, true, false, true, false), "aim")
+	assert_eq(clip.call(false, false, true, true, false, false), "crouch_aim", "aiming crouched keeps it low")
+	assert_eq(clip.call(false, false, true, false, false, false), "aim")
+	assert_eq(clip.call(false, false, true, false, true, false), "walk", "aiming on the move: the legs walk under the aim")
+	assert_eq(clip.call(false, false, true, true, true, false), "crouch_walk")
+	assert_eq(clip.call(false, false, true, false, true, false, "", "left"), "walk_left", "aiming, the legs step the way he goes")
+	assert_eq(clip.call(false, false, true, true, true, false, "", "backward_right"), "crouch_walk_backward_right")
+	assert_eq(clip.call(false, false, false, false, true, true, "", "left"), "walk", "not aiming: he turns to walk, no strafe")
 	assert_eq(clip.call(false, false, false, true, true, false), "crouch_walk")
 	assert_eq(clip.call(false, false, false, true, false, false), "crouch_idle")
 	assert_eq(clip.call(false, false, false, false, true, true), "walk")
@@ -22,6 +27,26 @@ func test_operative_clip_priority() -> void:
 	assert_eq(clip.call(false, false, false, false, false, false), "idle")
 	assert_eq(clip.call(false, false, true, false, true, false, "climb"), "climb", "a task beats aim and movement")
 	assert_eq(clip.call(true, false, false, false, false, false, "use"), "takedown", "but not a choke")
+
+
+func test_operative_upper_holds_the_aim_over_a_strafe() -> void:
+	var up := CharacterModel.operative_upper
+	assert_eq(up.call(false, false, true, false, true), "aim", "aiming on the move")
+	assert_eq(up.call(false, false, true, true, true), "crouch_aim")
+	assert_eq(up.call(false, false, true, false, false), "", "standing still the base clip is the aim")
+	assert_eq(up.call(false, false, false, false, true), "", "not aiming")
+	assert_eq(up.call(true, false, true, false, true), "", "a choke")
+	assert_eq(up.call(false, true, true, false, true), "", "carrying")
+	assert_eq(up.call(false, false, true, false, true, "climb"), "", "a task")
+
+
+func test_hold_upper_lets_go_on_empty() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	m.hold_upper("aim")
+	m.hold_upper("")
+	assert_eq(m.get("_upper_hold"), "")
+	m.free()
 
 
 func test_guard_clip_by_speed() -> void:
@@ -278,4 +303,16 @@ func test_a_whole_body_one_shot_holds_the_walk_off() -> void:
 	m.react("pick_up", 0.7, 3.3, 0.6)
 	m.play("walk")
 	assert_eq(anim.current_animation, "pick_up", "the bend to a crate takes the legs too")
+	m.free()
+
+
+func test_every_strafe_way_has_a_clip_or_falls_back_to_a_walk() -> void:
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	for d: String in Locomotion.STRAFE_DIRS:
+		for pre in ["walk_", "crouch_walk_"]:
+			m.play(pre + d, 1.5)
+			var fallback: String = "crouch_walk" if pre == "crouch_walk_" else "walk"
+			assert_true(anim.current_animation in [pre + d, fallback], "%s%s plays %s" % [pre, d, anim.current_animation])
 	m.free()

@@ -3,6 +3,7 @@
 extends "res://actors/operative/operative_hands.gd"
 
 var _was_hunted := false
+var _strafe := ""  # aiming on the move: which way the legs step (Locomotion.STRAFE_DIRS)
 var _aim_was := false  # RMB was down last tick: only a fresh press lets go of a grip
 
 
@@ -172,10 +173,10 @@ func _physics_process(delta: float) -> void:
 			elif crouching:
 				step.attenuation_filter_cutoff_hz = Mix.CROUCH_STEP_CUTOFF_HZ
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
-	if moving:
-		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
-	elif aiming:
-		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
+	var face := Locomotion.heading(aiming, moving, dir, _yaw)
+	if not is_nan(face):
+		model.rotation.y = lerp_angle(model.rotation.y, face, minf(1.0, (Locomotion.AIM_TURN_RATE if aiming else Locomotion.TURN_RATE) * delta))
+	_strafe = Locomotion.strafe_dir(Vector2(v.x, -v.y)) if aiming else ""  # aiming, the body faces the camera: the keys are its own frame
 	_air = 0.0 if is_on_floor() or ladder else _air + delta
 	var target := Vector2(dir.x, dir.z) * Locomotion.speed(crouching, looks_walking(), aiming, carrying != null)
 	var eased := Locomotion.fall(Vector2(velocity.x, velocity.z), target, _air, delta)
@@ -297,8 +298,9 @@ func _process(delta: float) -> void:
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
 	if not health.dead():  # a ragdoll is not driven by the clips
-		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task())
+		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task(), _strafe)
 		model.play(cine_clip if cine and cine_clip != "" else clip, Vector2(velocity.x, velocity.z).length())
+		model.hold_upper("" if cine else CharacterModel.operative_upper(_choking != null, carrying != null, aiming, crouching, moving, _task()))
 		if clip == "climb" and not cine:  # the hands keep hold of the rungs: still when he is, backwards going down
 			model.pace(_climb_dir * CLIMB_SPEED / CharacterModel.CLIMB_SPEED)
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())

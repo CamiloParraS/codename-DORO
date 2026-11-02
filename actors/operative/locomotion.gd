@@ -26,8 +26,29 @@ const PITCH_MAX := 0.5
 ## cut is for slowing (stop, run→walk) so releasing keys never feels slidey.
 const GET_GOING := 7.0
 const SLOW_DOWN := 20.0
-## Body turn rate toward the move direction or facing, in 1/s.
+## Body turn rate toward the move direction or facing, in 1/s. Aiming, the body keeps up with the camera faster:
+## at TURN_RATE it trailed the crosshair and the strafe read as floaty (playtest 1).
 const TURN_RATE := 8.0
+const AIM_TURN_RATE := 22.0
+## The eight ways a strafe can go, clockwise from straight ahead: the suffix of the walk clip the legs play.
+const STRAFE_DIRS := ["forward", "forward_right", "right", "backward_right", "backward", "backward_left", "left", "forward_left"]
+
+
+## The heading (radians about +Y) the body turns toward: the camera's `yaw` while aiming, moving or not (WASD only
+## strafes, so the gun points where the crosshair is), else the way it moves (`dir`, flat); NAN to hold its heading.
+static func heading(aiming: bool, moving: bool, dir: Vector3, yaw: float) -> float:
+	if aiming:
+		return yaw
+	if moving:
+		return atan2(-dir.x, -dir.z)
+	return NAN
+
+
+## Which of STRAFE_DIRS a move `local` to the body goes (x right, y ahead): the nearest of the eight; "" for none.
+static func strafe_dir(local: Vector2) -> String:
+	if local == Vector2.ZERO:
+		return ""
+	return STRAFE_DIRS[posmod(roundi(atan2(local.x, local.y) / (PI / 4.0)), 8)]
 
 
 ## Aiming slows a standing Operative to walk speed; crouched keeps CROUCH; carrying a body is CARRY.

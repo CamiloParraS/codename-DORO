@@ -119,23 +119,37 @@ var _shot_speed := 1.0
 var _shot_left := 0.0      # s before it starts to fade out
 var _shot_w := 0.0         # how much of the upper body it takes, 0..1
 var _shot_tracks := []     # [track, bone] for its rotation tracks on the upper body
+var _upper_hold := ""      # a looping clip the upper body holds over the base clip (hold_upper), "" for none
+var _upper_hold_t := 0.0
+var _upper_hold_w := 0.0         # eases in and out over UPPER_FADE
+var _upper_hold_tracks := []
 
 
 ## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
-static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool, task := "") -> String:
+## strafe (Locomotion.STRAFE_DIRS) is the way an aiming Operative moves relative to his facing: the legs walk that way.
+static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool, task := "", strafe := "") -> String:
 	if choking:
 		return "takedown"
 	if task != "":
 		return task
 	if carrying:
 		return "carry" if moving else "carry_idle"
-	if aiming:
+	if aiming and not moving:  # moving, the legs walk and operative_upper() holds the aim over them
 		return "crouch_aim" if crouching else "aim"
+	if aiming and strafe != "":  # the legs step the way he goes, so a sideways move isn't a forward walk skating
+		return ("crouch_walk_" if crouching else "walk_") + strafe
 	if crouching:
 		return "crouch_walk" if moving else "crouch_idle"
 	if moving:
-		return "walk" if walking else "run"
+		return "walk" if walking or aiming else "run"  # aiming slows him to a walk (Locomotion.speed)
 	return "idle"
+
+
+## The aim the Operative's upper body holds over a walk (aiming on the move: he strafes facing the crosshair), or "".
+static func operative_upper(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, task := "") -> String:
+	if not aiming or not moving or choking or carrying or task != "":
+		return ""
+	return "crouch_aim" if crouching else "aim"
 
 
 ## Which clip a guard shows, by flat speed (m/s). dead is one killed on its feet: it falls instead of sleeping.
@@ -188,7 +202,7 @@ func _process(delta: float) -> void:
 		_layer(_since_step)
 		_since_step = 0.0
 		if _weapon == "rifle":
-			if _clip in SQUARED and (_shot == "" or _shot in SQUARED):  # not with a reload laid over the aim
+			if (_clip in SQUARED or _upper_hold_w > 0.5) and (_shot == "" or _shot in SQUARED):  # not with a reload laid over the aim
 				for i in 2:  # a second pass takes up what the first left
 					_square_up()
 				_brace()
@@ -199,6 +213,7 @@ func _process(delta: float) -> void:
 ## Lays the upper-body one-shot over the pose the base clip just set: each upper bone turns toward the shot's
 ## rotation by its weight, which eases in, holds, and eases back out when its time is up.
 func _layer(delta: float) -> void:
+	_layer_held(delta)
 	if _shot == "":
 		return
 	_shot_t += delta * _shot_speed
@@ -212,6 +227,33 @@ func _layer(delta: float) -> void:
 	for tb: Array in _shot_tracks:
 		var q := a.rotation_track_interpolate(tb[0], t)
 		skeleton.set_bone_pose_rotation(tb[1], skeleton.get_bone_pose_rotation(tb[1]).slerp(q, _shot_w))
+
+
+## Lays the held upper clip over the base clip, under any one-shot: it loops, and eases in and out.
+func _layer_held(delta: float) -> void:
+	_upper_hold_w = move_toward(_upper_hold_w, 1.0 if _upper_hold != "" else 0.0, delta / UPPER_FADE)
+	if _upper_hold_tracks.is_empty() or _upper_hold_w <= 0.0:
+		return
+	var a := _anim.get_animation(_upper_hold_tracks[0])
+	_upper_hold_t = fmod(_upper_hold_t + delta, maxf(a.length, 0.01))
+	for i in range(1, _upper_hold_tracks.size()):
+		var tb: Array = _upper_hold_tracks[i]
+		var q := a.rotation_track_interpolate(tb[0], _upper_hold_t)
+		skeleton.set_bone_pose_rotation(tb[1], skeleton.get_bone_pose_rotation(tb[1]).slerp(q, _upper_hold_w))
+
+
+## Holds `clip`'s upper body over whatever the legs play (the aim over a strafe); "" lets go. Without the clip
+## (no Mixamo bake) it does nothing.
+func hold_upper(clip: String) -> void:
+	clip = _swapped(clip) if clip != "" else ""
+	if clip != "" and not _anim.has_animation(clip):
+		clip = ""
+	if clip == _upper_hold:
+		return
+	_upper_hold = clip
+	if clip != "":  # the clip's name first, then its [track, bone]s; kept while it eases out
+		_upper_hold_tracks = [clip] + _upper_tracks(_anim.get_animation(clip))
+		_upper_hold_t = 0.0
 
 
 ## Twists the upper body about the vertical so the line between the palms points the way the rig faces (+Z).
@@ -291,6 +333,10 @@ func _clips() -> AnimationLibrary:
 		lib.add_animation(c, CLIPS.get_animation(c))
 	for c in MIXAMO_CLIPS:
 		lib.add_animation(c, mixamo.get_animation(MIXAMO_CLIPS[c]))
+	for d: String in Locomotion.STRAFE_DIRS:  # the Pro Rifle pack's eight-way walks, for a strafe's legs
+		for pair: Array in [["walk_", "pro_walk_"], ["crouch_walk_", "pro_walk_crouching_"]]:
+			if mixamo.has_animation(pair[1] + d):
+				lib.add_animation(pair[0] + d, mixamo.get_animation(pair[1] + d))
 	for c in PISTOL_CLIPS.values():  # kept under their own names; play() swaps them in
 		lib.add_animation(c, mixamo.get_animation(c))
 	if mixamo.has_animation(HANG_FROM):  # a ledge climb's first beat, arms up, swung back and forth: hanging from a line
@@ -352,7 +398,8 @@ func play(clip: String, ground_speed := 0.0) -> void:
 	if _busy > 0.0:
 		return
 	if not _anim.has_animation(clip):  # carry_idle, crouch_aim, dead and the tasks are Mixamo only
-		clip = {"dead": "down", "crouch_aim": "crouch_idle"}.get(clip, "idle")
+		var walk := "crouch_walk" if clip.begins_with("crouch_walk_") else "walk" if clip.begins_with("walk_") else "idle"  # a strafe without its clip
+		clip = {"dead": "down", "crouch_aim": "crouch_idle"}.get(clip, walk)
 	if clip != _clip:
 		_clip = clip
 		_anim.play(clip, 0.2)
