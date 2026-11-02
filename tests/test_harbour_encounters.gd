@@ -32,12 +32,13 @@ func test_every_post_has_a_role_and_stands_in_its_encounter() -> void:
 	h.free()
 
 
-func test_11_guards_spawn_5_3_3() -> void:
+## The deck has four (O1, the smoking pair, O5): playtest 1 cut O2, one patroller to learn on.
+func test_10_guards_spawn_4_3_3() -> void:
 	var h: Node = load(SCENE).instantiate()
 	var per := {1: 0, 2: 0, 3: 0}
 	for p: Marker3D in h.get_node("GuardPosts").get_children():
 		per[p.get_meta("enc")] += 2 if p.has_meta("chat") else 1
-	assert_eq(per, {1: 5, 2: 3, 3: 3})
+	assert_eq(per, {1: 4, 2: 3, 3: 3})
 	h.free()
 
 
@@ -199,11 +200,13 @@ func test_split_posts_name_the_chat_pair() -> void:
 	h.free()
 
 
-## The first lessons stand alone (pw-feel 12): O1 and O2 are 15 m (a shout) from every other guard post.
-func test_the_decks_first_two_guards_are_out_of_shout_range() -> void:
+## The first lesson stands alone (pw-feel 12): O1, the deck's only patroller, is 15 m (a shout) from every other
+## guard post.
+func test_the_decks_patroller_is_out_of_shout_range() -> void:
 	var h: Node = load(SCENE).instantiate()
 	var posts := h.get_node("GuardPosts").get_children()
-	for lone in ["PostO1", "PostO2"]:
+	assert_false(h.has_node("GuardPosts/PostO2"), "one patroller on the deck (playtest 1)")
+	for lone in ["PostO1"]:
 		var a: Marker3D = h.get_node("GuardPosts/" + lone)
 		for b: Marker3D in posts:
 			if b != a:

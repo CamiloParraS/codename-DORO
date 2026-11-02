@@ -142,14 +142,15 @@ const GANGWAY := {top = [65, 46], bottom = [61, 46], width = 2.4}
 
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat, and
 ## role (gatekeeper, observer, patroller, interceptor, investigator, foreman), enc (Encounter), holdup (what a
-## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 11 spawned: 5 / 3 / 3.
+## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 10 spawned: 4 / 3 / 3.
 const GUARD_POSTS := [
 	# E1 Perimeter (pw-feel 12): the bow half teaches, one guard at a time, each 15 m+ from every other (a shout's
 	# reach) so a mistake costs one guard; the stern half (O5 and the pair) is the test and the exit.
+	# O1 is the deck's only patroller (playtest 1: a second, O2 on the starboard walk, was one too many to learn on),
+	# and where the takedown is learned: both his stops face aft, his back to whoever comes up from the bow.
 	# O1 walks across the deck, never along it: his front cone never points at the bow, so the start and the
 	# hatches are a safe stretch to watch him from (play_harbour checks the bow lanes). Both stops face aft.
 	["PostO1", [68, 19, DECK], 180, {hold = 6.0, role = "patroller", enc = 1}, [[73.5, 19, {hold = 4.0, f = 180}]]],  # 6 s and 4 s, back to the bow
-	["PostO2", [79.5, 35, DECK], 90, {hold = 3.0, role = "patroller", enc = 1}, [[79.5, 40, {hold = 6.0, f = 180}]]],  # starboard walk; 6 s back to the bow at the aft end: the choke
 	["PostP", [75, 58, DECK], 0, {chat = "smoke", role = "investigator", enc = 1}, []],                      # smoke break behind the bridge: step 1; splits once recorded (PAIR_SPLIT)
 	["PostO5", [66, 47, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                          # beside the gangway head, sweeps up the deck
 	# E2 Loading yard
