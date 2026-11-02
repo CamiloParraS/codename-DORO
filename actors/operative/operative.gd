@@ -3,6 +3,7 @@
 extends "res://actors/operative/operative_hands.gd"
 
 var _was_hunted := false
+var _aim_was := false  # RMB was down last tick: only a fresh press lets go of a grip
 
 
 func _ready() -> void:
@@ -99,7 +100,12 @@ func _physics_process(delta: float) -> void:
 	if cine:  # a take moves the body (position and cine_face tracks); input, noise and the clocks wait
 		return
 	walking = Input.is_action_pressed("walk")
+	var aim_down := Input.is_action_pressed("aim")
+	if _choking and aim_down and not _aim_was and not radio_open:  # going for the gun lets go (a Hold-up's aim, kept on into the choke, doesn't)
+		_let_go()
+	_aim_was = aim_down
 	aiming = Input.is_action_pressed("aim") and not _choking and not radio_open and not ladder
+	using = _console_at() if Input.is_action_pressed("interact") and not (aiming or carrying or _choking or ladder or radio_open) else null
 	looking = Input.is_action_pressed("look") and not (aiming or _choking or radio_open or ladder or carrying)
 	var hunted := get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.alert.state == GuardAlert.State.ALERT)
 	if hunted and not _was_hunted:
@@ -124,13 +130,11 @@ func _physics_process(delta: float) -> void:
 		return
 	if aiming and not _choking and gun().automatic and Input.is_action_pressed("fire"):
 		_fire()
-	var v := Vector2.ZERO if looking else Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var v := Vector2.ZERO if looking or _choking or using else Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if _choking:
 		_choke_left -= delta
 		if not _grip_holds() or (not _killing and not Input.is_action_pressed("interact")):  # turned round, alerted, or E released
-			_choking.held = false
-			_choking = null
-			_choke_left = 0.0
+			_let_go()
 		elif _choke_left <= 0.0:
 			Mix.sfx_at(self, &"takedown")
 			Mixer.hit_stop(0.03)
@@ -172,10 +176,10 @@ func _physics_process(delta: float) -> void:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
 	elif aiming:
 		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
-	var speed := Locomotion.CHOKE_SPEED if _choking else Locomotion.speed(crouching, looks_walking(), aiming)
-	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * speed, delta)
+	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * Locomotion.speed(crouching, looks_walking(), aiming), delta)
 	velocity.x = eased.x
 	velocity.z = eased.y
+	_pull(delta)  # in a grip or at a console the keys don't move him: he is drawn into place
 	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
 	move_and_slide()
 

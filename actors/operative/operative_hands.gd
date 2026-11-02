@@ -29,6 +29,7 @@ func _interact() -> void:
 		_choking = g
 		_choke_left = choke_time
 		_killing = false
+		_victim_down = false
 		g.held = true
 		Mix.sfx_at(self, &"choke")
 		if choke_noise > 0.0:
@@ -84,7 +85,8 @@ func _climb(dir: float, delta: float) -> void:
 		_rung_left -= absf(dir) * CLIMB_SPEED * delta
 		if _rung_left <= 0.0:
 			_rung_left = RUNG_SPACING
-			Mix.sfx_at(self, &"ladder")
+			# quieter under the finale (its ascent climbs the Core's rungs)
+			Mix.sfx_at(self, &"ladder", Vector3.INF, -10.0 if get_tree().get_first_node_in_group("finale") else 0.0)
 
 
 func _ladder_near() -> Node3D:
@@ -107,6 +109,47 @@ func _begin_kill() -> void:
 		_killing = true
 		g.held = true
 		Mix.sfx_at(self, &"choke")
+
+
+## The grip ends with nothing done: E released, aim pressed, or the victim turned round or alerted.
+func _let_go() -> void:
+	_choking.held = false
+	_choking = null
+	_choke_left = 0.0
+
+
+## In a grip or at a console the body is drawn into place at PULL_SPEED and turned to face it: behind a standing
+## victim (GRIP_DIST), beside a Down one (DOWN_GRIP), or onto the console's stand spot. Overrides the velocity.
+func _pull(delta: float) -> void:
+	var to: Vector3
+	var face: Vector3
+	if _choking and _victim_down and _killing:
+		var away := Vector3(global_position.x - _choking.global_position.x, 0, global_position.z - _choking.global_position.z)
+		to = _choking.global_position + away.normalized() * DOWN_GRIP
+		face = -away
+	elif _choking:
+		var back := Vector3(_choking.global_basis.z.x, 0, _choking.global_basis.z.z).normalized()
+		to = _choking.global_position + back * GRIP_DIST
+		face = -back
+	elif using:
+		to = using.stand_point()
+		face = using.facing()
+	else:
+		return
+	var d := Vector3(to.x - global_position.x, 0, to.z - global_position.z)
+	var v := d / delta if d.length() <= PULL_SPEED * delta else d.normalized() * PULL_SPEED
+	velocity.x = v.x
+	velocity.z = v.z
+	if face.length_squared() > 0.0001:
+		model.rotation.y = lerp_angle(model.rotation.y, atan2(-face.x, -face.z), Locomotion.TURN_RATE * delta)
+
+
+## The hold-E console the Operative stands at (its prompt is up), or null.
+func _console_at() -> Node3D:
+	for c in get_tree().get_nodes_in_group("intel"):
+		if c.has_method("stand_point") and c.prompt_for(self) != "":
+			return c
+	return null
 
 
 ## Is the grip still good: a standing victim can still be choked, a Down one is still on the floor.

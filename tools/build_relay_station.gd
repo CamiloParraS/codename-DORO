@@ -304,6 +304,7 @@ func _build() -> void:
 	var intel: Node3D = _root.get_node("Intel")
 	var console := _area(intel, "RelayConsole", SPOTS.RelayConsole, Vector3(5, 3, 5), "res://areas/relay_station/relay_console.gd")
 	console.position.y += 1.5
+	console.set("stand", Vector3(0, -1.5, -0.9))  # up to the desk's front edge
 	_takes()
 	_save(OUT)
 	await _report_reach(nm, SPOTS.OperativeStart, REACH, CARRY)

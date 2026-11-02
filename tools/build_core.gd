@@ -184,6 +184,7 @@ func _core_objectives() -> void:
 		c.set("hold_time", o.console)
 		c.set("prompt", o.prompt)
 		c.set("sweeps", false)
+		c.set("stand", Vector3(o.stand[0], -1.5, o.stand[1]))
 
 
 ## Where this run reaches from: the first active zone's `start`.

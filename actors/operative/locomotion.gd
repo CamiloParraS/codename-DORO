@@ -4,8 +4,6 @@ class_name Locomotion
 const RUN := 4.8
 const WALK := 1.9
 const CROUCH := 1.3
-## Speed while gripping a guard in a choke: half a walk, about 1 m/s.
-const CHOKE_SPEED := WALK * 0.5
 ## Hitscan sway in degrees (the crosshair doesn't move) and the seconds to settle after stopping.
 const SWAY_MOVING := 0.6
 const SWAY_STILL := 0.25

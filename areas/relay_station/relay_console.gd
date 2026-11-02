@@ -1,5 +1,6 @@
-## The relay console: Mission 2's sabotage step. Standing still beside it with E held for hold_time s
-## (in the open, so exposed) sabotages it, which completes the step like an intel pickup does. SWEEP_DELAY s
+## The relay console: Mission 2's sabotage step. E held beside it for hold_time s (in the open, so exposed)
+## sabotages it: the Operative is drawn onto its stand spot facing it, his feet locked, and releasing E or aiming
+## stops it (Operative.using), which completes the step like an intel pickup does. SWEEP_DELAY s
 ## later HQ radios the sweep and every guard not already alerted searches where it stands: suspicion, never alert.
 ## Any hold-E step reuses it (the Harbour's lift panel: 4 s, no sweep).
 extends Area3D
@@ -15,6 +16,9 @@ const FLOOR_DROP := 1.5  # the builders put a console's centre this far over its
 @export var hold_time := HOLD_TIME
 @export var prompt := "ui.prompt.sabotage"  # a text key, shown as "HOLD [E] <verb>"
 @export var sweeps := true
+## Where the Operative is drawn to while he holds E, from the console's origin (FLOOR_DROP over the floor, the
+## ring's centre): the builders set a step towards the console, which stands north (-Z) of it.
+@export var stand := Vector3(0, -FLOOR_DROP, 0)
 var held := 0.0
 var done := false
 var _operative: Node3D
@@ -41,7 +45,16 @@ func _physics_process(delta: float) -> void:
 	if not _operative or done:
 		held = 0.0
 		return
-	tick(delta, Input.is_action_pressed("interact") and not _operative.moving)
+	tick(delta, _operative.get("using") == self)
+
+
+## Where the Operative stands to work it, and the way he faces (the console's -Z).
+func stand_point() -> Vector3:
+	return global_transform * stand
+
+
+func facing() -> Vector3:
+	return -global_basis.z
 
 
 ## The line it adds to the Operative op's prompt (Operative._update_prompt), "" when he isn't at it.

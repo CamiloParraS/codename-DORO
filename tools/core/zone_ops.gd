@@ -12,7 +12,7 @@ const D := {
 	],
 	encounters = [[2, "Operations building", "positioning", [2, 18, 24, 30], [8, 32, 0], 3]],
 	exits = {Lift = [8, 32, 0]},
-	objectives = {IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "ui.prompt.enter_code"}},
+	objectives = {IntelLiftPanel = {at = [22, 22.2, 0], console = 4.0, prompt = "ui.prompt.enter_code", stand = [0.1, -0.7]}},
 	intel = {IntelLift = [8, 32]},
 	reach = {OpsEastDoor = [23.2, 32, 0], Panel = [21.5, 22.6, 0], LiftHallBack = [16.4, 23, 0], LiftMouth = [8, 32, 0]},
 }

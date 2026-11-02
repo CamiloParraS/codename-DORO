@@ -10,6 +10,9 @@ const STEP_EVERY_CARRY := 0.6  # and between a carrying Operative's heavy ones (
 const TAKEDOWN_REACH := 1.5   # metres to a guard to choke it or pick it up
 const CHOKE_TIME := 1.2
 const KILL_TIME := 0.5        # X: the same grip as the choke, over in a moment
+const GRIP_DIST := 0.6        # metres behind a standing guard the choke draws the body to
+const DOWN_GRIP := 0.7        # and from a Down one, finishing it on the floor
+const PULL_SPEED := 4.0       # m/s the body is drawn into a grip or onto a console's stand spot
 const RECOIL_MAX := 0.15      # radians the kick can stack up to while holding fire
 const RECOIL_RECOVERY := 0.3 # radians per second it settles back
 const CRATE_REACH := 2.0      # metres to a resupply crate's centre
@@ -42,6 +45,7 @@ var _gun: Gun = tranq  # the weapon in hand
 var voiceprints := Voiceprints.new()
 var items := Items.new()
 var throwing := false    # F held on the Magazine: the arc shows, release throws, RMB cancels
+var using: Node3D        # the hold-E console being worked (relay_console.gd reads it); feet locked till E or RMB
 var health := Health.new()
 var shoulder := 1.0  # +1 right shoulder, -1 left
 var held_up: Guard       # the guard at gunpoint

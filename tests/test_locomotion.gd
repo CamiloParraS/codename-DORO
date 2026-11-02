@@ -72,10 +72,6 @@ func test_aiming_caps_standing_at_walk_and_crouched_keeps_crouch() -> void:
 	assert_eq(Locomotion.speed(false, false, false), Locomotion.RUN, "releasing RMB restores the run")
 
 
-func test_choke_moves_at_half_walk() -> void:
-	assert_true(is_equal_approx(Locomotion.CHOKE_SPEED, 0.95))
-
-
 func test_sway_targets_by_stance() -> void:
 	assert_eq(Locomotion.sway(0.0, true, false, 0.016), 0.6, "moving resets to full")
 	assert_eq(Locomotion.sway(0.0, true, true, 0.016), 0.6)
