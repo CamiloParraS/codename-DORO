@@ -5,8 +5,10 @@ extends RefCounted
 
 const PATH := "user://settings.json"
 const LANGUAGES := ["en", "es"]
-const FPS_CAPS := [60, 120, 144]
-const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false, max_fps = 60}
+## 0 is AUTO: no cap, vsync paces frames at the display's own rate. A fixed cap that doesn't divide the refresh rate
+## (60 on a 144 Hz screen) holds frames for 2 or 3 refreshes in turn, and slow motion judders (the menu backdrop's push).
+const FPS_CAPS := [0, 60, 120, 144]
+const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false, max_fps = 0}
 const SENS_RANGE := Vector2(0.0005, 0.008)
 
 static var current: Dictionary = DEFAULTS.duplicate()
