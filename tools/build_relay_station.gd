@@ -116,8 +116,11 @@ const SENTRIES := [
 ]
 ## Camera mounts: [name, [x, y, h], facing, pole base h]. All three stand in the open, on poles.
 const CAMERAS := [
-	["CamLadderWest", [23, 54, 4.5], 90, 3.0], ["CamBarracks", [33, 38, 4.5], 250, 3.0], ["CamRoad", [72, 61, 4], 330, 0.0],
-]  # CamRoad sweeps 265..35 degrees: the ramp landing, never the garage east door (232 degrees, 16.4 m)
+	["CamLadderWest", [32, 53.5, 6.5], 215, 3.0], ["CamBarracks", [33, 38, 4.5], 250, 3.0], ["CamRoad", [73.5, 53, 6.5], 178, 3.0],
+]  # Each watches its route from 10 m+ with the route at its sweep's edge (sweep +-35, cone +-30), so it shuts for a
+# few seconds, then opens: CamLadderWest the Ladder top from 12 m (X6), CamRoad the road ramp from the terrace corner
+# (X5 50%); neither reaches the garage east door (X3 stays clean). The terrace pair stand 3.5 m up so they look over the
+# 1 m edge rail into the yard. Sim: relay-station-onboarding.html, Countermeasures on.
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [82, 44, 3], Extraction = [9, 14, 6],
 	ResupplyCrate = [63, 16, 7], SafeRoom = [60, 12, 6], RelayConsole = [40, 20, 6],
