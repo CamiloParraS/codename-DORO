@@ -67,9 +67,11 @@ func _door(parent: Node3D, d: Dictionary) -> void:
 	var ftint := Color.WHITE if blast else Color(0.32, 0.33, 0.35)
 	var fd := t / 2 + (0.12 if blast else 0.06)
 	for s in [-1, 1]:
-		var u0: float = s * w / 2 if s > 0 else -w / 2 - fw
-		_trim(parent, "Jamb%d_%s" % [(s + 1) / 2, tag], r.call(u0, u0 + fw, -fd, fd), base, head, fmat, ftint)
-	_trim(parent, "Head_" + tag, r.call(-w / 2 - fw, w / 2 + fw, -fd, fd), head, minf(head + fw, top + 0.01), fmat, ftint)
+		# the jamb's inner face stands 2 cm into the opening, off the wall's end face (coplanar, they z-fought)
+		var u0: float = w / 2 - 0.02 if s > 0 else -w / 2 - fw
+		_trim(parent, "Jamb%d_%s" % [(s + 1) / 2, tag], r.call(u0, u0 + fw + 0.02, -fd, fd), base, head, fmat, ftint)
+	# the head dips 2 cm below the lintel's underside and stands 1 cm proud of the jambs, so no two faces share a plane
+	_trim(parent, "Head_" + tag, r.call(-w / 2 - fw - 0.01, w / 2 + fw + 0.01, -fd - 0.01, fd + 0.01), head - 0.02, minf(head + fw, top + 0.01), fmat, ftint)
 	if style == "bay":  # the shutter rolled most of the way up, its drum on the outside face
 		_trim(parent, "Shutter_" + tag, r.call(-w / 2, w / 2, -0.04, 0.04), head - 0.7, head, "corrugated", Color(0.75, 0.78, 0.8))
 		if top - head > 0.5:

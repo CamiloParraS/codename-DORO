@@ -646,15 +646,15 @@ shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_2rvju"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_mjmyd"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_amsiw"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.42)
+size = Vector3(2.26, 0.14, 0.44)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2iqyi"]
 render_priority = 0
@@ -692,15 +692,15 @@ size = Vector3(2, 1.4, 0.3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ykvdy"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_rb4dj"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_y35yw"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.42)
+size = Vector3(2.26, 0.14, 0.44)
 
 [sub_resource type="BoxMesh" id="BoxMesh_81peh"]
 material = SubResource("ShaderMaterial_2iqyi")
@@ -725,15 +725,15 @@ size = Vector3(2, 1.4, 0.3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3f72f"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_gjtfo"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_gn41c"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.42)
+size = Vector3(2.26, 0.14, 0.44)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fn5qg"]
 material = SubResource("ShaderMaterial_2iqyi")
@@ -758,15 +758,15 @@ size = Vector3(2, 1.4, 0.3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vjkme"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6tpgv"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.42)
+size = Vector3(0.14, 2.6, 0.42)
 
 [sub_resource type="BoxMesh" id="BoxMesh_t1wvw"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.42)
+size = Vector3(2.26, 0.14, 0.44)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5xn5m"]
 material = SubResource("ShaderMaterial_2iqyi")
@@ -791,15 +791,15 @@ size = Vector3(0.3, 1.4, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ajkyu"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 2.6, 0.12)
+size = Vector3(0.42, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6hk2d"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 2.6, 0.12)
+size = Vector3(0.42, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_n58wt"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 0.12, 2.24)
+size = Vector3(0.44, 0.14, 2.26)
 
 [sub_resource type="BoxMesh" id="BoxMesh_86glt"]
 material = SubResource("ShaderMaterial_2iqyi")
@@ -824,15 +824,15 @@ size = Vector3(0.3, 1.4, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_xmbfv"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 2.6, 0.12)
+size = Vector3(0.42, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3ioi1"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 2.6, 0.12)
+size = Vector3(0.42, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_x4jmp"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.42, 0.12, 2.24)
+size = Vector3(0.44, 0.14, 2.26)
 
 [sub_resource type="BoxMesh" id="BoxMesh_40r5k"]
 material = SubResource("ShaderMaterial_2iqyi")
@@ -905,15 +905,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fm60f"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_a3rej"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_tdn2c"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_g0evh"]
 size = Vector3(2, 1, 0.4)
@@ -924,15 +924,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hstt3"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7aimp"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_abk1s"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6j2ph"]
 size = Vector3(2, 1, 0.4)
@@ -943,15 +943,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7xsyf"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cc4qs"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_dwye5"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6vs6s"]
 size = Vector3(2, 1, 0.4)
@@ -962,15 +962,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_imwoc"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_di4dh"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v7ylv"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tit23"]
 size = Vector3(0.4, 3.6, 9.6)
@@ -1002,15 +1002,15 @@ size = Vector3(0.4, 1, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cra6c"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_55k5y"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_127l4"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 0.12, 2.24)
+size = Vector3(0.54, 0.14, 2.26)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4ml88"]
 size = Vector3(0.4, 3.6, 9.6)
@@ -1056,15 +1056,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ssrsh"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qx65v"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_u6yjm"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rl2m3"]
 size = Vector3(2, 1, 0.4)
@@ -1075,15 +1075,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_sw4oh"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_y37y3"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3ju4h"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0icay"]
 size = Vector3(2, 1, 0.4)
@@ -1107,15 +1107,15 @@ shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_5ix3k"]
 material = SubResource("ShaderMaterial_xgm56")
-size = Vector3(0.3, 2.6, 0.64)
+size = Vector3(0.32, 2.6, 0.64)
 
 [sub_resource type="BoxMesh" id="BoxMesh_iirt6"]
 material = SubResource("ShaderMaterial_xgm56")
-size = Vector3(0.3, 2.6, 0.64)
+size = Vector3(0.32, 2.6, 0.64)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6jnc6"]
 material = SubResource("ShaderMaterial_xgm56")
-size = Vector3(2.6, 0.3, 0.64)
+size = Vector3(2.62, 0.32, 0.66)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6gi1g"]
 size = Vector3(13, 3.6, 0.4)
@@ -1147,15 +1147,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wcp84"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_smatp"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vqgat"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b4t75"]
 size = Vector3(2, 1, 0.4)
@@ -1166,15 +1166,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_geu6g"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5r8wk"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4tpni"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xva85"]
 size = Vector3(0.4, 3.6, 4)
@@ -1199,15 +1199,15 @@ size = Vector3(0.4, 1, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_sntom"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_x4p26"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_jwkmn"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 0.12, 2.24)
+size = Vector3(0.54, 0.14, 2.26)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vv3jw"]
 size = Vector3(0.4, 3.6, 10)
@@ -1239,15 +1239,15 @@ size = Vector3(0.4, 1, 3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0xu6j"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_1dl2q"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_py2w5"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 0.12, 3.24)
+size = Vector3(0.54, 0.14, 3.26)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ufyk"]
 size = Vector3(0.4, 3.6, 5.8)
@@ -1272,15 +1272,15 @@ size = Vector3(0.4, 1, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0k0dq"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_chb27"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_slykl"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 0.12, 2.24)
+size = Vector3(0.54, 0.14, 2.26)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dmarq"]
 size = Vector3(4, 3.6, 0.4)
@@ -1319,15 +1319,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0ftqh"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8fgg6"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_kxyxx"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_66q1a"]
 size = Vector3(2, 1, 0.4)
@@ -1338,15 +1338,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_1u85n"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_r1qy5"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_80hom"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j434x"]
 size = Vector3(2, 1, 0.4)
@@ -1357,15 +1357,15 @@ size = Vector3(2, 1, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vno0a"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_axfna"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.12, 2.6, 0.52)
+size = Vector3(0.14, 2.6, 0.52)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ythr5"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(2.24, 0.12, 0.52)
+size = Vector3(2.26, 0.14, 0.54)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_opca6"]
 size = Vector3(0.4, 3.6, 9.8)
@@ -1397,15 +1397,15 @@ size = Vector3(0.4, 1, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hcgrk"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4nn55"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 2.6, 0.12)
+size = Vector3(0.52, 2.6, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_mgqwk"]
 material = SubResource("ShaderMaterial_letmh")
-size = Vector3(0.52, 0.12, 2.24)
+size = Vector3(0.54, 0.14, 2.26)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_55b2a"]
 points = PackedVector3Array(-4, -2.5, -1.5, 4, -2.5, -1.5, 4, 2.5, -1.5, -4, -2.5, 1.5, 4, -2.5, 1.5, 4, 2.5, 1.5)
@@ -1413,7 +1413,7 @@ points = PackedVector3Array(-4, -2.5, -1.5, 4, -2.5, -1.5, 4, 2.5, -1.5, -4, -2.
 [sub_resource type="PrismMesh" id="PrismMesh_4lmj1"]
 material = SubResource("ShaderMaterial_fbdeh")
 left_to_right = 1.0
-size = Vector3(8, 5, 3)
+size = Vector3(8, 5, 2.96)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_mobcy"]
 points = PackedVector3Array(-4, -2.5, -1.5, 4, -2.5, -1.5, 4, 2.5, -1.5, -4, -2.5, 1.5, 4, -2.5, 1.5, 4, 2.5, 1.5)
@@ -1421,7 +1421,7 @@ points = PackedVector3Array(-4, -2.5, -1.5, 4, -2.5, -1.5, 4, 2.5, -1.5, -4, -2.
 [sub_resource type="PrismMesh" id="PrismMesh_abwbf"]
 material = SubResource("ShaderMaterial_fbdeh")
 left_to_right = 1.0
-size = Vector3(8, 5, 3)
+size = Vector3(8, 5, 2.96)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6eas4"]
 render_priority = 0
@@ -4899,15 +4899,15 @@ shape = SubResource("BoxShape3D_es5v4")
 mesh = SubResource("BoxMesh_xcefj")
 
 [node name="Jamb0_14p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1066179725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.06, 1.3, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.05, 1.3, 13.85)
 mesh = SubResource("BoxMesh_2rvju")
 
 [node name="Jamb1_14p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1887435246]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.94, 1.3, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.95, 1.3, 13.85)
 mesh = SubResource("BoxMesh_mjmyd")
 
 [node name="Head_14p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1119900533]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2.66, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2.65, 13.85)
 mesh = SubResource("BoxMesh_amsiw")
 
 [node name="Leaf0_14p0_53p85" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1536037323 instance=ExtResource("15_vffor")]
@@ -4944,15 +4944,15 @@ shape = SubResource("BoxShape3D_uav4e")
 mesh = SubResource("BoxMesh_gnviv")
 
 [node name="Jamb0_32p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1588124877]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.06, 1.3, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.05, 1.3, 13.85)
 mesh = SubResource("BoxMesh_ykvdy")
 
 [node name="Jamb1_32p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=261896750]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.94, 1.3, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.95, 1.3, 13.85)
 mesh = SubResource("BoxMesh_rb4dj")
 
 [node name="Head_32p0_53p85" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1641845685]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.66, 13.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.65, 13.85)
 mesh = SubResource("BoxMesh_y35yw")
 
 [node name="Leaf0_32p0_53p85" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=2057982475 instance=ExtResource("16_2xroj")]
@@ -4989,15 +4989,15 @@ shape = SubResource("BoxShape3D_tgpvn")
 mesh = SubResource("BoxMesh_4f3wy")
 
 [node name="Jamb0_22p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1515759270]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.06, 1.3, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.05, 1.3, -21.85)
 mesh = SubResource("BoxMesh_3f72f")
 
 [node name="Jamb1_22p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=189531143]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.94, 1.3, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.95, 1.3, -21.85)
 mesh = SubResource("BoxMesh_gjtfo")
 
 [node name="Head_22p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1569480078]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 2.66, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 2.65, -21.85)
 mesh = SubResource("BoxMesh_gn41c")
 
 [node name="Leaf0_22p0_18p15" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1985616868 instance=ExtResource("16_2xroj")]
@@ -5034,15 +5034,15 @@ shape = SubResource("BoxShape3D_eulfq")
 mesh = SubResource("BoxMesh_sc3hk")
 
 [node name="Jamb0_47p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=685506029]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.94, 1.3, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.95, 1.3, -21.85)
 mesh = SubResource("BoxMesh_vjkme")
 
 [node name="Jamb1_47p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1506761550]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.06, 1.3, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.05, 1.3, -21.85)
 mesh = SubResource("BoxMesh_6tpgv")
 
 [node name="Head_47p0_18p15" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=739226837]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.66, -21.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.65, -21.85)
 mesh = SubResource("BoxMesh_t1wvw")
 
 [node name="Leaf0_47p0_18p15" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1155363627 instance=ExtResource("16_2xroj")]
@@ -5079,15 +5079,15 @@ shape = SubResource("BoxShape3D_mdkky")
 mesh = SubResource("BoxMesh_rv3j0")
 
 [node name="Jamb0_6p15_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=128865976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 1.3, -5.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 1.3, -5.05)
 mesh = SubResource("BoxMesh_ajkyu")
 
 [node name="Jamb1_6p15_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=218827769]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 1.3, -2.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 1.3, -2.95)
 mesh = SubResource("BoxMesh_6hk2d")
 
 [node name="Head_6p15_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=911397024]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 2.66, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.85, 2.65, -4)
 mesh = SubResource("BoxMesh_n58wt")
 
 [node name="Leaf0_6p15_36p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1184308278 instance=ExtResource("16_2xroj")]
@@ -5124,15 +5124,15 @@ shape = SubResource("BoxShape3D_kwcj6")
 mesh = SubResource("BoxMesh_drg56")
 
 [node name="Jamb0_55p85_49p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1292123255]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.3, 7.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.3, 7.95)
 mesh = SubResource("BoxMesh_xmbfv")
 
 [node name="Jamb1_55p85_49p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=2113378776]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.3, 10.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.3, 10.05)
 mesh = SubResource("BoxMesh_3ioi1")
 
 [node name="Head_55p85_49p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1345844063]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 2.66, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 2.65, 9)
 mesh = SubResource("BoxMesh_x4jmp")
 
 [node name="Leaf0_55p85_49p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1761980853 instance=ExtResource("16_2xroj")]
@@ -5214,15 +5214,15 @@ shape = SubResource("BoxShape3D_opcmf")
 mesh = SubResource("BoxMesh_286j4")
 
 [node name="Jamb0_13p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1534790801]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.06, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.05, 1.3, -12)
 mesh = SubResource("BoxMesh_fm60f")
 
 [node name="Jamb1_13p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1624752594]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.94, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.95, 1.3, -12)
 mesh = SubResource("BoxMesh_a3rej")
 
 [node name="Head_13p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=169838201]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 2.66, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 2.65, -12)
 mesh = SubResource("BoxMesh_tdn2c")
 
 [node name="Leaf0_13p0_28p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=442749455 instance=ExtResource("16_2xroj")]
@@ -5241,15 +5241,15 @@ shape = SubResource("BoxShape3D_g0evh")
 mesh = SubResource("BoxMesh_e2jr2")
 
 [node name="Jamb0_25p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=679159636]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.06, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.05, 1.3, -12)
 mesh = SubResource("BoxMesh_hstt3")
 
 [node name="Jamb1_25p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=769121429]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.94, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, 1.3, -12)
 mesh = SubResource("BoxMesh_7aimp")
 
 [node name="Head_25p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1461690684]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.66, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.65, -12)
 mesh = SubResource("BoxMesh_abk1s")
 
 [node name="Leaf0_25p0_28p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1734601938 instance=ExtResource("16_2xroj")]
@@ -5268,15 +5268,15 @@ shape = SubResource("BoxShape3D_6j2ph")
 mesh = SubResource("BoxMesh_qnp6v")
 
 [node name="Jamb0_38p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1639782136]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.06, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05, 1.3, -12)
 mesh = SubResource("BoxMesh_7xsyf")
 
 [node name="Jamb1_38p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1729743929]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.94, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.3, -12)
 mesh = SubResource("BoxMesh_cc4qs")
 
 [node name="Head_38p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=274829536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.66, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.65, -12)
 mesh = SubResource("BoxMesh_dwye5")
 
 [node name="Leaf0_38p0_28p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=547740790 instance=ExtResource("16_2xroj")]
@@ -5295,15 +5295,15 @@ shape = SubResource("BoxShape3D_6vs6s")
 mesh = SubResource("BoxMesh_b0eno")
 
 [node name="Jamb0_51p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1424565971]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.94, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.95, 1.3, -12)
 mesh = SubResource("BoxMesh_imwoc")
 
 [node name="Jamb1_51p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1514527764]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.06, 1.3, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.05, 1.3, -12)
 mesh = SubResource("BoxMesh_di4dh")
 
 [node name="Head_51p0_28p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=59613371]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 2.66, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 2.65, -12)
 mesh = SubResource("BoxMesh_v7ylv")
 
 [node name="Leaf0_51p0_28p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=332524625 instance=ExtResource("16_2xroj")]
@@ -5349,15 +5349,15 @@ shape = SubResource("BoxShape3D_dnaus")
 mesh = SubResource("BoxMesh_6u1vl")
 
 [node name="Jamb0_32p0_22p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1479671852]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.3, -19.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.3, -19.05)
 mesh = SubResource("BoxMesh_cra6c")
 
 [node name="Jamb1_32p0_22p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1569633645]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.3, -16.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.3, -16.95)
 mesh = SubResource("BoxMesh_55k5y")
 
 [node name="Head_32p0_22p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=114719252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.66, -18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.65, -18)
 mesh = SubResource("BoxMesh_127l4")
 
 [node name="Leaf0_32p0_22p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=387630506 instance=ExtResource("16_2xroj")]
@@ -5421,15 +5421,15 @@ shape = SubResource("BoxShape3D_hbdod")
 mesh = SubResource("BoxMesh_supi1")
 
 [node name="Jamb0_15p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=872359149]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.06, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.05, 1.3, -9)
 mesh = SubResource("BoxMesh_ssrsh")
 
 [node name="Jamb1_15p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=962320942]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.94, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.95, 1.3, -9)
 mesh = SubResource("BoxMesh_qx65v")
 
 [node name="Head_15p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1654890197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 2.66, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 2.65, -9)
 mesh = SubResource("BoxMesh_u6yjm")
 
 [node name="Leaf0_15p0_31p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1927801451 instance=ExtResource("15_vffor")]
@@ -5448,15 +5448,15 @@ shape = SubResource("BoxShape3D_rl2m3")
 mesh = SubResource("BoxMesh_0nhj6")
 
 [node name="Jamb0_32p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1479706700]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.06, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.05, 1.3, -9)
 mesh = SubResource("BoxMesh_sw4oh")
 
 [node name="Jamb1_32p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1569668493]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.94, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.95, 1.3, -9)
 mesh = SubResource("BoxMesh_y37y3")
 
 [node name="Head_32p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=114754100]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.66, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.65, -9)
 mesh = SubResource("BoxMesh_3ju4h")
 
 [node name="Lintel_47p0_31p0" type="StaticBody3D" parent="NavRegion/Solid/Lab" unique_id=492449104]
@@ -5469,15 +5469,15 @@ shape = SubResource("BoxShape3D_0icay")
 mesh = SubResource("BoxMesh_u15kl")
 
 [node name="Jamb0_47p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1777869234]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.85, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.86, 1.3, -9)
 mesh = SubResource("BoxMesh_5ix3k")
 
 [node name="Jamb1_47p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1867831027]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15, 1.3, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.14, 1.3, -9)
 mesh = SubResource("BoxMesh_iirt6")
 
 [node name="Head_47p0_31p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=412916634]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.75, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.74, -9)
 mesh = SubResource("BoxMesh_6jnc6")
 
 [node name="WallBlockS1" type="StaticBody3D" parent="NavRegion/Solid/Lab" unique_id=25686938]
@@ -5517,15 +5517,15 @@ shape = SubResource("BoxShape3D_e0twr")
 mesh = SubResource("BoxMesh_damng")
 
 [node name="Jamb0_23p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1341683853]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.06, 1.3, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.05, 1.3, 1)
 mesh = SubResource("BoxMesh_wcp84")
 
 [node name="Jamb1_23p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1431645646]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.94, 1.3, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.95, 1.3, 1)
 mesh = SubResource("BoxMesh_smatp")
 
 [node name="Head_23p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=2124214901]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 2.66, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 2.65, 1)
 mesh = SubResource("BoxMesh_vqgat")
 
 [node name="Leaf0_23p0_41p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=249642507 instance=ExtResource("15_vffor")]
@@ -5544,15 +5544,15 @@ shape = SubResource("BoxShape3D_b4t75")
 mesh = SubResource("BoxMesh_yc3ch")
 
 [node name="Jamb0_36p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=154822705]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.06, 1.3, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.05, 1.3, 1)
 mesh = SubResource("BoxMesh_geu6g")
 
 [node name="Jamb1_36p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=244784498]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.94, 1.3, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95, 1.3, 1)
 mesh = SubResource("BoxMesh_5r8wk")
 
 [node name="Head_36p0_41p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=937353753]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.66, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.65, 1)
 mesh = SubResource("BoxMesh_4tpni")
 
 [node name="WallBlockW1" type="StaticBody3D" parent="NavRegion/Solid/Lab" unique_id=25687070]
@@ -5583,15 +5583,15 @@ shape = SubResource("BoxShape3D_1gj6f")
 mesh = SubResource("BoxMesh_sdvwh")
 
 [node name="Jamb0_9p0_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1036645381]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 1.3, -5.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 1.3, -5.05)
 mesh = SubResource("BoxMesh_sntom")
 
 [node name="Jamb1_9p0_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1104446758]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 1.3, -2.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 1.3, -2.95)
 mesh = SubResource("BoxMesh_x4p26")
 
 [node name="Head_9p0_36p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=995283181]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 2.66, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 2.65, -4)
 mesh = SubResource("BoxMesh_jwkmn")
 
 [node name="Leaf0_9p0_36p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1003553219 instance=ExtResource("15_vffor")]
@@ -5637,15 +5637,15 @@ shape = SubResource("BoxShape3D_rhc7l")
 mesh = SubResource("BoxMesh_5yg6w")
 
 [node name="Jamb0_30p0_34p5" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=2142169938]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.3, -7.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.3, -7.05)
 mesh = SubResource("BoxMesh_0xu6j")
 
 [node name="Jamb1_30p0_34p5" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=84648083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.3, -3.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.3, -3.95)
 mesh = SubResource("BoxMesh_1dl2q")
 
 [node name="Head_30p0_34p5" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=777217338]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.66, -5.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.65, -5.5)
 mesh = SubResource("BoxMesh_py2w5")
 
 [node name="WallCleanVault1" type="StaticBody3D" parent="NavRegion/Solid/Lab" unique_id=918396235]
@@ -5676,15 +5676,15 @@ shape = SubResource("BoxShape3D_deh3d")
 mesh = SubResource("BoxMesh_32bd2")
 
 [node name="Jamb0_40p0_38p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1949003090]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -3.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -3.05)
 mesh = SubResource("BoxMesh_0k0dq")
 
 [node name="Jamb1_40p0_38p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=2038964883]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -0.94)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -0.95)
 mesh = SubResource("BoxMesh_chb27")
 
 [node name="Head_40p0_38p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=584050490]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.66, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, -2)
 mesh = SubResource("BoxMesh_slykl")
 
 [node name="Leaf0_40p0_38p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=856961744 instance=ExtResource("16_2xroj")]
@@ -5739,15 +5739,15 @@ shape = SubResource("BoxShape3D_fxra5")
 mesh = SubResource("BoxMesh_rc3tf")
 
 [node name="Jamb0_11p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=49834637]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.06, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.05, 1.3, 4)
 mesh = SubResource("BoxMesh_0ftqh")
 
 [node name="Jamb1_11p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=139796430]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.94, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.95, 1.3, 4)
 mesh = SubResource("BoxMesh_8fgg6")
 
 [node name="Head_11p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=832365685]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 2.66, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 2.65, 4)
 mesh = SubResource("BoxMesh_kxyxx")
 
 [node name="Leaf0_11p0_44p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=1105276939 instance=ExtResource("16_2xroj")]
@@ -5766,15 +5766,15 @@ shape = SubResource("BoxShape3D_66q1a")
 mesh = SubResource("BoxMesh_4a5fo")
 
 [node name="Jamb0_31p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1810975887]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.06, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.05, 1.3, 4)
 mesh = SubResource("BoxMesh_1u85n")
 
 [node name="Jamb1_31p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1900937680]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.94, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.95, 1.3, 4)
 mesh = SubResource("BoxMesh_r1qy5")
 
 [node name="Head_31p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=446023287]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.66, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.65, 4)
 mesh = SubResource("BoxMesh_80hom")
 
 [node name="Leaf0_31p0_44p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=718934541 instance=ExtResource("16_2xroj")]
@@ -5793,15 +5793,15 @@ shape = SubResource("BoxShape3D_j434x")
 mesh = SubResource("BoxMesh_raila")
 
 [node name="Jamb0_47p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1777908438]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.94, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.95, 1.3, 4)
 mesh = SubResource("BoxMesh_vno0a")
 
 [node name="Jamb1_47p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1867870231]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.06, 1.3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.05, 1.3, 4)
 mesh = SubResource("BoxMesh_axfna")
 
 [node name="Head_47p0_44p0" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=412955838]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.66, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.65, 4)
 mesh = SubResource("BoxMesh_ythr5")
 
 [node name="Leaf0_47p0_44p0" type="Node3D" parent="NavRegion/Solid/Lab" unique_id=685867092 instance=ExtResource("16_2xroj")]
@@ -5847,15 +5847,15 @@ shape = SubResource("BoxShape3D_dalgf")
 mesh = SubResource("BoxMesh_y6ocq")
 
 [node name="Jamb0_40p0_45p2" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=1949035762]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 4.14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 4.15)
 mesh = SubResource("BoxMesh_hcgrk")
 
 [node name="Jamb1_40p0_45p2" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=2038997555]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 6.26)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 6.25)
 mesh = SubResource("BoxMesh_4nn55")
 
 [node name="Head_40p0_45p2" type="MeshInstance3D" parent="NavRegion/Solid/Lab" unique_id=584083162]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.66, 5.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 5.2)
 mesh = SubResource("BoxMesh_mgqwk")
 
 [node name="GateStair" type="StaticBody3D" parent="NavRegion/Solid" unique_id=1525691169]

@@ -154,7 +154,7 @@ func _ramp(parent: Node3D, r: Dictionary) -> void:
 	var m := MeshInstance3D.new()
 	m.name = "Mesh"
 	var prism := PrismMesh.new()
-	prism.size = size
+	prism.size = Vector3(size.x, size.y, size.z - 0.04)  # 2 cm narrower than its rect: a rail on the edge shares the side's plane and z-fights
 	prism.left_to_right = 1.0
 	prism.material = _mat(r.mat, r.tint)
 	m.mesh = prism
@@ -186,7 +186,8 @@ func _crawlspace(parent: Node3D, c: Dictionary) -> void:
 		_box(parent, "CarryBlockE", [r[0] + r[2] - 0.1, a, 0.2, CRAWL_W], b, b + CRAWL_H, c.mat, c.tint, 8)
 
 
-## A Ladder: group "ladders", Bottom and Top markers, and rungs (no collision) up the face.
+## A Ladder: group "ladders", Bottom and Top markers, and a steel ladder (assets/models/props/ladder_seg.glb, one metre of it per
+## segment, built in _raw/work/bl/make_ladder.py) standing 0.4 m up the face from the bottom, a metre of rails above the top. No collision.
 func _ladder(parent: Node3D, l: Array) -> Node3D:
 	var n := Node3D.new()
 	n.name = l[0]
@@ -199,12 +200,13 @@ func _ladder(parent: Node3D, l: Array) -> Node3D:
 		_place(m, Transform3D(Basis(), _p(end[1])))
 	var bottom := _p(l[1])
 	var toward := (_p(l[2]) - bottom) * Vector3(1, 0, 1)
-	var rungs := MeshInstance3D.new()
-	rungs.name = "Rungs"
-	var tall: float = l[2][2] - l[1][2] + 1.0
-	rungs.mesh = _box_mesh(Vector3(0.6, tall, 0.1), _mat("metal", Color(1.0, 0.85, 0.25)))
-	_add(n, rungs)
-	_place(rungs, Transform3D(Basis.looking_at(toward), bottom + toward.normalized() * 0.4 + Vector3.UP * (tall / 2)))
+	var segs := maxi(1, roundi(l[2][2] - l[1][2] + 1.0))
+	var seg_scene: PackedScene = load("res://assets/models/props/ladder_seg.glb")
+	for i in segs:
+		var seg: Node3D = seg_scene.instantiate()
+		seg.name = "Seg%d" % i
+		_add(n, seg)
+		_place(seg, Transform3D(Basis.looking_at(toward), bottom + toward.normalized() * 0.4 + Vector3.UP * i))  # its standoffs reach the wall
 	return n
 
 
