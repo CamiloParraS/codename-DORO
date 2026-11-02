@@ -1,5 +1,6 @@
 ## The paused full-screen Codec call, drawn in design px (1080 tall): two portraits, the frequency and a waveform
-## between them, the speaker tag as a slanted slab, and the line centred on a black bar with a thin green rule.
+## between them over a tuning scale, the speaker tag as a slanted slab, and the line in a framed box just under
+## the portraits. The call's furniture (rings, scale, meters, clock, pips) is ui/codec/codec_chrome.gd.
 ## An incoming call (`ring`) first shows only the handler's frame and rings until it is answered.
 ## LMB / Space / Enter answers, skips the typing, then moves on; `finished` after the last line.
 ## Add it over whatever is showing (Briefing) or to a paused tree (it keeps running).
@@ -21,7 +22,9 @@ const CRT_DARK := Color("02100d")  # dark legends on the green fills
 const GREEN_DIM := Color(GREEN, 0.45)
 const BAR := 120.0         # the black bars top and bottom
 const PORTRAIT := Vector2(370, 340)
-const PORTRAIT_Y := 200.0
+const PORTRAIT_Y := 196.0
+const BOX_Y := 636.0       # the line's box, just under the speaker slabs
+const BOX_H := 204.0
 const SIDE := 340.0        # portrait distance from its screen edge
 const RING_EVERY := 0.9    # s between the incoming call's beeps
 const BURST := 0.16        # s of static and tear on a speaker change
@@ -33,6 +36,7 @@ var _ringing := false
 var _ring_t := 0.0
 var _t := 0.0       # since the call opened (the tune-in)
 var _line_t := 0.0  # since the current line began
+var _call_t := 0.0  # since the call was answered: the clock in the top bar
 var _line := 0
 var _cut := -1.0    # seconds left of the closing cut; -1 while the call is on
 var _burst := 0.0   # seconds left of the speaker-change static
@@ -97,6 +101,7 @@ func _process(delta: float) -> void:
 	if not StoryMotion.still(self):
 		_t += delta
 		_line_t += delta
+		_call_t += delta
 	_burst = maxf(_burst - delta, 0.0)
 	if not talk.done() and talk.speaker() != _last_speaker:
 		if _last_speaker != "":
@@ -161,28 +166,40 @@ func _draw() -> void:
 		return
 	var who := talk.speaker()
 	var still := StoryMotion.still(self)
+	var near := who == "operative"  # the Operative speaks from the left frame, everyone else from the right
+	var typing := talk.typing() and not _ringing
+	var rx := d.x - SIDE - PORTRAIT.x
+	var ring_c := Vector2(rx + PORTRAIT.x / 2, PORTRAIT_Y + PORTRAIT.y / 2) if _ringing else Vector2(d.x / 2, PORTRAIT_Y + 190)
+	CodecChrome.rings(self, ring_c, _ring_t if _ringing else _t, (_ringing or typing) and not still)
+	CodecChrome.corners(self, Rect2(40, BAR + 36, d.x - 80, d.y - 2 * BAR - 72), Color(GREEN, 0.3))
 	draw_rect(Rect2(0, 0, d.x, BAR), Color.BLACK)
 	draw_rect(Rect2(0, d.y - BAR, d.x, BAR), Color.BLACK)
+	CodecChrome.status(self, Vector2(d.x - 80, 70), _call_t, _ringing, int(_ring_t / 0.4) % 2 == 0)
 	var tag := tr("ui.codec.incoming" if _ringing else "ui.codec.in_progress").to_upper()
 	if not _ringing or int(_ring_t / 0.4) % 2 == 0:
 		HudPalette.hud_text(self, Vector2(80, 70), tag, 20, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 20, 0.4), 0, false)
-	var near := who == "operative"  # the Operative speaks from the left frame, everyone else from the right
 	var far_id := "handler" if _ringing else ("handler" if near else talk.portrait())
 	var far_name := tr("codec.speaker.handler") if (_ringing or near) else talk.speaker_name()
-	var typing := talk.typing() and not _ringing
 	var tear := Vector2(14.0 if _burst > BURST / 2 else -8.0, 0.0) if _burst > 0.0 else Vector2.ZERO
-	var rx := d.x - SIDE - PORTRAIT.x
 	if not _ringing:
 		_portrait(_left, Vector2(SIDE, PORTRAIT_Y) + (tear if near else Vector2.ZERO), "operative", near, typing, k)
 		_slab(Vector2(SIDE, PORTRAIT_Y + PORTRAIT.y + 10), tr("codec.speaker.operative").to_upper(), false, near)
 	_portrait(_right, Vector2(rx, PORTRAIT_Y) + (tear if not near else Vector2.ZERO), far_id, _ringing or not near, typing, k)
 	_slab(Vector2(rx, PORTRAIT_Y + PORTRAIT.y + 10), far_name.to_upper(), true, _ringing or not near)
 	var freq := FREQUENCY if still else StoryMotion.frequency(_t, FREQUENCY)
-	HudPalette.hud_text(self, Vector2(d.x / 2, PORTRAIT_Y + 130), freq, 136, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 136, 0.04), 1, false)
+	var ff := HudPalette.tracked(HudPalette.DISPLAY, 136, 0.04)
+	HudPalette.hud_text(self, Vector2(d.x / 2, PORTRAIT_Y + 130), freq, 136, GREEN, ff, 1, false)
+	var fw := ff.get_string_size(FREQUENCY, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 136)).x
+	HudPalette.hud_text(self, Vector2(d.x / 2 + fw / 2 + 14, PORTRAIT_Y + 128), "MHz", 24, GREEN_DIM, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.2), 0, false)
+	CodecChrome.scale(self, Vector2(d.x / 2, PORTRAIT_Y + 186), 420.0, 1.0 if still else clampf(_t / (StoryMotion.TUNE * 2.0), 0.0, 1.0))
 	_wave(Vector2(d.x / 2, PORTRAIT_Y + 280), typing)
+	var cells := 16
+	if not _ringing:
+		CodecChrome.meter(self, Vector2(SIDE - 48, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(near, typing and not still, 1), "TX")
+	CodecChrome.meter(self, Vector2(d.x - SIDE + 36, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(not near, typing and not still, 4), "RX")
 	if _ringing:
 		var prompt := tr("ui.codec.answer").format({key = Prompts.key("codec_advance")}).to_upper()
-		HudPalette.hud_text(self, Vector2(d.x / 2, d.y - BAR - 70), prompt, 30, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.3), 1, false)
+		HudPalette.hud_text(self, Vector2(d.x / 2, BOX_Y + BOX_H / 2), prompt, 30, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.3), 1, false)
 		return
 	if StoryMotion.tuning(_t) and not still:
 		_static(d)
@@ -241,24 +258,34 @@ func _wave(c: Vector2, talking: bool) -> void:
 		draw_rect(Rect2(c.x - WAVE_BARS * 6 + i * 12, c.y - h / 2, 7, h), GREEN)
 
 
+## Over the live picture: a strip along the bottom. In the full-screen call: a framed box under the portraits,
+## the call's line pips under its left edge and the advance hint under its right.
 func _subtitle(d: Vector2) -> void:
-	var top := d.y - BAR - 190
-	draw_rect(Rect2(0, top, d.x, 190), Color(0, 0, 0, 0.6 if over_picture else 1.0))
-	draw_rect(Rect2(0, top, d.x, 2), GREEN)
-	HudPalette.hud_text(self, Vector2(d.x / 2, top + 54), talk.speaker_name().to_upper(), 24, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.3), 1, false)
+	var box := Rect2(0, d.y - BAR - 190, d.x, 190) if over_picture else PixelKit.snap(Rect2(SIDE, BOX_Y, d.x - 2 * SIDE, BOX_H))
+	var top := box.position.y
+	if over_picture:
+		draw_rect(box, Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(0, top, d.x, 2), GREEN)
+	else:
+		draw_rect(box, Color(0, 0, 0, 0.9))
+		PixelKit.frame(self, box, GREEN_DIM, 4)
+		draw_rect(Rect2(d.x / 2 - 60, top, 120, PixelKit.PX), GREEN)  # a lit notch over the speaker's name
+		CodecChrome.pips(self, Vector2(box.position.x, box.end.y + 30), talk.lines.size(), talk.index)
+	HudPalette.hud_text(self, Vector2(d.x / 2, top + (54 if over_picture else 58)), talk.speaker_name().to_upper(), 24, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.3), 1, false)
 	var font := HudPalette.FIGURE
 	var full := HudPalette.wrap(talk.text(), d.x - 840, font, 36)
 	var left := talk.shown().length()
 	for i in full.size():  # wrapped on the whole line, so typing never reflows
 		var row := full[i].left(maxi(left, 0))
 		var w := font.get_string_size(full[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 36).x
-		var p := Vector2(d.x / 2 - w / 2, top + 108 + i * 48)
+		var p := Vector2(d.x / 2 - w / 2, top + (108 if over_picture else 112) + i * 48)
 		draw_string_outline(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 6, Color.BLACK)
 		draw_string(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, Color.WHITE)
 		left -= full[i].length() + 1
 	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
 	var count := "%d / %d" % [talk.index + 1, talk.lines.size()]
-	HudPalette.hud_text(self, Vector2(d.x - 80, d.y - BAR - 24), next + "    " + count, 22, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)
+	var hint_at := Vector2(d.x - 80, d.y - BAR - 24) if over_picture else Vector2(box.end.x, box.end.y + 44)
+	HudPalette.hud_text(self, hint_at, next + "    " + count, 22, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)
 
 
 ## Static over the call: flicker bars, reseeded at 30 Hz.
