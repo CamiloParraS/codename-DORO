@@ -204,6 +204,9 @@ const WOODS := [  # [model, rects, count, scale from, to, seed]
 	["pine", [[-70, 78, 220, 70]], 150, 2.2, 3.6, 31], ["pine_small", [[-60, 78, 200, 40]], 70, 2.0, 3.0, 32],
 	["pine", [[-70, -50, 66, 126]], 55, 2.0, 3.2, 33], ["pine", [[84, -50, 70, 126]], 50, 2.0, 3.2, 34],
 	["pine", [[-40, -60, 160, 56]], 45, 2.0, 3.2, 35], ["dead_tree", [[-60, 80, 200, 60]], 14, 1.2, 1.8, 36],
+	# Mutum Studios' 3D Retro World trees, a few among the pines for variety
+	["spruce", [[-70, 78, 220, 70], [-70, -50, 66, 126]], 28, 2.0, 3.2, 37], ["douglas_fir", [[-60, 78, 200, 60], [84, -50, 70, 126]], 16, 1.8, 2.8, 38],
+	["scots_pine", [[-60, 78, 200, 60], [-40, -60, 160, 56]], 12, 1.8, 2.6, 39],
 ]
 const WOODS_CLEAR := [[0, 0, 80, 76], [76, 36, 140, 16], [-26, 116, 90, 28], [-44, 26, 10, 10]]  # + the valley outpost, the west hut
 const PYLONS := [[-70, 100], [-10, 97], [50, 96], [110, 97], [170, 100]]  # inside the fog's 80 m from the motor pool
@@ -383,6 +386,9 @@ func _surroundings() -> void:
 	for k in 2:
 		_scatter(g, "Rocks%d" % k, ["boulder_a", "boulder_b"][k], [[-50, 78, 180, 50], [-40, -30, 36, 100], [84, -30, 40, 60]], 35,
 			_ground_h, 1.0, 3.0, 40 + k, WOODS_CLEAR, 1.0, ["terrain", SNOW_FIELD], true)  # clear 1 m, skin, cast shadows
+	for k in 4:  # 3D Retro World's textured rocks among the bare ones
+		_scatter(g, "RetroRocks%d" % k, ["rock_a", "rock_b", "rock_c", "rock_d"][k], [[-50, 78, 180, 50], [-40, -30, 36, 100], [84, -30, 40, 60]], 9,
+			_ground_h, 1.2, 2.6, 70 + k, WOODS_CLEAR, 1.0)
 	_scatter(g, "CliffRocks", "boulder_b", [[-30, -26, 140, 26], [-45, -4, 40, 84]], 70, _ground_h, 2.0, 5.0, 60, WOODS_CLEAR, 0.5,
 		["terrain", SNOW_FIELD], true)  # the north and west cliff faces were bare slabs
 	_scatter(g, "RavineRocks", "boulder_a", [[84, 26, 110, 10], [84, 52, 110, 10]], 45, _ground_h, 1.5, 4.0, 61, WOODS_CLEAR, 0.0,
