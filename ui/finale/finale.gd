@@ -11,6 +11,7 @@ const SLOW := 0.3        # time scale while the order is on screen
 const STILL_SECONDS := 20.0
 const BED_FADE := 2.5    # seconds for an ending's bed to fade in, and out into the Epilogue
 const GLITCH_DB := -3.0  # the glitch under each new debate line
+const TRANSMIT_DB := -12.0  # the data transmission when the order is sent
 const GLYPHS := {promachos = "/\\", nike = ">>", pallas = "[]", gorgo = "XX", glaukopis = "()"}
 
 var model: Finale
@@ -80,7 +81,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		"order":
 			Engine.time_scale = 1.0
 			model.transmit()
-			Mixer.play(&"finale_transmit")
+			Mixer.play(&"finale_transmit", Mixer.UI, 1.0, TRANSMIT_DB)
 			_play(Finale.debate(model.band, model.spoofing))
 		"debate", "ending":
 			if not _blip.done():
