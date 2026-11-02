@@ -22,6 +22,8 @@ Personal reference: how this project is planned and built, where things live, an
 2. Copy **only what you'll use** into `assets/...` (see structure). Godot imports it from there.
 3. Add a line to `docs/CREDITS.md` right away: name, author, link, license.
 
+Props we model ourselves are built by script, never by hand, so the `.glb` can be regenerated: `tools/model_identity_props.py` (the identity-pass props: consoles, racks, lab kit) and `tools/model_intel.py` (the dossier). Run them headless with Blender, which is not on PATH: `"/c/Program Files (x86)/Steam/steamapps/common/Blender/blender.exe" -b --factory-startup -P tools/model_identity_props.py -- control_panel` (names optional). The live Blender MCP is for looking and small edits; a script that resets the session (`read_factory_settings`) unloads its add-on, so batch work goes through the headless binary. A model's front is glTF -Z (Blender +Y): see "Facing" in `tools/area_dressing.gd`.
+
 `_raw/` is ignored by both Godot and git. That keeps the import fast and keeps Mixamo/Quaternius raw files out of the repo (their licenses forbid redistributing them).
 
 ## Project structure (`res://`)
