@@ -330,6 +330,10 @@ ui.hud.jammed,JAMMED,BLOQUEADO
 ui.hud.life,LIFE,VIDA
 ui.hud.objective,OBJECTIVE,OBJETIVO
 ui.hud.checkpoint,CHECKPOINT,PUNTO DE CONTROL
+ui.mouse.left,CLICK,CLIC
+ui.mouse.right,RIGHT CLICK,CLIC DERECHO
+ui.mouse.middle,MIDDLE CLICK,CLIC CENTRAL
+ui.mouse.wheel,SCROLL,RUEDA
 ui.hud.reloading,RELOADING,RECARGANDO
 ui.hud.empty,EMPTY,VACÍA
 ui.gear.tranq,TRANQ PISTOL,PISTOLA TRANQ.

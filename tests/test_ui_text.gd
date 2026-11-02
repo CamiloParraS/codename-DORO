@@ -71,6 +71,10 @@ func test_prompt_keys_come_from_the_input_map() -> void:
 	assert_eq(Prompts.key("pause"), "ESC")
 	assert_eq(Prompts.key("crouch"), "C")
 	assert_eq(Prompts.key("codec_advance"), "LMB")
+	assert_eq(Prompts.word("fire"), "CLICK", "running text spells a mouse button out")
+	assert_eq(Prompts.word("aim"), "RIGHT CLICK")
+	assert_eq(Prompts.word("item_next"), "SCROLL")
+	assert_eq(Prompts.word("interact"), "E", "a key is its own word")
 
 
 func test_a_prompt_is_the_key_in_brackets_then_the_translated_verb() -> void:

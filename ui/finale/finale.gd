@@ -225,7 +225,7 @@ func _voice_line(d: Vector2, at: Vector2) -> void:
 	for i in full.size():
 		HudPalette.hud_text(self, at + Vector2(0, 56 + i * 50), full[i].left(maxi(left, 0)), 36, HudPalette.LIGHT, HudPalette.FIGURE_MED)
 		left -= full[i].length() + 1
-	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
+	var next := tr("ui.codec.next").format({key = Prompts.word("codec_advance")})
 	HudPalette.hud_text(self, Vector2(d.x - 100, d.y - 70), next.to_upper(), 22, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)
 
 
