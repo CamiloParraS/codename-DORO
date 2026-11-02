@@ -63,6 +63,6 @@ const D := {
 		["sign.core_access", [2.03, 32, 4.85], 90, 2.6, "red", 0.5], ["sign.plant_room", [-7, 31.03, 3.05], 180, 1.8, "white", 0.3],
 		["sign.core", [-12.5, 32, 3.55], 90, 1.6, "red", 0.4],
 	],
-	props = [["keypad", [1.6, 33.28, 1.3], 0], ["valve_wheel", [-4.39, 25.5, 1.4], 270], ["valve_wheel", [-4.39, 27.0, 1.4], 270]],
+	props = [["keypad", [1.6, 33.28, 1.3], 180], ["valve_wheel", [-4.39, 25.5, 1.4], 270], ["valve_wheel", [-4.39, 27.0, 1.4], 270]],
 	reach = {Corridor = [-6, 32, 0], PlantDoor = [-7, 30, 0], PlantStair = [-12.75, 30.1, 0], Mezzanine = [-12, 23.5, GALLERY]},
 }

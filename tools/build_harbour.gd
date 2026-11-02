@@ -246,26 +246,26 @@ const DRESS := [
 	["cardboard_box", [20.5, 49, 0], 15], ["cardboard_box", [21.3, 49.2, 0], 40],
 	["ceiling_lamp", [11, 56, 4.8], 0], ["ceiling_lamp", [19, 56, 4.8], 0],
 	# gatehouse inside: the radio desk and a locker
-	["table", [39, 7, 0], 0], ["monitor", [39, 7, 0.96], 0], ["chair", [39, 8.3, 0], 180],
-	["locker", [36.7, 12.5, 0], 90], ["ceiling_lamp", [42, 10, 3.8], 0],
-	["vent_unit", [40, 8, 4.3], 0],  # on the gatehouse roof
+	["table", [39, 7, 0], 0], ["monitor", [39, 7, 0.96], 180], ["chair", [39, 8.3, 0], 180],
+	["locker", [36.7, 12.5, 0], 270], ["ceiling_lamp", [42, 10, 3.8], 0],
+	["vent_unit", [40, 8, 4.3], 180],  # on the gatehouse roof
 	# freighter deck
 	["drum", [75.5, 3, DECK], 0], ["drum", [74.7, 3.4, DECK], 40],
 	# the freight lift lit from inside, so the way down reads from the yard; sandbags at the road gate
 	["ceiling_lamp", [7, 32, 5.9], 0], ["sandbags", [23.5, 5, 0], 0], ["pipe_arch", [3.6, 20, 0], 0],
 	# the lift as a working freight bay (cabinets, generator, pipes, lamps over the mouth)
-	["cabinet_b", [4, 26.9, 0], 0], ["cabinet_a", [5.5, 26.9, 0], 0], ["generator", [4.5, 36.7, 0], 180],
+	["cabinet_b", [4, 26.9, 0], 180], ["cabinet_a", [5.5, 26.9, 0], 180], ["generator", [4.5, 36.7, 0], 180],
 	["pipe_riser", [2.6, 29, 0], 270], ["ceiling_lamp", [11.5, 28, 5.9], 0], ["ceiling_lamp", [11.5, 36, 5.9], 0],
 	# Warehouse A stock along the walls, the middle kept open
-	["pallet_stack", [8, 62.5, 0], 0], ["supply_crate", [10.5, 62.8, 0], 0], ["cabinet_b", [6.6, 55, 0], 270],
-	["cabinet_a", [6.6, 56.4, 0], 270], ["drum", [22.8, 58, 0], 0], ["drum", [23, 59, 0], 30],
-	["barrel_b", [22.6, 60, 0], 0], ["vent_unit", [11, 63.4, 3], 180],
+	["pallet_stack", [8, 62.5, 0], 0], ["supply_crate", [10.5, 62.8, 0], 0], ["cabinet_b", [6.6, 55, 0], 90],
+	["cabinet_a", [6.6, 56.4, 0], 90], ["drum", [22.8, 58, 0], 0], ["drum", [23, 59, 0], 30],
+	["barrel_b", [22.6, 60, 0], 0], ["vent_unit", [11, 63.4, 3], 0],
 	# gatehouse: the guard room's screens, cabinets and a drinks machine
-	["monitoring_screen", [42.5, 6.9, 0], 0], ["cabinet_a", [47.3, 12.5, 0], 90], ["cabinet_b", [47.3, 11, 0], 90],
-	["vending_machine", [37.2, 7, 0], 0],
+	["monitoring_screen", [42.5, 6.9, 0], 180], ["cabinet_a", [47.3, 12.5, 0], 270], ["cabinet_b", [47.3, 11, 0], 270],
+	["vending_machine", [37.2, 7, 0], 180],
 	# the Operations building: the control room's screens, the locker room's cabinets, lights
-	["monitoring_screen", [19, 20.6, 0], 0], ["cabinet_a", [22.4, 28.5, 0], 270], ["cabinet_b", [22.4, 39, 0], 270],
-	["cabinet_a", [22.4, 37.5, 0], 270], ["ceiling_lamp", [20, 25, 3.8], 0], ["ceiling_lamp", [20, 32, 3.8], 0],
+	["monitoring_screen", [19, 20.6, 0], 180], ["cabinet_a", [22.4, 28.5, 0], 90], ["cabinet_b", [22.4, 39, 0], 90],
+	["cabinet_a", [22.4, 37.5, 0], 90], ["ceiling_lamp", [20, 25, 3.8], 0], ["ceiling_lamp", [20, 32, 3.8], 0],
 	["ceiling_lamp", [20, 38, 3.8], 0], ["ceiling_lamp", [15.5, 31, 3.8], 0],
 	# a parked van in the north-west corner
 	["van", [10, 8, 0], 90],

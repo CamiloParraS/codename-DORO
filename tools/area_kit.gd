@@ -40,6 +40,13 @@ const PROPS := {
 	Crane = "crane_tower", CraneBoom = "crane_boom", Bridge = "freighter_bridge", Antenna = "lattice_mast",
 	LiftPanel = "control_panel", CoreConsole = "core_console",
 }
+## Facing: every model's front is glTF -Z (Blender +Y, tools/model_identity_props.py), so a facing is the compass
+## bearing its front looks at. Bought models built front to +Z are turned here, once, by _turn: degrees added.
+## tests/test_model_fronts.gd checks the lit ones against it.
+const FRONT := {cabinet_a = 180, cabinet_b = 180, keypad = 180, lift_sign = 180, locker = 180, monitor = 180,
+	monitoring_screen = 180, pc = 180, sat_dish = 180, shelf = 180, vending_machine = 180, vent_unit = 180, wall_clock = 180}
+## Skinned boxes' facings (PropSkin.facing), where the model's front matters: the bearing it looks at.
+const PROP_FACING := {LiftPanel = 180, CoreConsole = 90}
 ## Boxes with no mesh of their own: a dress model draws them (the freighter_hull shell over the hull and bow).
 const SHELLED := ["Hull", "Bow", "BowTip", "GapSeal"]
 ## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
@@ -61,6 +68,11 @@ func _build() -> void:
 
 
 # --- builders ---------------------------------------------------------------------------------
+
+## The turn that puts model `key`'s front to bearing `facing` (degrees, 0 north, 90 east).
+static func _turn(key: String, facing: float) -> Basis:
+	return Basis(Vector3.UP, deg_to_rad(-(facing + FRONT.get(key, 0))))
+
 
 func _p(v: Array) -> Vector3:
 	return Vector3(v[0] - 40.0, v[2] if v.size() > 2 else 0.0, v[1] - 40.0)
@@ -165,6 +177,7 @@ func _box(parent: Node, name: String, r: Array, h0: float, h1: float, mat: Strin
 	if PROPS.has(name):
 		b.set_script(PropSkin)
 		b.model = load("res://assets/models/props/%s.glb" % PROPS[name])
+		b.facing = PROP_FACING.get(name, 0.0)
 		if PROPS[name].begins_with("container"):
 			b.tint = tint
 	if mat in METAL_FLOORS:

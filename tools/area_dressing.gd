@@ -178,7 +178,7 @@ func _dress(parent: Node3D, items: Array, solid_ok := true) -> void:
 			m = _bare(m, _mat(skin[0], skin[1]))
 		var b: Node3D = StaticBody3D.new() if solid else Node3D.new()
 		b.name = "%s_%s_%s" % [key.to_pascal_case(), _coord(it[1][0]), _coord(it[1][1])]  # by place, so an insertion renames nothing else
-		b.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(-it[2])), _p(it[1]) + Vector3.UP * size.y / 2)
+		b.transform = Transform3D(_turn(key, it[2]), _p(it[1]) + Vector3.UP * size.y / 2)
 		g.add_child(b)
 		if solid:
 			var shape := CollisionShape3D.new()
@@ -257,7 +257,7 @@ func _instances(parent: Node3D, name: String, key: String, at: Array, skin := []
 		mm.mesh = parts[i][0]
 		var xfs := PackedFloat32Array()  # 12 floats each: the basis' columns, then the origin
 		for a in at:
-			var turn := Basis(Vector3.UP, deg_to_rad(-a[1]))
+			var turn := _turn(key, a[1])
 			var base: Vector3 = Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * a[2]
 			var xf: Transform3D = Transform3D(turn.scaled(Vector3.ONE * a[2]), _p(a[0]) + turn * base) * parts[i][1]
 			for v in [xf.basis.x, xf.basis.y, xf.basis.z, xf.origin]:

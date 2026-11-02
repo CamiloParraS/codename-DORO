@@ -4998,6 +4998,7 @@ mesh = SubResource("BoxMesh_prhey")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9, 0.6, -19.4)
 script = ExtResource("11_psnj0")
 model = ExtResource("23_nx08e")
+facing = 180.0
 metadata/surface = "metal"
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Solid/LiftPanel" unique_id=1046890216]
@@ -6461,7 +6462,7 @@ shape = SubResource("BoxShape3D_510cj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0861626e-06, -0.48000005, 2.026558e-06)
 
 [node name="Monitor_39p0_7p0" type="Node3D" parent="NavRegion/Dressing" unique_id=1331566390]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.2141702, -33)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -1, 1.2141702, -33)
 
 [node name="monitor" type="Node3D" parent="NavRegion/Dressing/Monitor_39p0_7p0" unique_id=1062573549 instance=ExtResource("50_2ape5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.662441e-07, -0.25417027, 0.02266255)
@@ -6473,7 +6474,7 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002931282, -0.2970002, 4.0233135e-07)
 
 [node name="Locker_36p7_12p5" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=43495715]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.3, 1.0500003, -27.5)
+transform = Transform3D(1.3907092e-07, 0, -1, 0, 1, 0, 1, 0, 1.3907092e-07, -3.3, 1.0500003, -27.5)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/Locker_36p7_12p5" unique_id=1439291811]
 shape = SubResource("BoxShape3D_avbre")
@@ -6498,7 +6499,7 @@ distance_fade_length = 20.0
 omni_range = 9.0
 
 [node name="VentUnit_40p0_8p0" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=154581252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0511622, -32)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, 0, 5.0511622, -32)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/VentUnit_40p0_8p0" unique_id=390170180]
 shape = SubResource("BoxShape3D_k0kxq")
@@ -6559,7 +6560,7 @@ shape = SubResource("BoxShape3D_qvvey")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.554331, 0)
 
 [node name="CabinetB_4p0_26p9" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=1681827112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 0.99503773, -13.1)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -36, 0.99503773, -13.1)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/CabinetB_4p0_26p9" unique_id=1589312872]
 shape = SubResource("BoxShape3D_xgycy")
@@ -6568,7 +6569,7 @@ shape = SubResource("BoxShape3D_xgycy")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.99503773, 0)
 
 [node name="CabinetA_5p5_26p9" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=1478472717]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.5, 0.7183652, -13.1)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -34.5, 0.7183652, -13.1)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/CabinetA_5p5_26p9" unique_id=42394637]
 shape = SubResource("BoxShape3D_taeq3")
@@ -6696,13 +6697,13 @@ shape = SubResource("BoxShape3D_tyjdu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7511619, 0)
 
 [node name="MonitoringScreen_42p5_6p9" type="Node3D" parent="NavRegion/Dressing" unique_id=615948955]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0.18320513, -33.1)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, 2.5, 0.18320513, -33.1)
 
 [node name="monitoring_screen" type="Node3D" parent="NavRegion/Dressing/MonitoringScreen_42p5_6p9" unique_id=429360239 instance=ExtResource("59_48hpw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13847807, 0.06867674, -0.25062704)
 
 [node name="CabinetA_47p3_12p5" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=656733112]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.3, 0.7183652, -27.5)
+transform = Transform3D(1.3907092e-07, 0, -1, 0, 1, 0, 1, 0, 1.3907092e-07, 7.3, 0.7183652, -27.5)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/CabinetA_47p3_12p5" unique_id=1097201656]
 shape = SubResource("BoxShape3D_hx63p")
@@ -6711,7 +6712,7 @@ shape = SubResource("BoxShape3D_hx63p")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7183652, 0)
 
 [node name="CabinetB_47p3_11p0" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=746693811]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.3, 0.99503773, -29)
+transform = Transform3D(1.3907092e-07, 0, -1, 0, 1, 0, 1, 0, 1.3907092e-07, 7.3, 0.99503773, -29)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/CabinetB_47p3_11p0" unique_id=1591753011]
 shape = SubResource("BoxShape3D_506s1")
@@ -6720,7 +6721,7 @@ shape = SubResource("BoxShape3D_506s1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.99503773, 0)
 
 [node name="VendingMachine_37p2_7p0" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=1503855598]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 1.0030001, -33)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -2.8, 1.0030001, -33)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/VendingMachine_37p2_7p0" unique_id=989386926]
 shape = SubResource("BoxShape3D_pwl7s")
@@ -6729,7 +6730,7 @@ shape = SubResource("BoxShape3D_pwl7s")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0030001, -0.048564166)
 
 [node name="MonitoringScreen_19p0_20p6" type="Node3D" parent="NavRegion/Dressing" unique_id=1211461507]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.18320513, -19.4)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -21, 0.18320513, -19.4)
 
 [node name="monitoring_screen" type="Node3D" parent="NavRegion/Dressing/MonitoringScreen_19p0_20p6" unique_id=536738647 instance=ExtResource("59_48hpw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13847807, 0.06867674, -0.25062704)
@@ -9770,6 +9771,7 @@ script = ExtResource("100_60tbt")
 hold_time = 4.0
 prompt = "ui.prompt.enter_code"
 sweeps = false
+stand = Vector3(0.1, -1.5, -0.7)
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/IntelLiftPanel" unique_id=2012236205]
 shape = SubResource("BoxShape3D_riqvf")

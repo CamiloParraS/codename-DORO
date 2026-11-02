@@ -30,7 +30,7 @@ const D := {
 		["filing_cabinet", [27.6, 18.81, 0], 180], ["filing_cabinet", [28.1, 18.81, 0], 180],
 	],
 	props = [
-		["microscope", [17.2, 38.1, 1.0], 0], ["whiteboard", [29.75, 38.6, 1.0], 270], ["keypad", [45.3, 30.78, 1.3], 0],
+		["microscope", [17.2, 38.1, 1.0], 0], ["whiteboard", [29.75, 38.6, 1.0], 270], ["keypad", [45.3, 30.78, 1.3], 180],
 		["whiteboard", [18.25, 23, 1.0], 90], ["notice_board", [6.32, 50.5, 1.2], 90],
 		["tnt", [64.2, 29.3, 0], 90], ["tnt", [64.5, 29.4, 0], 70], ["detonator", [65.3, 29.3, 0], 180], ["lantern", [62.1, 29.5, 1.0], 0],
 		["lantern", [72, 29.9, 1.0], 0], ["pickaxe", [66.2, 29.5, 0], 0],  # blasting kit by the quarry rim
@@ -71,7 +71,7 @@ const D := {
 		["mound", [100, 92], 20, 2.2, "ground", Color(0.75, 0.72, 0.68)], ["van", [70, 92], 200],
 		# out on the plain: a works to the west, tanks and a stack to the south, a mast and dish on the rim, a container yard
 		["block_long", [-70, 12], 90, 1.2], ["block_hall", [-60, -30], 0], ["tank_wide", [-45, 72], 0], ["block_hall", [34, 112], 0, 1.1],
-		["chimney", [10, 104], 0, 2.4], ["tank_tall", [70, 108], 0, 3.0], ["lattice_mast", [-30, 96], 0, 1.5], ["sat_dish", [98, -24], 200, 2.0],
+		["chimney", [10, 104], 0, 2.4], ["tank_tall", [70, 108], 0, 3.0], ["lattice_mast", [-30, 96], 0, 1.5], ["sat_dish", [98, -24], 20, 2.0],
 		["shed", [100, 0], 0, 1.3], ["container_a", [20, 98], 0, 7.4, "cargo", Color(0.75, 0.55, 0.45)],
 		["container_b", [23.2, 98], 0, 7.4, "cargo", Color(0.55, 0.65, 0.75)], ["container_a", [26.4, 98], 0, 7.4, "cargo", Color(0.6, 0.6, 0.6)],
 		["container_b", [21.6, 98], 0, 7.4, "cargo", Color.WHITE],

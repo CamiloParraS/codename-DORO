@@ -133,7 +133,7 @@ func _prop(parent: Node3D, key: String, at: Array, facing: float, size: Vector3,
 	var box := _model_box(m)
 	var s := Vector3(size.x / box.size.x, size.y / box.size.y, size.z)
 	m.name = name
-	var turn := Basis(Vector3.UP, deg_to_rad(-facing))
+	var turn := _turn(key, facing)
 	m.transform = Transform3D(turn * Basis.from_scale(s), _p(at) + turn * (Vector3(-box.get_center().x, -box.position.y, -box.get_center().z) * s))
 	parent.add_child(m)
 	return m

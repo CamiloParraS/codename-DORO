@@ -5544,7 +5544,7 @@ distance_fade_length = 20.0
 omni_range = 14.0
 
 [node name="VentUnit_58p0_42p0" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=1040138855]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 18, 7.5511622, 2)
+transform = Transform3D(1.3907092e-07, 0, -1, 0, 1, 0, 1, 0, 1.3907092e-07, 18, 7.5511622, 2)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/VentUnit_58p0_42p0" unique_id=1901219303]
 shape = SubResource("BoxShape3D_ljr1d")
@@ -5589,13 +5589,13 @@ shape = SubResource("BoxShape3D_c30ri")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.54, -2.9802322e-08)
 
 [node name="MonitoringScreen_39p6_18p0" type="Node3D" parent="NavRegion/Dressing" unique_id=1210271896]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.4, 7.283205, -22)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -0.4, 7.283205, -22)
 
 [node name="monitoring_screen" type="Node3D" parent="NavRegion/Dressing/MonitoringScreen_39p6_18p0" unique_id=734164908 instance=ExtResource("50_x6w2u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13847807, 0.06867674, -0.25062704)
 
 [node name="MonitoringScreen_40p4_18p0" type="Node3D" parent="NavRegion/Dressing" unique_id=1772416110]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.4, 7.283205, -22)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, 0.4, 7.283205, -22)
 
 [node name="monitoring_screen" type="Node3D" parent="NavRegion/Dressing/MonitoringScreen_40p4_18p0" unique_id=2033210626 instance=ExtResource("50_x6w2u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13847807, 0.06867674, -0.25062704)
@@ -5639,7 +5639,7 @@ shape = SubResource("BoxShape3D_lc5rw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0861626e-06, -0.48000005, 2.026558e-06)
 
 [node name="Monitor_61p0_10p0" type="Node3D" parent="NavRegion/Dressing" unique_id=682447879]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 7.2141705, -30)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, 21, 7.2141705, -30)
 
 [node name="monitor" type="Node3D" parent="NavRegion/Dressing/Monitor_61p0_10p0" unique_id=1001984958 instance=ExtResource("51_4od70")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.662441e-07, -0.25417027, 0.02266255)
@@ -5730,7 +5730,7 @@ shape = SubResource("BoxShape3D_q02l6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2919567, 0)
 
 [node name="CabinetB_36p0_14p6" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=2083353443]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 6.9950376, -25.4)
+transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -4, 6.9950376, -25.4)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/CabinetB_36p0_14p6" unique_id=1270369251]
 shape = SubResource("BoxShape3D_eg5p2")
@@ -5813,7 +5813,7 @@ shape = SubResource("BoxShape3D_jntwh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1920929e-07, -2.4065068, 0.5663297)
 
 [node name="SatDish_62p5_9p5" type="StaticBody3D" parent="NavRegion/Dressing" unique_id=1406900658]
-transform = Transform3D(-0.9396926, 0, -0.3420202, 0, 1, 0, 0.3420202, 0, -0.9396926, 22.5, 12.406507, -30.5)
+transform = Transform3D(-0.9396927, 0, -0.34202006, 0, 1, 0, 0.34202006, 0, -0.9396927, 22.5, 12.406507, -30.5)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Dressing/SatDish_62p5_9p5" unique_id=337883506]
 shape = SubResource("BoxShape3D_fgwla")
@@ -6357,7 +6357,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 59.26854, -74)
 transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0, -12.78387, 0)
 
 [node name="SatDish_m20p0_m22p0" type="Node3D" parent="Backdrop/Surroundings/Dressing" unique_id=1773935622]
-transform = Transform3D(-0.8660254, 0, -0.50000006, 0, 1, 0, 0.50000006, 0, -0.8660254, -60, 42.51517, -62)
+transform = Transform3D(-0.86602545, 0, -0.49999988, 0, 1, 0, 0.49999988, 0, -0.86602545, -60, 42.51517, -62)
 
 [node name="sat_dish2" type="Node3D" parent="Backdrop/Surroundings/Dressing/SatDish_m20p0_m22p0" unique_id=1708074358 instance=ExtResource("55_pfyy8")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 1.7881393e-07, -3.6097603, 0.8494946)
@@ -7850,6 +7850,7 @@ shape = SubResource("BoxShape3D_7lequ")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -20)
 collision_layer = 0
 script = ExtResource("85_c3ltd")
+stand = Vector3(0, -1.5, -0.9)
 
 [node name="Shape" type="CollisionShape3D" parent="Intel/RelayConsole" unique_id=1707177102]
 shape = SubResource("BoxShape3D_twu23")

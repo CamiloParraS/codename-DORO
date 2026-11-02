@@ -1,5 +1,5 @@
-## Swaps a greybox box prop's mesh for a model, scaled to fill the box's collision shape. Turned a quarter
-## if the model's long side runs the other way from the box's.
+## Swaps a greybox box prop's mesh for a model, scaled to fill the box's collision shape. With a facing, turned so
+## its front (glTF -Z) looks that way; without one, turned a quarter if its long side runs the other way from the box's.
 ## Put on a StaticBody3D with a "Shape" (BoxShape3D) and "Mesh" child.
 class_name PropSkin
 extends StaticBody3D
@@ -7,6 +7,8 @@ extends StaticBody3D
 @export var model: PackedScene
 ## Not white: the model's palette goes grey and is dyed this weathered tone (the containers' own colours are loud).
 @export var tint := Color.WHITE
+## The bearing its front looks at, in degrees (0 north, 90 east; area_kit.gd PROP_FACING); 0 leaves it to the fit.
+@export var facing := 0.0
 
 static var _grey := {}  # source texture -> its desaturated copy
 
@@ -24,9 +26,9 @@ func _ready() -> void:
 		var b: AABB = to_m * v.global_transform * v.get_aabb()
 		box = b if first else box.merge(b)
 		first = false
-	var turn := (box.size.x > box.size.z) != (size.x > size.z)
-	var fit := Vector3(size.z, size.y, size.x) if turn else size  # the box's size in the model's own axes
-	m.basis = Basis(Vector3.UP, PI / 2 if turn else 0.0) * Basis.from_scale(fit / box.size)
+	var quarters := roundi(-facing / 90.0) if facing != 0.0 else (1 if (box.size.x > box.size.z) != (size.x > size.z) else 0)
+	var fit := Vector3(size.z, size.y, size.x) if quarters % 2 else size  # the box's size in the model's own axes
+	m.basis = Basis(Vector3.UP, quarters * PI / 2) * Basis.from_scale(fit / box.size)
 	m.position = -(m.basis * box.get_center())  # model centred on the box
 	if tint != Color.WHITE:
 		for v: MeshInstance3D in m.find_children("*", "MeshInstance3D", true, false):

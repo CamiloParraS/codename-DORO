@@ -168,24 +168,24 @@ const DRESS := [
 	["ceiling_lamp", [19, 36, 3.8], 0], ["ceiling_lamp", [35, 36, 3.8], 0], ["ceiling_lamp", [47, 36, 3.8], 0],
 	["ceiling_lamp", [15, 49.5, 3.8], 0], ["ceiling_lamp", [32, 49.5, 3.8], 0], ["ceiling_lamp", [48, 49.5, 3.8], 0],
 	# locker room: lockers and racking on the west wall
-	["locker", [6.6, 22, 0], 90], ["locker", [6.6, 23, 0], 90], ["shelf", [6.5, 26, 0], 90], ["shelf", [6.5, 26.8, 0], 90],
+	["locker", [6.6, 22, 0], 270], ["locker", [6.6, 23, 0], 270], ["shelf", [6.5, 26, 0], 270], ["shelf", [6.5, 26.8, 0], 270],
 	# office: the desk off the line from the north door to the corridor and the server room
-	["table", [20, 25.5, 0], 0], ["monitor", [19.7, 25.5, 0.96], 0], ["pc", [20.6, 25.5, 0.96], 0],
-	["chair", [20, 26.7, 0], 180], ["cabinet_b", [29.5, 18.6, 0], 180],
+	["table", [20, 25.5, 0], 0], ["monitor", [19.7, 25.5, 0.96], 180], ["pc", [20.6, 25.5, 0.96], 180],
+	["chair", [20, 26.7, 0], 180], ["cabinet_b", [29.5, 18.6, 0], 0],
 	# server room: racks along the east wall
-	["cabinet_b", [43.2, 20, 0], 270], ["cabinet_b", [43.2, 21.3, 0], 270], ["cabinet_b", [43.2, 22.6, 0], 270],
-	["cabinet_b", [43.2, 23.9, 0], 270], ["cabinet_b", [43.2, 25.2, 0], 270],
+	["cabinet_b", [43.2, 20, 0], 90], ["cabinet_b", [43.2, 21.3, 0], 90], ["cabinet_b", [43.2, 22.6, 0], 90],
+	["cabinet_b", [43.2, 23.9, 0], 90], ["cabinet_b", [43.2, 25.2, 0], 90],
 	# security: the monitor desk on the east wall
-	["table", [54.8, 22, 0], 90], ["monitor", [54.9, 22.3, 0.96], 90], ["pc", [54.9, 21.4, 0.96], 90], ["locker", [55.4, 26, 0], 270],
+	["table", [54.8, 22, 0], 90], ["monitor", [54.9, 22.3, 0.96], 270], ["pc", [54.9, 21.4, 0.96], 270], ["locker", [55.4, 26, 0], 90],
 	# lab: the researcher's bench (LOW) with a screen on it, a second bench on the south wall
-	["monitoring_screen", [19, 38.1, 1.0], 0],
+	["monitoring_screen", [19, 38.1, 1.0], 180],
 	# vault: cabinets either side of the front door
-	["cabinet_b", [42, 31.6, 0], 180], ["cabinet_b", [43.3, 31.6, 0], 180], ["cabinet_b", [52, 31.6, 0], 180],
+	["cabinet_b", [42, 31.6, 0], 0], ["cabinet_b", [43.3, 31.6, 0], 0], ["cabinet_b", [52, 31.6, 0], 0],
 	# lobby
-	["vending_machine", [23.3, 52, 0], 270], ["chair", [6.5, 46, 0], 90], ["chair", [6.5, 47, 0], 90],
+	["vending_machine", [23.3, 52, 0], 90], ["chair", [6.5, 46, 0], 90], ["chair", [6.5, 47, 0], 90],
 	# loading hall
 	["pallet_stack", [54.2, 52.5, 0], 0], ["crate_wide", [42.5, 52.8, 0], 0], ["cardboard_box", [44.5, 53.1, 0], 30],
-	["cabinet_a", [55.4, 45.5, 0], 270],
+	["cabinet_a", [55.4, 45.5, 0], 90],
 	# outside: floodlights at the gate, over the Extraction point and over the dock guard (the yard's landmark, lit from the start)
 	["lamp_post", [74, 27, 0], 270], ["lamp_post", [61.2, 60, 0], 270], ["lamp_post", [45.5, 5, 0], 180], ["lamp_post", [4.6, 66, 0], 90],
 	["barrel_a", [16, 5.5, 0], 0], ["barrel_b", [16.8, 6.1, 0], 0], ["tank_tall", [74, 19, 0], 0],
@@ -198,8 +198,8 @@ const DRESS := [
 	["pallet_stack", [8, 5.6, 0], 0], ["crate_wide", [10.6, 5.2, 0], 0], ["drum", [66, 5.5, 0], 0], ["drum", [66.8, 5.9, 0], 30],
 	["jersey_barrier", [22, 5, 0], 0],
 	# the lab's roof: air handlers and a dish (seen from the towers)
-	["vent_unit", [15, 24, 4.3], 0], ["vent_unit", [32, 48, 4.3], 90], ["vent_unit", [46, 24, 4.3], 0],
-	["sat_dish", [50, 36, 4.3], 30, 0.7],
+	["vent_unit", [15, 24, 4.3], 180], ["vent_unit", [32, 48, 4.3], 270], ["vent_unit", [46, 24, 4.3], 180],
+	["sat_dish", [50, 36, 4.3], 210, 0.7],
 ]
 ## Paint: the road's centre line out of the gate, the stop line, the truck's bay; inside, a colour per corridor
 ## (north blue, south yellow) so the Operative knows which side of the ring it is on.

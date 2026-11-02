@@ -149,33 +149,33 @@ const DRESS := [
 	["pallet_stack", [6.5, 58.5, 0], 0], ["crate_wide", [11, 74.5, 0], 0], ["supply_crate", [11, 74.5, 0.67], 20],
 	["lamp_post", [30, 75.3, 0], 0], ["lamp_post", [60, 75.3, 0], 0],
 	# garage inside
-	["cabinet_b", [46.5, 62.55, 0], 180], ["cabinet_a", [48, 62.55, 0], 180], ["ceiling_lamp", [51, 67, 4.8], 0],
+	["cabinet_b", [46.5, 62.55, 0], 0], ["cabinet_a", [48, 62.55, 0], 0], ["ceiling_lamp", [51, 67, 4.8], 0],
 	["van", [48.5, 70.2, 0], 90], ["barrel_b", [57, 62.9, 0], 0], ["jerrycan", [56.8, 63.9, 0], 20], ["ceiling_lamp", [47, 66.5, 4.8], 0],
 	["ceiling_lamp", [55, 67, 4.8], 0], ["bollard", [42.4, 65.2, 0], 0], ["bollard", [42.4, 68.8, 0], 0],  # bay door posts
 	# fuel hut: a riser tank behind it; the second van waits in the yard
 	["tank_tall", [74.5, 69, 0], 0], ["van", [22, 69, 0], 0], ["sandbags", [26, 73.5, 0], 0],
 	# mess hut inside
-	["table", [56, 44.3, 3], 0], ["chair", [56, 43.2, 3], 0], ["vending_machine", [53, 38.7, 3], 180],
-	["locker", [63.2, 38.7, 3], 180], ["ceiling_lamp", [58, 41, 6.3], 0],
+	["table", [56, 44.3, 3], 0], ["chair", [56, 43.2, 3], 0], ["vending_machine", [53, 38.7, 3], 0],
+	["locker", [63.2, 38.7, 3], 0], ["ceiling_lamp", [58, 41, 6.3], 0],
 	# barracks terrace
 	["water_tower", [12, 38, 3], 0],
 	["crate_wide", [14, 33.2, 3], 0], ["barrel_b", [16, 33, 3], 0], ["drum", [65.5, 39, 3], 0],
-	["jerrycan", [57, 46.6, 3], 0], ["lamp_post", [46, 32.6, 3], 180], ["vent_unit", [58, 42, 6.8], 90],
+	["jerrycan", [57, 46.6, 3], 0], ["lamp_post", [46, 32.6, 3], 180], ["vent_unit", [58, 42, 6.8], 270],
 	# summit: generator by its shed, the console's screens, floodlight over the helipad
 	["generator", [19, 9.2, 6], 0], ["tank_tall", [25, 6, 6], 0], ["drum", [5.5, 24, 6], 0], ["drum", [6.3, 24.5, 6], 50],
 	["monitoring_screen", [39.6, 18, 7.1], 180], ["monitoring_screen", [40.4, 18, 7.1], 180],
-	["cabinet_a", [38, 18.3, 6], 270], ["lamp_post", [4.6, 10, 6], 90],
+	["cabinet_a", [38, 18.3, 6], 90], ["lamp_post", [4.6, 10, 6], 90],
 	# office inside
-	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 0], ["chair", [61, 11.2, 6], 180],
-	["locker", [53, 8.65, 6], 180], ["ceiling_lamp", [57, 13, 9.5], 0],
-	["shelf", [55.5, 8.55, 6], 180], ["cabinet_a", [57.5, 8.6, 6], 180], ["vent_cowl", [62.8, 12.8, 10], 0], ["vent_cowl", [62.8, 16.5, 10], 0],
+	["table", [61, 10, 6], 0], ["monitor", [61, 10, 6.96], 180], ["chair", [61, 11.2, 6], 180],
+	["locker", [53, 8.65, 6], 0], ["ceiling_lamp", [57, 13, 9.5], 0],
+	["shelf", [55.5, 8.55, 6], 0], ["cabinet_a", [57.5, 8.6, 6], 0], ["vent_cowl", [62.8, 12.8, 10], 0], ["vent_cowl", [62.8, 16.5, 10], 0],
 	# the mast's base: risers and a switch cabinet; the shed's exhausts and a second tank
-	["pipe_riser", [33.3, 9, 6], 0], ["pipe_riser", [33.3, 13, 6], 0], ["cabinet_b", [36, 14.6, 6], 0],
+	["pipe_riser", [33.3, 9, 6], 0], ["pipe_riser", [33.3, 13, 6], 0], ["cabinet_b", [36, 14.6, 6], 180],
 	["vent_cowl", [18, 6, 9.3], 0], ["vent_cowl", [20.5, 6, 9.3], 0], ["tank_tall", [27.5, 6, 6], 0], ["lamp_post", [13.8, 18, 6], 270],
 	# the gate's bollards
 	["bollard", [86, 42.3, 3], 0], ["bollard", [86, 45.7, 3], 0],
 	# the relay's dishes on the summit, either side of the mast
-	["sat_dish", [29.5, 6.6, 6], 200], ["sat_dish", [62.5, 9.5, 10], 160],  # the east one on the office roof: the lane behind the office stays open
+	["sat_dish", [29.5, 6.6, 6], 20], ["sat_dish", [62.5, 9.5, 10], 340],  # the east one on the office roof: the lane behind the office stays open
 	# a checkpoint at the road gate
 	["jersey_barrier", [84, 40.6, 3], 0], ["jersey_barrier", [84, 47.4, 3], 0], ["sandbags", [86.5, 41.2, 3], 0],
 	# drifts against the rails, the retaining walls and the cliffs (low: no collider)

@@ -24,7 +24,7 @@ const D := {
 	props = [
 		["tool_board", [55.2, 62.34, 1.15], 180], ["car_battery", [51.2, 62.65, 0.62], 180], ["jerrycan", [52.1, 62.6, 0.62], 180],
 		["key_cabinet", [57.3, 64.8, 1.1], 270, 1.6], ["notice_board", [57.68, 69.5, 1.1], 270],
-		["wall_clock", [58.6, 38.32, 5.0], 180], ["notice_board", [63.68, 42, 4.2], 270], ["wall_clock", [57, 8.33, 8.4], 180],
+		["wall_clock", [58.6, 38.32, 5.0], 0], ["notice_board", [63.68, 42, 4.2], 270], ["wall_clock", [57, 8.33, 8.4], 0],
 	],
 	trim = [
 		# cables from the radio racks along the floor to the mast, and up its south face
@@ -51,7 +51,7 @@ const D := {
 		["tank_wide", [-18, 126], 0, 0.8], ["van", [16, 130], 30], ["lattice_mast", [68, 140], 0, 1.6],
 		["lamp_post", [18, 122], 0], ["lamp_post", [34, 130], 0], ["lamp_post", [2, 132], 180],
 		["jersey_barrier", [14, 124], 0], ["jersey_barrier", [18, 124], 0], ["pallet_stack", [22, 128], 20], ["drum", [24, 130], 0],
-		["lattice_mast", [-45, -30], 0, 2.0], ["lattice_mast", [75, -34], 0, 1.6], ["sat_dish", [-20, -22], 150, 1.5],
+		["lattice_mast", [-45, -30], 0, 2.0], ["lattice_mast", [75, -34], 0, 1.6], ["sat_dish", [-20, -22], 330, 1.5],
 		["shed", [-40, 30], 90, 1.0],
 	],
 	beacons = [

@@ -31,14 +31,14 @@ const D := {
 		["ceiling_lamp", [-24, 27, 7.2], 0], ["ceiling_lamp", [-24, 37, 7.2], 0], ["ceiling_lamp", [-17, 32, 7.2], 0],
 		["ceiling_lamp", [-28, 23.4, 7.2], 0],  # over the gallery
 		["monitoring_screen", [-33.1, 31, 1], 90], ["monitoring_screen", [-33.1, 33, 1], 90],
-		["cabinet_b", [-33.5, 38, 0], 90], ["cabinet_b", [-33.5, 39.3, 0], 90], ["cabinet_a", [-33.5, 25, 0], 90],
+		["cabinet_b", [-33.5, 38, 0], 270], ["cabinet_b", [-33.5, 39.3, 0], 270], ["cabinet_a", [-33.5, 25, 0], 270],
 		["pipe_riser", [-14.9, 41, 0], 270],
 		# server racks down the north (under the gallery) and south walls, clear of the guards' and the director's beats
-		["cabinet_b", [-28, 22.55, 0], 180], ["cabinet_b", [-26.8, 22.55, 0], 180], ["cabinet_b", [-25.6, 22.55, 0], 180],
-		["cabinet_b", [-22, 22.55, 0], 180], ["cabinet_b", [-17.6, 22.55, 0], 180], ["cabinet_b", [-16.4, 22.55, 0], 180],
-		["cabinet_b", [-28, 41.45, 0], 0], ["cabinet_b", [-26.8, 41.45, 0], 0], ["cabinet_b", [-25.6, 41.45, 0], 0],
-		["cabinet_b", [-22, 41.45, 0], 0], ["cabinet_b", [-20.8, 41.45, 0], 0], ["cabinet_b", [-19.6, 41.45, 0], 0],
-		["generator", [-16.6, 38.5, 0], 90], ["vent_unit", [-24, 41.5, 5.5], 0],
+		["cabinet_b", [-28, 22.55, 0], 0], ["cabinet_b", [-26.8, 22.55, 0], 0], ["cabinet_b", [-25.6, 22.55, 0], 0],
+		["cabinet_b", [-22, 22.55, 0], 0], ["cabinet_b", [-17.6, 22.55, 0], 0], ["cabinet_b", [-16.4, 22.55, 0], 0],
+		["cabinet_b", [-28, 41.45, 0], 180], ["cabinet_b", [-26.8, 41.45, 0], 180], ["cabinet_b", [-25.6, 41.45, 0], 180],
+		["cabinet_b", [-22, 41.45, 0], 180], ["cabinet_b", [-20.8, 41.45, 0], 180], ["cabinet_b", [-19.6, 41.45, 0], 180],
+		["generator", [-16.6, 38.5, 0], 90], ["vent_unit", [-24, 41.5, 5.5], 180],
 		["crate_wide", [-32.6, 40.8, 0], 90], ["cardboard_box", [-32.5, 39.6, 0], 15], ["drum", [-15.7, 25.5, 0], 0],
 		["ceiling_lamp", [-14.8, 32, 3.8], 0],  # over the room's door
 		["mainframe", [-33.28, 27.9, 0], 90], ["mainframe", [-33.28, 35.9, 0], 90],  # the Core's banks, either side of the terminal
