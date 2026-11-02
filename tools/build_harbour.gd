@@ -57,8 +57,7 @@ const SOLID := [
 	# the freighter: hull to deck height, bow, rails with a gap for the gangway and the stern drop. 16 m wide and
 	# its bow out to y -2.7 (pw-feel 12): the bow is a guard-free start, and the deck has room to go round a cone
 	["Hull", [65, 5, 16, 55], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["Bow", [69.5, -1, 7, 6], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["BowTip", [71.5, -2.5, 3, 1.5], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
+	["Bow", [69.5, -2.7, 7, 7.7], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],  # out to the front rail: all the bow pen is floor
 	["RailPort1", [65, 5, 0.2, 39.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailPort2", [65, 47.2, 0.2, 12.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailStarboard", [80.8, 5, 0.2, 55], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
@@ -222,7 +221,7 @@ const CROSSINGS := [
 ## Set dressing (tools/area_dressing.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
-	# the freighter's hull and pointed bow round the Hull, Bow and BowTip boxes (they keep the collision)
+	# the freighter's hull and pointed bow round the Hull and Bow boxes (they keep the collision)
 	["freighter_hull", [73, 25.72, -3], 0, Vector3(1.333, 1, 1.106)],  # stretched to the 16 m wide, 62.7 m long deck
 	# quay: bollards on the edge, floodlights leaning over the yard
 	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],

@@ -10,6 +10,30 @@ func suite_name() -> String:
 	return "harbour"
 
 
+## Inside the freighter's rails, in diagram metres [x, y, w, h]: the bow pen and the main deck (playtest 1: a
+## new player backed into a bow corner with no floor box under it and fell into the sea).
+const DECK_INSIDE := [[69.7, -2.5, 6.6, 7.4], [65.2, 5.1, 15.6, 54.7]]
+
+
+func test_every_spot_inside_the_freighters_rails_has_deck_under_it() -> void:
+	var c: Dictionary = load("res://tools/build_harbour.gd").get_script_constant_map()
+	var floors := []
+	for b: Array in c.SOLID:
+		if b.size() > 3 and b[1] is Array and is_equal_approx(float(b[3]), c.DECK) and float(b[2]) < c.DECK:
+			floors.append(Rect2(b[1][0], b[1][1], b[1][2], b[1][3]))
+	var holes := []
+	for r: Array in DECK_INSIDE:
+		var x: float = r[0]
+		while x <= r[0] + r[2]:
+			var y: float = r[1]
+			while y <= r[1] + r[3]:
+				if not floors.any(func(f: Rect2) -> bool: return f.grow(0.01).has_point(Vector2(x, y))):
+					holes.append(Vector2(x, y))
+				y += 0.25
+			x += 0.25
+	assert_true(holes.is_empty(), "no deck under %d spots, first %s" % [holes.size(), holes.slice(0, 3)])
+
+
 func test_marker_counts() -> void:
 	var h: Node = load(SCENE).instantiate()
 	var counts := {"spot": 5, "sentry_high_point": 2, "camera_mount": 4, "spoof_place": 4}

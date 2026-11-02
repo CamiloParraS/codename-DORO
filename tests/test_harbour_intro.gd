@@ -66,8 +66,8 @@ func test_the_launch_is_textured_and_has_a_bow() -> void:
 	assert_true(boat.get_node("Bow") != null and boat.get_node("Windscreen") != null, "more than a box")
 
 
-## The freighter's outline in diagram metres (build_harbour.gd Hull, Bow, BowTip; the front rail at y -2.7): [x, y, w, h].
-const SHIP := [[65.0, 5.0, 16.0, 55.0], [69.5, -1.0, 7.0, 6.0], [71.5, -2.7, 3.0, 1.7]]
+## The freighter's outline in diagram metres (build_harbour.gd Hull, Bow; the front rail at y -2.7): [x, y, w, h].
+const SHIP := [[65.0, 5.0, 16.0, 55.0], [69.5, -2.7, 7.0, 7.7]]
 
 
 ## How far a world point is from the freighter's outline, across the water.
