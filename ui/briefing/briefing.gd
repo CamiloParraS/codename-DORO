@@ -3,7 +3,8 @@
 ## beeps), then the objectives; any key opens the Mission's Codec call, which starts it. Past the Core it
 ## shows the ending's band, and any key goes back to the main scene. Group "mission_plan": F3 shows the
 ## plan table. After a first clear with something to buy the Requisition screen opens over it first;
-## R reopens it.
+## R reopens it. The first Mission has no Briefing (Aigis has seen nothing yet): the page stays black and its
+## Codec call opens at once.
 extends Control
 
 const REQUISITION := preload("res://ui/requisition/requisition.gd")
@@ -19,6 +20,7 @@ var _lines: Array = []               # [kind, key or text]: "title", "head", "vo
 var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
 var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
 var _line_t := 0.0
+var _skip := false                  # the first Mission: straight to its Codec call
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
@@ -27,6 +29,11 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	record = Campaign.record
+	if record.mission == 0:
+		_skip = true
+		HudPalette.fade(self)
+		_open_codec.call_deferred()
+		return
 	plan = Aigis.plan_mission(record.points, Aigis.lethality_ratio(record), record.mission)
 	_lines = _build_lines().map(func(l: Array) -> Array: return l if l.size() > 2 else l + [tr(l[1])])  # [kind, key, text]
 	for l: Array in _lines:
@@ -50,6 +57,8 @@ func open_requisition() -> void:
 
 
 func _process(delta: float) -> void:
+	if _skip:
+		return
 	if has_node("Requisition"):
 		return  # the briefing types out once Requisition closes
 	for i in _blips.size():
@@ -140,6 +149,9 @@ func _draw() -> void:
 	var k := size.y / HudPalette.DESIGN_H
 	var d := size / k
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
+	if _skip:
+		draw_rect(Rect2(Vector2.ZERO, d), HudPalette.INK)
+		return
 	draw_rect(Rect2(Vector2.ZERO, d), Color(HudPalette.INK, 0.55))  # over the backdrop
 	var y := 110.0
 	var x := 110.0
