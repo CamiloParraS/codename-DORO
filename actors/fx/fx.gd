@@ -5,7 +5,7 @@ extends RefCounted
 
 const FLASH_TIME := 0.06
 const FLASH_ICON := preload("res://assets/ui/icons/flash.svg")
-const BALLOON_ICON := preload("res://assets/ui/icons/fulton_balloon.svg")
+const BALLOON_MODEL := preload("res://assets/models/props/fulton_balloon.glb")
 const RING_ICON := preload("res://assets/ui/icons/ring.svg")
 const DASH_ICON := preload("res://assets/ui/icons/dash.svg")
 
@@ -87,7 +87,7 @@ static func tracer(parent: Node, from: Vector3, to: Vector3) -> MeshInstance3D:
 	return t
 
 
-## The Fulton balloon: bright and unlit so it reads from 20 m, tied by a cable to the guard 3 m below it.
+## The Fulton balloon: a lit orange teardrop with darker gores (as in Peace Walker), tied by a cable to the guard 3 m below it.
 ## It inflates from nothing over INFLATE s.
 const INFLATE := 0.6
 static func balloon() -> MeshInstance3D:
@@ -102,9 +102,8 @@ static func balloon() -> MeshInstance3D:
 	cable.mesh = c
 	cable.position.y = -1.5
 	b.add_child(cable)
-	var art := pixel_sprite(BALLOON_ICON, 0.125)  # 16 px across = the old 2 m sphere
-	art.modulate = Color(1, 0.45, 0.15)
-	art.position.y = -0.2
+	var art: Node3D = BALLOON_MODEL.instantiate()  # origin at the knot; the teardrop rises 2.5 m above it
+	art.position.y = -0.1
 	b.add_child(art)
 	b.scale = Vector3.ONE * 0.05
 	return b

@@ -90,7 +90,7 @@
 [ext_resource type="Texture2D" path="res://assets/ui/icons/ring.svg" id="88_ljq2v"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="89_qg62f"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="90_tve7a"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/fulton_balloon.svg" id="91_u08j6"]
+[ext_resource type="PackedScene" path="res://assets/models/props/fulton_balloon.glb" id="91_u08j6"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_fulton_launch.ogg" id="92_e6kw8"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx_fulton_lift.ogg" id="93_p8naf"]
 
@@ -8018,13 +8018,8 @@ transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 mesh = SubResource("CylinderMesh_1mppd")
 
-[node name="@Sprite3D@25" type="Sprite3D" parent="Cine/OutroProps/Balloon" unique_id=692916072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-modulate = Color(1, 0.45, 0.15, 1)
-pixel_size = 0.125
-billboard = 1
-texture_filter = 0
-texture = ExtResource("91_u08j6")
+[node name="_balloon_export" type="Node3D" parent="Cine/OutroProps/Balloon" unique_id=846570234 instance=ExtResource("91_u08j6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 
 [node name="LaunchAudio" type="AudioStreamPlayer" parent="Cine/OutroProps" unique_id=1325646922]
 bus = &"SFX"
