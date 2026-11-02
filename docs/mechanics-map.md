@@ -52,6 +52,8 @@ Which file owns which mechanic. Terms are the `docs/GLOSSARY.md` ones. Rules liv
 | What Aigis deploys into a Mission | `missions/deployment.gd` | `test_deployment.gd` |
 | Requisition (Recruits into gear) | `missions/requisition.gd`, `ui/requisition/` | `test_requisition.gd` |
 | Save slots, tutorial (Mission 1's tips, first-sighting grace, Rank lesson), HQ radio | `missions/save_slots.gd`, `tutorial.gd`, `hq_radio.gd`; tips drawn in `ui/hud/hud.gd` | `test_campaign.gd`, `test_tutorial.gd`, `test_rank.gd` |
+| Deck lessons (Mission 1: crouch, Scanner, past O1, the smoke break, off the ship; they wait, never block) | `missions/lessons.gd` (rules), fed by `areas/harbour/harbour.gd` (`_teach`) into `MissionRun.lesson` | `test_lessons.gd` |
+| Loading screen (threaded Area load, cover held until frames settle; the intro take waits for it) | `ui/loading/loading.gd` (`Loading.go`, from `Campaign.play`) | `test_loading.gd` |
 | Final debate, ending | `ai/finale.gd`, `ui/finale/finale.gd`, `areas/core/` | `test_finale.gd`, `test_core.gd` |
 
 ## Areas
@@ -74,7 +76,9 @@ The playthroughs take minutes each (`play_relay` over ten): run the one that cov
 | Mechanic | Where | Test |
 |---|---|---|
 | HUD (life, cards, Radar draw, subtitles) | `ui/hud/hud_corners.gd` (corners), `hud.gd` (prompt, live call, subtitles), `hud_model.gd`, `hud_palette.gd` | `test_hud_model.gd` |
-| Radar rules (blips, ping, jam) | `ui/radar/radar_model.gd` | `test_radar_model.gd` |
+| Objective line and CHECKPOINT card (top-centre) | `ui/hud/hud_objective.gd` (owned by `hud.gd`) | `test_hud_model.gd` |
+| Gun feedback: dry click, reload sounds and bar, EMPTY / RELOADING | `actors/operative/gun.gd` (`events`, `dry`), played by `operative.gd` (`_gun_events`), drawn in `hud_corners.gd` (`_gear`) | `test_items.gd` |
+| Radar rules (blips, ping, jam, floors: `level()`, shared with the Scanner cones) | `ui/radar/radar_model.gd` | `test_radar_model.gd` |
 | Radio menu and Radio call UI | `ui/radio/` | `test_radio_menu.gd` |
 | Briefing, Codec call | `ui/briefing/`, `ui/codec/` | `test_codec_call.gd` |
 | Takes (intro/outro camera moves; skip; letterbox; lower-third; Free mode skips them, `CineLogic.plays`; SFX duck `Mixer.take`) | `cinematics/cine.gd` (runner), `cine_logic.gd` (rules), `cine_overlay.gd`; Operative camera: `actors/operative/operative_cam.gd` (host + GameplayCam); Campaign `cine` key; authoring: `tools/area_cine.gd`; real-frame check: `tools/cine_check.tscn`; stills: `tools/shots.gd -- <area>_cine` | `test_cine.gd` (rules, Free-mode rule, skip leak, SFX duck), `test_cine_handoff.gd` (each intro ends on the shoulder rig); replay and edit loop: `tools/cine_replay.tscn` (`-- <area> --list`, `-- <area> <take> --step=0.5` writes stills + a contact sheet, `--live` plays it) |
