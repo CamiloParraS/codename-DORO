@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://da40teealdr13"
 path.s3tc="res://.godot/imported/paper_stack_paper.jpg-c0073d58d5711dc102505088d3e3a4f2.s3tc.ctex"
+path.etc2="res://.godot/imported/paper_stack_paper.jpg-c0073d58d5711dc102505088d3e3a4f2.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/paper_stack_paper.jpg"
-dest_files=["res://.godot/imported/paper_stack_paper.jpg-c0073d58d5711dc102505088d3e3a4f2.s3tc.ctex"]
+dest_files=["res://.godot/imported/paper_stack_paper.jpg-c0073d58d5711dc102505088d3e3a4f2.s3tc.ctex", "res://.godot/imported/paper_stack_paper.jpg-c0073d58d5711dc102505088d3e3a4f2.etc2.ctex"]
 
 [params]
 

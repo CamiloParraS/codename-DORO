@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bsg4ujx4yj585"
 path.s3tc="res://.godot/imported/transformer_Metal Color.png-6c1b7cbd9dedf66800f2a5644223fbbb.s3tc.ctex"
+path.etc2="res://.godot/imported/transformer_Metal Color.png-6c1b7cbd9dedf66800f2a5644223fbbb.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/transformer_Metal Color.png"
-dest_files=["res://.godot/imported/transformer_Metal Color.png-6c1b7cbd9dedf66800f2a5644223fbbb.s3tc.ctex"]
+dest_files=["res://.godot/imported/transformer_Metal Color.png-6c1b7cbd9dedf66800f2a5644223fbbb.s3tc.ctex", "res://.godot/imported/transformer_Metal Color.png-6c1b7cbd9dedf66800f2a5644223fbbb.etc2.ctex"]
 
 [params]
 

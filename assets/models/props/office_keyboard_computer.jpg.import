@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdcii4f0iiq52"
 path.s3tc="res://.godot/imported/office_keyboard_computer.jpg-dd4d757164c44e0259182fc400ef3bec.s3tc.ctex"
+path.etc2="res://.godot/imported/office_keyboard_computer.jpg-dd4d757164c44e0259182fc400ef3bec.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/office_keyboard_computer.jpg"
-dest_files=["res://.godot/imported/office_keyboard_computer.jpg-dd4d757164c44e0259182fc400ef3bec.s3tc.ctex"]
+dest_files=["res://.godot/imported/office_keyboard_computer.jpg-dd4d757164c44e0259182fc400ef3bec.s3tc.ctex", "res://.godot/imported/office_keyboard_computer.jpg-dd4d757164c44e0259182fc400ef3bec.etc2.ctex"]
 
 [params]
 

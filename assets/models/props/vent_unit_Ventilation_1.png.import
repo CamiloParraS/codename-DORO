@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctv56l6tmr7t4"
 path.s3tc="res://.godot/imported/vent_unit_Ventilation_1.png-aee263d9b4ac04a1afd2c023b35ac226.s3tc.ctex"
+path.etc2="res://.godot/imported/vent_unit_Ventilation_1.png-aee263d9b4ac04a1afd2c023b35ac226.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/vent_unit_Ventilation_1.png"
-dest_files=["res://.godot/imported/vent_unit_Ventilation_1.png-aee263d9b4ac04a1afd2c023b35ac226.s3tc.ctex"]
+dest_files=["res://.godot/imported/vent_unit_Ventilation_1.png-aee263d9b4ac04a1afd2c023b35ac226.s3tc.ctex", "res://.godot/imported/vent_unit_Ventilation_1.png-aee263d9b4ac04a1afd2c023b35ac226.etc2.ctex"]
 
 [params]
 

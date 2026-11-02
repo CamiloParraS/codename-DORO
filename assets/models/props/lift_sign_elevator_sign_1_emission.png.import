@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c60h77loqr1f2"
 path.s3tc="res://.godot/imported/lift_sign_elevator_sign_1_emission.png-9020b72209dbf9b53d071bf8b1012fc1.s3tc.ctex"
+path.etc2="res://.godot/imported/lift_sign_elevator_sign_1_emission.png-9020b72209dbf9b53d071bf8b1012fc1.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/lift_sign_elevator_sign_1_emission.png"
-dest_files=["res://.godot/imported/lift_sign_elevator_sign_1_emission.png-9020b72209dbf9b53d071bf8b1012fc1.s3tc.ctex"]
+dest_files=["res://.godot/imported/lift_sign_elevator_sign_1_emission.png-9020b72209dbf9b53d071bf8b1012fc1.s3tc.ctex", "res://.godot/imported/lift_sign_elevator_sign_1_emission.png-9020b72209dbf9b53d071bf8b1012fc1.etc2.ctex"]
 
 [params]
 

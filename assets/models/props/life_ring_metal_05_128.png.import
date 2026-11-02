@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbdf02wawm827"
 path.s3tc="res://.godot/imported/life_ring_metal_05_128.png-f1ac6c1ba47d6d69bf7439b712804722.s3tc.ctex"
+path.etc2="res://.godot/imported/life_ring_metal_05_128.png-f1ac6c1ba47d6d69bf7439b712804722.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/life_ring_metal_05_128.png"
-dest_files=["res://.godot/imported/life_ring_metal_05_128.png-f1ac6c1ba47d6d69bf7439b712804722.s3tc.ctex"]
+dest_files=["res://.godot/imported/life_ring_metal_05_128.png-f1ac6c1ba47d6d69bf7439b712804722.s3tc.ctex", "res://.godot/imported/life_ring_metal_05_128.png-f1ac6c1ba47d6d69bf7439b712804722.etc2.ctex"]
 
 [params]
 

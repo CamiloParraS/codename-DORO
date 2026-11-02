@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dd4n5scbo1vg3"
 path.s3tc="res://.godot/imported/fuel_pump_panels_128.png-7e2a072b23ebe7ad9a12f55c7096478b.s3tc.ctex"
+path.etc2="res://.godot/imported/fuel_pump_panels_128.png-7e2a072b23ebe7ad9a12f55c7096478b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/fuel_pump_panels_128.png"
-dest_files=["res://.godot/imported/fuel_pump_panels_128.png-7e2a072b23ebe7ad9a12f55c7096478b.s3tc.ctex"]
+dest_files=["res://.godot/imported/fuel_pump_panels_128.png-7e2a072b23ebe7ad9a12f55c7096478b.s3tc.ctex", "res://.godot/imported/fuel_pump_panels_128.png-7e2a072b23ebe7ad9a12f55c7096478b.etc2.ctex"]
 
 [params]
 

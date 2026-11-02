@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cgi36joc1ep4e"
 path.s3tc="res://.godot/imported/pipe_riser_Pipes.png-70346889ea6a118f2b8276d514a18216.s3tc.ctex"
+path.etc2="res://.godot/imported/pipe_riser_Pipes.png-70346889ea6a118f2b8276d514a18216.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/pipe_riser_Pipes.png"
-dest_files=["res://.godot/imported/pipe_riser_Pipes.png-70346889ea6a118f2b8276d514a18216.s3tc.ctex"]
+dest_files=["res://.godot/imported/pipe_riser_Pipes.png-70346889ea6a118f2b8276d514a18216.s3tc.ctex", "res://.godot/imported/pipe_riser_Pipes.png-70346889ea6a118f2b8276d514a18216.etc2.ctex"]
 
 [params]
 

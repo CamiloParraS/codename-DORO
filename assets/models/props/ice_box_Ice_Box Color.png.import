@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxglwn42v1t21"
 path.s3tc="res://.godot/imported/ice_box_Ice_Box Color.png-13b7842a207df5a2f37a6996a9f7b36d.s3tc.ctex"
+path.etc2="res://.godot/imported/ice_box_Ice_Box Color.png-13b7842a207df5a2f37a6996a9f7b36d.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/ice_box_Ice_Box Color.png"
-dest_files=["res://.godot/imported/ice_box_Ice_Box Color.png-13b7842a207df5a2f37a6996a9f7b36d.s3tc.ctex"]
+dest_files=["res://.godot/imported/ice_box_Ice_Box Color.png-13b7842a207df5a2f37a6996a9f7b36d.s3tc.ctex", "res://.godot/imported/ice_box_Ice_Box Color.png-13b7842a207df5a2f37a6996a9f7b36d.etc2.ctex"]
 
 [params]
 

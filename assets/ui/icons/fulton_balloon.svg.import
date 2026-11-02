@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bjlnco3g53l8a"
 path.s3tc="res://.godot/imported/fulton_balloon.svg-258b06eb4dd6eb8a0b8ef1f9672c60e6.s3tc.ctex"
+path.etc2="res://.godot/imported/fulton_balloon.svg-258b06eb4dd6eb8a0b8ef1f9672c60e6.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/ui/icons/fulton_balloon.svg"
-dest_files=["res://.godot/imported/fulton_balloon.svg-258b06eb4dd6eb8a0b8ef1f9672c60e6.s3tc.ctex"]
+dest_files=["res://.godot/imported/fulton_balloon.svg-258b06eb4dd6eb8a0b8ef1f9672c60e6.s3tc.ctex", "res://.godot/imported/fulton_balloon.svg-258b06eb4dd6eb8a0b8ef1f9672c60e6.etc2.ctex"]
 
 [params]
 

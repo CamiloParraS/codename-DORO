@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://di4y4pjltqek4"
 path.s3tc="res://.godot/imported/counter_metal_05_128.png-f43997a8630a4544d9139a96b2e9e07b.s3tc.ctex"
+path.etc2="res://.godot/imported/counter_metal_05_128.png-f43997a8630a4544d9139a96b2e9e07b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/counter_metal_05_128.png"
-dest_files=["res://.godot/imported/counter_metal_05_128.png-f43997a8630a4544d9139a96b2e9e07b.s3tc.ctex"]
+dest_files=["res://.godot/imported/counter_metal_05_128.png-f43997a8630a4544d9139a96b2e9e07b.s3tc.ctex", "res://.godot/imported/counter_metal_05_128.png-f43997a8630a4544d9139a96b2e9e07b.etc2.ctex"]
 
 [params]
 

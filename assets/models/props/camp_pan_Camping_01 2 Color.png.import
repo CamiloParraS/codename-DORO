@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dnkn8brmfy7md"
 path.s3tc="res://.godot/imported/camp_pan_Camping_01 2 Color.png-cedf9204097bc8a91a6b3e1f41e4262f.s3tc.ctex"
+path.etc2="res://.godot/imported/camp_pan_Camping_01 2 Color.png-cedf9204097bc8a91a6b3e1f41e4262f.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/camp_pan_Camping_01 2 Color.png"
-dest_files=["res://.godot/imported/camp_pan_Camping_01 2 Color.png-cedf9204097bc8a91a6b3e1f41e4262f.s3tc.ctex"]
+dest_files=["res://.godot/imported/camp_pan_Camping_01 2 Color.png-cedf9204097bc8a91a6b3e1f41e4262f.s3tc.ctex", "res://.godot/imported/camp_pan_Camping_01 2 Color.png-cedf9204097bc8a91a6b3e1f41e4262f.etc2.ctex"]
 
 [params]
 

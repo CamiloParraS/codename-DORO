@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://caylatsnmooqr"
 path.s3tc="res://.godot/imported/monitor_pc_monitor_mp_1.png-36ad63a64fedee9d36889e123c483d81.s3tc.ctex"
+path.etc2="res://.godot/imported/monitor_pc_monitor_mp_1.png-36ad63a64fedee9d36889e123c483d81.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/monitor_pc_monitor_mp_1.png"
-dest_files=["res://.godot/imported/monitor_pc_monitor_mp_1.png-36ad63a64fedee9d36889e123c483d81.s3tc.ctex"]
+dest_files=["res://.godot/imported/monitor_pc_monitor_mp_1.png-36ad63a64fedee9d36889e123c483d81.s3tc.ctex", "res://.godot/imported/monitor_pc_monitor_mp_1.png-36ad63a64fedee9d36889e123c483d81.etc2.ctex"]
 
 [params]
 

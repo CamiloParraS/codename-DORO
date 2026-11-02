@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cjk5a8vgxg7um"
 path.s3tc="res://.godot/imported/tank_wide_Liquid_reservoir_1.png-ff40061fff48949ce5b3beaf1f525a0d.s3tc.ctex"
+path.etc2="res://.godot/imported/tank_wide_Liquid_reservoir_1.png-ff40061fff48949ce5b3beaf1f525a0d.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/tank_wide_Liquid_reservoir_1.png"
-dest_files=["res://.godot/imported/tank_wide_Liquid_reservoir_1.png-ff40061fff48949ce5b3beaf1f525a0d.s3tc.ctex"]
+dest_files=["res://.godot/imported/tank_wide_Liquid_reservoir_1.png-ff40061fff48949ce5b3beaf1f525a0d.s3tc.ctex", "res://.godot/imported/tank_wide_Liquid_reservoir_1.png-ff40061fff48949ce5b3beaf1f525a0d.etc2.ctex"]
 
 [params]
 

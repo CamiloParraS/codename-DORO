@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bi1bas6b0df8x"
 path.s3tc="res://.godot/imported/tyre_stack_metal_05_128.png-a6f633fd26284d66341b9209344eca07.s3tc.ctex"
+path.etc2="res://.godot/imported/tyre_stack_metal_05_128.png-a6f633fd26284d66341b9209344eca07.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/tyre_stack_metal_05_128.png"
-dest_files=["res://.godot/imported/tyre_stack_metal_05_128.png-a6f633fd26284d66341b9209344eca07.s3tc.ctex"]
+dest_files=["res://.godot/imported/tyre_stack_metal_05_128.png-a6f633fd26284d66341b9209344eca07.s3tc.ctex", "res://.godot/imported/tyre_stack_metal_05_128.png-a6f633fd26284d66341b9209344eca07.etc2.ctex"]
 
 [params]
 

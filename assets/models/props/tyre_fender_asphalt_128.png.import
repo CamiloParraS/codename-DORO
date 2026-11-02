@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bb5cm45uitw8v"
 path.s3tc="res://.godot/imported/tyre_fender_asphalt_128.png-d0e5ec71e40b4adcf9cd523a7d5a440f.s3tc.ctex"
+path.etc2="res://.godot/imported/tyre_fender_asphalt_128.png-d0e5ec71e40b4adcf9cd523a7d5a440f.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/tyre_fender_asphalt_128.png"
-dest_files=["res://.godot/imported/tyre_fender_asphalt_128.png-d0e5ec71e40b4adcf9cd523a7d5a440f.s3tc.ctex"]
+dest_files=["res://.godot/imported/tyre_fender_asphalt_128.png-d0e5ec71e40b4adcf9cd523a7d5a440f.s3tc.ctex", "res://.godot/imported/tyre_fender_asphalt_128.png-d0e5ec71e40b4adcf9cd523a7d5a440f.etc2.ctex"]
 
 [params]
 

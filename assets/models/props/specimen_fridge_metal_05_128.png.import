@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1b3mqc0j5ccu"
 path.s3tc="res://.godot/imported/specimen_fridge_metal_05_128.png-8fd1c4515f408875f246b57ace35c7f8.s3tc.ctex"
+path.etc2="res://.godot/imported/specimen_fridge_metal_05_128.png-8fd1c4515f408875f246b57ace35c7f8.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/specimen_fridge_metal_05_128.png"
-dest_files=["res://.godot/imported/specimen_fridge_metal_05_128.png-8fd1c4515f408875f246b57ace35c7f8.s3tc.ctex"]
+dest_files=["res://.godot/imported/specimen_fridge_metal_05_128.png-8fd1c4515f408875f246b57ace35c7f8.s3tc.ctex", "res://.godot/imported/specimen_fridge_metal_05_128.png-8fd1c4515f408875f246b57ace35c7f8.etc2.ctex"]
 
 [params]
 

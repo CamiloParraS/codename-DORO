@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3hcvo2jcw2o6"
 path.s3tc="res://.godot/imported/fuel_pump_metal_05_128.png-e2bf2e4cd9ce117080be1770f1b09309.s3tc.ctex"
+path.etc2="res://.godot/imported/fuel_pump_metal_05_128.png-e2bf2e4cd9ce117080be1770f1b09309.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/fuel_pump_metal_05_128.png"
-dest_files=["res://.godot/imported/fuel_pump_metal_05_128.png-e2bf2e4cd9ce117080be1770f1b09309.s3tc.ctex"]
+dest_files=["res://.godot/imported/fuel_pump_metal_05_128.png-e2bf2e4cd9ce117080be1770f1b09309.s3tc.ctex", "res://.godot/imported/fuel_pump_metal_05_128.png-e2bf2e4cd9ce117080be1770f1b09309.etc2.ctex"]
 
 [params]
 

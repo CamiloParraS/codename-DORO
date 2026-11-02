@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bt40y7ktf4ifv"
 path.s3tc="res://.godot/imported/mug_mugs.jpg-52b695d2057ba7d0f271b92b57303295.s3tc.ctex"
+path.etc2="res://.godot/imported/mug_mugs.jpg-52b695d2057ba7d0f271b92b57303295.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/mug_mugs.jpg"
-dest_files=["res://.godot/imported/mug_mugs.jpg-52b695d2057ba7d0f271b92b57303295.s3tc.ctex"]
+dest_files=["res://.godot/imported/mug_mugs.jpg-52b695d2057ba7d0f271b92b57303295.s3tc.ctex", "res://.godot/imported/mug_mugs.jpg-52b695d2057ba7d0f271b92b57303295.etc2.ctex"]
 
 [params]
 

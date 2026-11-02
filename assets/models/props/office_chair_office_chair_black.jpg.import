@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddfpq6keet2ub"
 path.s3tc="res://.godot/imported/office_chair_office_chair_black.jpg-b692b03660f1c7d4dbf7826dc8860908.s3tc.ctex"
+path.etc2="res://.godot/imported/office_chair_office_chair_black.jpg-b692b03660f1c7d4dbf7826dc8860908.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/office_chair_office_chair_black.jpg"
-dest_files=["res://.godot/imported/office_chair_office_chair_black.jpg-b692b03660f1c7d4dbf7826dc8860908.s3tc.ctex"]
+dest_files=["res://.godot/imported/office_chair_office_chair_black.jpg-b692b03660f1c7d4dbf7826dc8860908.s3tc.ctex", "res://.godot/imported/office_chair_office_chair_black.jpg-b692b03660f1c7d4dbf7826dc8860908.etc2.ctex"]
 
 [params]
 

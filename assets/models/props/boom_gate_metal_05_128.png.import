@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://5y430by8ow26"
 path.s3tc="res://.godot/imported/boom_gate_metal_05_128.png-cc2cbb09dbf004fa2565eafe1751eeac.s3tc.ctex"
+path.etc2="res://.godot/imported/boom_gate_metal_05_128.png-cc2cbb09dbf004fa2565eafe1751eeac.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/boom_gate_metal_05_128.png"
-dest_files=["res://.godot/imported/boom_gate_metal_05_128.png-cc2cbb09dbf004fa2565eafe1751eeac.s3tc.ctex"]
+dest_files=["res://.godot/imported/boom_gate_metal_05_128.png-cc2cbb09dbf004fa2565eafe1751eeac.s3tc.ctex", "res://.godot/imported/boom_gate_metal_05_128.png-cc2cbb09dbf004fa2565eafe1751eeac.etc2.ctex"]
 
 [params]
 

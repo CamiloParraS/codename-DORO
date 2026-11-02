@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bjvq744pa2l6w"
 path.s3tc="res://.godot/imported/barrier_wood_type_barriers.png-8a151b212287019d6fec2744a0b2dea7.s3tc.ctex"
+path.etc2="res://.godot/imported/barrier_wood_type_barriers.png-8a151b212287019d6fec2744a0b2dea7.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/barrier_wood_type_barriers.png"
-dest_files=["res://.godot/imported/barrier_wood_type_barriers.png-8a151b212287019d6fec2744a0b2dea7.s3tc.ctex"]
+dest_files=["res://.godot/imported/barrier_wood_type_barriers.png-8a151b212287019d6fec2744a0b2dea7.s3tc.ctex", "res://.godot/imported/barrier_wood_type_barriers.png-8a151b212287019d6fec2744a0b2dea7.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1qcfyi30u2ed"
 path.s3tc="res://.godot/imported/stone_07_128.png-4e6b33b62a11d695e98d7fade522c316.s3tc.ctex"
+path.etc2="res://.godot/imported/stone_07_128.png-4e6b33b62a11d695e98d7fade522c316.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/textures/stone_07_128.png"
-dest_files=["res://.godot/imported/stone_07_128.png-4e6b33b62a11d695e98d7fade522c316.s3tc.ctex"]
+dest_files=["res://.godot/imported/stone_07_128.png-4e6b33b62a11d695e98d7fade522c316.s3tc.ctex", "res://.godot/imported/stone_07_128.png-4e6b33b62a11d695e98d7fade522c316.etc2.ctex"]
 
 [params]
 

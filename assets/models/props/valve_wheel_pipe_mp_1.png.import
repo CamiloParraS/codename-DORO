@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddnu1bmhphr2t"
 path.s3tc="res://.godot/imported/valve_wheel_pipe_mp_1.png-3026fb2c66c4242529a3c2d976724ff9.s3tc.ctex"
+path.etc2="res://.godot/imported/valve_wheel_pipe_mp_1.png-3026fb2c66c4242529a3c2d976724ff9.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/valve_wheel_pipe_mp_1.png"
-dest_files=["res://.godot/imported/valve_wheel_pipe_mp_1.png-3026fb2c66c4242529a3c2d976724ff9.s3tc.ctex"]
+dest_files=["res://.godot/imported/valve_wheel_pipe_mp_1.png-3026fb2c66c4242529a3c2d976724ff9.s3tc.ctex", "res://.godot/imported/valve_wheel_pipe_mp_1.png-3026fb2c66c4242529a3c2d976724ff9.etc2.ctex"]
 
 [params]
 

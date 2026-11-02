@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmsif7qht6b3e"
 path.s3tc="res://.godot/imported/ladder_seg_ladder_yellow.png-19e458bf02ba47c735f42ebca5ea9664.s3tc.ctex"
+path.etc2="res://.godot/imported/ladder_seg_ladder_yellow.png-19e458bf02ba47c735f42ebca5ea9664.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/ladder_seg_ladder_yellow.png"
-dest_files=["res://.godot/imported/ladder_seg_ladder_yellow.png-19e458bf02ba47c735f42ebca5ea9664.s3tc.ctex"]
+dest_files=["res://.godot/imported/ladder_seg_ladder_yellow.png-19e458bf02ba47c735f42ebca5ea9664.s3tc.ctex", "res://.godot/imported/ladder_seg_ladder_yellow.png-19e458bf02ba47c735f42ebca5ea9664.etc2.ctex"]
 
 [params]
 

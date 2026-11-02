@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cov7ndlti28rn"
 path.s3tc="res://.godot/imported/water_cooler_watercooler.png-88674f4acdc6962c7adf4266777a6281.s3tc.ctex"
+path.etc2="res://.godot/imported/water_cooler_watercooler.png-88674f4acdc6962c7adf4266777a6281.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/water_cooler_watercooler.png"
-dest_files=["res://.godot/imported/water_cooler_watercooler.png-88674f4acdc6962c7adf4266777a6281.s3tc.ctex"]
+dest_files=["res://.godot/imported/water_cooler_watercooler.png-88674f4acdc6962c7adf4266777a6281.s3tc.ctex", "res://.godot/imported/water_cooler_watercooler.png-88674f4acdc6962c7adf4266777a6281.etc2.ctex"]
 
 [params]
 

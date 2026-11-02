@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://2o00mhe1enhw"
 path.s3tc="res://.godot/imported/metal_bin_metal_trash.png-99478bcf02b5ab78b7860cde1c8e3f76.s3tc.ctex"
+path.etc2="res://.godot/imported/metal_bin_metal_trash.png-99478bcf02b5ab78b7860cde1c8e3f76.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/metal_bin_metal_trash.png"
-dest_files=["res://.godot/imported/metal_bin_metal_trash.png-99478bcf02b5ab78b7860cde1c8e3f76.s3tc.ctex"]
+dest_files=["res://.godot/imported/metal_bin_metal_trash.png-99478bcf02b5ab78b7860cde1c8e3f76.s3tc.ctex", "res://.godot/imported/metal_bin_metal_trash.png-99478bcf02b5ab78b7860cde1c8e3f76.etc2.ctex"]
 
 [params]
 

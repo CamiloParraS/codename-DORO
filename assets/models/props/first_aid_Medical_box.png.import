@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxqgukbiw27d5"
 path.s3tc="res://.godot/imported/first_aid_Medical_box.png-16bd2daf61b8ccabea8d5d375daa941a.s3tc.ctex"
+path.etc2="res://.godot/imported/first_aid_Medical_box.png-16bd2daf61b8ccabea8d5d375daa941a.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/first_aid_Medical_box.png"
-dest_files=["res://.godot/imported/first_aid_Medical_box.png-16bd2daf61b8ccabea8d5d375daa941a.s3tc.ctex"]
+dest_files=["res://.godot/imported/first_aid_Medical_box.png-16bd2daf61b8ccabea8d5d375daa941a.s3tc.ctex", "res://.godot/imported/first_aid_Medical_box.png-16bd2daf61b8ccabea8d5d375daa941a.etc2.ctex"]
 
 [params]
 

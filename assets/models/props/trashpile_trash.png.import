@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbed03s1opjky"
 path.s3tc="res://.godot/imported/trashpile_trash.png-e26b2207c3042b5f9d44bda6a5c49dba.s3tc.ctex"
+path.etc2="res://.godot/imported/trashpile_trash.png-e26b2207c3042b5f9d44bda6a5c49dba.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/trashpile_trash.png"
-dest_files=["res://.godot/imported/trashpile_trash.png-e26b2207c3042b5f9d44bda6a5c49dba.s3tc.ctex"]
+dest_files=["res://.godot/imported/trashpile_trash.png-e26b2207c3042b5f9d44bda6a5c49dba.s3tc.ctex", "res://.godot/imported/trashpile_trash.png-e26b2207c3042b5f9d44bda6a5c49dba.etc2.ctex"]
 
 [params]
 

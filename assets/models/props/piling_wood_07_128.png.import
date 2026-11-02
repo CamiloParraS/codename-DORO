@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8u57q5tcbm8v"
 path.s3tc="res://.godot/imported/piling_wood_07_128.png-cc4e6274838cd97d70cb5dd884b2524b.s3tc.ctex"
+path.etc2="res://.godot/imported/piling_wood_07_128.png-cc4e6274838cd97d70cb5dd884b2524b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/piling_wood_07_128.png"
-dest_files=["res://.godot/imported/piling_wood_07_128.png-cc4e6274838cd97d70cb5dd884b2524b.s3tc.ctex"]
+dest_files=["res://.godot/imported/piling_wood_07_128.png-cc4e6274838cd97d70cb5dd884b2524b.s3tc.ctex", "res://.godot/imported/piling_wood_07_128.png-cc4e6274838cd97d70cb5dd884b2524b.etc2.ctex"]
 
 [params]
 

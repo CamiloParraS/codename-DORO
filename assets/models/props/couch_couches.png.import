@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cp6jxf62yo18y"
 path.s3tc="res://.godot/imported/couch_couches.png-c4fc36317d129876e6819c73c250256d.s3tc.ctex"
+path.etc2="res://.godot/imported/couch_couches.png-c4fc36317d129876e6819c73c250256d.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/couch_couches.png"
-dest_files=["res://.godot/imported/couch_couches.png-c4fc36317d129876e6819c73c250256d.s3tc.ctex"]
+dest_files=["res://.godot/imported/couch_couches.png-c4fc36317d129876e6819c73c250256d.s3tc.ctex", "res://.godot/imported/couch_couches.png-c4fc36317d129876e6819c73c250256d.etc2.ctex"]
 
 [params]
 

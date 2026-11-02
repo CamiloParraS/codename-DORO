@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cyw5glc3vv3bf"
 path.s3tc="res://.godot/imported/buoy_green_rust_128.png-d4fd3f35c512ab858f7dfa65c6d41f2b.s3tc.ctex"
+path.etc2="res://.godot/imported/buoy_green_rust_128.png-d4fd3f35c512ab858f7dfa65c6d41f2b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/buoy_green_rust_128.png"
-dest_files=["res://.godot/imported/buoy_green_rust_128.png-d4fd3f35c512ab858f7dfa65c6d41f2b.s3tc.ctex"]
+dest_files=["res://.godot/imported/buoy_green_rust_128.png-d4fd3f35c512ab858f7dfa65c6d41f2b.s3tc.ctex", "res://.godot/imported/buoy_green_rust_128.png-d4fd3f35c512ab858f7dfa65c6d41f2b.etc2.ctex"]
 
 [params]
 

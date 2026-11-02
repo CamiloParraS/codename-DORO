@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://kv828k0k5csj"
 path.s3tc="res://.godot/imported/lantern_Farol_Emissor.png-6d96542ed1ed9919002d563ede57e441.s3tc.ctex"
+path.etc2="res://.godot/imported/lantern_Farol_Emissor.png-6d96542ed1ed9919002d563ede57e441.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/lantern_Farol_Emissor.png"
-dest_files=["res://.godot/imported/lantern_Farol_Emissor.png-6d96542ed1ed9919002d563ede57e441.s3tc.ctex"]
+dest_files=["res://.godot/imported/lantern_Farol_Emissor.png-6d96542ed1ed9919002d563ede57e441.s3tc.ctex", "res://.godot/imported/lantern_Farol_Emissor.png-6d96542ed1ed9919002d563ede57e441.etc2.ctex"]
 
 [params]
 

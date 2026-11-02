@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdau0n25j4t06"
 path.s3tc="res://.godot/imported/crate_small_wooden_crate_1.png-f9a196b40f1f2e6501b3b8c40d1f0604.s3tc.ctex"
+path.etc2="res://.godot/imported/crate_small_wooden_crate_1.png-f9a196b40f1f2e6501b3b8c40d1f0604.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/crate_small_wooden_crate_1.png"
-dest_files=["res://.godot/imported/crate_small_wooden_crate_1.png-f9a196b40f1f2e6501b3b8c40d1f0604.s3tc.ctex"]
+dest_files=["res://.godot/imported/crate_small_wooden_crate_1.png-f9a196b40f1f2e6501b3b8c40d1f0604.s3tc.ctex", "res://.godot/imported/crate_small_wooden_crate_1.png-f9a196b40f1f2e6501b3b8c40d1f0604.etc2.ctex"]
 
 [params]
 

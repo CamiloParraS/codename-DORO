@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdf464nc4t12g"
 path.s3tc="res://.godot/imported/douglas_fir_AtlasAlbedo.png-134ecae84c2aacf3233e88161f518713.s3tc.ctex"
+path.etc2="res://.godot/imported/douglas_fir_AtlasAlbedo.png-134ecae84c2aacf3233e88161f518713.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/douglas_fir_AtlasAlbedo.png"
-dest_files=["res://.godot/imported/douglas_fir_AtlasAlbedo.png-134ecae84c2aacf3233e88161f518713.s3tc.ctex"]
+dest_files=["res://.godot/imported/douglas_fir_AtlasAlbedo.png-134ecae84c2aacf3233e88161f518713.s3tc.ctex", "res://.godot/imported/douglas_fir_AtlasAlbedo.png-134ecae84c2aacf3233e88161f518713.etc2.ctex"]
 
 [params]
 

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmod7evr8mmh4"
 path.s3tc="res://.godot/imported/civilian_car_Car_in.png-245c490eda5437f37c18052dc72e9bdc.s3tc.ctex"
+path.etc2="res://.godot/imported/civilian_car_Car_in.png-245c490eda5437f37c18052dc72e9bdc.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/civilian_car_Car_in.png"
-dest_files=["res://.godot/imported/civilian_car_Car_in.png-245c490eda5437f37c18052dc72e9bdc.s3tc.ctex"]
+dest_files=["res://.godot/imported/civilian_car_Car_in.png-245c490eda5437f37c18052dc72e9bdc.s3tc.ctex", "res://.godot/imported/civilian_car_Car_in.png-245c490eda5437f37c18052dc72e9bdc.etc2.ctex"]
 
 [params]
 

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b2r6fp1g40lde"
 path.s3tc="res://.godot/imported/bus_shelter_busstop.png-d29e87863827be0e217e955315e23309.s3tc.ctex"
+path.etc2="res://.godot/imported/bus_shelter_busstop.png-d29e87863827be0e217e955315e23309.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/bus_shelter_busstop.png"
-dest_files=["res://.godot/imported/bus_shelter_busstop.png-d29e87863827be0e217e955315e23309.s3tc.ctex"]
+dest_files=["res://.godot/imported/bus_shelter_busstop.png-d29e87863827be0e217e955315e23309.s3tc.ctex", "res://.godot/imported/bus_shelter_busstop.png-d29e87863827be0e217e955315e23309.etc2.ctex"]
 
 [params]
 

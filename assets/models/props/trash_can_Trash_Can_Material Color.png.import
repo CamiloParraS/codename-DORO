@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://j1shtcccfb2x"
 path.s3tc="res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.s3tc.ctex"
+path.etc2="res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/trash_can_Trash_Can_Material Color.png"
-dest_files=["res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.s3tc.ctex"]
+dest_files=["res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.s3tc.ctex", "res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.etc2.ctex"]
 
 [params]
 

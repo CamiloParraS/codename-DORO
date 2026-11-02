@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://d5bohhnt5rph"
 path.s3tc="res://.godot/imported/engine_hoist_asphalt_128.png-3d9f653000d0d4bfb99cba55ceed068c.s3tc.ctex"
+path.etc2="res://.godot/imported/engine_hoist_asphalt_128.png-3d9f653000d0d4bfb99cba55ceed068c.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/engine_hoist_asphalt_128.png"
-dest_files=["res://.godot/imported/engine_hoist_asphalt_128.png-3d9f653000d0d4bfb99cba55ceed068c.s3tc.ctex"]
+dest_files=["res://.godot/imported/engine_hoist_asphalt_128.png-3d9f653000d0d4bfb99cba55ceed068c.s3tc.ctex", "res://.godot/imported/engine_hoist_asphalt_128.png-3d9f653000d0d4bfb99cba55ceed068c.etc2.ctex"]
 
 [params]
 

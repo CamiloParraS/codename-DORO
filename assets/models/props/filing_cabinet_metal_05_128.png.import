@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddxl2dynxsvlo"
 path.s3tc="res://.godot/imported/filing_cabinet_metal_05_128.png-345d776044e99670fe9a76f0ad8fff07.s3tc.ctex"
+path.etc2="res://.godot/imported/filing_cabinet_metal_05_128.png-345d776044e99670fe9a76f0ad8fff07.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/filing_cabinet_metal_05_128.png"
-dest_files=["res://.godot/imported/filing_cabinet_metal_05_128.png-345d776044e99670fe9a76f0ad8fff07.s3tc.ctex"]
+dest_files=["res://.godot/imported/filing_cabinet_metal_05_128.png-345d776044e99670fe9a76f0ad8fff07.s3tc.ctex", "res://.godot/imported/filing_cabinet_metal_05_128.png-345d776044e99670fe9a76f0ad8fff07.etc2.ctex"]
 
 [params]
 

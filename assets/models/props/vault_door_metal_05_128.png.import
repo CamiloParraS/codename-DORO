@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://8n31e72du3hl"
 path.s3tc="res://.godot/imported/vault_door_metal_05_128.png-b6c2cd0282d470ff0ca57c5977f09f4c.s3tc.ctex"
+path.etc2="res://.godot/imported/vault_door_metal_05_128.png-b6c2cd0282d470ff0ca57c5977f09f4c.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/vault_door_metal_05_128.png"
-dest_files=["res://.godot/imported/vault_door_metal_05_128.png-b6c2cd0282d470ff0ca57c5977f09f4c.s3tc.ctex"]
+dest_files=["res://.godot/imported/vault_door_metal_05_128.png-b6c2cd0282d470ff0ca57c5977f09f4c.s3tc.ctex", "res://.godot/imported/vault_door_metal_05_128.png-b6c2cd0282d470ff0ca57c5977f09f4c.etc2.ctex"]
 
 [params]
 

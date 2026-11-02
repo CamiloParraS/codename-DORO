@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://csis0u3knbmen"
 path.s3tc="res://.godot/imported/armchair_couches.png-2fcc7e85ed9a9343f235069477ee3e72.s3tc.ctex"
+path.etc2="res://.godot/imported/armchair_couches.png-2fcc7e85ed9a9343f235069477ee3e72.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/armchair_couches.png"
-dest_files=["res://.godot/imported/armchair_couches.png-2fcc7e85ed9a9343f235069477ee3e72.s3tc.ctex"]
+dest_files=["res://.godot/imported/armchair_couches.png-2fcc7e85ed9a9343f235069477ee3e72.s3tc.ctex", "res://.godot/imported/armchair_couches.png-2fcc7e85ed9a9343f235069477ee3e72.etc2.ctex"]
 
 [params]
 

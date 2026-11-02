@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://gxp6q4a53q4q"
 path.s3tc="res://.godot/imported/crate_wide_Box_wood.png-77597502933229f7b3e4c465c27e28dd.s3tc.ctex"
+path.etc2="res://.godot/imported/crate_wide_Box_wood.png-77597502933229f7b3e4c465c27e28dd.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/crate_wide_Box_wood.png"
-dest_files=["res://.godot/imported/crate_wide_Box_wood.png-77597502933229f7b3e4c465c27e28dd.s3tc.ctex"]
+dest_files=["res://.godot/imported/crate_wide_Box_wood.png-77597502933229f7b3e4c465c27e28dd.s3tc.ctex", "res://.godot/imported/crate_wide_Box_wood.png-77597502933229f7b3e4c465c27e28dd.etc2.ctex"]
 
 [params]
 

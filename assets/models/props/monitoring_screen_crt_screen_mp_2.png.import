@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://xna7nci0y071"
 path.s3tc="res://.godot/imported/monitoring_screen_crt_screen_mp_2.png-5fb926b5de3f0c1368122d4158a588bf.s3tc.ctex"
+path.etc2="res://.godot/imported/monitoring_screen_crt_screen_mp_2.png-5fb926b5de3f0c1368122d4158a588bf.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/monitoring_screen_crt_screen_mp_2.png"
-dest_files=["res://.godot/imported/monitoring_screen_crt_screen_mp_2.png-5fb926b5de3f0c1368122d4158a588bf.s3tc.ctex"]
+dest_files=["res://.godot/imported/monitoring_screen_crt_screen_mp_2.png-5fb926b5de3f0c1368122d4158a588bf.s3tc.ctex", "res://.godot/imported/monitoring_screen_crt_screen_mp_2.png-5fb926b5de3f0c1368122d4158a588bf.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://2pqanebkl3fb"
 path.s3tc="res://.godot/imported/ring.svg-fb077078e7028bfa82864c30933897db.s3tc.ctex"
+path.etc2="res://.godot/imported/ring.svg-fb077078e7028bfa82864c30933897db.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/ui/icons/ring.svg"
-dest_files=["res://.godot/imported/ring.svg-fb077078e7028bfa82864c30933897db.s3tc.ctex"]
+dest_files=["res://.godot/imported/ring.svg-fb077078e7028bfa82864c30933897db.s3tc.ctex", "res://.godot/imported/ring.svg-fb077078e7028bfa82864c30933897db.etc2.ctex"]
 
 [params]
 

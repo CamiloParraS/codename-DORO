@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://pq500eii135c"
 path.s3tc="res://.godot/imported/lantern_Farol.png-6bb11ff1c745478019d07921b9e9dbee.s3tc.ctex"
+path.etc2="res://.godot/imported/lantern_Farol.png-6bb11ff1c745478019d07921b9e9dbee.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/lantern_Farol.png"
-dest_files=["res://.godot/imported/lantern_Farol.png-6bb11ff1c745478019d07921b9e9dbee.s3tc.ctex"]
+dest_files=["res://.godot/imported/lantern_Farol.png-6bb11ff1c745478019d07921b9e9dbee.s3tc.ctex", "res://.godot/imported/lantern_Farol.png-6bb11ff1c745478019d07921b9e9dbee.etc2.ctex"]
 
 [params]
 

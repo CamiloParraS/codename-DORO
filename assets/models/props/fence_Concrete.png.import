@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dy0katcli8nvg"
 path.s3tc="res://.godot/imported/fence_Concrete.png-8693a5eff1d6a3c8d9ddd8ce4f03f0e9.s3tc.ctex"
+path.etc2="res://.godot/imported/fence_Concrete.png-8693a5eff1d6a3c8d9ddd8ce4f03f0e9.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/fence_Concrete.png"
-dest_files=["res://.godot/imported/fence_Concrete.png-8693a5eff1d6a3c8d9ddd8ce4f03f0e9.s3tc.ctex"]
+dest_files=["res://.godot/imported/fence_Concrete.png-8693a5eff1d6a3c8d9ddd8ce4f03f0e9.s3tc.ctex", "res://.godot/imported/fence_Concrete.png-8693a5eff1d6a3c8d9ddd8ce4f03f0e9.etc2.ctex"]
 
 [params]
 

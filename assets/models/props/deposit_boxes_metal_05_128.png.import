@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cnc2uculivicv"
 path.s3tc="res://.godot/imported/deposit_boxes_metal_05_128.png-41e60e74f1646515cf66688eca079b52.s3tc.ctex"
+path.etc2="res://.godot/imported/deposit_boxes_metal_05_128.png-41e60e74f1646515cf66688eca079b52.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/deposit_boxes_metal_05_128.png"
-dest_files=["res://.godot/imported/deposit_boxes_metal_05_128.png-41e60e74f1646515cf66688eca079b52.s3tc.ctex"]
+dest_files=["res://.godot/imported/deposit_boxes_metal_05_128.png-41e60e74f1646515cf66688eca079b52.s3tc.ctex", "res://.godot/imported/deposit_boxes_metal_05_128.png-41e60e74f1646515cf66688eca079b52.etc2.ctex"]
 
 [params]
 

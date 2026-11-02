@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bhqvy36gd3a2q"
 path.s3tc="res://.godot/imported/gas_cylinders_metal_05_128.png-00b1101c6404203dcc27872dc8903dcb.s3tc.ctex"
+path.etc2="res://.godot/imported/gas_cylinders_metal_05_128.png-00b1101c6404203dcc27872dc8903dcb.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/gas_cylinders_metal_05_128.png"
-dest_files=["res://.godot/imported/gas_cylinders_metal_05_128.png-00b1101c6404203dcc27872dc8903dcb.s3tc.ctex"]
+dest_files=["res://.godot/imported/gas_cylinders_metal_05_128.png-00b1101c6404203dcc27872dc8903dcb.s3tc.ctex", "res://.godot/imported/gas_cylinders_metal_05_128.png-00b1101c6404203dcc27872dc8903dcb.etc2.ctex"]
 
 [params]
 

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dihqhnf5gx4cq"
 path.s3tc="res://.godot/imported/tyre_stack_asphalt_128.png-53b4f2bc7b3c346bb0baf0171fa636f2.s3tc.ctex"
+path.etc2="res://.godot/imported/tyre_stack_asphalt_128.png-53b4f2bc7b3c346bb0baf0171fa636f2.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/tyre_stack_asphalt_128.png"
-dest_files=["res://.godot/imported/tyre_stack_asphalt_128.png-53b4f2bc7b3c346bb0baf0171fa636f2.s3tc.ctex"]
+dest_files=["res://.godot/imported/tyre_stack_asphalt_128.png-53b4f2bc7b3c346bb0baf0171fa636f2.s3tc.ctex", "res://.godot/imported/tyre_stack_asphalt_128.png-53b4f2bc7b3c346bb0baf0171fa636f2.etc2.ctex"]
 
 [params]
 

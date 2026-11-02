@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dq5ma14aimprn"
 path.s3tc="res://.godot/imported/road_sign_stop_01.png-e90c0d57b257ab816612748bc74ae7a9.s3tc.ctex"
+path.etc2="res://.godot/imported/road_sign_stop_01.png-e90c0d57b257ab816612748bc74ae7a9.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/road_sign_stop_01.png"
-dest_files=["res://.godot/imported/road_sign_stop_01.png-e90c0d57b257ab816612748bc74ae7a9.s3tc.ctex"]
+dest_files=["res://.godot/imported/road_sign_stop_01.png-e90c0d57b257ab816612748bc74ae7a9.s3tc.ctex", "res://.godot/imported/road_sign_stop_01.png-e90c0d57b257ab816612748bc74ae7a9.etc2.ctex"]
 
 [params]
 

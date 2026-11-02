@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://4fgkjswck4tx"
 path.s3tc="res://.godot/imported/buoy_red_metal_05_128.png-c018c55a4d0a2f5a1cfca21120ef9cca.s3tc.ctex"
+path.etc2="res://.godot/imported/buoy_red_metal_05_128.png-c018c55a4d0a2f5a1cfca21120ef9cca.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/buoy_red_metal_05_128.png"
-dest_files=["res://.godot/imported/buoy_red_metal_05_128.png-c018c55a4d0a2f5a1cfca21120ef9cca.s3tc.ctex"]
+dest_files=["res://.godot/imported/buoy_red_metal_05_128.png-c018c55a4d0a2f5a1cfca21120ef9cca.s3tc.ctex", "res://.godot/imported/buoy_red_metal_05_128.png-c018c55a4d0a2f5a1cfca21120ef9cca.etc2.ctex"]
 
 [params]
 

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bukoy7hh22bkh"
 path.s3tc="res://.godot/imported/gas_cylinders_panels_128.png-7a43134866dc03c70793ce3d7a04c935.s3tc.ctex"
+path.etc2="res://.godot/imported/gas_cylinders_panels_128.png-7a43134866dc03c70793ce3d7a04c935.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/props/gas_cylinders_panels_128.png"
-dest_files=["res://.godot/imported/gas_cylinders_panels_128.png-7a43134866dc03c70793ce3d7a04c935.s3tc.ctex"]
+dest_files=["res://.godot/imported/gas_cylinders_panels_128.png-7a43134866dc03c70793ce3d7a04c935.s3tc.ctex", "res://.godot/imported/gas_cylinders_panels_128.png-7a43134866dc03c70793ce3d7a04c935.etc2.ctex"]
 
 [params]
 
