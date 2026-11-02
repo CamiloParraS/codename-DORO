@@ -9,7 +9,9 @@ func suite_name() -> String:
 
 
 func test_heavier_tuned_values() -> void:
-	assert_eq(Locomotion.RUN, 4.8)
+	assert_eq(Locomotion.RUN, 4.4)
+	assert_eq(Locomotion.CARRY, 2.6)
+	assert_eq(Locomotion.GRAVITY, 35.0)
 	assert_eq(Locomotion.WALK, 1.9)
 	assert_eq(Locomotion.CROUCH, 1.3)
 	assert_eq(Locomotion.GET_GOING, 7.0)
@@ -22,6 +24,29 @@ func test_speed_by_stance() -> void:
 	assert_eq(Locomotion.speed(false, true), Locomotion.WALK)
 	assert_eq(Locomotion.speed(true, false), Locomotion.CROUCH)
 	assert_eq(Locomotion.speed(true, true), Locomotion.CROUCH)
+
+
+func test_carrying_is_quicker_than_a_walk_and_slower_than_the_run() -> void:
+	assert_eq(Locomotion.speed(false, true, false, true), Locomotion.CARRY, "carrying beats the walk flag it also sets")
+	assert_true(Locomotion.WALK < Locomotion.CARRY and Locomotion.CARRY < Locomotion.RUN)
+
+
+func test_the_run_stays_slower_than_a_chasing_guard() -> void:
+	assert_true(Locomotion.RUN < Guard.CHASE_SPEED)
+
+
+func test_a_short_drop_keeps_steering_a_fall_loses_its_way() -> void:
+	var run := Vector2.RIGHT * Locomotion.RUN
+	assert_eq(Locomotion.fall(run, run, 0.05, 1.0 / 60.0), Locomotion.move(run, run, 1.0 / 60.0), "a curb or stair edge steers as on the floor")
+	var v := run
+	var x := 0.0
+	var t := Locomotion.AIR_GRACE
+	while t < 1.0:  # held forward the whole way down
+		v = Locomotion.fall(v, run, t + 0.01, 1.0 / 60.0)
+		x += v.length() / 60.0
+		t += 1.0 / 60.0
+	assert_true(v.length() < 0.01, "the keys don't carry him on in the air")
+	assert_true(x < 0.5, "he lands close under the edge, not out past it: %.2f m" % x)
 
 
 func test_look_sensitivity_scales_delta() -> void:

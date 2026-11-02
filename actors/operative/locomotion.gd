@@ -1,9 +1,15 @@
 ## Node-free movement and look rules for the Operative.
 class_name Locomotion
 
-const RUN := 4.8
+const RUN := 4.4
 const WALK := 1.9
 const CROUCH := 1.3
+const CARRY := 2.6  # a body on the shoulder: slower than the run, quicker than a walk
+## Falling: m/s² down, and how the run's way is lost in the air. Off the floor longer than AIR_GRACE (a curb or a
+## stair edge stays inside it) the keys stop steering and AIR_DRAG bleeds the way off, so a drop lands close under the edge.
+const GRAVITY := 35.0
+const AIR_GRACE := 0.12
+const AIR_DRAG := 12.0
 ## Hitscan sway in degrees (the crosshair doesn't move) and the seconds to settle after stopping.
 const SWAY_MOVING := 0.6
 const SWAY_STILL := 0.25
@@ -24,9 +30,16 @@ const SLOW_DOWN := 20.0
 const TURN_RATE := 8.0
 
 
-## Aiming slows a standing Operative to walk speed; crouched keeps CROUCH.
-static func speed(crouching: bool, walking: bool, aiming := false) -> float:
-	return CROUCH if crouching else (WALK if walking or aiming else RUN)
+## Aiming slows a standing Operative to walk speed; crouched keeps CROUCH; carrying a body is CARRY.
+static func speed(crouching: bool, walking: bool, aiming := false, carrying := false) -> float:
+	return CROUCH if crouching else CARRY if carrying else (WALK if walking or aiming else RUN)
+
+
+## The horizontal velocity `air` s after leaving the floor: the eased move within AIR_GRACE, then only drag.
+static func fall(current: Vector2, target: Vector2, air: float, delta: float) -> Vector2:
+	if air <= AIR_GRACE:
+		return move(current, target, delta)
+	return current.lerp(Vector2.ZERO, minf(1.0, AIR_DRAG * delta))
 
 
 ## Gun sway in degrees: full while moving, settling linearly over SWAY_SETTLE to the still value.

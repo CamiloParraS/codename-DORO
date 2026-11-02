@@ -118,7 +118,7 @@ func _physics_process(delta: float) -> void:
 	health.tick(delta, hunted)
 	items.tick(delta)
 	if health.dead():  # lying where it fell: the ragdoll moves, the body only settles
-		velocity = Vector3(0, 0.0 if is_on_floor() else velocity.y - 20 * delta, 0)
+		velocity = Vector3(0, 0.0 if is_on_floor() else velocity.y - Locomotion.GRAVITY * delta, 0)
 		move_and_slide()
 		return
 	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
@@ -176,11 +176,13 @@ func _physics_process(delta: float) -> void:
 		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
 	elif aiming:
 		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
-	var eased := Locomotion.move(Vector2(velocity.x, velocity.z), Vector2(dir.x, dir.z) * Locomotion.speed(crouching, looks_walking(), aiming), delta)
+	_air = 0.0 if is_on_floor() or ladder else _air + delta
+	var target := Vector2(dir.x, dir.z) * Locomotion.speed(crouching, looks_walking(), aiming, carrying != null)
+	var eased := Locomotion.fall(Vector2(velocity.x, velocity.z), target, _air, delta)
 	velocity.x = eased.x
 	velocity.z = eased.y
 	_pull(delta)  # in a grip or at a console the keys don't move him: he is drawn into place
-	velocity.y = 0.0 if is_on_floor() else velocity.y - 20 * delta
+	velocity.y = 0.0 if is_on_floor() else velocity.y - Locomotion.GRAVITY * delta
 	move_and_slide()
 
 

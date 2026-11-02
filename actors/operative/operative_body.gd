@@ -83,6 +83,7 @@ var look_basis: Basis:  # where the camera looks (the body itself never turns), 
 var _recoil := 0.0
 var ping_range := 0.0  # metres of the last noise made, for the Radar's ring
 var ping_age := 99.0   # s since it
+var _air := 0.0  # seconds off the floor (Locomotion.fall)
 var _sway := Locomotion.SWAY_MOVING  # degrees of hitscan sway, see Locomotion.sway
 var _pivot: Node3D
 var _pitch_node: Node3D

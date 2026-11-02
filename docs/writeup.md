@@ -76,7 +76,7 @@ Values from the code: suspicion at 0.35 ("?"), drain 0.25/s, `LOOK_TIME` 5 s. Vi
 `AlertChain` holds the Area's phase: Normal, Alert, Evasion, Caution.
 
 - **Radio call.** The spotter radios for 2 s (a camera 1.5 s). Downing him in that window stops the call and the Alert never happens. His shout reaches guards within 15 m through walls; they go "!" and converge but never start a second call while his runs. **Only a completed call is an Alert**: it counts for the Rank and sends one Reinforcement squad (`Reinforcements`: 3 guards, 5 at Combat L3, at most 6 alive, gone once the Area is Normal again).
-- **Alert.** A 20 s counter, full while any guard sees the Operative, draining while unseen. Chasers run at 5.0 m/s; the Operative runs at 4.8 m/s.
+- **Alert.** A 20 s counter, full while any guard sees the Operative, draining while unseen. Chasers run at 5.0 m/s; the Operative runs at 4.4 m/s, so outrunning a chase is never the answer.
 - **Evasion (30 s).** The searchers share the search spots: Crawlspace mouths and Ladder feet within 10 m of the last known point, plus a ring of eight directions at 6 m and 11 m snapped to the navmesh. Each searcher reserves its own spot (its walk to the spot plus 1.2 times the spot's distance from the point, lowest wins), and a searched spot isn't sent to again until the next sighting.
 - **Caution (60 s, refreshed by new evidence).** Not an Alert and free for the Rank. Guards walk faster (2.2 m/s against 1.8), see 1.25x farther, fill the meter 1.3x faster, and wear an amber vest light so the phase reads without the HUD. Caution starts after Evasion, after a stopped call's local search, when a Neutralized partner is found and when a guard wakes.
 
