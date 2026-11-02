@@ -9,6 +9,14 @@ const MARGIN := 70.0  # px from the canvas's right edge
 const TOP := 52.0  # px from the canvas's top edge
 
 
+const FLOOR_GAP := 2.5  # m above or below the Operative past which something is on another floor
+
+
+## Which floor something `dy` metres above the Operative is on: -1 below, 0 this one, 1 above.
+static func level(dy: float) -> int:
+	return 0 if absf(dy) <= FLOOR_GAP else (1 if dy > 0.0 else -1)
+
+
 ## Offset from the Operative in metres (x, z) -> disc coords (length <= 1), pinned to the rim.
 static func unit(offset: Vector2) -> Vector2:
 	var u := offset / RANGE

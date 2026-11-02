@@ -98,8 +98,9 @@ func test_the_crate_works_once_and_a_checkpoint_copy_remembers() -> void:
 	assert_true(before.resupply([t, r]), "a restore to one before use gives the crate back")
 
 
-## The Scanner draws each cone on the floor under its source, not on the Operative's floor: a camera on a
-## pole over a terrace 6 m up shows its cone at 6 m while the Operative stands on the ground.
+## The Scanner draws each cone on the floor under its source: a camera on a pole over a terrace 6 m up shows
+## its cone at 6 m to an Operative up there, and none to one on the ground below (another floor: drawn through
+## the terrace it read as a cone on the ground, playtest 1).
 func test_scanner_draws_a_cameras_cone_on_the_floor_under_it() -> void:
 	var root := (Engine.get_main_loop() as SceneTree).root
 	var terrace := StaticBody3D.new()
@@ -114,11 +115,15 @@ func test_scanner_draws_a_cameras_cone_on_the_floor_under_it() -> void:
 	root.add_child(cam)
 	var view := ItemView.new()
 	root.add_child(view)
-	view.show_items(Vector3(0, 0, 5), true, PackedVector3Array())
+	view.show_items(Vector3(0, 6, 5), true, PackedVector3Array())
 	var arr := (view.mesh as ImmediateMesh).surface_get_arrays(0)
 	var ys := (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array)
 	assert_true(ys.size() > 0, "a cone was drawn")
 	for v in ys:
 		assert_true(absf(v.y - (6.0 + ItemView.LIFT)) < 0.01, "vertex at %s" % v)
+	view.show_items(Vector3(0, 0, 5), true, PackedVector3Array())
+	var mesh := view.mesh as ImmediateMesh
+	var below := 0 if mesh.get_surface_count() == 0 else (mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
+	assert_eq(below, 0, "from the ground 6 m below, no cone")
 	for n: Node in [view, cam, terrace]:
 		n.free()

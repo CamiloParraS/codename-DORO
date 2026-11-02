@@ -31,20 +31,25 @@ func _ready() -> void:
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 
-## Redraws: cones of the guards and cameras within Items.SCANNER_RANGE of `at` when `scan`, and the
+## Redraws: cones of the guards and cameras within Items.SCANNER_RANGE of `at` and on its floor when `scan`, and the
 ## Magazine's arc `arc_points` (empty for none).
 func show_items(at: Vector3, scan: bool, arc_points: PackedVector3Array) -> void:
 	_mesh.clear_surfaces()
 	global_transform = Transform3D.IDENTITY
 	if scan:
-		_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, _cone_mat)
+		var shown := []  # [source, floor height, alerted, with side]: a surface only with something in it
 		for g: Guard in get_tree().get_nodes_in_group("guards"):
 			if not g.is_down():
-				_cones(g, at, g.alert.state == GuardAlert.State.ALERT, true)
+				shown.append([g, _cone_floor(g, at, true), g.alert.state == GuardAlert.State.ALERT, true])
 		for c: SecurityCamera in get_tree().get_nodes_in_group("cameras"):
 			if not c.destroyed:
-				_cones(c, at, c.alert.state == GuardAlert.State.ALERT, false)
-		_mesh.surface_end()
+				shown.append([c, _cone_floor(c, at, false), c.alert.state == GuardAlert.State.ALERT, false])
+		shown = shown.filter(func(s: Array) -> bool: return not is_nan(s[1]))
+		if not shown.is_empty():
+			_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, _cone_mat)
+			for s: Array in shown:
+				_cones(s[0], s[1], s[2], s[3])
+			_mesh.surface_end()
 	if arc_points.size() > 1:
 		_mesh.surface_begin(Mesh.PRIMITIVE_POINTS, _arc_mat)  # a dotted line of square pixels
 		for p in arc_points:
@@ -53,14 +58,21 @@ func show_items(at: Vector3, scan: bool, arc_points: PackedVector3Array) -> void
 		_mesh.surface_end()
 
 
-## One target's cones flat on the floor under it: the front cone, plus the side one for a guard. As the guard
-## sees: reach grown in Caution, and a wall in the way shortens the fan where it stops the guard's sight.
-func _cones(n: Node3D, at: Vector3, alerted: bool, with_side: bool) -> void:
+## The height a source's cones lie at (the floor under it, lifted), or NAN when the Scanner leaves it out: out of
+## range of `at`, or on another floor (drawn through the deck, it read as a cone on this one).
+func _cone_floor(n: Node3D, at: Vector3, with_side: bool) -> float:
 	var o := n.global_position
 	if Vector2(o.x - at.x, o.z - at.z).length() > Items.SCANNER_RANGE:
-		return
+		return NAN
+	var floor_y := o.y if with_side else _floor_under(o - n.global_basis.z * 0.6, at.y)
+	return floor_y + LIFT if RadarModel.level(floor_y - at.y) == 0 else NAN
+
+
+## One target's cones flat at `floor_y`: the front cone, plus the side one for a guard. As the guard sees: reach
+## grown in Caution, and a wall in the way shortens the fan where it stops the guard's sight.
+func _cones(n: Node3D, floor_y: float, alerted: bool, with_side: bool) -> void:
+	var o := n.global_position
 	var facing := -n.global_basis.z
-	var floor_y := (o.y if with_side else _floor_under(o + facing * 0.6, at.y)) + LIFT
 	var eye := Vector3(o.x, o.y + Guard.EYE, o.z) if with_side else Vector3(o.x, floor_y + 1.3, o.z)  # a camera is high: rays at chest height
 	var scale := AlertChain.CAUTION_REACH if AlertChain.area.phase == AlertChain.Phase.CAUTION else 1.0
 	var skip: Array[RID] = []
