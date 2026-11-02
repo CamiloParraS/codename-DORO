@@ -23,6 +23,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
   - PSX style barriers by valsekemarplant (CC0, see below): `bollard`, `cone`, `jersey_barrier` (`Jersey_barrier_dirty`).
   - Pizza Doggy's Retro Tree Pack v1.0, Super Low Res (same license as the Pizza Doggy line above): `pine` (`tree_rt_3`), `pine_small` (`tree_rt_1`), `poplar` (`tree_rt_2_1`), `dead_tree` (`dead_tree_rt_1`).
   - Kenney City Kit (Industrial), https://kenney.nl, CC0 1.0: `water_tower`.
+  - OFFICE by valsekemarplant (CC0, see below), one mesh per GLB, turned to face -Z, textures cut to 128 px (`_raw/work/bl/export_office.py`): `office_desk`, `office_chair`, `office_chair_grey`, `office_monitor`, `office_keyboard`, `office_mouse`, `water_cooler`, `mug`, `desk_lamp`, `bookcase_small`, `paper_stack`, `couch`, `armchair`, `file_cabinet_big`, `file_cabinet_open`.
   - 3D Retro World 0.01 by Mutum Studios, https://mutum-studios.itch.io/3d-retro-world (free to use in any project, credit optional, not to be resold as assets), lowest LOD kept, decimated, textures cut to 64-128 px (`_raw/work/bl/export_rw.py`): `scots_pine`, `douglas_fir`, `spruce`, `rock_a`, `rock_b`, `rock_c`, `rock_d`.
   - Made for this project in Blender (via the Blender MCP, textured with the project's own `assets/textures/`): `utility_pole`, `pylon`, `sat_dish`, `lighthouse`, `buoy_red`, `buoy_green`, `piling`, `vent_cowl`, `tyre_fender`; and the bare shapes the builders skin with `psx_surface` (`SKINS` in `tools/area_dressing.gd`): `mountain_a`, `mountain_b`, `boulder_a`, `boulder_b`, `mound`.
   - Also from godgoldfear's pack, textures relinked and split out in Blender (`_raw/work/bl/export_props.py`, `fence.py`): `fence` (frame plus chain-link panel), `roadblock`, `sandbags`, `pipe_arch`, `tank_wide`, and the Backdrop blocks `block_tall`, `block_wide`, `block_hall`, `block_long`.
@@ -36,6 +37,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - 3D model of a M4A1 in PS1 style by Plewr, https://plewr.itch.io/psx-style-m4a1-model, CC0 1.0
 - PSX Industrial Environment Asset Pack by godgoldfear, https://godgoldfear.itch.io/psx-industrial-environment-asset-pack, CC 4.0
 - Mine, Elbolilloduro, https://elbolilloduro.itch.io/mine, CC0 1.0
+- OFFICE, valsekemarplant, https://valsekamerplant.itch.io/, CC0 1.0
 - 3D Retro World, Mutum Studios, https://mutum-studios.itch.io/3d-retro-world, author's own terms: any project, commercial included, credit optional, the assets themselves may not be sold or marketed as a final product
 - PSX style modular walls & fences / PSX style barriers / PSX style urban stacked pack, valsekemarplant, https://valsekamerplant.itch.io/, CC0 1.0
 - 2 Retro 3D Dieselpunk Tanks, chilly_durango, https://chilly-durango.itch.io/2dieselpunktanks, CC0 1.0

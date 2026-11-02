@@ -28,12 +28,26 @@ const D := {
 		["shelving", [35.2, 53.43, 0], 0], ["shelving", [37.2, 53.43, 0], 0], ["shelving", [24.47, 48.0, 0], 90],
 		# the office's files
 		["filing_cabinet", [27.6, 18.81, 0], 180], ["filing_cabinet", [28.1, 18.81, 0], 180],
+		# OFFICE pack (valsekemarplant), kept off the walks: the office's second desk on the east wall with its chair, a water
+		# cooler by the north door, a bookcase on the west wall
+		["office_desk", [31.2, 25.8, 0], 270], ["office_chair", [29.9, 25.8, 0], 90], ["water_cooler", [18.7, 18.8, 0], 180],
+		["bookcase_small", [18.55, 25.9, 0], 90],
+		# security: a chair at the monitor desk, a water cooler and a bookcase on the server room's wall
+		["office_chair_grey", [53.6, 22.0, 0], 90], ["water_cooler", [45.0, 18.8, 0], 180], ["bookcase_small", [44.55, 24.8, 0], 90],
+		# the lobby's waiting area against the south wall, a water cooler in the north-east corner
+		["couch", [18.5, 52.9, 0], 0], ["armchair", [21.0, 52.9, 0], 0], ["water_cooler", [22.8, 44.6, 0], 180],
+		# the archive's east wall: two more cabinets, one open
+		["file_cabinet_big", [39.45, 48.2, 0], 270], ["file_cabinet_big", [39.45, 49.8, 0], 270], ["file_cabinet_open", [38.4, 45.05, 0], 180],
 	],
 	props = [
 		["microscope", [17.2, 38.1, 1.0], 0], ["whiteboard", [29.75, 38.6, 1.0], 270], ["keypad", [45.3, 30.78, 1.3], 180],
 		["whiteboard", [18.25, 23, 1.0], 90], ["notice_board", [6.32, 50.5, 1.2], 90],
 		["tnt", [64.2, 29.3, 0], 90], ["tnt", [64.5, 29.4, 0], 70], ["detonator", [65.3, 29.3, 0], 180], ["lantern", [62.1, 29.5, 1.0], 0],
 		["lantern", [72, 29.9, 1.0], 0], ["pickaxe", [66.2, 29.5, 0], 0],  # blasting kit by the quarry rim
+		# on the office desk (top 0.89 m): screen, keyboard, mouse, lamp, mug, papers; the security desk's mug (top 0.96 m)
+		["office_monitor", [31.3, 25.8, 0.89], 270], ["office_keyboard", [30.6, 25.8, 0.89], 270], ["office_mouse", [30.6, 26.5, 0.89], 270],
+		["desk_lamp", [31.4, 24.9, 0.89], 270], ["mug", [30.8, 26.9, 0.89], 0], ["paper_stack", [31.2, 24.6, 0.89], 20],
+		["mug", [54.8, 22.75, 0.96], 0],
 		["cardboard_box", [35.0, 53.43, 0.95], 0], ["cardboard_box", [37.4, 53.43, 0.3], 10], ["cardboard_box", [24.47, 47.6, 0.95], 90],
 	],
 	trim = [
