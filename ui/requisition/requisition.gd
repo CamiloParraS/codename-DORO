@@ -58,11 +58,29 @@ func _unhandled_input(e: InputEvent) -> void:
 		press()
 	elif e.is_action_pressed("ui_cancel"):
 		close()
-	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
+
+
+## Clicks arrive here, not in _unhandled_input: a full-rect Control takes the mouse in the GUI step first.
+## A row picks and buys (or continues); the drawing panel's buy bar buys the picked upgrade; right click continues.
+func _gui_input(e: InputEvent) -> void:
+	if not (e is InputEventMouseButton and e.pressed):
+		return
+	accept_event()
+	if e.button_index == MOUSE_BUTTON_RIGHT:
+		close()
+	elif e.button_index == MOUSE_BUTTON_LEFT:
 		var hit := _row_at(e.position)
 		if hit >= 0:
 			_pick(hit)
 			press()
+		elif row < Requisition.UPGRADES.size() and _bar_rect().has_point(e.position / (size.y / HudPalette.DESIGN_H)):
+			press()
+
+
+## The drawing panel's buy bar in design px, as _panel() lays it out.
+func _bar_rect() -> Rect2:
+	var r := PixelKit.snap(Rect2(size.x / (size.y / HudPalette.DESIGN_H) - 80 - 580, 150, 580, 560))
+	return PixelKit.snap(Rect2(r.position + Vector2(30, r.size.y - 94), Vector2(r.size.x - 60, 68)))
 
 
 func _input(e: InputEvent) -> void:
@@ -109,6 +127,7 @@ func press() -> void:
 ## Closes at once (the briefing resumes) and fades out over HudPalette.FADE.
 func close() -> void:
 	set_process_unhandled_input(false)
+	mouse_filter = Control.MOUSE_FILTER_IGNORE  # no second click while it fades
 	closed.emit()
 	if is_inside_tree():
 		HudPalette.fade(self, false).finished.connect(queue_free)
