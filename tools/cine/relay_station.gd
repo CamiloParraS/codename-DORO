@@ -21,27 +21,6 @@ static func _times(rows: Array) -> Array[float]:
 	return out
 
 
-static func _glow(c: Color, energy := 4.0) -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = c
-	m.emission_enabled = true
-	m.emission = c
-	m.emission_energy_multiplier = energy
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	return m
-
-
-static func _part(parent: Node, name: String, mesh: Mesh, at: Vector3, mat: Material) -> MeshInstance3D:
-	var p := MeshInstance3D.new()
-	p.name = name
-	mesh.material = mat
-	p.mesh = mesh
-	p.position = at
-	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	parent.add_child(p)
-	return p
-
-
 ## The Spoofing look's radio signal (RadioLook: three pixel-art wave frames, billboarded, unshaded, nearest), at `at`.
 static func _signal(parent: Node, name: String, at: Vector3, pixel: float) -> Sprite3D:
 	var s := Sprite3D.new()
@@ -58,14 +37,81 @@ static func _signal(parent: Node, name: String, at: Vector3, pixel: float) -> Sp
 	return s
 
 
-## A thin bar from a to b (a cable run).
-static func _bar(parent: Node, name: String, a: Vector3, b: Vector3, mat: Material) -> void:
-	var box := BoxMesh.new()
-	box.size = Vector3(0.1, 0.1, a.distance_to(b))
-	var p := _part(parent, name, box, (a + b) / 2.0, mat)
-	var d := (b - a).normalized()
-	var up := Vector3.UP if absf(d.y) < 0.95 else Vector3.RIGHT
-	p.basis = Basis.looking_at(d, up)
+## The cable's cells as flat squares facing the camera (2D pixels, CELL across): cell k (its index in UV.x, its corner
+## in UV2) is `tint` once k < `lit`, `dim` before. Unshaded and see-through; nothing glows.
+const CELLS := """
+shader_type spatial;
+render_mode unshaded, shadows_disabled, skip_vertex_transform, cull_disabled, depth_draw_never;
+uniform vec4 tint : source_color;
+uniform vec4 dim : source_color;
+uniform float lit = 0.0;
+uniform float size = 0.14;
+varying float cell;
+void vertex() {
+	cell = UV.x;
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz + vec3(UV2 * size, 0.0);
+}
+void fragment() {
+	vec4 c = cell < lit ? tint : dim;
+	ALBEDO = c.rgb;
+	ALPHA = c.a;
+}
+"""
+
+
+## Where the cable's square pixels sit: one every CELL_GAP along `pts`, each [transform, segment, fraction along it],
+## radio first, so a track can light them in the pulse's order.
+static func _cell_spots(pts: Array[Vector3]) -> Array:
+	var out := []
+	for i in pts.size() - 1:
+		var a := pts[i]
+		var b := pts[i + 1]
+		var d := (b - a).normalized()
+		var basis := Basis.looking_at(d, Vector3.UP if absf(d.y) < 0.95 else Vector3.RIGHT)
+		var n := maxi(int(a.distance_to(b) / CELL_GAP), 1)
+		for k in n:
+			out.append([Transform3D(basis, a.lerp(b, float(k) / n)), i, float(k) / n])
+	return out
+
+
+## The cells as one baked mesh, a quad per cell collapsed on its centre (the shader opens it to face the camera), cell k's
+## index in UV.x and its corner in UV2.
+static func _cells(parent: Node, name: String, spots: Array, mat: Material) -> MeshInstance3D:
+	var corners := [Vector2(-0.5, -0.5), Vector2(0.5, -0.5), Vector2(0.5, 0.5), Vector2(-0.5, -0.5), Vector2(0.5, 0.5), Vector2(-0.5, 0.5)]
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for k in spots.size():
+		var at: Vector3 = (spots[k][0] as Transform3D).origin
+		for c: Vector2 in corners:
+			st.set_uv(Vector2(k, 0.0))
+			st.set_uv2(c)
+			st.add_vertex(at)
+	var p := MeshInstance3D.new()
+	p.name = name
+	p.mesh = st.commit()
+	p.material_override = mat
+	p.extra_cull_margin = CELL
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(p)
+	return p
+
+
+## RadioLook's pixel ring (five frames, each a step wider), lying flat at `at`; nearest, unshaded, mint.
+static func _ring(parent: Node, name: String, at: Vector3) -> Sprite3D:
+	var s := Sprite3D.new()
+	s.name = name
+	s.texture = RadioLook.RING_ICON
+	s.hframes = 5
+	s.pixel_size = RING_PX
+	s.axis = Vector3.AXIS_Y
+	s.shaded = false
+	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	s.modulate = SIGNAL
+	s.position = at
+	s.visible = false
+	parent.add_child(s)
+	return s
 
 
 ## Where the shoulder rig rests behind `at` facing `yaw` (AreaCine.rig_pose).
@@ -83,13 +129,21 @@ const INTRO_LEN := 10.0
 const INTRO_START := [8.0, 72.0, 0.0]  # OperativeStart (build_relay_station.gd SPOTS)
 const INTRO_FACING := 45.0             # its facing, degrees (START_FACING)
 const RADIO := [58.6, 39.4, 4.25]
-const SIGNAL := Color(0.45, 0.85, 1.0)
+const SIGNAL := HudPalette.MINT       # the radio's own hue; flat, never a glow
+const SIGNAL_DIM := Color(0.16, 0.3, 0.27)  # the cable's cells before the pulse lights them
 const RUN_FROM := [-1.0, 80.0, 0.0]    # where he runs in from, off to the side of the final shot (the hill's west edge)
 const RUN_T := [7.4, 8.9, 9.3]         # s he sets off, reaches the start spot, has turned to face the start way
 const RUN_SPEED := 5.5                 # m/s
 const SIGNAL_PX := 0.14                # the sprite's metres per pixel (RadioLook's drifting spark is 0.03)
 const RING_FROM := 6.8
 const RING_TO := 9.0
+const RING_STEP := 0.1                 # s per frame as the ring steps out to its widest frame
+const RING_PX := 0.26                  # its metres per pixel: the widest frame (15.5 px radius) is 4 m
+const RING_GROW := 15.0                # it then scales out to 60 m by RING_TO, its pixels growing with it
+const RING_ECHO := 0.25                # s the dimmer echo trails it
+const CELL := 0.14                     # a cable pixel, metres
+const CELL_GAP := 0.3                  # one every this far along the run
+const CABLE_ALPHA := 0.7               # lit cells; the dark ones are fainter still
 ## The pulse: [at s, [x, y, h]] along the cable, radio to antenna tip. The cable bars join these points.
 const PULSE := [
 	[1.6, RADIO], [2.5, [52.0, 42.0, 4.3]], [3.5, [44.0, 34.0, 7.4]], [4.4, [41.5, 20.0, 7.6]],
@@ -119,17 +173,20 @@ static func intro(cine: Node) -> AnimationPlayer:
 
 	_signal(props, "Radio", _w(RADIO), SIGNAL_PX)  # the sprite the user swaps for the antenna art later
 
-	var cable := _glow(SIGNAL, 1.0)
 	var pts: Array[Vector3] = []
 	for row in PULSE:
 		pts.append(_w(row[1]))
-	for i in pts.size() - 1:
-		_bar(props, "Cable%d" % i, pts[i], pts[i + 1], cable)
+	var spots := _cell_spots(pts)
+	var cable := ShaderMaterial.new()  # dark until the pulse passes, then lit a cell at a time behind it
+	cable.shader = Shader.new()
+	cable.shader.code = CELLS
+	cable.set_shader_parameter("tint", Color(SIGNAL, CABLE_ALPHA))
+	cable.set_shader_parameter("dim", Color(SIGNAL_DIM, CABLE_ALPHA * 0.8))
+	cable.set_shader_parameter("size", CELL)
+	_cells(props, "Cable", spots, cable)
 	_signal(props, "Pulse", pts[0], SIGNAL_PX * 0.6)
-	var ring := TorusMesh.new()
-	ring.inner_radius = 0.92
-	ring.outer_radius = 1.0
-	_part(props, "Ring", ring, pts[pts.size() - 1], _glow(SIGNAL, 3.0)).scale = Vector3.ZERO
+	for n in ["Ring", "RingEcho"]:
+		_ring(props, n, pts[pts.size() - 1])
 
 	var pose := rig_pose(_w(INTRO_START), -INTRO_FACING * RAD)
 	var cams: Array[Vector3] = []
@@ -158,7 +215,26 @@ static func intro(cine: Node) -> AnimationPlayer:
 	var run_to := _w(INTRO_START)
 	var heading := atan2(-(run_to.x - run_from.x), -(run_to.z - run_from.z))  # the body's yaw for travelling that way
 	AreaCine.operative_track(player, _times(RUN_T), [run_from, run_to, run_to] as Array[Vector3], [heading, heading, -INTRO_FACING * RAD] as Array[float], RUN_SPEED)
-	AreaCine.track(player, "IntroProps/Ring:scale", [RING_FROM, RING_TO], [Vector3.ONE, Vector3.ONE * 60.0])
+	# the cable lights cell by cell as the pulse reaches each one (the pulse moves linearly between its keys)
+	var lit_at: Array[float] = [0.0]
+	var lit_n: Array[float] = [0.0]
+	for k in spots.size():
+		var seg: int = spots[k][1]
+		lit_at.append(lerpf(PULSE[seg][0], PULSE[seg + 1][0], spots[k][2]))
+		lit_n.append(k + 1.0)
+	AreaCine.track(player, "IntroProps/Cable:material_override:shader_parameter/lit", lit_at, lit_n, true)
+	# the ring leaves the tip: steps out through its five frames, then spreads over the valley, an echo trailing it;
+	# it fades in steps, as the chrome does
+	for r in [["Ring", 0.0, 0.9], ["RingEcho", RING_ECHO, 0.45]]:
+		var path := "IntroProps/%s" % r[0]
+		var from: float = RING_FROM + r[1]
+		var wide := from + RING_STEP * 4.0
+		AreaCine.track(player, path + ":visible", [0.0, from, RING_TO], [false, true, false], true)
+		AreaCine.track(player, path + ":frame", [from, from + RING_STEP, from + RING_STEP * 2.0, from + RING_STEP * 3.0, wide], [0, 1, 2, 3, 4], true)
+		AreaCine.track(player, path + ":scale", [wide, RING_TO], [Vector3.ONE, Vector3.ONE * RING_GROW * (1.0 - r[1])])
+		var a: float = r[2]
+		AreaCine.track(player, path + ":modulate", [from, RING_TO - 0.6, RING_TO - 0.4, RING_TO - 0.2],
+			[Color(SIGNAL, a), Color(SIGNAL, a * 0.66), Color(SIGNAL, a * 0.33), Color(SIGNAL, 0.0)], true)
 	return player
 
 

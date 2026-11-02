@@ -38,7 +38,8 @@ const SOLID := [
 	["RailRamp1S", [50, 59.8, 20, 0.2], 0, 4, "metal", Color(0.8, 0.3, 0.25)],
 	["RailRamp1E", [70, 56, 0.2, 4], 0, 4, "metal", Color(0.8, 0.3, 0.25)],
 	["RailT2a", [9, 31.8, 59, 0.2], 6, 7, "metal", Color(0.8, 0.3, 0.25)],
-	["RailT2c", [70, 31.8, 6, 0.2], 6, 7, "metal", Color(0.8, 0.3, 0.25)],
+	["RailT2c", [70, 31.8, 1.5, 0.2], 6, 7, "metal", Color(0.8, 0.3, 0.25)],  # open at x 71.5-74.5 for LadderSummit
+	["RailT2d", [74.5, 31.8, 1.5, 0.2], 6, 7, "metal", Color(0.8, 0.3, 0.25)],
 	["RailRamp2S", [50, 35.8, 20, 0.2], 3, 7, "metal", Color(0.8, 0.3, 0.25)],
 	["RailRamp2E", [70, 32, 0.2, 4], 3, 7, "metal", Color(0.8, 0.3, 0.25)],
 	["RailScreeE", [9, 32, 0.2, 14], 3, 7, "metal", Color(0.8, 0.3, 0.25)],
@@ -81,6 +82,7 @@ const CRAWLSPACES := [
 const LADDERS := [
 	["LadderWest", [20, 56.5, 0], [20, 54.5, 3]],
 	["LadderCatwalk", [42, 12.1, 6], [42, 10.8, 10]],
+	["LadderSummit", [73, 32.5, 3], [73, 30.5, 6]],  # barracks terrace to summit, east of RoadRamp2
 ]
 ## Wedges: {name, rect, h0, h1, up: the high side}. The road ramps and the stair end on a LAND landing.
 const RAMPS := [

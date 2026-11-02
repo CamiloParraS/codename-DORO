@@ -55,7 +55,7 @@ func test_route_spots_and_every_level_are_on_the_navmesh() -> void:
 func test_ladders_are_walkable_and_guards_go_to_the_spot() -> void:
 	var a: Node = load(SCENE).instantiate()
 	var ladders: Array = a.get_node("Ladders").get_children()
-	assert_eq(ladders.size(), 2)
+	assert_eq(ladders.size(), 3)  # West, Catwalk, Summit
 	for l: Node3D in ladders:
 		assert_true(l.is_in_group("ladders"))
 		assert_true(l.has_meta("walkable"), l.name)
