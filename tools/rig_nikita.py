@@ -106,6 +106,24 @@ for side in "lr":
     for o in parts:
         for v in o.data.vertices:
             v.co.y += arm_w(o, v, side) * dy
+# 4c. The arm is bowed: the dense mitt sits ahead of the line and upper arm and forearm behind it, so the average above
+# leaves the elbow 5-9 cm off its pivot. Centre each of those two on its own bone (bounding-box middle, front to back and
+# up and down); the hand stays where the gun grips were fitted to it.
+def bone_w(o, v, name):
+    return sum(g.weight for g in v.groups if o.vertex_groups[g.group].name == name)
+for side in "lr":
+    for seg in ("upperarm", "lowerarm"):
+        name = f"{seg}_{side}"
+        b = arm.data.bones[name]
+        pts = [v.co for v in nik.data.vertices if bone_w(nik, v, name) > 0.6]
+        mid = Vector(((min(p.y for p in pts) + max(p.y for p in pts)) / 2, (min(p.z for p in pts) + max(p.z for p in pts)) / 2))
+        d = Vector(((b.head_local.y + b.tail_local.y) / 2, (b.head_local.z + b.tail_local.z) / 2)) - mid
+        print("segment slide", name, d)
+        for o in parts:
+            for v in o.data.vertices:
+                w = bone_w(o, v, name)
+                v.co.y += w * d.x
+                v.co.z += w * d.y
 for pb in arm.pose.bones:
     pb.matrix_basis = Matrix()
 bpy.context.view_layer.update()
