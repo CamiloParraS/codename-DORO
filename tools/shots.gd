@@ -3,6 +3,8 @@
 ##   godot --path . --script tools/shots.gd -- harbour
 ## `-- <area> reach` instead shoots every reach spot the Area's last build wrote (user://reach/<area>.json), each
 ## from a few metres back along the Operative's path: what the player sees on arriving.
+## `-- <area> at=x,y,z look=x,y,z [name=label] [at=... look=...]` shoots ad-hoc cameras in world metres (any Area of
+## CINE_AREAS): user://shots/<area>_<label>.png, labels cam1, cam2... by default. For checking one prop, no preset.
 ## `-- <area>_cine` (test_room, harbour, relay_station, research_annex, core) seeks every take under the Area's Cine node to
 ## 0, 25, 50, 75 and 100% and shoots each through the Operative's camera: user://shots/<area>_cine_<take>_<pct>.png.
 extends SceneTree
@@ -190,7 +192,9 @@ func _shoot() -> void:
 		quit()
 		return
 	var entry: Array = SHOTS.get(area, [])
-	if args.size() > 1 and args[1] == "reach":
+	if args.size() > 1 and args[1].begins_with("at="):
+		entry = _adhoc_shots(area, args.slice(1))
+	elif args.size() > 1 and args[1] == "reach":
 		entry = _reach_shots(area)
 		area += "_reach"
 	if entry.is_empty():
@@ -216,6 +220,37 @@ func _shoot() -> void:
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path), " at ", Engine.get_frames_per_second(), " fps")
 	quit()
+
+
+## [scene, {label: [camera, look-at]}] from at=/look=/name= arguments, or empty if the Area or a vector is unknown.
+func _adhoc_shots(area: String, args: Array) -> Array:
+	if not CINE_AREAS.has(area):
+		push_error("no Area %s (one of %s)" % [area, ", ".join(CINE_AREAS.keys())])
+		return []
+	var shots := {}
+	var cur := []  # [label, at, look]
+	for a: String in args + ["at=end"]:
+		var kv := a.split("=", true, 1)
+		if kv.size() < 2:
+			push_error("expected key=value, got %s" % a)
+			return []
+		if kv[0] == "at":
+			if cur.size():
+				if cur[2] == null:
+					push_error("%s has no look=" % cur[0])
+					return []
+				shots[cur[0]] = [cur[1], cur[2]]
+			cur = ["cam%d" % (shots.size() + 1), _vec(kv[1]), null]
+		elif kv[0] == "look" and cur.size():
+			cur[2] = _vec(kv[1])
+		elif kv[0] == "name" and cur.size():
+			cur[0] = kv[1]
+	return [CINE_AREAS[area], shots]
+
+
+func _vec(s: String) -> Variant:
+	var p := s.split(",")
+	return Vector3(float(p[0]), float(p[1]), float(p[2])) if p.size() == 3 else null
 
 
 ## [scene, {spot: [camera, look-at]}] from the build's user://reach/<area>.json, or empty if it never built.
