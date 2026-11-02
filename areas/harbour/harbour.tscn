@@ -3776,7 +3776,7 @@ size = Vector3(3, 3, 3)
 
 [sub_resource type="Image" id="Image_v7v8b"]
 data = {
-"data": PackedByteArray("0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/Ux8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zRxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnO0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/Ux8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zRxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnO0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/Ux8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zRxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnO0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/Ux8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zRxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnO0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/Ux8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbys/UxMnOzdLYx8zR0dbbHkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7HEN3HkZ9HUR5Hkd/HUV7Jh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4ZJx0YJhwXKB4ZJh0YKB4Z"),
+"data": PackedByteArray("DxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hERMWFBcZDxEUEhUXFhgbERMWFBcZDxEUEhUXFhgbERMWFBcZDxEUEhUXFhgbERMWFBcZDxEUEhUXFhgbERMWFBcZDxEUEhUXFhgbERMWFBcZDxEUEhUXFhgbERMWFBcZFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hEhUXICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImDxEUHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iFBcZGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImFhgbGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnERMWHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iHiImGR0hHCAkICQnGx8iDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QDxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QDxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsMDQ8QERIUDA0ODxASCgsM"),
 "format": "RGB8",
 "height": 32,
 "mipmaps": false,
@@ -3791,79 +3791,84 @@ albedo_texture = SubResource("ImageTexture_jitb6")
 texture_filter = 0
 
 [sub_resource type="BoxMesh" id="BoxMesh_xnasf"]
-size = Vector3(1.8, 0.8, 3.8)
+size = Vector3(1.6, 0.5, 4.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qf1mm"]
 albedo_texture = SubResource("ImageTexture_jitb6")
 texture_filter = 0
 
 [sub_resource type="PrismMesh" id="PrismMesh_7s6kl"]
-size = Vector3(1.8, 1.6, 0.8)
+size = Vector3(1.6, 2.2, 0.5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3pe7"]
-albedo_color = Color(0.42, 0.36, 0.3, 1)
+albedo_color = Color(0.05, 0.055, 0.06, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_t0oje"]
-size = Vector3(1.5, 0.06, 4.6)
+size = Vector3(1.3, 0.05, 4.8)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5seil"]
-albedo_color = Color(0.88, 0.89, 0.9, 1)
+albedo_color = Color(0.07, 0.08, 0.09, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_xjekj"]
-size = Vector3(1.3, 0.8, 1.5)
+[sub_resource type="PrismMesh" id="PrismMesh_xjekj"]
+size = Vector3(1.1, 0.4, 1.8)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vbcxt"]
-albedo_color = Color(0.1, 0.16, 0.22, 1)
+albedo_color = Color(0.02, 0.03, 0.04, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_kwnbn"]
-size = Vector3(1.2, 0.35, 0.05)
+size = Vector3(0.9, 0.12, 0.05)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gpnbc"]
-albedo_color = Color(0.7, 0.7, 0.72, 1)
+albedo_color = Color(0.06, 0.065, 0.07, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bnc2r"]
-size = Vector3(0.05, 0.05, 2)
+size = Vector3(0.9, 0.22, 0.7)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5wi5k"]
-albedo_color = Color(0.7, 0.7, 0.72, 1)
+albedo_color = Color(0.03, 0.03, 0.035, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrp5u"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_wrp5u"]
+top_radius = 0.008
+bottom_radius = 0.015
+height = 1.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4nke7"]
 shading_mode = 0
-albedo_color = Color(0.9, 0.95, 1, 1)
+albedo_color = Color(0.8, 0.1, 0.08, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_4nke7"]
-material = SubResource("StandardMaterial3D_wrp5u")
-size = Vector3(0.12, 0.12, 0.12)
+[sub_resource type="BoxMesh" id="BoxMesh_hwx8j"]
+material = SubResource("StandardMaterial3D_4nke7")
+size = Vector3(0.05, 0.05, 0.05)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwx8j"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1jko8"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0.9, 0.95, 1, 0.45)
+albedo_color = Color(0.55, 0.62, 0.68, 0.3)
 
-[sub_resource type="BoxMesh" id="BoxMesh_1jko8"]
-size = Vector3(0.5, 0.02, 9)
+[sub_resource type="BoxMesh" id="BoxMesh_3oi5e"]
+size = Vector3(0.35, 0.02, 7)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3oi5e"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sifla"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0.9, 0.95, 1, 0.45)
+albedo_color = Color(0.55, 0.62, 0.68, 0.3)
 
-[sub_resource type="BoxMesh" id="BoxMesh_sifla"]
-size = Vector3(0.5, 0.02, 9)
+[sub_resource type="BoxMesh" id="BoxMesh_euo3x"]
+size = Vector3(0.35, 0.02, 7)
 
-[sub_resource type="Curve3D" id="Curve3D_euo3x"]
+[sub_resource type="Curve3D" id="Curve3D_4avvj"]
 _data = {
-"points": PackedVector3Array(0, -0.06666667, -0.083333336, 0, 0.06666667, 0.083333336, 28, -0.8, -56, 0, -0.36666667, -1.0833334, 0, 0.36666667, 1.0833334, 28, -0.4, -55.5, -0.33333334, -0.6666667, -1.5, 0.33333334, 0.6666667, 1.5, 28, 1.4, -49.5, -0.9666665, -0.6666667, -2.1666667, 0.9666665, 0.6666667, 2.1666667, 30, 3.6, -46.5, -0.5666669, -0.2166667, -2, 0.5666669, 0.2166667, 2, 33.8, 5.4, -36.5, 0.22499974, 0.22666669, 0.971667, -0.22499974, -0.22666669, -0.971667, 33.4, 4.9, -34.5, 0.15833347, 0.14333336, 1.3050003, -0.15833347, -0.14333336, -1.3050003, 32.45, 4.04, -42.33, 0, 0, 0, 0, 0, 0, 32.45, 4.04, -42.33),
+"points": PackedVector3Array(-0.16666667, -0.06666667, 0.16666667, 0.16666667, 0.06666667, -0.16666667, 28, -0.8, -52, 0, -0.36666667, -0.41666666, 0, 0.36666667, 0.41666666, 29, -0.4, -53, -0.16666667, -0.6666667, -1.0833334, 0.16666667, 0.6666667, 1.0833334, 28, 1.4, -49.5, -0.9666665, -0.6666667, -2.1666667, 0.9666665, 0.6666667, 2.1666667, 30, 3.6, -46.5, -0.5666669, -0.2166667, -2, 0.5666669, 0.2166667, 2, 33.8, 5.4, -36.5, 0.22499974, 0.22666669, 0.971667, -0.22499974, -0.22666669, -0.971667, 33.4, 4.9, -34.5, 0.15833347, 0.14333336, 1.3050003, -0.15833347, -0.14333336, -1.3050003, 32.45, 4.04, -42.33, 0, 0, 0, 0, 0, 0, 32.45, 4.04, -42.33),
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
 point_count = 8
 
-[sub_resource type="Resource" id="Resource_4avvj"]
+[sub_resource type="Resource" id="Resource_q7enc"]
 script = ExtResource("102_txa0n")
 duration = 0.0
 transition = 1
 
-[sub_resource type="Animation" id="Animation_q7enc"]
+[sub_resource type="Animation" id="Animation_qsrf0"]
 length = 10.0
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -3875,7 +3880,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 2, 4, 6, 7, 8.3, 9.4, 10),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(28, -0.8, -56), Vector3(28, -0.4, -55.5), Vector3(28, 1.4, -49.5), Vector3(30, 3.6, -46.5), Vector3(33.8, 5.4, -36.5), Vector3(33.4, 4.9, -34.5), Vector3(32.45, 4.04, -42.33), Vector3(32.45, 4.04, -42.33)]
+"values": [Vector3(28, -0.8, -52), Vector3(29, -0.4, -53), Vector3(28, 1.4, -49.5), Vector3(30, 3.6, -46.5), Vector3(33.8, 5.4, -36.5), Vector3(33.4, 4.9, -34.5), Vector3(32.45, 4.04, -42.33), Vector3(32.45, 4.04, -42.33)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -3887,7 +3892,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 2, 4, 6, 7, 8.3, 9.4, 10),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(22, -0.6, -49), Vector3(32, 1, -44), Vector3(33, 3.2, -41.5), Vector3(33, 3.2, -40), Vector3(30.8, 2.6, -21), Vector3(30.8, 2.6, -21), Vector3(32.45, 1.57, -32.6), Vector3(32.45, 1.57, -32.6)]
+"values": [Vector3(53, -0.6, -61), Vector3(37, 0.5, -45), Vector3(33, 3.2, -41.5), Vector3(33, 3.2, -40), Vector3(30.8, 2.6, -21), Vector3(30.8, 2.6, -21), Vector3(32.45, 1.57, -32.6), Vector3(32.45, 1.57, -32.6)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -3917,128 +3922,140 @@ tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/path = NodePath("IntroProps/Boat:position")
-tracks/4/interp = 1
+tracks/4/interp = 2
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 5.5),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 1.5, 3, 4.5, 6, 8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(22, -1.3, -49), Vector3(46, -1.3, -49)]
+"values": [Vector3(53, -1.3, -61), Vector3(43, -1.3, -51), Vector3(36.5, -1.3, -44.6), Vector3(42.6, -1.3, -39), Vector3(43.2, -1.3, -28), Vector3(43.4, -1.3, -12)]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("../Operative:position")
-tracks/5/interp = 1
+tracks/5/path = NodePath("IntroProps/Boat:rotation:y")
+tracks/5/interp = 4
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(3, 5),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 1.5, 3, 4.5, 6, 8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(33, 2, -42), Vector3(33, 2, -40)]
+"values": [2.356194490192345, 2.3531550323946457, 3.1082715306960993, -2.7579741819036343, -3.1119715772317424, -3.129093256894165]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("../Operative:cine_face")
-tracks/6/interp = 3
+tracks/6/path = NodePath("../Operative:position")
+tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
 "times": PackedFloat32Array(3, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [-3.141592653589793, -3.141592653589793]
+"values": [Vector3(33, 2, -42), Vector3(33, 2, -40)]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("../Operative:moving")
-tracks/7/interp = 1
+tracks/7/path = NodePath("../Operative:cine_face")
+tracks/7/interp = 3
 tracks/7/loop_wrap = true
 tracks/7/keys = {
 "times": PackedFloat32Array(3, 5),
 "transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
+"update": 0,
+"values": [-3.141592653589793, -3.141592653589793]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("../Operative:velocity")
+tracks/8/path = NodePath("../Operative:moving")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(3, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
+"values": [true, false]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../Operative:velocity")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(3, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
 "values": [Vector3(0, 0, -1), Vector3(0, 0, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_qsrf0"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0ry37"]
 _data = {
-&"take": SubResource("Animation_q7enc")
+&"take": SubResource("Animation_qsrf0")
 }
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ry37"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sj7kv"]
 shading_mode = 0
 albedo_color = Color(0.15, 0.15, 0.15, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_sj7kv"]
-material = SubResource("StandardMaterial3D_0ry37")
+[sub_resource type="CylinderMesh" id="CylinderMesh_h1iw7"]
+material = SubResource("StandardMaterial3D_sj7kv")
 top_radius = 0.02
 bottom_radius = 0.02
 height = 3.0
 radial_segments = 4
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h1iw7"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j5iaa"]
 albedo_color = Color(0.14, 0.15, 0.16, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_j5iaa"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_2j323"]
 top_radius = 0.07
 bottom_radius = 0.09
 radial_segments = 6
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2j323"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_akihu"]
 albedo_color = Color(0.16, 0.17, 0.18, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_akihu"]
+[sub_resource type="BoxMesh" id="BoxMesh_dl6p1"]
 size = Vector3(0.3, 0.28, 0.7)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dl6p1"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0gdvw"]
 albedo_color = Color(0.05, 0.05, 0.06, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_0gdvw"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_5ha84"]
 top_radius = 0.09
 bottom_radius = 0.09
 height = 0.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ha84"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lqxsm"]
 shading_mode = 0
 albedo_color = Color(1, 0.15, 0.1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_lqxsm"]
-material = SubResource("StandardMaterial3D_5ha84")
+[sub_resource type="BoxMesh" id="BoxMesh_qxii4"]
+material = SubResource("StandardMaterial3D_lqxsm")
 size = Vector3(0.1, 0.1, 0.1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxii4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3pd5o"]
 albedo_color = Color(0.32, 0.3, 0.26, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_3pd5o"]
+[sub_resource type="BoxMesh" id="BoxMesh_6neuy"]
 size = Vector3(1.4, 1.5, 0.8)
 
-[sub_resource type="Curve3D" id="Curve3D_6neuy"]
+[sub_resource type="Curve3D" id="Curve3D_7xrdx"]
 _data = {
 "points": PackedVector3Array(0, -0.016666671, -0.03333346, 0, 0.016666671, 0.03333346, -28.4, 0.5, 28.4, 0.01666673, -0.05, -0.16666667, -0.01666673, 0.05, 0.16666667, -28.4, 0.6, 28.6, 0.0666666, -0.14999999, -0.29999986, -0.0666666, 0.14999999, 0.29999986, -28.5, 0.8, 29.4, 0.01666673, -0.11666667, -0.26666674, -0.01666673, 0.11666667, 0.26666674, -28.8, 1.5, 30.4, -0.1333332, -0.016666671, -0.33333364, 0.1333332, 0.016666671, 0.33333364, -28.6, 1.5, 31, 0.14999993, 0, -0.23333359, -0.14999993, 0, 0.23333359, -28, 1.6, 32.4, 0.5, 0, 0.03333346, -0.5, 0, -0.03333346, -29.5, 1.5, 32.4, 0.25, -0.016666671, 0.03333346, -0.25, 0.016666671, -0.03333346, -31, 1.6, 32.2),
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 }
 point_count = 8
 
-[sub_resource type="Resource" id="Resource_7xrdx"]
+[sub_resource type="Resource" id="Resource_aid37"]
 script = ExtResource("102_txa0n")
 duration = 0.0
 transition = 1
 
-[sub_resource type="Animation" id="Animation_aid37"]
+[sub_resource type="Animation" id="Animation_sob78"]
 length = 9.6
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -4312,12 +4329,12 @@ tracks/20/keys = {
 }
 tracks/20/use_blend = true
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_sob78"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4ipus"]
 _data = {
-&"take": SubResource("Animation_aid37")
+&"take": SubResource("Animation_sob78")
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4ipus"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_xuedp"]
 size = Vector3(160, 5, 160)
 
 [node name="Harbour" type="Node3D" unique_id=346793720]
@@ -9763,67 +9780,67 @@ shape = SubResource("BoxShape3D_riqvf")
 visible = false
 
 [node name="Boat" type="Node3D" parent="Cine/IntroProps" unique_id=2103081866]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 22, -1.3, -49)
+transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 53, -1.3, -61)
 
 [node name="Hull" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=360922318]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0.6)
 material_override = SubResource("StandardMaterial3D_6xr1j")
 mesh = SubResource("BoxMesh_xnasf")
 
 [node name="Bow" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1442586081]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.2, -2.1)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.1, -2.6)
 material_override = SubResource("StandardMaterial3D_qf1mm")
 mesh = SubResource("PrismMesh_7s6kl")
 
 [node name="Deck" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=360760848]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.63, -0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37, -0.2)
 material_override = SubResource("StandardMaterial3D_d3pe7")
 mesh = SubResource("BoxMesh_t0oje")
 
 [node name="Cabin" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1166359030]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.7)
 material_override = SubResource("StandardMaterial3D_5seil")
-mesh = SubResource("BoxMesh_xjekj")
+mesh = SubResource("PrismMesh_xjekj")
 
 [node name="Windscreen" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1314459755]
-transform = Transform3D(1, 0, 0, 0, 0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 1.2, 0.03)
+transform = Transform3D(1, 0, 0, 0, 0.90630776, 0.42261827, 0, -0.42261827, 0.90630776, 0, 0.62, -0.2)
 material_override = SubResource("StandardMaterial3D_vbcxt")
 mesh = SubResource("BoxMesh_kwnbn")
 
-[node name="Rail" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=361259809]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.95, -1.1)
+[node name="Cowl" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=360736462]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 2.5)
 material_override = SubResource("StandardMaterial3D_gpnbc")
 mesh = SubResource("BoxMesh_bnc2r")
 
-[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=880583639]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.95, -1.1)
+[node name="Antenna" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1096662078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.2, 1.4)
 material_override = SubResource("StandardMaterial3D_5wi5k")
-mesh = SubResource("BoxMesh_bnc2r")
+mesh = SubResource("CylinderMesh_wrp5u")
 
 [node name="Lamp" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=361044323]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0.8)
-mesh = SubResource("BoxMesh_4nke7")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0.7)
+mesh = SubResource("BoxMesh_hwx8j")
 
 [node name="WakeL" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1190087085]
 transform = Transform3D(0.98162717, 0, -0.190809, 0, 1, 0, 0.190809, 0, 0.98162717, -1.9, -0.18, 6.8)
-material_override = SubResource("StandardMaterial3D_hwx8j")
-mesh = SubResource("BoxMesh_1jko8")
+material_override = SubResource("StandardMaterial3D_1jko8")
+mesh = SubResource("BoxMesh_3oi5e")
 
 [node name="WakeR" type="MeshInstance3D" parent="Cine/IntroProps/Boat" unique_id=1190087091]
 transform = Transform3D(0.98162717, 0, 0.190809, 0, 1, 0, -0.190809, 0, 0.98162717, 1.9, -0.18, 6.8)
-material_override = SubResource("StandardMaterial3D_3oi5e")
-mesh = SubResource("BoxMesh_sifla")
+material_override = SubResource("StandardMaterial3D_sifla")
+mesh = SubResource("BoxMesh_euo3x")
 
 [node name="CineIntroRig" type="Node3D" parent="Cine" unique_id=1395912866]
 
 [node name="Path" type="Path3D" parent="Cine/CineIntroRig" unique_id=512602078]
-curve = SubResource("Curve3D_euo3x")
+curve = SubResource("Curve3D_4avvj")
 
 [node name="Dolly" type="Node3D" parent="Cine/CineIntroRig" unique_id=1869746645]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -0.8, -56)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -0.8, -52)
 
 [node name="LookTarget" type="Node3D" parent="Cine/CineIntroRig" unique_id=1210841677]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -0.6, -49)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, -0.6, -61)
 
 [node name="Cam" type="Node3D" parent="Cine/CineIntroRig" unique_id=926572898 node_paths=PackedStringArray("follow_target", "follow_path", "look_at_target")]
 top_level = true
@@ -9833,7 +9850,7 @@ follow_target = NodePath("../Dolly")
 follow_path = NodePath("../Path")
 look_at_mode = 2
 look_at_target = NodePath("../LookTarget")
-tween_resource = SubResource("Resource_4avvj")
+tween_resource = SubResource("Resource_q7enc")
 tween_on_load = false
 look_at_damping = true
 align_transform_with_view = Callable()
@@ -9841,7 +9858,7 @@ align_position_with_view = Callable()
 align_rotation_with_view = Callable()
 
 [node name="CineIntro" type="AnimationPlayer" parent="Cine" unique_id=23941600]
-libraries/ = SubResource("AnimationLibrary_qsrf0")
+libraries/ = SubResource("AnimationLibrary_0ry37")
 metadata/min_s = 6.0
 metadata/max_s = 10.0
 metadata/pcams = [NodePath("../CineIntroRig/Cam")]
@@ -9856,14 +9873,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
 script = ExtResource("104_alqs6")
 kind = 0
 
-[node name="@MeshInstance3D@26" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175999]
+[node name="@MeshInstance3D@25" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175998]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@26" unique_id=723620397]
+[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@25" unique_id=1593467851]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
-mesh = SubResource("CylinderMesh_sj7kv")
+mesh = SubResource("CylinderMesh_h1iw7")
 
-[node name="@Sprite3D@25" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@26" unique_id=558124003]
+[node name="@Sprite3D@24" type="Sprite3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@25" unique_id=1711542849]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 modulate = Color(1, 0.45, 0.15, 1)
 pixel_size = 0.125
@@ -9888,30 +9905,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.4, 0, 31)
 
 [node name="Pole" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera" unique_id=902469801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-material_override = SubResource("StandardMaterial3D_h1iw7")
-mesh = SubResource("CylinderMesh_j5iaa")
+material_override = SubResource("StandardMaterial3D_j5iaa")
+mesh = SubResource("CylinderMesh_2j323")
 
 [node name="Head" type="Node3D" parent="Cine/OutroProps/PoleCamera" unique_id=902171051]
 transform = Transform3D(0.8660254, 0, 0.5, 0, 1, 0, -0.5, 0, 0.8660254, 0, 2, 0)
 
 [node name="Body" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1380868808]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.15)
-material_override = SubResource("StandardMaterial3D_2j323")
-mesh = SubResource("BoxMesh_akihu")
+material_override = SubResource("StandardMaterial3D_akihu")
+mesh = SubResource("BoxMesh_dl6p1")
 
 [node name="Lens" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381217612]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.05, -0.54)
-material_override = SubResource("StandardMaterial3D_dl6p1")
-mesh = SubResource("CylinderMesh_0gdvw")
+material_override = SubResource("StandardMaterial3D_0gdvw")
+mesh = SubResource("CylinderMesh_5ha84")
 
 [node name="Lamp" type="MeshInstance3D" parent="Cine/OutroProps/PoleCamera/Head" unique_id=1381213220]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -0.4)
-mesh = SubResource("BoxMesh_lqxsm")
+mesh = SubResource("BoxMesh_qxii4")
 
 [node name="Cover" type="MeshInstance3D" parent="Cine/OutroProps" unique_id=1760510128]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3, 0.75, 31.2)
-material_override = SubResource("StandardMaterial3D_qxii4")
-mesh = SubResource("BoxMesh_3pd5o")
+material_override = SubResource("StandardMaterial3D_3pd5o")
+mesh = SubResource("BoxMesh_6neuy")
 
 [node name="Audio" type="AudioStreamPlayer3D" parent="Cine/OutroProps" unique_id=1758334435]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 34)
@@ -9920,7 +9937,7 @@ bus = &"Ambience"
 [node name="CineOutroRig" type="Node3D" parent="Cine" unique_id=2006357807]
 
 [node name="Path" type="Path3D" parent="Cine/CineOutroRig" unique_id=1366259339]
-curve = SubResource("Curve3D_6neuy")
+curve = SubResource("Curve3D_7xrdx")
 
 [node name="Dolly" type="Node3D" parent="Cine/CineOutroRig" unique_id=2123148834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.4, 0.5, 28.4)
@@ -9936,7 +9953,7 @@ follow_target = NodePath("../Dolly")
 follow_path = NodePath("../Path")
 look_at_mode = 2
 look_at_target = NodePath("../LookTarget")
-tween_resource = SubResource("Resource_7xrdx")
+tween_resource = SubResource("Resource_aid37")
 tween_on_load = false
 look_at_damping = true
 align_transform_with_view = Callable()
@@ -9944,7 +9961,7 @@ align_position_with_view = Callable()
 align_rotation_with_view = Callable()
 
 [node name="CineOutro" type="AnimationPlayer" parent="Cine" unique_id=31308685]
-libraries/ = SubResource("AnimationLibrary_sob78")
+libraries/ = SubResource("AnimationLibrary_4ipus")
 metadata/min_s = 6.0
 metadata/max_s = 10.0
 metadata/pcams = [NodePath("../CineOutroRig/Cam")]
@@ -9956,4 +9973,4 @@ collision_layer = 0
 script = ExtResource("107_rtpj7")
 
 [node name="Shape" type="CollisionShape3D" parent="Sea" unique_id=1284579712]
-shape = SubResource("BoxShape3D_4ipus")
+shape = SubResource("BoxShape3D_xuedp")

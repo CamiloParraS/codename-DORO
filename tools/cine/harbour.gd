@@ -1,7 +1,7 @@
 ## The Harbour's takes, as data in diagram metres [x, y, height] (the same frame as tools/build_harbour.gd; _w turns it into
 ## world metres). Each take is one static function the builder calls with the Area's `Cine` node (tools/area_cine.gd does the
 ## rail); a take's stand-in props are mesh-only rigs under their own group, hidden in play and shown by the take.
-##   HarbourCine.intro(cine)    # "Fog Level": a Metis launch crosses the fog at water level, heading east, the camera rises to the bow and settles
+##   HarbourCine.intro(cine)    # "Fog Level": a matte-black covert launch comes in from the sea and slips past the bow, the camera rises to the bow and settles
 ##   HarbourCine.outro(cine)    # "Gap in the Fog": the Operative rises, the spot is empty, a patrol notices, a hidden camera lights its lamp
 class_name HarbourCine
 extends RefCounted
@@ -208,22 +208,22 @@ static func outro(cine: Node) -> AnimationPlayer:
 	return player
 
 
-## A painted hull texture: white topsides, a blue boot stripe, a dark waterline, lightly streaked.
+## A matte stealth finish: near-black gunmetal with faint panel seams and a dark waterline band.
 static func _hull_texture() -> ImageTexture:
 	var img := Image.create(32, 32, false, Image.FORMAT_RGB8)
 	for y in 32:
 		for x in 32:
-			var c := Color(0.82, 0.84, 0.86)
-			if y >= 22 and y < 26:
-				c = Color(0.12, 0.28, 0.5)
-			elif y >= 26:
-				c = Color(0.16, 0.12, 0.1)
-			img.set_pixel(x, y, c.darkened(0.06 * float((x * 7 + y * 13) % 5) / 4.0))
+			var c := Color(0.1, 0.115, 0.13)
+			if y >= 24:
+				c = Color(0.04, 0.045, 0.05)
+			elif x % 16 == 0 or y == 12:
+				c = Color(0.06, 0.07, 0.08)
+			img.set_pixel(x, y, c.lightened(0.03 * float((x * 7 + y * 13) % 5) / 4.0))
 	return ImageTexture.create_from_image(img)
 
 
-## The Metis launch, bow to -Z, turned to head east: a textured hull with a pointed bow, a deck, a cabin with a windscreen,
-## rails and a lamp. Mesh only.
+## The Metis launch refitted as a covert insertion boat, bow to -Z, turned to head east: a low matte-black faceted hull, a long
+## wedge bow, a flat blacked-out canopy, a whip antenna and a dim red running lamp. No rails, nothing white. Mesh only.
 static func _launch(parent: Node) -> Node3D:
 	var boat := Node3D.new()
 	boat.name = "Boat"
@@ -231,39 +231,44 @@ static func _launch(parent: Node) -> Node3D:
 	parent.add_child(boat)
 	var tex := _hull_texture()
 	var hull := BoxMesh.new()
-	hull.size = Vector3(1.8, 0.8, 3.8)
-	var bow := PrismMesh.new()  # a wedge ahead of the hull; turned so its apex points forward
-	bow.size = Vector3(1.8, 1.6, 0.8)
-	var h := _part(boat, "Hull", hull, Vector3(0, 0.2, 0.6), Color.WHITE)
-	var b := _part(boat, "Bow", bow, Vector3(0, 0.2, -2.1), Color.WHITE)
+	hull.size = Vector3(1.6, 0.5, 4.2)
+	var bow := PrismMesh.new()  # a long wedge ahead of the hull; turned so its apex points forward
+	bow.size = Vector3(1.6, 2.2, 0.5)
+	var h := _part(boat, "Hull", hull, Vector3(0, 0.1, 0.6), Color.WHITE)
+	var b := _part(boat, "Bow", bow, Vector3(0, 0.1, -2.6), Color.WHITE)
 	b.rotation.x = -PI / 2.0
 	for part: MeshInstance3D in [h, b]:
 		var m := part.material_override as StandardMaterial3D
 		m.albedo_texture = tex
+		m.roughness = 1.0
 		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	var deck := BoxMesh.new()
-	deck.size = Vector3(1.5, 0.06, 4.6)
-	_part(boat, "Deck", deck, Vector3(0, 0.63, -0.1), Color(0.42, 0.36, 0.3))
-	var cabin := BoxMesh.new()
-	cabin.size = Vector3(1.3, 0.8, 1.5)
-	_part(boat, "Cabin", cabin, Vector3(0, 1.05, 0.8), Color(0.88, 0.89, 0.9))
+	deck.size = Vector3(1.3, 0.05, 4.8)
+	_part(boat, "Deck", deck, Vector3(0, 0.37, -0.2), Color(0.05, 0.055, 0.06))
+	var cabin := PrismMesh.new()  # a low flat canopy, raked at the front
+	cabin.size = Vector3(1.1, 0.4, 1.8)
+	_part(boat, "Cabin", cabin, Vector3(0, 0.6, 0.7), Color(0.07, 0.08, 0.09))
 	var glass := BoxMesh.new()
-	glass.size = Vector3(1.2, 0.35, 0.05)
-	_part(boat, "Windscreen", glass, Vector3(0, 1.2, 0.03), Color(0.1, 0.16, 0.22)).rotation.x = deg_to_rad(-20.0)
-	var rail := BoxMesh.new()
-	rail.size = Vector3(0.05, 0.05, 2.0)
-	for side in [-1.0, 1.0]:
-		_part(boat, "Rail", rail, Vector3(side * 0.7, 0.95, -1.1), Color(0.7, 0.7, 0.72))
-	var lamp := Fx.lamp(Color(0.9, 0.95, 1.0), 0.12)
+	glass.size = Vector3(0.9, 0.12, 0.05)
+	_part(boat, "Windscreen", glass, Vector3(0, 0.62, -0.2), Color(0.02, 0.03, 0.04)).rotation.x = deg_to_rad(-25.0)
+	var fin := BoxMesh.new()  # a dull engine cowl aft
+	fin.size = Vector3(0.9, 0.22, 0.7)
+	_part(boat, "Cowl", fin, Vector3(0, 0.5, 2.5), Color(0.06, 0.065, 0.07))
+	var whip := CylinderMesh.new()
+	whip.top_radius = 0.008
+	whip.bottom_radius = 0.015
+	whip.height = 1.3
+	_part(boat, "Antenna", whip, Vector3(0.4, 1.2, 1.4), Color(0.03, 0.03, 0.035))
+	var lamp := Fx.lamp(Color(0.8, 0.1, 0.08), 0.05)
 	lamp.name = "Lamp"
-	lamp.position = Vector3(0, 1.7, 0.8)
+	lamp.position = Vector3(0, 0.85, 0.7)
 	boat.add_child(lamp)
 	return boat
 
 
 # ---- Intro: "Fog Level" -----------------------------------------------------------------------
-# Just above the water, a Metis launch crosses the frame trailing its wake and the camera rises past it to the freighter's
-# bow, where the Operative steps aboard onto the start spot; it rises over his head to hold on the first problem, O1 pacing
+# Just above the water, a matte-black covert launch comes in from the sea trailing its wake, slips close under the freighter's bow and
+# peels off down its starboard side; the camera rises past it to the bow, where the Operative steps aboard onto the start spot; it rises over his head to hold on the first problem, O1 pacing
 # across the deck with his back to the bow, then settles to the shoulder rig, so control returns with no cut.
 # The bow is a guard-free start (nearest post 19 m away, past a guard's 16 m reach) and he never leaves it. ~10 s.
 
@@ -275,16 +280,25 @@ const INTRO_START := [73.0, 0.0, DECK_H]  # OperativeStart (build_harbour.gd SPO
 const INTRO_TIP := [73.0, -2.0, DECK_H]   # where he comes aboard: the bow tip
 const INTRO_STEP_T := [3.0, 5.0]          # s he walks from the tip to the start
 const INTRO_WALK := 1.0                   # m/s
-const INTRO_BOAT_FROM := [62.0, -9.0, SEA_H + 0.3]  # the launch runs west to east, right to left as the camera sees it
-const INTRO_BOAT_TO := [86.0, -9.0, SEA_H + 0.3]
-const INTRO_BOAT_T := 5.5
+## The launch's run, [at s, [x, y]] at water level: in from the open water past the breakwater, close under the bow's starboard
+## shoulder (1 m off the front rail at 3 s, as he steps aboard), then round and down the starboard side 1.5 m off the hull.
+## It never enters the basin between the ship and the quay.
+const INTRO_BOAT := [
+	[0.0, [93.0, -21.0]],
+	[1.5, [83.0, -11.0]],
+	[3.0, [76.5, -4.6]],
+	[4.5, [82.6, 1.0]],
+	[6.0, [83.2, 12.0]],
+	[8.0, [83.4, 28.0]],
+]
+const INTRO_BOAT_H := SEA_H + 0.3
 
 ## The camera (one rail): [at s, camera [x, y, h], aim [x, y, h]]. The glimpse looks down the deck at O1's loop (build_harbour.gd
 ## PostO1, x 68 to 73.5 at y 19), high enough to see over the hatches. The last two shots are the shoulder rig's resting pose
 ## behind the start spot (pivot 1.45 up, arm 0.55 across and 2.4 back, tilted 0.25 rad; operative.gd), held for the aim to settle.
 const INTRO_SHOTS := [
-	[0.0, [68.0, -16.0, SEA_H + 0.8], [62.0, -9.0, SEA_H + 1.0]],   # a hand above the water, on the launch coming in
-	[2.0, [68.0, -15.5, SEA_H + 1.2], [72.0, -4.0, 1.0]],            # the launch passes; the aim slides to the hull
+	[0.0, [68.0, -12.0, SEA_H + 0.8], [93.0, -21.0, SEA_H + 1.0]],  # a hand above the water off the bow, on the launch coming in from the sea
+	[2.0, [69.0, -13.0, SEA_H + 1.2], [77.0, -5.0, 0.5]],           # it closes on the bow; the aim slides to the hull
 	[4.0, [68.0, -9.5, 1.4], [73.0, -1.5, 3.2]],                     # rising up the hull as he steps aboard
 	[6.0, [70.0, -6.5, 3.6], [73.0, 0.0, 3.2]],
 	[7.0, [73.8, 3.5, 5.4], [70.8, 19.0, 2.6]],                      # the glimpse: over his head and the hatches, to O1's back
@@ -301,11 +315,18 @@ static func intro(cine: Node) -> AnimationPlayer:
 	cine.add_child(props)
 
 	var boat := _launch(props)
-	boat.position = _w(INTRO_BOAT_FROM)
+	var run_t: Array = INTRO_BOAT.map(func(k: Array) -> float: return k[0])
+	var run_at: Array = INTRO_BOAT.map(func(k: Array) -> Vector3: return _w([k[1][0], k[1][1], INTRO_BOAT_H]))
+	var run_yaw: Array = []
+	for i in run_at.size():  # it faces along the run (its bow is -Z): the chord through its neighbours
+		var d: Vector3 = run_at[mini(i + 1, run_at.size() - 1)] - run_at[maxi(i - 1, 0)]
+		run_yaw.append(atan2(-d.x, -d.z))
+	boat.position = run_at[0]
+	boat.rotation.y = run_yaw[0]
 	for side in [-1.0, 1.0]:  # the V of the wake, flat on the water behind the stern
 		var wake := BoxMesh.new()
-		wake.size = Vector3(0.5, 0.02, 9.0)
-		var w := _part(boat, "Wake%s" % ("L" if side < 0 else "R"), wake, Vector3(side * 1.9, -0.18, 6.8), Color(0.9, 0.95, 1.0, 0.45))
+		wake.size = Vector3(0.35, 0.02, 7.0)
+		var w := _part(boat, "Wake%s" % ("L" if side < 0 else "R"), wake, Vector3(side * 1.9, -0.18, 6.8), Color(0.55, 0.62, 0.68, 0.3))
 		w.rotation.y = side * deg_to_rad(11.0)
 		var m := w.material_override as StandardMaterial3D
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -318,7 +339,8 @@ static func intro(cine: Node) -> AnimationPlayer:
 	var clip := player.get_animation("take")
 
 	_value(clip, "IntroProps:visible", [0.0], [true], Animation.INTERPOLATION_NEAREST)
-	_value(clip, "IntroProps/Boat:position", [0.0, INTRO_BOAT_T], [_w(INTRO_BOAT_FROM), _w(INTRO_BOAT_TO)])
+	_value(clip, "IntroProps/Boat:position", run_t, run_at, Animation.INTERPOLATION_CUBIC)
+	_value(clip, "IntroProps/Boat:rotation:y", run_t, run_yaw, Animation.INTERPOLATION_CUBIC_ANGLE)
 	# he steps off the bow tip onto the start spot and stands facing south, into the ship (the Area's start facing)
 	var face := deg_to_rad(-180.0)  # the OperativeStart marker's yaw
 	AreaCine.operative_track(player, _times(INTRO_STEP_T), [_w(INTRO_TIP), _w(INTRO_START)] as Array[Vector3], [face, face] as Array[float], INTRO_WALK)
