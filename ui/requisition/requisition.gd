@@ -79,8 +79,19 @@ func _gui_input(e: InputEvent) -> void:
 
 ## The drawing panel's buy bar in design px, as _panel() lays it out.
 func _bar_rect() -> Rect2:
-	var r := PixelKit.snap(Rect2(size.x / (size.y / HudPalette.DESIGN_H) - 80 - 580, 150, 580, 560))
+	var r := _panel_rect()
 	return PixelKit.snap(Rect2(r.position + Vector2(30, r.size.y - 94), Vector2(r.size.x - 60, 68)))
+
+
+## The drawing panel (the picked gear's card) at the right, in design px.
+func _panel_rect() -> Rect2:
+	return PixelKit.snap(Rect2(size.x / (size.y / HudPalette.DESIGN_H) - 80 - 580, 150, 580, 560))
+
+
+## CONTINUE, under the gear card at the right and as wide as it.
+func _continue_rect() -> Rect2:
+	var r := _panel_rect()
+	return PixelKit.snap(Rect2(r.position.x, r.end.y + 30, r.size.x, 56))
 
 
 func _input(e: InputEvent) -> void:
@@ -104,13 +115,9 @@ func _row_at(p: Vector2) -> int:
 	for i in Requisition.UPGRADES.size():
 		if Rect2(BOARD.x - 20, BOARD.y + i * ROW_H, 1060, ROW_H).has_point(q):
 			return i
-	if Rect2(BOARD.x, _continue_y(), 400, 56).has_point(q):
+	if _continue_rect().has_point(q):
 		return Requisition.UPGRADES.size()
 	return -1
-
-
-func _continue_y() -> float:
-	return BOARD.y + Requisition.UPGRADES.size() * ROW_H + 36.0 + 36.0 + Requisition.ITEMS.size() * 36.0 + 12.0
 
 
 ## Buy the selected upgrade, or continue.
@@ -207,10 +214,10 @@ func _draw() -> void:
 		HudPalette.hud_text(self, Vector2(BOARD.x + 300, iy + 20), tr("ui.item.%s.effect" % it.id).to_upper(), 18, ink, _f(18, 0.12), 0, false)
 		var state := tr("ui.req.unlocked") if have else tr("ui.req.s_on").format({n = i + 1})
 		HudPalette.hud_text(self, Vector2(BOARD.x + 1000, iy + 20), state.to_upper(), 18, RED if have else MUTED, _f(18, 0.14), 2, false)
-	var cr := Rect2(BOARD.x, _continue_y(), 400, 56)
+	var cr := _continue_rect()
 	var cont := row == ids.size()
 	PixelKit.cut_fill(self, PixelKit.snap(cr), RED if cont else DARK, 3)
-	HudPalette.hud_text(self, cr.position + Vector2(24, 39), tr("ui.menu.continue").to_upper(), 30, HudPalette.LIGHT, _f(30, 0.14), 0, false)
+	HudPalette.hud_text(self, cr.position + Vector2(cr.size.x / 2.0, 39), tr("ui.menu.continue").to_upper(), 30, HudPalette.LIGHT, _f(30, 0.14), 1, false)  # centred, like the buy bar above
 	_panel(d, ids, g)
 	var line := metis()
 	draw_rect(Rect2(0, d.y - 120, d.x, 56), DARK)
@@ -314,8 +321,7 @@ func _ghost(r: Rect2, col: Color, tone: float) -> void:
 
 ## The drawing panel: the picked upgrade's name, a flat icon, effect and the buy bar.
 func _panel(d: Vector2, ids: Array, g: Requisition) -> void:
-	var r := Rect2(d.x - 80 - 580, 150, 580, 560)
-	r = PixelKit.snap(r)
+	var r := _panel_rect()
 	PixelKit.cut_fill(self, r, Color(SHEET, 0.84), 6)
 	PixelKit.frame(self, r, DARK, 6)
 	if row >= ids.size():
