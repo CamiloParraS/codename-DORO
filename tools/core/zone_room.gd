@@ -42,6 +42,14 @@ const D := {
 		["crate_wide", [-32.6, 40.8, 0], 90], ["cardboard_box", [-32.5, 39.6, 0], 15], ["drum", [-15.7, 25.5, 0], 0],
 		["ceiling_lamp", [-14.8, 32, 3.8], 0],  # over the room's door
 		["mainframe", [-33.28, 27.9, 0], 90], ["mainframe", [-33.28, 35.9, 0], 90],  # the Core's banks, either side of the terminal
+		# a technician's workstation (OFFICE pack) on the east wall north of the door, off the guard's beat and the drop's landing,
+		# and two archive cabinets south of it
+		["office_desk", [-15.05, 28.6, 0], 270], ["office_chair", [-16.3, 28.6, 0], 90],
+		["file_cabinet_big", [-14.75, 35.3, 0], 270], ["file_cabinet_big", [-14.75, 36.9, 0], 270],
+	],
+	props = [
+		["office_monitor", [-14.95, 28.6, 0.89], 270], ["office_keyboard", [-15.6, 28.6, 0.89], 270], ["office_mouse", [-15.6, 29.3, 0.89], 270],
+		["desk_lamp", [-14.9, 27.6, 0.89], 270], ["mug", [-15.4, 29.9, 0.89], 0], ["paper_stack", [-15.0, 27.4, 0.89], 15],
 	],
 	# the room's door in a striped blast frame (4 m, as the design has it), its cables
 	doorways = [{at = [-14.15, 32], along_x = false, t = 0.3, wall_h = 4.3, head = 4.0, width = 2.0, out = 1.0, style = "blast", mat = "brick", tint = WALL}],

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c48rrvj1er611"
-path="res://.godot/imported/file_cabinet_open.glb-0fdac1331c196b694260a6a618d2d9f8.scn"
+uid="uid://da6lyf8umc257"
+path="res://.godot/imported/ice_box.glb-771023ecb846261b8286e8e238c6246c.scn"
 
 [deps]
 
-source_file="res://assets/models/props/file_cabinet_open.glb"
-dest_files=["res://.godot/imported/file_cabinet_open.glb-0fdac1331c196b694260a6a618d2d9f8.scn"]
+source_file="res://assets/models/props/ice_box.glb"
+dest_files=["res://.godot/imported/ice_box.glb-771023ecb846261b8286e8e238c6246c.scn"]
 
 [params]
 

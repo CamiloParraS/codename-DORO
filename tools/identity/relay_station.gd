@@ -20,10 +20,22 @@ const D := {
 		["radio_rack", [41.65, 17.82, 6], 180], ["radio_rack", [42.27, 17.82, 6], 180],
 		# the fuel hut's pump, facing the yard
 		["fuel_pump", [63.6, 73.4, 0], 270],
+		# OFFICE pack and 3D Retro World: the garage's bin, a water cooler in the mess, and the summit office's second desk
+		# against the south wall (its chair north of it), archive cabinets and a cooler on the east wall
+		["trash_can", [44.8, 71.4, 0], 0], ["water_cooler", [62.1, 38.75, 3], 180],
+		["office_desk", [59.0, 17.2, 6], 0], ["office_chair", [59.0, 15.9, 6], 180],
+		["file_cabinet_big", [63.4, 13.0, 6], 270], ["file_cabinet_big", [63.4, 14.6, 6], 270], ["water_cooler", [63.3, 16.9, 6], 270],
 	],
 	props = [
 		["tool_board", [55.2, 62.34, 1.15], 180], ["car_battery", [51.2, 62.65, 0.62], 180], ["jerrycan", [52.1, 62.6, 0.62], 180],
 		["key_cabinet", [57.3, 64.8, 1.1], 270, 1.6], ["notice_board", [57.68, 69.5, 1.1], 270],
+		# the mess's kitchen: a camp burner and pan on the counter, an ice box beside it, a thermos and mugs on the table
+		["camp_cooker", [58.2, 38.65, 3.9], 0], ["camp_pan", [59.1, 38.65, 3.9], 20], ["ice_box", [60.5, 38.8, 3.0], 0],
+		["thermal_bottle", [56.3, 44.2, 3.96], 0], ["mug", [61.3, 44.3, 3.96], 0], ["mug", [55.8, 44.5, 3.96], 120],
+		["fire_extinguisher", [45.3, 62.35, 1.1], 180],  # the garage's, on its north wall
+		# the summit office's second desk (top 0.89 m)
+		["office_monitor", [59.1, 17.3, 6.89], 0], ["office_keyboard", [59.1, 16.75, 6.89], 0], ["office_mouse", [59.8, 16.75, 6.89], 0],
+		["desk_lamp", [58.2, 17.4, 6.89], 0], ["mug", [60.0, 17.5, 6.89], 0], ["paper_stack", [57.9, 16.9, 6.89], 10],
 		["wall_clock", [58.6, 38.32, 5.0], 0], ["notice_board", [63.68, 42, 4.2], 270], ["wall_clock", [57, 8.33, 8.4], 0],
 	],
 	trim = [

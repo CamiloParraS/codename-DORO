@@ -2,16 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://05toe5np0jkx"
-path="res://.godot/imported/file_cabinet_open_file_cabinet_big.png-3a0e9a6ded79c000a8479dda7267cda5.ctex"
+uid="uid://j1shtcccfb2x"
+path="res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.ctex"
 metadata={
 "vram_texture": false
+}
+generator_parameters={
+"md5": "5fe6aeb0e71b52d1408ab0644c53932c"
 }
 
 [deps]
 
-source_file="res://assets/models/props/file_cabinet_open_file_cabinet_big.png"
-dest_files=["res://.godot/imported/file_cabinet_open_file_cabinet_big.png-3a0e9a6ded79c000a8479dda7267cda5.ctex"]
+source_file="res://assets/models/props/trash_can_Trash_Can_Material Color.png"
+dest_files=["res://.godot/imported/trash_can_Trash_Can_Material Color.png-41b8d892dcca78a5a3cf8760a1ac1916.ctex"]
 
 [params]
 
@@ -23,7 +26,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
