@@ -5,7 +5,7 @@ class_name Credits
 extends Control
 
 const MENU := "res://ui/main_menu/main_menu.tscn"
-const SPEED := 64.0      # design px/s
+const SPEED := 140.0     # design px/s
 const FAST := 6.0        # times faster while the advance key is held
 const HOLD := 6.0        # s "Thank you for playing" holds before the screen leaves on its own
 const ROW := 46.0        # a name's line
