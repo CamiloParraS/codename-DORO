@@ -79,7 +79,7 @@ const SOLID := [
 	# (x 41-44) beyond; the gaps in the columns are staggered so no cross lane runs straight through
 	["Crane", [54, 18, 4, 4], 0, 8, "hatch", Color(1.0, 0.78, 0.2)],
 	["CraneBoom", [58, 19.5, 7, 1], 7.5, 8, "hatch", Color(1.0, 0.78, 0.2)],
-	["ResupplyCrate", [58.5, 49, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
+	["ResupplyCrate", [46.5, 8.4, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],  # in the Gatehouse, by the road gate
 	["Container1", [44, 42, 3, 10], 0, CONTAINER_H, "metal", Color(0.42, 0.32, 0.27)],
 	["Container2", [38, 56, 3, 8], 0, CONTAINER_H, "metal", Color(0.28, 0.34, 0.4)],
 	["Container3", [44, 26, 3, 10], 0, CONTAINER_H, "metal", Color(0.28, 0.35, 0.3)],
@@ -184,7 +184,7 @@ const CAMERAS := [
 ## DeckEntry: reinforcements for an Operative nearer the deck come out of the bridge (harbour.gd).
 const SPOTS := {
 	OperativeStart = [73, 0, DECK], RoadEntry = [30, -2, 0], DeckEntry = [73, 46.6, DECK], Extraction = [11, 74, 0],
-	ResupplyCrate = [59, 49.5, 1], FreightLift = [8, 32, 0], SafeRoom = [46, 7.5, 0],
+	ResupplyCrate = [47, 8.9, 1], FreightLift = [8, 32, 0], SafeRoom = [46, 7.5, 0],
 }
 ## Places a Spoofed "go" sends a guard: [x, y, h]. Bow takes O5 off the gangway or B off the stern drop.
 const SPOOFS := {SpoofDock = [52, 72, 0], SpoofWarehouse = [42, 40, 0], SpoofGatehouse = [40, 16.5, 0], SpoofForecourt = [14, 46, 0],

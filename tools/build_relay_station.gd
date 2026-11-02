@@ -57,7 +57,7 @@ const SOLID := [
 	# motor pool
 	["Container1", [26, 62, 3, 8], 0, 2.6, "metal", Color(0.42, 0.32, 0.27)],
 	["Container2", [36, 66, 8, 3], 0, 2.6, "metal", Color(0.28, 0.34, 0.4)],
-	["ResupplyCrate", [49.5, 63.5, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
+	["ResupplyCrate", [62.5, 15.5, 1, 1], 6, 7, "wood", Color(0.6, 0.9, 0.6)],  # in the Office, beside the mast
 ]
 ## Raised walkable slabs: [name, rect, top h, material]. The catwalk runs from the mast to the office roof.
 const DECKS := [["Catwalk", [40, 10, 10, 1.6], 10, "metal"]]
@@ -120,7 +120,7 @@ const CAMERAS := [
 ]  # CamRoad sweeps 265..35 degrees: the ramp landing, never the garage east door (232 degrees, 16.4 m)
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [82, 44, 3], Extraction = [9, 14, 6],
-	ResupplyCrate = [50, 64, 1], SafeRoom = [60, 12, 6], RelayConsole = [40, 20, 6],
+	ResupplyCrate = [63, 16, 7], SafeRoom = [60, 12, 6], RelayConsole = [40, 20, 6],
 }
 ## The three Encounters, one per objective step: [id, name, problem, rect]. The Barracks terrace also holds the
 ## Ladder-top and scree-foot transits between the Motor pool and the Summit.

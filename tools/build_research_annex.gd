@@ -39,7 +39,7 @@ const SOLID := [
 	["Truck", [50, 6, 7, 3], 0, 3, "metal", Color(0.45, 0.5, 0.4)],
 	["DockCrate1", [58, 36, 3, 4], 0, 2.6, "metal", Color(0.36, 0.34, 0.3)],
 	["DockCrate2", [58, 48, 3, 6], 0, 2.6, "metal", Color(0.36, 0.34, 0.3)],
-	["ResupplyCrate", [54.5, 63.5, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],
+	["ResupplyCrate", [16.4, 19, 1, 1], 0, 1, "wood", Color(0.6, 0.9, 0.6)],  # in the Locker room
 	# tower deck rails, open at the stair tops: off an outer edge the Operative would clear the fence
 	["RailGateN", [30, 5, 6, 0.2], 5, 6, "metal", RAIL],
 	["RailGateE", [35.8, 5, 0.2, 6], 5, 6, "metal", RAIL],
@@ -137,7 +137,7 @@ const CAMERAS := [
 ]
 const SPOTS := {
 	OperativeStart = [8, 72, 0], RoadEntry = [40, 2, 0], Extraction = [70, 24, 0],
-	ResupplyCrate = [55, 64, 1], SafeRoom = [12, 23, 0], ResearchFiles = [27, 50, 0],  # the safe room: the locker room, ~35 m from the reinforcements' gate
+	ResupplyCrate = [16.9, 19.5, 1], SafeRoom = [12, 23, 0], ResearchFiles = [27, 50, 0],  # the safe room: the locker room, ~35 m from the reinforcements' gate
 }
 ## The three Encounters, one per objective step: [id, name, problem, rect]. E2 and E3 never share a shout (15.5 m).
 const ENCOUNTERS := [
