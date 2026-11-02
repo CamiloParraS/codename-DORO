@@ -79,6 +79,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - "airy_0", "urgent_0", "sector_0" (`assets/audio/music_patrol.ogg`, `music_alert.ogg`, `music_evasion.ogg`) from Dark Sci-Fi Audio Pack by SRG774, https://opengameart.org/content/dark-sci-fi-audio-pack, CC0 1.0
 - Impact Sounds by Kenney, https://kenney.nl/assets/impact-sounds, CC0 1.0: `footstep_concrete_000..004` (`sfx_step_*`), `impactPunch_medium_000` (`sfx_takedown`), `impactSoft_heavy_000` (`sfx_body_fall`), `impactSoft_medium_000` (`sfx_dart_hit`), `impactPlate_light_000` (`sfx_dart_vest`), `impactMetal_light_000..001` (`sfx_mag_land_*`)
 - `cloth1` (layered into `sfx_choke.ogg`), RPG Audio by Kenney, https://kenney.nl/assets/rpg-audio, CC0 1.0
+- `metalClick` (`sfx_gun_dry.ogg`), `beltHandle1` (`sfx_reload_out.ogg`), `metalLatch` (`sfx_reload_in.ogg`), `handleSmallLeather` (`sfx_weapon_switch.ogg`), RPG Audio by Kenney, https://kenney.nl/assets/rpg-audio, CC0 1.0
 - `click3` (`sfx_ui_click.ogg`), UI Audio by Kenney, https://kenney.nl/assets/ui-audio, CC0 1.0
 - "A silenced/suppressed handgun being shot once w/ phaser sounding trail // pretty metallic sounding" by serøutōnin--deprivəd, https://freesound.org/s/855656/, CC0 (`sfx_shot_quiet.ogg`)
 - "Silenced Sniper Rifle.flac" by qubodup, https://freesound.org/s/182815/, CC0 (`sfx_shot_quiet_rifle.ogg`, trimmed)

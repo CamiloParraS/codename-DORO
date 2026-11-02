@@ -82,15 +82,14 @@ func _unhandled_input(e: InputEvent) -> void:
 		_interact()
 	elif e.is_action_pressed("kill_takedown") and _choke_left <= 0.0 and not carrying:
 		_begin_kill()
-	elif e.is_action_pressed("weapon_tranq"):
-		_gun = tranq
-		model.hold("tranq")
-	elif e.is_action_pressed("weapon_rifle"):
-		_gun = rifle
-		model.hold("rifle")
+	elif e.is_action_pressed("weapon_tranq") or e.is_action_pressed("weapon_rifle"):
+		var to: Gun = tranq if e.is_action_pressed("weapon_tranq") else rifle
+		if to != gun():
+			Mix.sfx_at(self, &"weapon_switch")
+		_gun = to
+		model.hold("tranq" if to == tranq else "rifle")
 	elif e.is_action_pressed("reload"):
-		if gun().reload(carrying != null):
-			model.react("reload", Gun.RELOAD_TIME)
+		gun().reload(carrying != null)  # its sound and the hands come from the gun's events
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
 		_fire()
 	elif e.is_action_pressed("pause"):  # Areas without a pause screen (the test room)
@@ -125,6 +124,7 @@ func _physics_process(delta: float) -> void:
 	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
+	_gun_events()
 	set_collision_mask_value(CARRY_BLOCK_LAYER, carrying != null)
 	if ladder:
 		_climb(Input.get_axis("move_back", "move_forward"), delta)
@@ -212,6 +212,24 @@ func _throw_magazine() -> void:
 ## Hitscan: the crosshair picks the aim point, the shot leaves the muzzle for it. Tranq: a hit on a standing guard's head Neutralizes it, on the body
 ## starts the stumble. Rifle: kills (see Guard.shoot), destroys cameras, and a broken suppressor makes
 ## the shot heard.
+## Sounds what the guns just did: a dry click, a reload's mag out (with the hands) and its mag in. Every reload,
+## the automatic one after the last round included, so an empty gun is never silent.
+func _gun_events() -> void:
+	for g: Gun in [tranq, rifle]:
+		for ev: StringName in g.events:
+			if g != gun():
+				continue
+			match ev:
+				&"dry":
+					Mix.sfx_at(self, &"gun_dry")
+				&"reload_start":
+					Mix.sfx_at(self, &"reload_out")
+					model.react("reload", Gun.RELOAD_TIME)
+				&"reload_end":
+					Mix.sfx_at(self, &"reload_in")
+		g.events.clear()
+
+
 func _fire() -> void:
 	var arm := gun()
 	var quiet := arm.suppressed()

@@ -4,6 +4,8 @@ class_name Gun
 extends RefCounted
 
 const RELOAD_TIME := 1.5
+const DRY_EVERY := 0.25  # s between dry clicks with the trigger held (an automatic)
+const DRY_FLASH := 0.4   # s the HUD's empty count flashes after a dry click
 const SPREAD_ONE_HAND := 0.05  # radians of aim error while carrying; both hands is dead on
 
 var label := ""          # on the HUD weapon card
@@ -22,6 +24,10 @@ var reload_left := 0.0
 var suppressor_max := -1 # shots before the suppressor breaks; -1 = it never breaks
 var suppressor := -1
 var resupply := -1       # rounds a crate adds, capped at total; -1 = a full resupply
+var dry := 0.0           # s left of the HUD's flash after a pull on an empty gun
+## What just happened, for the Operative to sound and show: &"dry" (a pull on an empty load), &"reload_start",
+## &"reload_end". It takes them with events.clear() once played.
+var events: Array[StringName] = []
 
 
 ## Radians of aim error: none with both hands, SPREAD_ONE_HAND while carrying.
@@ -54,9 +60,14 @@ func can_fire() -> bool:
 	return loaded > 0 and not reloading() and cooldown <= 0.0
 
 
-## Spends a round; false when the gun can't fire. Empties start a reload (held off while carrying).
+## Spends a round; false when the gun can't fire. Empties start a reload (held off while carrying). A pull on an
+## empty load is a dry click (no more often than DRY_EVERY).
 func fire(carrying: bool) -> bool:
 	if not can_fire():
+		if loaded == 0 and cooldown <= 0.0:
+			cooldown = DRY_EVERY
+			dry = DRY_FLASH
+			events.append(&"dry")
 		return false
 	loaded -= 1
 	if suppressor > 0:
@@ -72,12 +83,14 @@ func reload(carrying: bool) -> bool:
 	if carrying or reloading() or loaded == load_size or reserve == 0:
 		return false
 	reload_left = RELOAD_TIME
+	events.append(&"reload_start")
 	return true
 
 
 ## Runs the reload. Carrying cancels one in progress; an empty load restarts it once the hands are free.
 func tick(delta: float, carrying: bool) -> void:
 	cooldown = maxf(cooldown - delta, 0.0)
+	dry = maxf(dry - delta, 0.0)
 	if carrying:
 		reload_left = 0.0
 		return
@@ -88,6 +101,7 @@ func tick(delta: float, carrying: bool) -> void:
 			var n := mini(load_size - loaded, reserve)
 			loaded += n
 			reserve -= n
+			events.append(&"reload_end")
 	elif loaded == 0:  # emptied while carrying: reload as soon as the hands are free
 		reload(false)
 

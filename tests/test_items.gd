@@ -127,3 +127,28 @@ func test_scanner_draws_a_cameras_cone_on_the_floor_under_it() -> void:
 	assert_eq(below, 0, "from the ground 6 m below, no cone")
 	for n: Node in [view, cam, terrace]:
 		n.free()
+
+
+## A gun says what it did, so an empty one is never silent (playtest 1): a pull on an empty load clicks (not every
+## frame with the trigger held), and a reload starts and ends, the automatic one after the last round included.
+func test_a_gun_reports_dry_pulls_and_reloads() -> void:
+	var t := Tranq.new()
+	t.loaded = 1
+	t.reserve = 0
+	assert_true(t.fire(false))
+	t.events.clear()
+	assert_false(t.fire(false), "empty")
+	assert_eq(t.events, [&"dry"] as Array[StringName])
+	assert_true(t.dry > 0.0, "the HUD flashes")
+	assert_false(t.fire(false))
+	assert_eq(t.events.size(), 1, "held: no second click inside DRY_EVERY")
+	t.tick(Gun.DRY_EVERY + 0.01, false)
+	t.fire(false)
+	assert_eq(t.events.size(), 2, "the next click once DRY_EVERY has passed")
+	t.events.clear()
+	t.reserve = 3
+	t.tick(0.01, false)  # empty with darts in reserve: the reload starts by itself
+	assert_eq(t.events, [&"reload_start"] as Array[StringName])
+	t.tick(Gun.RELOAD_TIME + 0.01, false)
+	assert_eq(t.events, [&"reload_start", &"reload_end"] as Array[StringName])
+	assert_true(t.loaded > 0)

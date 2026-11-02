@@ -386,7 +386,13 @@ func _gear(d: Vector2) -> void:
 	var rf := HudPalette.DISPLAY
 	var rw := rf.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
 	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 12), res, 24, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, rf, 2, false)
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 50, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	var flash := gun.dry > 0.0 and int(gun.dry / 0.1) % 2 == 0  # a pull on an empty gun blinks the count
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 50, HudPalette.LIGHT if flash else HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	if gun.reloading() or gun.loaded == 0:  # say it in words: RELOADING, or EMPTY with nothing left to load
+		var word := tr("ui.hud.reloading" if gun.reloading() else "ui.hud.empty")
+		HudPalette.hud_label(_canvas, Vector2(wr.end.x - 16, wr.position.y + 34), word, 16, HudPalette.LIGHT if gun.reloading() else HudPalette.DMG, 0.16, HudPalette.LABEL_BOLD, 2)
+	if gun.reloading():
+		_canvas.draw_rect(Rect2(wr.position.x, wr.end.y - 4, wr.size.x * (1.0 - gun.reload_left / Gun.RELOAD_TIME), 4), HudPalette.LIGHT)
 	var track := Rect2(wr.position.x + 20, wr.end.y + 12, wr.size.x - 20, 6)  # rounds left, loaded and reserve
 	_canvas.draw_rect(track, Color(HudPalette.LIGHT, 0.22))
 	var left := float(gun.loaded + gun.reserve) / maxf(gun.total, 1.0)
