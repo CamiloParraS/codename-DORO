@@ -36,8 +36,8 @@ const D := {
 		["office_chair_grey", [53.6, 22.0, 0], 90], ["water_cooler", [45.0, 18.8, 0], 180], ["bookcase_small", [44.55, 24.8, 0], 90],
 		# the lobby's waiting area against the south wall, a water cooler in the north-east corner
 		["couch", [18.5, 52.9, 0], 0], ["armchair", [21.0, 52.9, 0], 0], ["water_cooler", [22.8, 44.6, 0], 180],
-		# the archive's east wall: two more cabinets, one open
-		["file_cabinet_big", [39.45, 48.2, 0], 270], ["file_cabinet_big", [39.45, 49.8, 0], 270], ["file_cabinet_open", [38.4, 45.05, 0], 180],
+		# the archive's east wall: two more cabinets
+		["file_cabinet_big", [39.45, 48.2, 0], 270], ["file_cabinet_big", [39.45, 49.8, 0], 270]
 	],
 	props = [
 		["microscope", [17.2, 38.1, 1.0], 0], ["whiteboard", [29.75, 38.6, 1.0], 270], ["keypad", [45.3, 30.78, 1.3], 180],
