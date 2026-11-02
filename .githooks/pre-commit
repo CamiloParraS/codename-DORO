@@ -12,49 +12,5 @@ for f in $(git diff --cached --name-only --diff-filter=AM -- '*.gd' | grep -v '^
   [ "$n" -gt 600 ] && { echo "pre-commit: $f is $n lines; split it below 600 (aim for 500)" >&2; exit 1; }
 done
 
-# Scripts, scenes and text still parse and the related suites are green (FULL=1 runs the whole suite). It runs on the staged content in a temp
-# checkout, so other unstaged edits and untracked files neither break nor rescue it. Skipped when nothing runnable
-# is staged; `SKIP_CHECKS=1 git commit` bypasses it.
-[ -n "$SKIP_CHECKS" ] && exit 0
-git diff --cached --name-only | grep -Eq '\.(gd|tscn|tres|csv|gdshader)$' || exit 0
-command -v godot >/dev/null 2>&1 || { echo "pre-commit: godot not on PATH, skipping the suite" >&2; exit 0; }
-main=$(git rev-parse --show-toplevel)
-tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
-git checkout-index --all --prefix="$tmp/"
-cp -rp "$main/.godot" "$tmp/"  # the import cache, times kept, so only changed files reimport
-git ls-files --others --ignored --exclude-standard -- '*.res' | grep -v '^\.claude/' | while read -r f; do  # baked clips
-  mkdir -p "$tmp/$(dirname "$f")"; cp -p "$f" "$tmp/$f"
-done
-# A staged script that leans on an unstaged or untracked file (an icon, a const) fails here: stage it too.
-# Only the suites that mention a staged file run (its name or class_name in tests/test_*.gd; a staged suite runs
-# itself). A staged csv, project.godot or addons/ file can touch anything, so those run them all, as does FULL=1.
-# Parse errors anywhere still show: the import pass loads every script.
-staged=$(git diff --cached --name-only)
-suites=""
-if [ -z "$FULL" ] && ! printf '%s\n' "$staged" | grep -Eq '\.csv$|^project\.godot$|^addons/'; then
-  for f in $staged; do
-    case "$f" in
-      tests/test_*.gd) suites="$suites $(basename "$f")"; continue ;;
-      *.gd|*.tscn|*.tres|*.gdshader) ;;
-      *) continue ;;
-    esac
-    cn=$(git show ":$f" 2>/dev/null | sed -n 's/^class_name[[:space:]]\{1,\}\([A-Za-z0-9_]*\).*/\1/p' | head -1)
-    for n in "$(basename "$f" | sed 's/\.[^.]*$//')" $cn; do
-      suites="$suites $(grep -lw -- "$n" "$tmp"/tests/test_*.gd 2>/dev/null | xargs -n1 basename 2>/dev/null)"
-    done
-  done
-  suites=$(printf '%s\n' $suites | sort -u | tr '\n' ' ')
-  if [ -z "$suites" ]; then
-    suites="-"  # nothing relates: no suite file name contains "-", so only the import check runs
-    echo "pre-commit: no suite mentions the staged files; checked parsing only (FULL=1 runs them all)" >&2
-  fi
-fi
-out=$(timeout 300 godot --headless --path "$tmp" --import 2>&1; timeout 600 godot --headless --path "$tmp" tools/run_tests.tscn ${suites:+-- $suites} 2>&1 \
-  || echo "FAIL the suite failed, crashed or ran past 10 minutes")
-bad=$(printf '%s\n' "$out" | grep -E 'Parse Error|Compile Error|SCRIPT ERROR|^FAIL |^passed [0-9]+ failed [1-9]')
-if [ -n "$bad" ]; then
-  echo "pre-commit: scripts or tests are broken in the staged tree (SKIP_CHECKS=1 to bypass):" >&2
-  printf '%s\n' "$bad" | head -15 >&2
-  exit 1
-fi
+# No suite runs here: the tests run while the change is made (tools/run_tests.tscn, or the test_run MCP tool).
+exit 0

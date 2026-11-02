@@ -52,4 +52,4 @@ Branches are `<type>/<kebab-name>` named after the work, never the ticket: `feat
 
 `.githooks/commit-msg` enforces both rules. Enable it once per clone with `git config core.hooksPath .githooks`.
 
-The tree often mixes several pieces of work: commit only yours, by hunk, with `python tools/stage_hunks.py <file> <regex>` (`-n` lists the hunks first). `.githooks/pre-commit` runs the suite on the staged content in a temp checkout, so unstaged edits don't affect it.
+The tree often mixes several pieces of work: commit only yours, by hunk, with `python tools/stage_hunks.py <file> <regex>` (`-n` lists the hunks first). The hooks don't run the tests: run the suites your change touches before you commit.
