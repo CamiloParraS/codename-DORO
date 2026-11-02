@@ -328,6 +328,7 @@ ui.hud.vp,VP,VOZ
 ui.hud.operative,OPERATIVE,OPERATIVO
 ui.hud.jammed,JAMMED,BLOQUEADO
 ui.hud.life,LIFE,VIDA
+ui.loading,LOADING,CARGANDO
 ui.hud.objective,OBJECTIVE,OBJETIVO
 ui.hud.checkpoint,CHECKPOINT,PUNTO DE CONTROL
 ui.mouse.left,CLICK,CLIC

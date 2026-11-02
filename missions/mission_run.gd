@@ -75,6 +75,9 @@ func _ready() -> void:
 	SessionLog.current.start_mission(record.mission, "%s, %s" % [get_parent().name, "campaign" if campaign else "replay" if replay else "free mode"])
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
+	var cover := get_tree().get_first_node_in_group("loading_cover")
+	if cover:  # the loading screen is still over the Area while its first frames compile: the take waits
+		await cover.lifted
 	if cine.has("intro") and not CineLogic.plays(campaign, replay):
 		pass  # Free mode: no take and no card, straight to the Preset
 	elif cine.has("intro"):  # a take replaces the card: after the Codec call the Area is up, so it plays here
