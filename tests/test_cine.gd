@@ -268,3 +268,10 @@ func _player() -> AnimationPlayer:
 	lib.add_animation("take", clip)
 	p.add_animation_library("", lib)
 	return p
+
+
+func test_a_take_line_that_fits_keeps_its_size_and_a_long_one_shrinks_to_fit() -> void:
+	assert_eq(CineLogic.fit(22, 900.0, 1700.0), 22, "fits: unchanged")
+	assert_eq(CineLogic.fit(52, 3400.0, 1700.0), 26, "twice too wide: half the size")
+	assert_true(CineLogic.fit(52, 1800.0, 1700.0) * 1800.0 / 52.0 <= 1700.0, "the shrunk line fits the room")
+	assert_true(CineLogic.TITLE_SIZE < 64 and CineLogic.LINE_SIZE < 26, "smaller than the first cut (64 / 26)")

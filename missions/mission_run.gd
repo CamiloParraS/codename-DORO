@@ -532,7 +532,7 @@ func _on_extraction() -> void:
 	if cine.has("outro") and not CineLogic.plays(campaign, replay):
 		show.call()  # Free mode: straight to the Rank page
 	elif cine.has("outro"):  # ends on black, then the screen
-		_take(cine.outro, [tr(outro.line)] if outro.has("line") else [], true, show)
+		_take(cine.outro, [tr(outro.title), tr(outro.line)] if outro.has("line") else [], true, show)  # laid out like the intro: the title big, the line under it
 	elif outro.is_empty():
 		show.call()
 	else:  # fade out on the extraction beat, then the post-Mission screen

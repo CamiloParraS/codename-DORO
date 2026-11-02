@@ -21,15 +21,18 @@ func _draw() -> void:
 	var k := size.y / HudPalette.DESIGN_H
 	var d := size / k
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
-	var y := d.y - bar / k - 70.0 - maxf(0, lines.size() - 1) * 34.0
+	var y := d.y - bar / k - 60.0 - maxf(0, lines.size() - 1) * 30.0
 	if third > 0.0 and not lines.is_empty():
 		var x := 110.0
 		for i in lines.size():
 			var big := i == 0
-			var fs := 64 if big else 26
-			var font: Font = HudPalette.tracked(HudPalette.DISPLAY, fs, 0.16 if big else 0.28)
-			HudPalette.hud_text(self, Vector2(x, y), lines[i].to_upper() if not big else lines[i], fs, Color(HudPalette.LIGHT if big else HudPalette.LIGHT_2, third), font, 0, false)
-			y += 70.0 if big else 34.0
+			var em := 0.16 if big else 0.28
+			var text := lines[i] if big else lines[i].to_upper()
+			var fs := HudPalette.legible(self, CineLogic.TITLE_SIZE if big else CineLogic.LINE_SIZE)
+			var w := HudPalette.tracked(HudPalette.DISPLAY, fs, em).get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			fs = CineLogic.fit(fs, w, d.x - 2.0 * x)  # a long line (or its translation) shrinks rather than run off the screen
+			HudPalette.hud_text(self, Vector2(x, y), text, fs, Color(HudPalette.LIGHT if big else HudPalette.LIGHT_2, third), HudPalette.tracked(HudPalette.DISPLAY, fs, em), 0, false)
+			y += 60.0 if big else 30.0
 	if skip > 0.0:
 		var c := Vector2(d.x - 90.0, d.y - maxf(bar / k, 0.0) - 70.0)
 		draw_arc(c, 22.0, 0.0, TAU, 40, Color(HudPalette.LIGHT, 0.25), 2.0)

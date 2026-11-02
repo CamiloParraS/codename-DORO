@@ -11,6 +11,8 @@ const LOWER_THIRD_AT := 0.3     # s into the take the lower-third starts fading 
 const LOWER_THIRD_IN := 0.4     # s it takes to fade in, and again to fade out
 const LOWER_THIRD_HOLD := 3.0   # s into the take it starts fading out (earlier in a take too short for it)
 const FADE_OUT := 0.6           # s an outro take spends fading to black at its end
+const TITLE_SIZE := 52          # design px: the lower-third's first line (MISSION 1, MISSION COMPLETE)
+const LINE_SIZE := 22           # design px: the lines under it
 
 
 ## 0..1: how far a skip hold has come.
@@ -43,6 +45,11 @@ static func lower_third(t: float, length: float, at := LOWER_THIRD_AT) -> float:
 ## Opacity of an outro take's black at `t` of `length`: 0 until FADE_OUT before the end, then up to 1.
 static func black(t: float, length: float) -> float:
 	return clampf((t - (length - FADE_OUT)) / FADE_OUT, 0.0, 1.0)
+
+
+## The font size that fits a line `width` wide at `fs` into `room`: fs itself when it fits, else scaled down to fit.
+static func fit(fs: int, width: float, room: float) -> int:
+	return fs if width <= room else maxi(1, floori(fs * room / width))
 
 
 ## Height in px of each bar for a viewport of `size`: nothing when the picture is already 2.39:1 or wider.
