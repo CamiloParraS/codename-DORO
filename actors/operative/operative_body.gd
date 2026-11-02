@@ -15,6 +15,7 @@ const RECOIL_RECOVERY := 0.3 # radians per second it settles back
 const CRATE_REACH := 2.0      # metres to a resupply crate's centre
 const LADDER_REACH := 1.2     # metres to a Ladder's Bottom or Top marker to climb on
 const CLIMB_SPEED := 1.8
+const STEP_OFF_TIME := 0.3  # s from the top of a Ladder across onto its Top marker
 const CARRY_BLOCK_LAYER := 4  # Crawlspace mouths: solid only to an Operative carrying a body
 const NoFulton := preload("res://areas/no_fulton.gd")
 const FULTON_TIME := 3.0      # seconds of the Fulton key held, standing still, beside a Neutralized guard (pw-feel 05)
@@ -91,6 +92,8 @@ var _ask := 0.0          # seconds of E held on held_up
 var _fultoning: Guard
 var _fulton_left := 0.0
 var _rung_left := 0.0   # metres of ladder until the next rung sound
+var _climb_dir := 0.0   # +1 up the ladder, -1 down, 0 holding on
+var _step_off := 0.0    # s left of the step from the top of a Ladder onto its Top marker; 0 while climbing
 
 
 ## The Mission's kit (Requisition.kit or BASE), set before the Area enters the tree.
@@ -208,6 +211,7 @@ func restore(s: Dictionary) -> void:
 	held_up = null  # the guards go back to their posts
 	_fultoning = null
 	ladder = null
+	_step_off = 0.0
 	global_transform = s.xform
 	reset_physics_interpolation()
 	velocity = Vector3.ZERO

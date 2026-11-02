@@ -50,26 +50,37 @@ func _mount(l: Node3D) -> void:
 	global_position = Vector3(bottom.x, top.y - 0.05, bottom.z) if global_position.y > bottom.y + 1.0 else bottom
 	reset_physics_interpolation()
 	velocity = Vector3.ZERO
+	_step_off = 0.0
 	model.rotation.y = atan2(-(top.x - bottom.x), -(top.z - bottom.z))
 
 
-## On a Ladder: dir +1 climbs, -1 descends, at CLIMB_SPEED. Off onto the Top marker past the top, or at the foot.
+## On a Ladder: dir +1 climbs, -1 descends, at CLIMB_SPEED. Past the top he steps across onto the Top marker over
+## STEP_OFF_TIME; at the foot he lets go.
 func _climb(dir: float, delta: float) -> void:
-	moving = dir != 0.0
-	velocity = Vector3.ZERO
-	prompt = Prompts.verb("crouch", "ui.prompt.drop_off")
-	prompt_parts = [part("crouch", "drop_off")]
 	var bottom: Vector3 = ladder.get_node("Bottom").global_position
 	var top: Vector3 = ladder.get_node("Top").global_position
+	velocity = Vector3.ZERO
+	if _step_off > 0.0:  # stepping off the top: no say in it until he stands on the Top marker
+		_step_off -= delta
+		var u := smoothstep(0.0, 1.0, 1.0 - maxf(_step_off, 0.0) / STEP_OFF_TIME)
+		global_position = Vector3(bottom.x, top.y, bottom.z).lerp(top, u)
+		if _step_off <= 0.0:
+			global_position = top
+			ladder = null
+		return
+	moving = dir != 0.0
+	_climb_dir = dir
+	prompt = Prompts.verb("crouch", "ui.prompt.drop_off")
+	prompt_parts = [part("crouch", "drop_off")]
 	var y := global_position.y + dir * CLIMB_SPEED * delta
-	if y >= top.y:
-		global_position = top
-		ladder = null
-	elif y <= bottom.y:
+	if dir > 0.0 and y >= top.y:
+		global_position = Vector3(bottom.x, top.y, bottom.z)
+		_step_off = STEP_OFF_TIME
+	elif dir < 0.0 and y <= bottom.y:  # only on the way down: mounting puts him on the bottom rung, holding still
 		global_position = bottom
 		ladder = null
 	else:
-		global_position = Vector3(bottom.x, y, bottom.z)
+		global_position = Vector3(bottom.x, clampf(y, bottom.y, top.y), bottom.z)
 		_rung_left -= absf(dir) * CLIMB_SPEED * delta
 		if _rung_left <= 0.0:
 			_rung_left = RUNG_SPACING

@@ -50,8 +50,8 @@ func _unhandled_input(e: InputEvent) -> void:
 		var l := Locomotion.look(_yaw, _pitch, e.relative, GameSettings.current.sensitivity, GameSettings.current.invert_y)
 		_yaw = l.x
 		_pitch = l.y
-	elif ladder:  # both hands on the rungs: the only move is to drop off
-		if e.is_action_pressed("crouch") or e.is_action_pressed("interact"):
+	elif ladder:  # both hands on the rungs: the only move is to drop off (not while stepping onto the top)
+		if (e.is_action_pressed("crouch") or e.is_action_pressed("interact")) and _step_off <= 0.0:
 			ladder = null
 	elif e.is_action_pressed("crouch") and (not crouching or _headroom()):
 		crouching = not crouching
@@ -293,5 +293,7 @@ func _process(delta: float) -> void:
 	if not health.dead():  # a ragdoll is not driven by the clips
 		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task())
 		model.play(cine_clip if cine and cine_clip != "" else clip, Vector2(velocity.x, velocity.z).length())
+		if clip == "climb" and not cine:  # the hands keep hold of the rungs: still when he is, backwards going down
+			model.pace(_climb_dir * CLIMB_SPEED / CharacterModel.CLIMB_SPEED)
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())
 	model.visible = not looking and _back_arm.get_hit_length() > HIDE_BODY_BELOW

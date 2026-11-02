@@ -63,6 +63,9 @@ const DRESS := {
 ## hand_to_ear is a 39 s phone call: played from its start at this speed, the hand is at the ear within a second
 ## (squeezed whole into a Radio call it would spasm at 20x).
 const EAR_SPEED := 3.0
+## m/s the climbing_ladder clip climbs at: its gripping hand slides down the body this fast. pace() scales the clip
+## from it so the hands hold the rungs instead of sliding up them.
+const CLIMB_SPEED := 0.7
 const CARRY_BONE := "spine_03"
 const HAND_BONE := "hand_r"
 const OFF_HAND := "hand_l"
@@ -356,6 +359,12 @@ func play(clip: String, ground_speed := 0.0) -> void:
 	var natural: float = _anim.get_animation(clip).get_meta("speed", 0.0)
 	# ponytail: clamped so a mismatched clip (carry walk at full walk speed) skates a little instead of flailing
 	_anim.speed_scale = clampf(ground_speed / natural, 0.6, 1.5) if natural > 0.0 and ground_speed > 0.0 else 1.0
+
+
+## Plays the current clip at `rate` times its speed, after play(): 0 holds the pose, below 0 runs it backwards
+## (a ladder climbed down).
+func pace(rate: float) -> void:
+	_anim.speed_scale = rate
 
 
 ## The clip to actually play: with the pistol out, its takes replace the shared ones where they exist.
