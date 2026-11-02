@@ -49,6 +49,9 @@ func start(record: Dictionary, then: String) -> void:
 	_still_tex = load(Finale.stills(model.band)[0].path)  # not in _draw: a texture first loaded there draws white (Godot 4.7)
 	leave_to = then
 	visible = true
+	var hud := get_parent().get_node_or_null("HudLayer") as CanvasLayer  # the HUD's layer sits above this one
+	if hud:
+		hud.visible = false  # for good: the Ascent's take restores what it found, so it stays down
 	HudPalette.fade(self)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().paused = true
