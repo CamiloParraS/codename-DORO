@@ -20,8 +20,8 @@ const LAND := [
 	[[4, 32, 72, 24], "ground", 3, SNOW],         # barracks terrace
 	[[4, 4, 72, 28], "ground", 6, SNOW],          # summit
 	[[76, 40, 20, 8], "ground", 3, Color.WHITE],  # the road in from the east, out to x 96
-	[[68, 56, 2, 4], "stone", 3, Color.WHITE],    # RoadRamp1's landing
-	[[68, 32, 2, 4], "stone", 6, Color.WHITE],    # RoadRamp2's landing
+	[[68, 56, 2, 3.8], "stone", 3, Color.WHITE],  # RoadRamp1's landing, ends where RailRamp1S starts (y 59.8): they shared a face at y 60
+	[[68, 32, 2, 3.8], "stone", 6, Color.WHITE],  # RoadRamp2's landing, ends at RailRamp2S (y 35.8)
 	[[54, 18, 2, 2.5], "stone", 10, Color.WHITE], # the office stair's landing, onto the roof
 ]
 ## Solid boxes: [name, rect, h0, h1, material, tint].

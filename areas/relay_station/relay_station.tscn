@@ -183,7 +183,7 @@ material = SubResource("ShaderMaterial_0hfb2")
 size = Vector3(20, 4, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dh8r6"]
-size = Vector3(2, 4, 4)
+size = Vector3(2, 4, 3.8)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mb1xu"]
 render_priority = 0
@@ -200,14 +200,14 @@ shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_y6hwe"]
 material = SubResource("ShaderMaterial_mb1xu")
-size = Vector3(2, 4, 4)
+size = Vector3(2, 4, 3.8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_57es3"]
-size = Vector3(2, 7, 4)
+size = Vector3(2, 7, 3.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ps2xy"]
 material = SubResource("ShaderMaterial_mb1xu")
-size = Vector3(2, 7, 4)
+size = Vector3(2, 7, 3.8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f2dlo"]
 size = Vector3(2, 11, 2.5)
@@ -4288,7 +4288,7 @@ shape = SubResource("BoxShape3D_mc2qp")
 mesh = SubResource("BoxMesh_luj5w")
 
 [node name="Land4" type="StaticBody3D" parent="NavRegion/Land" unique_id=1312620396]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 1, 18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 1, 17.9)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Land/Land4" unique_id=990706348]
 shape = SubResource("BoxShape3D_dh8r6")
@@ -4297,7 +4297,7 @@ shape = SubResource("BoxShape3D_dh8r6")
 mesh = SubResource("BoxMesh_y6hwe")
 
 [node name="Land5" type="StaticBody3D" parent="NavRegion/Land" unique_id=1312620397]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2.5, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2.5, -6.1)
 
 [node name="Shape" type="CollisionShape3D" parent="NavRegion/Land/Land5" unique_id=134690669]
 shape = SubResource("BoxShape3D_57es3")
