@@ -36,6 +36,15 @@ const D := {
 		["office_chair_grey", [53.6, 22.0, 0], 90], ["water_cooler", [45.0, 18.8, 0], 180], ["bookcase_small", [44.55, 24.8, 0], 90],
 		# the lobby's waiting area against the south wall, a water cooler in the north-east corner
 		["couch", [18.5, 52.9, 0], 0], ["armchair", [21.0, 52.9, 0], 0], ["water_cooler", [22.8, 44.6, 0], 180],
+		# the yard (URBAN, Utility Infrastructure, Vegetation, Retro World). The dock lane: dumpsters and bins by the hall's east door;
+		# the front of the lab: a staff car and a bus shelter, bins either side of the door; the generator corner: a transformer
+		# and two poles; the north strip: bollards at the gate mouth, barriers and a dumpster along the fence, a transformer and poles
+		["dumpster_blue", [57.3, 42.2, 0], 0], ["dumpster_open", [57.3, 44.8, 0], 0], ["metal_bin", [56.7, 52.4, 0], 0],
+		["civilian_car", [21.0, 59.0, 0], 0], ["bus_shelter", [7.0, 57.0, 0], 0], ["metal_bin", [11.8, 54.8, 0], 0], ["trash_can", [16.2, 54.7, 0], 0],
+		["transformer", [29.5, 74.4, 0], 180], ["concrete_pole", [20.5, 74.9, 0], 0], ["concrete_pole", [34.5, 74.9, 0], 0],
+		["security_bollard", [36.5, 3.0, 0], 0], ["security_bollard", [43.5, 3.0, 0], 0],
+		["barrier_planks", [52.0, 12.5, 0], 0], ["barrier_wood", [54.5, 13.0, 0], 20], ["dumpster_blue", [27.0, 6.3, 0], 90],
+		["transformer", [72.0, 6.2, 0], 180], ["concrete_pole", [69.0, 5.9, 0], 0], ["concrete_pole", [75.0, 5.9, 0], 0],
 		# the archive's east wall: two more cabinets
 		["file_cabinet_big", [39.45, 48.2, 0], 270], ["file_cabinet_big", [39.45, 49.8, 0], 270]
 	],
@@ -48,6 +57,9 @@ const D := {
 		["office_monitor", [31.3, 25.8, 0.89], 270], ["office_keyboard", [30.6, 25.8, 0.89], 270], ["office_mouse", [30.6, 26.5, 0.89], 270],
 		["desk_lamp", [31.4, 24.9, 0.89], 270], ["mug", [30.8, 26.9, 0.89], 0], ["paper_stack", [31.2, 24.6, 0.89], 20],
 		["mug", [54.8, 22.75, 0.96], 0],
+		# yard litter and signs, mesh only: bags and a pile at the dumpsters, a speed and a stop sign at the gate road
+		["trashbag", [56.8, 46.9, 0], 20], ["trashpile", [58.1, 46.4, 0], 0], ["trashbag", [27.0, 7.8, 0], 0],
+		["road_sign", [36.4, -4.0, 0], 0], ["road_sign_stop", [43.6, 1.6, 0], 0],
 		["cardboard_box", [35.0, 53.43, 0.95], 0], ["cardboard_box", [37.4, 53.43, 0.3], 10], ["cardboard_box", [24.47, 47.6, 0.95], 90],
 	],
 	trim = [
