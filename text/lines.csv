@@ -284,6 +284,10 @@ hint.m4.s2.1,"The freight lift is at the back of the lift hall, against the clif
 hint.m4.s2.2,"A guard in the lift hall faces the lift. The control room's side door is behind him.","Un guardia en la sala del montacargas lo mira. La puerta lateral de control queda a su espalda."
 hint.none,"That is all I have, Operative. You know the way.","Es todo lo que tengo, Operativo. Ya sabes el camino."
 radio.request_hint,Request hint,Pedir pista
+objective.m1.l1,CROUCH ({key}) AND KEEP TO COVER,AGÁCHATE ({key}) Y MANTENTE A CUBIERTO
+objective.m1.l2,USE THE SCANNER ({key}): SEE WHERE THE GUARD IS LOOKING,USA EL ESCÁNER ({key}): MIRA HACIA DÓNDE MIRA EL GUARDIA
+objective.m1.l3,GET PAST THE PATROL OR TAKE HIM DOWN FROM BEHIND,PASA LA PATRULLA O NEUTRALÍZALO POR LA ESPALDA
+objective.m1.l5,GET OFF THE SHIP: SEND THE GANGWAY GUARD AWAY BY RADIO ({key}) OR TAKE THE STERN DROP,BAJA DEL BARCO: ALEJA AL GUARDIA DE LA PASARELA POR RADIO ({key}) O SALTA POR LA POPA
 objective.m1.s1,LISTEN IN ON THE SMOKE BREAK BEHIND THE BRIDGE,ESCUCHA LA PAUSA PARA FUMAR DETRÁS DEL PUENTE
 objective.m1.s2,HOLD UP THE YARD FOREMAN FOR THE LIFT CODE,ENCAÑONA AL CAPATAZ DEL PATIO PARA SACARLE EL CÓDIGO DEL MONTACARGAS
 objective.m1.s3,ENTER THE CODE AT THE LIFT CONTROLS IN THE OPERATIONS BUILDING,INTRODUCE EL CÓDIGO EN LOS CONTROLES DEL MONTACARGAS DEL EDIFICIO DE OPERACIONES
@@ -328,6 +332,16 @@ ui.hud.vp,VP,VOZ
 ui.hud.operative,OPERATIVE,OPERATIVO
 ui.hud.jammed,JAMMED,BLOQUEADO
 ui.hud.life,LIFE,VIDA
+ui.settings.fps_auto,AUTO,AUTO
+ui.loading,LOADING,CARGANDO
+ui.hud.objective,OBJECTIVE,OBJETIVO
+ui.hud.checkpoint,CHECKPOINT,PUNTO DE CONTROL
+ui.mouse.left,CLICK,CLIC
+ui.mouse.right,RIGHT CLICK,CLIC DERECHO
+ui.mouse.middle,MIDDLE CLICK,CLIC CENTRAL
+ui.mouse.wheel,SCROLL,RUEDA
+ui.hud.reloading,RELOADING,RECARGANDO
+ui.hud.empty,EMPTY,VACÍA
 ui.gear.tranq,TRANQ PISTOL,PISTOLA TRANQ.
 ui.gear.rifle,RIFLE,FUSIL
 ui.gear.scanner,SCANNER,ESCÁNER

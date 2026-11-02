@@ -5,11 +5,13 @@ class_name CodecCall
 extends RefCounted
 
 const HOLD := 2.0  # seconds a finished line stays up in a live call
+const DWELL := 0.5  # s a finished line holds before a press may move on (playtest 1: two quick clicks a line skipped the briefing)
 
 var lines: Array     # [[speaker, key], ...]; a third entry names the portrait to show instead
 var index := 0
 var _blip: VoiceBlip
 var _held := 0.0
+var _still := 0.0  # s the line has stood finished
 
 
 func _init(l: Array) -> void:
@@ -51,6 +53,8 @@ func advance(delta: float, auto := false) -> Array[float]:
 	if done():
 		return []
 	var was_typing := typing()
+	if not was_typing:
+		_still += delta
 	var p := _blip.advance(delta)
 	if auto and not was_typing:
 		_held += delta
@@ -59,18 +63,20 @@ func advance(delta: float, auto := false) -> Array[float]:
 	return p
 
 
-## First press reveals the line, the next one moves on.
+## First press reveals the line, the next one moves on once it has stood DWELL (a press sooner does nothing).
 func press() -> void:
 	if done():
 		return
 	if typing():
 		_blip.skip()
-	else:
+		_still = 0.0
+	elif _still >= DWELL:
 		index += 1
 		_start()
 
 
 func _start() -> void:
 	_held = 0.0
+	_still = 0.0
 	if not done():
 		_blip = VoiceBlip.new(text(), speaker())

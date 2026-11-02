@@ -89,3 +89,11 @@ func test_a_guard_shows_only_while_his_noise_is_young_or_the_scanner_runs() -> v
 	assert_eq(RadarModel.guard_alpha(RadarModel.GUARD_PING_SHOW, false), 0.0)
 	assert_eq(RadarModel.guard_alpha(99.0, false), 0.0, "a silent guard is off the Radar")
 	assert_eq(RadarModel.guard_alpha(99.0, true), 1.0, "the Scanner shows him")
+
+
+func test_level_splits_floors_past_the_gap() -> void:
+	assert_eq(RadarModel.level(0.0), 0)
+	assert_eq(RadarModel.level(2.0), 0, "a deck step or a ramp is still this floor")
+	assert_eq(RadarModel.level(-2.5), 0)
+	assert_eq(RadarModel.level(3.0), 1, "above")
+	assert_eq(RadarModel.level(-4.0), -1, "below")

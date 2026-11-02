@@ -39,6 +39,7 @@ var rank := Rank.new()             # run-wide: a Checkpoint never restores it
 var first_s := false               # set on commit: the slot's first S on this Mission (Requisition unlocks)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
+var lesson := ""                   # Mission 1's deck lesson (Lessons, set by the Harbour): the HUD shows it over the step
 var cine := {}                     # the takes this Mission plays ({intro, outro}: nodes under the Area's Cine); Campaign.cine_of unless set before _ready
 var take_playing := false          # a take (Cine) is on: the Rank clock, the Session log and the live calls hold; the tree is not paused
 var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame
@@ -75,6 +76,9 @@ func _ready() -> void:
 	SessionLog.current.start_mission(record.mission, "%s, %s" % [get_parent().name, "campaign" if campaign else "replay" if replay else "free mode"])
 	_fresh_chain()
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
+	var cover := get_tree().get_first_node_in_group("loading_cover")
+	if cover:  # the loading screen is still over the Area while its first frames compile: the take waits
+		await cover.lifted
 	if cine.has("intro") and not CineLogic.plays(campaign, replay):
 		pass  # Free mode: no take and no card, straight to the Preset
 	elif cine.has("intro"):  # a take replaces the card: after the Codec call the Area is up, so it plays here
@@ -255,8 +259,6 @@ func _physics_process(delta: float) -> void:
 			SessionLog.current.mark("kill" if g.dead else "down", MissionPlaces.diagram_xy(g.global_position))
 			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", MissionPlaces.where(g.global_position)])
 			if g.target:
-				if g.dead:
-					_say_objective()
 				for e in get_tree().get_nodes_in_group("extraction"):  # the Operative may already stand in it
 					if e.standing():
 						_on_extraction()
@@ -453,10 +455,6 @@ func _at_extraction(t: Guard) -> bool:
 	return (get_tree().get_nodes_in_group("extraction") + get_tree().get_nodes_in_group("target_zone")).any(func(e: Node) -> bool: return e.contains(t.global_position))
 
 
-func _say_objective() -> void:
-	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
-
-
 ## The current step's intel pickup in the Area, or null.
 func _step_intel() -> Node3D:
 	for i: Node3D in get_tree().get_nodes_in_group("intel"):
@@ -502,8 +500,7 @@ func _on_intel(intel: Node) -> void:
 	step = at + 1
 	hints.new_step()
 	_show_intel()
-	_say_objective()
-	take_checkpoint()
+	take_checkpoint()  # the HUD's objective line moves on and shows the CHECKPOINT card (HudObjective)
 
 
 func _on_extraction() -> void:

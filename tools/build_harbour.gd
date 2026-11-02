@@ -57,8 +57,7 @@ const SOLID := [
 	# the freighter: hull to deck height, bow, rails with a gap for the gangway and the stern drop. 16 m wide and
 	# its bow out to y -2.7 (pw-feel 12): the bow is a guard-free start, and the deck has room to go round a cone
 	["Hull", [65, 5, 16, 55], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["Bow", [69.5, -1, 7, 6], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
-	["BowTip", [71.5, -2.5, 3, 1.5], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],
+	["Bow", [69.5, -2.7, 7, 7.7], -3, DECK, "deck", Color(0.7, 0.78, 0.95)],  # out to the front rail: all the bow pen is floor
 	["RailPort1", [65, 5, 0.2, 39.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailPort2", [65, 47.2, 0.2, 12.8], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
 	["RailStarboard", [80.8, 5, 0.2, 55], DECK, DECK + RAIL_H, "rust", Color(0.9, 0.4, 0.32)],
@@ -143,14 +142,15 @@ const GANGWAY := {top = [65, 46], bottom = [61, 46], width = 2.4}
 
 ## Guard posts: [name, [x, y, h], facing, meta, route [[x, y, meta]]]. Meta: hold / scan / chat, and
 ## role (gatekeeper, observer, patroller, interceptor, investigator, foreman), enc (Encounter), holdup (what a
-## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 11 spawned: 5 / 3 / 3.
+## Hold-up gets out of him: text key holdup.<answer>; without it, his Voiceprint). 10 spawned: 4 / 3 / 3.
 const GUARD_POSTS := [
 	# E1 Perimeter (pw-feel 12): the bow half teaches, one guard at a time, each 15 m+ from every other (a shout's
 	# reach) so a mistake costs one guard; the stern half (O5 and the pair) is the test and the exit.
+	# O1 is the deck's only patroller (playtest 1: a second, O2 on the starboard walk, was one too many to learn on),
+	# and where the takedown is learned: both his stops face aft, his back to whoever comes up from the bow.
 	# O1 walks across the deck, never along it: his front cone never points at the bow, so the start and the
 	# hatches are a safe stretch to watch him from (play_harbour checks the bow lanes). Both stops face aft.
 	["PostO1", [68, 19, DECK], 180, {hold = 6.0, role = "patroller", enc = 1}, [[73.5, 19, {hold = 4.0, f = 180}]]],  # 6 s and 4 s, back to the bow
-	["PostO2", [79.5, 35, DECK], 90, {hold = 3.0, role = "patroller", enc = 1}, [[79.5, 40, {hold = 6.0, f = 180}]]],  # starboard walk; 6 s back to the bow at the aft end: the choke
 	["PostP", [75, 58, DECK], 0, {chat = "smoke", role = "investigator", enc = 1}, []],                      # smoke break behind the bridge: step 1; splits once recorded (PAIR_SPLIT)
 	["PostO5", [66, 47, DECK], 0, {scan = 120.0, role = "gatekeeper", enc = 1}, []],                          # beside the gangway head, sweeps up the deck
 	# E2 Loading yard
@@ -222,7 +222,7 @@ const CROSSINGS := [
 ## Set dressing (tools/area_dressing.gd _dress): [model, [x, y, h], facing, scale]. Kept off guard routes,
 ## doorways, Crawlspace mouths, lanes and Ladders.
 const DRESS := [
-	# the freighter's hull and pointed bow round the Hull, Bow and BowTip boxes (they keep the collision)
+	# the freighter's hull and pointed bow round the Hull and Bow boxes (they keep the collision)
 	["freighter_hull", [73, 25.72, -3], 0, Vector3(1.333, 1, 1.106)],  # stretched to the 16 m wide, 62.7 m long deck
 	# quay: bollards on the edge, floodlights leaning over the yard
 	["bollard", [61, 8, 0], 0], ["bollard", [61, 16, 0], 0], ["bollard", [61, 30, 0], 0],

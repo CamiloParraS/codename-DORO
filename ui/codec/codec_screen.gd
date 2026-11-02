@@ -203,7 +203,7 @@ func _draw() -> void:
 		CodecChrome.meter(self, Vector2(SIDE - 48, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(near, typing and not still, 1), "TX")
 		CodecChrome.meter(self, Vector2(d.x - SIDE + 36, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(not near, typing and not still, 4), "RX")
 	if _ringing:
-		var prompt := tr("ui.codec.answer").format({key = Prompts.key("codec_advance")}).to_upper()
+		var prompt := tr("ui.codec.answer").format({key = Prompts.word("codec_advance")}).to_upper()
 		HudPalette.hud_text(self, Vector2(d.x / 2, BOX_Y + BOX_H / 2), prompt, 30, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.3), 1, false)
 		return
 	if StoryMotion.tuning(_t) and not still:
@@ -287,7 +287,7 @@ func _subtitle(d: Vector2) -> void:
 		draw_string_outline(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 6, Color.BLACK)
 		draw_string(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, Color.WHITE)
 		left -= full[i].length() + 1
-	var next := tr("ui.codec.next").format({key = Prompts.key("codec_advance")})
+	var next := tr("ui.codec.next").format({key = Prompts.word("codec_advance")})
 	var count := "%d / %d" % [talk.index + 1, talk.lines.size()]
 	var hint_at := Vector2(d.x - 80, d.y - BAR - 24) if over_picture else Vector2(box.end.x, box.end.y + 44)
 	HudPalette.hud_text(self, hint_at, next + "    " + count, 22, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)

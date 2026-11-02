@@ -3,6 +3,7 @@
 extends "res://actors/operative/operative_hands.gd"
 
 var _was_hunted := false
+var _strafe := ""  # aiming on the move: which way the legs step (Locomotion.STRAFE_DIRS)
 var _aim_was := false  # RMB was down last tick: only a fresh press lets go of a grip
 
 
@@ -81,15 +82,14 @@ func _unhandled_input(e: InputEvent) -> void:
 		_interact()
 	elif e.is_action_pressed("kill_takedown") and _choke_left <= 0.0 and not carrying:
 		_begin_kill()
-	elif e.is_action_pressed("weapon_tranq"):
-		_gun = tranq
-		model.hold("tranq")
-	elif e.is_action_pressed("weapon_rifle"):
-		_gun = rifle
-		model.hold("rifle")
+	elif e.is_action_pressed("weapon_tranq") or e.is_action_pressed("weapon_rifle"):
+		var to: Gun = tranq if e.is_action_pressed("weapon_tranq") else rifle
+		if to != gun():
+			Mix.sfx_at(self, &"weapon_switch")
+		_gun = to
+		model.hold("tranq" if to == tranq else "rifle")
 	elif e.is_action_pressed("reload"):
-		if gun().reload(carrying != null):
-			model.react("reload", Gun.RELOAD_TIME)
+		gun().reload(carrying != null)  # its sound and the hands come from the gun's events
 	elif e.is_action_pressed("fire") and aiming and not _choking and not gun().automatic:
 		_fire()
 	elif e.is_action_pressed("pause"):  # Areas without a pause screen (the test room)
@@ -124,6 +124,7 @@ func _physics_process(delta: float) -> void:
 	throwing = throwing and not carrying and not _choking and not ladder and not radio_open
 	tranq.tick(delta, carrying != null)
 	rifle.tick(delta, carrying != null)
+	_gun_events()
 	set_collision_mask_value(CARRY_BLOCK_LAYER, carrying != null)
 	if ladder:
 		_climb(Input.get_axis("move_back", "move_forward"), delta)
@@ -172,10 +173,10 @@ func _physics_process(delta: float) -> void:
 			elif crouching:
 				step.attenuation_filter_cutoff_hz = Mix.CROUCH_STEP_CUTOFF_HZ
 	var dir := Basis(Vector3.UP, _yaw) * Vector3(v.x, 0, v.y)
-	if moving:
-		model.rotation.y = lerp_angle(model.rotation.y, atan2(-dir.x, -dir.z), Locomotion.TURN_RATE * delta)
-	elif aiming:
-		model.rotation.y = lerp_angle(model.rotation.y, _yaw, Locomotion.TURN_RATE * delta)
+	var face := Locomotion.heading(aiming, moving, dir, _yaw)
+	if not is_nan(face):
+		model.rotation.y = lerp_angle(model.rotation.y, face, minf(1.0, (Locomotion.AIM_TURN_RATE if aiming else Locomotion.TURN_RATE) * delta))
+	_strafe = Locomotion.strafe_dir(Vector2(v.x, -v.y)) if aiming else ""  # aiming, the body faces the camera: the keys are its own frame
 	_air = 0.0 if is_on_floor() or ladder else _air + delta
 	var target := Vector2(dir.x, dir.z) * Locomotion.speed(crouching, looks_walking(), aiming, carrying != null)
 	var eased := Locomotion.fall(Vector2(velocity.x, velocity.z), target, _air, delta)
@@ -211,6 +212,24 @@ func _throw_magazine() -> void:
 ## Hitscan: the crosshair picks the aim point, the shot leaves the muzzle for it. Tranq: a hit on a standing guard's head Neutralizes it, on the body
 ## starts the stumble. Rifle: kills (see Guard.shoot), destroys cameras, and a broken suppressor makes
 ## the shot heard.
+## Sounds what the guns just did: a dry click, a reload's mag out (with the hands) and its mag in. Every reload,
+## the automatic one after the last round included, so an empty gun is never silent.
+func _gun_events() -> void:
+	for g: Gun in [tranq, rifle]:
+		for ev: StringName in g.events:
+			if g != gun():
+				continue
+			match ev:
+				&"dry":
+					Mix.sfx_at(self, &"gun_dry")
+				&"reload_start":
+					Mix.sfx_at(self, &"reload_out")
+					model.react("reload", Gun.RELOAD_TIME)
+				&"reload_end":
+					Mix.sfx_at(self, &"reload_in")
+		g.events.clear()
+
+
 func _fire() -> void:
 	var arm := gun()
 	var quiet := arm.suppressed()
@@ -297,8 +316,9 @@ func _process(delta: float) -> void:
 	_pivot.rotation = Vector3(0, _yaw, 0)
 	_pitch_node.rotation.x = _pitch + _recoil
 	if not health.dead():  # a ragdoll is not driven by the clips
-		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task())
+		var clip := CharacterModel.operative_clip(_choking != null, carrying != null, aiming, crouching, moving, looks_walking(), _task(), _strafe)
 		model.play(cine_clip if cine and cine_clip != "" else clip, Vector2(velocity.x, velocity.z).length())
+		model.hold_upper("" if cine else CharacterModel.operative_upper(_choking != null, carrying != null, aiming, crouching, moving, _task()))
 		if clip == "climb" and not cine:  # the hands keep hold of the rungs: still when he is, backwards going down
 			model.pace(_climb_dir * CLIMB_SPEED / CharacterModel.CLIMB_SPEED)
 	_view.show_items(global_position, items.scanning(), _flight() if throwing else PackedVector3Array())

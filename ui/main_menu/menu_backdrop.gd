@@ -26,8 +26,8 @@ const SHADER := preload("res://ui/main_menu/menu_dissolve.gdshader")
 const FADE := 0.4    # s the next one takes to dissolve in
 const STEPS := 8     # hard steps of the dissolve (the UI's wipe is eight too)
 const BLOCK := 10.0  # px of a dissolve block at 1080 tall
-const ZOOM := Vector2(1.08, 1.2)  # scale at the start and end of a picture's life
-const PAN := 0.035   # of the stage size, either side of centre (the start zoom leaves 0.04 spare)
+const ZOOM := Vector2(1.08, 1.15)  # scale at the start and end of a picture's life: a slow push reads smooth
+const PAN := 0.025   # of the stage size, either side of centre (the start zoom leaves 0.04 spare)
 const DIRS: Array[Vector2] = [Vector2(1, 0.3), Vector2(-1, -0.3), Vector2(0.6, -1), Vector2(-0.6, 1)]
 
 var _rects: Array[TextureRect] = []

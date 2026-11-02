@@ -115,12 +115,15 @@ static func objective(mission_index: int, step: int) -> String:
 ## Start the Mission record.mission names in its Area. Committing its post-Mission screen goes to
 ## return_to, and moves Campaign.record on only when campaign is set (Free mode passes its own record). A
 ## replay passes the Mission's pre-Mission record and writes only its Mission Record. Only campaign wears the gear.
+## The Area loads behind the loading screen (ui/loading), off the main thread.
 static func play(tree: SceneTree, mission_record: Dictionary, return_to: String, campaign := false, replay := false) -> void:
-	var area: Node = load(MISSIONS[mission_record.mission].area).instantiate()
-	var run: MissionRun = area.get_node("MissionRun")
-	run.record = mission_record
-	run.return_to = return_to
-	run.campaign = campaign
-	run.replay = replay
-	area.get_node("Operative").equip(kit(gear, campaign))
-	tree.change_scene_to_node(area)
+	var m: Dictionary = MISSIONS[mission_record.mission]
+	var intro: Dictionary = m.get("intro", {})
+	Loading.go(tree, m.area, func(area: Node) -> void:
+		var run: MissionRun = area.get_node("MissionRun")
+		run.record = mission_record
+		run.return_to = return_to
+		run.campaign = campaign
+		run.replay = replay
+		area.get_node("Operative").equip(kit(gear, campaign)),
+		TranslationServer.translate(intro.get("name", "")), TranslationServer.translate(intro.get("area", "")))

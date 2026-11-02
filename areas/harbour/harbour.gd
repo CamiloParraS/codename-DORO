@@ -15,6 +15,8 @@ var _waves := Reinforcements.new()
 const ARRIVAL_DELAY := 30.0  # seconds from the call being answered to the squad appearing
 var _arrivals: Array[Array] = []  # [squad size, seconds left]
 var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
+var _lessons := Lessons.new()  # Mission 1's deck lessons, on the HUD's objective line
+var _lesson := -1
 
 
 func _ready() -> void:
@@ -113,6 +115,24 @@ func _process(delta: float) -> void:
 	_arrivals = _arrivals.filter(func(a: Array) -> bool: return a[1] > 0.0)
 	_dismiss()
 	_leave()
+	_teach()
+
+
+## Mission 1's deck lessons (campaign only): the open one's line goes to the run for the HUD. Reaching the last
+## (get off the ship) has Metis tell the player about the radio, once.
+func _teach() -> void:
+	var run: MissionRun = $MissionRun
+	if run.record.mission != 0 or not run.campaign:
+		return
+	var op: Node3D = $Operative
+	var o1 := get_node_or_null("GuardO1") as Guard
+	var i := _lessons.update({crouched = op.crouching, scanning = op.items.scanning(), o1_down = o1 == null or o1.is_down(),
+		y = MissionPlaces.diagram(op.global_position).y, recorded = run.step >= 1, off_deck = run.encounter_at(op.global_position) >= 2})
+	if i == Lessons.EXIT and _lesson != i and not run.tutorial.seen.has("radio"):
+		run.tutorial.seen["radio"] = true  # said now, not again on the first Spoof
+		get_tree().call_group("radio_log", "say", "METIS", tr(Tutorial.line_key("radio")))
+	_lesson = i
+	run.lesson = Lessons.line(i)
 
 
 func _send(n: int) -> void:

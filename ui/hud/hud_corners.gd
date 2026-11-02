@@ -184,18 +184,36 @@ func _radar(d: Vector2) -> void:
 		if off.length() > RadarModel.RANGE:
 			a *= 0.55  # pinned to the rim
 		var col := HudPalette.DMG if RadarModel.call_flash(calling, Time.get_ticks_msec()) else HudPalette.LIGHT
-		_triangle(o + RadarModel.blip(off, 10), RadarModel.facing(g.global_basis), 9.0, Color(col, a))
+		var lv := RadarModel.level(g.global_position.y - _operative.global_position.y)
+		var at := o + RadarModel.blip(off, 10)
+		if lv == 0:
+			_triangle(at, RadarModel.facing(g.global_basis), 9.0, Color(col, a))
+		else:  # another floor: hollow, fainter, with a caret for up or down (playtest 1: "a guard right here" wasn't)
+			_triangle(at, RadarModel.facing(g.global_basis), 9.0, Color(col, a * 0.6), true)
+			_floor_caret(at, lv, Color(col, a * 0.8))
 	var ring := RadarModel.ping_radius(_operative.ping_range, _operative.ping_age)
 	if ring > 0.0:
 		c.draw_arc(o, ring, 0, TAU, 72, Color(HudPalette.LIGHT, 1.0 - _operative.ping_age / RadarModel.PING_TIME), 2.0, true)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	for b: Dictionary in (run.radar_blips() if run else []):
-		var p := o + RadarModel.blip(RadarModel.flat(b.pos) - origin, 12)
-		if b.target:
+		var boff := RadarModel.flat(b.pos) - origin
+		var p := o + RadarModel.blip(boff, 12)
+		if boff.length() > RadarModel.RANGE:  # off the disc: an arrow on the rim pointing at it (a pinned diamond slid round the rim as he moved)
+			var out := boff.normalized()
+			var tip := o + out * (rad - 4.0)
+			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))
+		elif b.target:
 			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
 			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
-			HudPalette.px_poly(c, PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)]), HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))  # white with a slight gold hue
+			var diamond := PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)])
+			var gold := HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3)  # white with a slight gold hue
+			var lv := RadarModel.level(b.pos.y - _operative.global_position.y)
+			if lv == 0:
+				HudPalette.px_poly(c, diamond, gold)
+			else:
+				c.draw_polyline(diamond + PackedVector2Array([diamond[0]]), gold, 2.5)
+				_floor_caret(p, lv, gold, 16.0)
 	var f := RadarModel.facing(_operative.look_basis)
 	var arrow := PackedVector2Array([o + f * 17, o + f.rotated(2.55) * 14, o - f * 5, o + f.rotated(-2.55) * 14])
 	var rim := Geometry2D.offset_polygon(arrow, 2.5, Geometry2D.JOIN_MITER)  # a dark pixel rim round the sand arrow
@@ -204,9 +222,20 @@ func _radar(d: Vector2) -> void:
 	HudPalette.px_poly(c, arrow, HudPalette.SAND)
 
 
-## A guard on the Radar: a triangle pointing along `face`.
-func _triangle(p: Vector2, face: Vector2, s: float, col: Color) -> void:
-	HudPalette.px_poly(_canvas, PackedVector2Array([p + face * s * 1.2, p + face.rotated(2.4) * s, p + face.rotated(-2.4) * s]), col)
+## A guard on the Radar: a triangle pointing along `face`; `hollow` for one on another floor.
+func _triangle(p: Vector2, face: Vector2, s: float, col: Color, hollow := false) -> void:
+	var tri := PackedVector2Array([p + face * s * 1.2, p + face.rotated(2.4) * s, p + face.rotated(-2.4) * s])
+	if hollow:
+		_canvas.draw_polyline(tri + PackedVector2Array([tri[0]]), col, 2.0)
+	else:
+		HudPalette.px_poly(_canvas, tri, col)
+
+
+## A caret beside a blip on another floor: above it pointing up for a floor above (`level` 1), below pointing down.
+func _floor_caret(p: Vector2, level: int, col: Color, gap := 13.0) -> void:
+	var tip := p + Vector2(0, -gap - 5.0) * level
+	var back := Vector2(0, 5.0) * level
+	_canvas.draw_polyline(PackedVector2Array([tip + back + Vector2(-5, 0), tip, tip + back + Vector2(5, 0)]), col, 2.0)
 
 
 ## The jammed Radar: dark red ground, red ordered-dither static that swells and crumbles toward the rim, 2 px dark bands every 6 px rolling down, a red rim, JAMMED.
@@ -362,7 +391,13 @@ func _gear(d: Vector2) -> void:
 	var rf := HudPalette.DISPLAY
 	var rw := rf.get_string_size(res, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
 	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16, wr.end.y - 12), res, 24, HudPalette.LIGHT if gun.reloading() else HudPalette.LIGHT_3, rf, 2, false)
-	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 50, HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	var flash := gun.dry > 0.0 and int(gun.dry / 0.1) % 2 == 0  # a pull on an empty gun blinks the count
+	HudPalette.hud_text(_canvas, Vector2(wr.end.x - 16 - rw, wr.end.y - 12), count, 50, HudPalette.LIGHT if flash else HudPalette.DMG if gun.loaded == 0 else HudPalette.LIGHT, cf, 2, false)
+	if gun.reloading() or gun.loaded == 0:  # say it in words: RELOADING, or EMPTY with nothing left to load
+		var word := tr("ui.hud.reloading" if gun.reloading() else "ui.hud.empty")
+		HudPalette.hud_label(_canvas, Vector2(wr.end.x - 16, wr.position.y + 34), word, 16, HudPalette.LIGHT if gun.reloading() else HudPalette.DMG, 0.16, HudPalette.LABEL_BOLD, 2)
+	if gun.reloading():
+		_canvas.draw_rect(Rect2(wr.position.x, wr.end.y - 4, wr.size.x * (1.0 - gun.reload_left / Gun.RELOAD_TIME), 4), HudPalette.LIGHT)
 	var track := Rect2(wr.position.x + 20, wr.end.y + 12, wr.size.x - 20, 6)  # rounds left, loaded and reserve
 	_canvas.draw_rect(track, Color(HudPalette.LIGHT, 0.22))
 	var left := float(gun.loaded + gun.reserve) / maxf(gun.total, 1.0)

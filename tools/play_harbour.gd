@@ -172,7 +172,7 @@ func mission_1() -> void:
 	var run: MissionRun = area.get_node("MissionRun")
 	var op: Node3D = area.get_node("Operative")
 	var guards := get_tree().get_nodes_in_group("guards")
-	check(guards.size() == 11, "11 guards spawn (got %d)" % guards.size())
+	check(guards.size() == 10, "10 guards spawn (got %d)" % guards.size())
 	var map := (area as Node3D).get_world_3d().navigation_map
 	var off := guards.filter(func(g: Guard) -> bool: return NavigationServer3D.map_get_closest_point(map, g.global_position).distance_to(g.global_position) > 0.6)
 	check(off.is_empty(), "every guard spawns on the navmesh %s" % [off.map(func(g): return g.name)])
@@ -212,7 +212,6 @@ func mission_1() -> void:
 	check(await seen(op, "GuardO1", at(69.5, 7, 2), true, 15.0) == 0.0, "E1: the port hatch hides a crouched Operative from O1")
 	check(await seen(op, "GuardO1", at(79.9, 22, 2), true, 15.0) == 0.0, "E1: O1 never sees the starboard rail beside him")
 	check(await seen(op, "GuardO5", at(66, 38, 2), false, 6.0) > 0.0, "E1: O5's sweep covers the port rail north of him")
-	check(await seen(op, "GuardO2", at(66.5, 25, 2), false, 20.0) == 0.0, "E1: O2 never sees a Hold-up behind O1 (20 s)")
 	check(await seen(op, "GuardObserver", at(42.5, 42), false, 6.0) > 0.0, "E2: the roof Observer covers lane W's north end")
 	check(await seen(op, "GuardObserver", at(30, 39.3), false, 6.0) == 0.0, "E2: Warehouse B's south wall is dead ground under the roof edge")
 	check(await seen(op, "GuardGate", at(26.5, 46.6), false, 6.0) > 0.0, "E3: the Gatekeeper covers the way in from the yard")

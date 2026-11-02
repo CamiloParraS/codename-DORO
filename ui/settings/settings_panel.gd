@@ -144,10 +144,10 @@ func _toggle(text: String, icon: String, key: String) -> void:
 			b.accept_event())
 
 
-## The max-FPS row: 60 / 120 / 144 pills; left/right step, press cycles.
+## The max-FPS row: AUTO / 60 / 120 / 144 pills; left/right step, press cycles.
 func _fps_row() -> void:
 	var ctl := SettingCtl.new()
-	ctl.options = GameSettings.FPS_CAPS.map(func(f: int) -> String: return str(f))
+	ctl.options = GameSettings.FPS_CAPS.map(func(f: int) -> String: return tr("ui.settings.fps_auto") if f == 0 else str(f))
 	ctl.value = func() -> float: return GameSettings.FPS_CAPS.find(_values.max_fps)
 	var step := func(dir: int) -> void:
 		var i: int = clampi(GameSettings.FPS_CAPS.find(_values.max_fps) + dir, 0, GameSettings.FPS_CAPS.size() - 1) if dir != 0 \

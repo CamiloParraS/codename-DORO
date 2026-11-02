@@ -77,3 +77,35 @@ func test_gorgo_hides_only_the_early_arc() -> void:
 	assert_eq(HudModel.deceive(1.0, "gorgo"), 1.0)
 	assert_eq(HudModel.deceive(0.2, "nike"), 0.2)
 	assert_eq(HudModel.deceive(-1.0, "gorgo"), -1.0)
+
+
+class FakeRun extends Node:
+	var step := 0
+	var line := "Record the pair"
+	func objective() -> String:
+		return line
+
+
+## The objective line follows the run; a step done raises the CHECKPOINT card once, a restore to an earlier
+## Checkpoint (the step going back) doesn't, and neither does the first read (the Area's own Checkpoint).
+func test_objective_line_and_checkpoint_card() -> void:
+	var run := FakeRun.new()
+	var o := HudObjective.new()
+	assert_false(o.update(0.1, run), "the first read is no Checkpoint")
+	assert_eq(o.text, "Record the pair")
+	assert_eq(o.card_left, 0.0)
+	run.step = 1
+	run.line = "Find the foreman"
+	assert_true(o.update(0.1, run), "a step done")
+	assert_eq(o.text, "Find the foreman")
+	assert_eq(o.age, 0.0, "a new line wipes in")
+	assert_true(o.card_left > 0.0)
+	o.update(HudObjective.CARD_TIME, run)
+	assert_eq(o.card_left, 0.0, "the card goes")
+	run.step = 0
+	assert_false(o.update(0.1, run), "a restore goes back without a card")
+	assert_eq(o.update(0.1, run, "Get to cover"), false)
+	assert_eq(o.text, "Get to cover", "a lesson line overrides the step")
+	assert_false(o.update(0.1, null))
+	assert_eq(o.text, "", "no run, no line")
+	run.free()

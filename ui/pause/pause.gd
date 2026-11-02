@@ -121,7 +121,7 @@ func _controls() -> void:
 	grid.add_theme_constant_override("v_separation", 14)
 	side.add_child(grid)
 	var rows: Array = [["WASD", "ui.ctl.move"]]
-	rows.append_array(CONTROLS.map(func(c: Array) -> Array: return [Prompts.key(c[0]), c[1]]))
+	rows.append_array(CONTROLS.map(func(c: Array) -> Array: return [Prompts.word(c[0]), c[1]]))
 	for r: Array in rows:
 		var cell := HBoxContainer.new()
 		cell.custom_minimum_size.x = 285

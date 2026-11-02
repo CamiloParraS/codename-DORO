@@ -105,5 +105,5 @@ func _draw() -> void:
 			"thanks":
 				HudPalette.hud_text(self, Vector2(d.x / 2, y), r[2], 44, Color(HudPalette.LIGHT, a), HudPalette.tracked(HudPalette.DISPLAY, 44, 0.24), 1, false)
 	if _y < _end:
-		var hint := tr("ui.credits.hold").format({key = Prompts.key("codec_advance")})
+		var hint := tr("ui.credits.hold").format({key = Prompts.word("codec_advance")})
 		HudPalette.hud_text(self, Vector2(d.x - 80, d.y - 56), hint, 22, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2), 2, false)

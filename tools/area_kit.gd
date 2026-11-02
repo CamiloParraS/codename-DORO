@@ -48,7 +48,7 @@ const FRONT := {cabinet_a = 180, cabinet_b = 180, keypad = 180, lift_sign = 180,
 ## Skinned boxes' facings (PropSkin.facing), where the model's front matters: the bearing it looks at.
 const PROP_FACING := {LiftPanel = 180, CoreConsole = 90}
 ## Boxes with no mesh of their own: a dress model draws them (the freighter_hull shell over the hull and bow).
-const SHELLED := ["Hull", "Bow", "BowTip", "GapSeal"]
+const SHELLED := ["Hull", "Bow", "GapSeal"]
 ## Long boxes that wear a row of models instead of their box mesh: name prefix = model. Each copy fills an
 ## equal share of the length and the full height; its depth scales with its height.
 const ROWS := {Fence = "fence", RoadSide = "fence", Low = "roadblock", Cabinets = "low_cabinets", Crates = "crate_wide"}  # low cover indoors, on deck

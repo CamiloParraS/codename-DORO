@@ -45,8 +45,12 @@ func test_a_press_skips_the_typing_then_goes_to_the_next_line() -> void:
 	assert_eq(c.shown(), c.text(), "first press reveals the line")
 	assert_eq(c.speaker(), "handler")
 	c.press()
-	assert_eq(c.speaker(), "operative", "second press moves on")
+	assert_eq(c.speaker(), "handler", "a press straight after does nothing: the line holds DWELL")
+	c.advance(CodecCall.DWELL)
 	c.press()
+	assert_eq(c.speaker(), "operative", "a press after DWELL moves on")
+	c.press()
+	c.advance(CodecCall.DWELL)
 	c.press()
 	assert_true(c.done())
 
@@ -84,6 +88,7 @@ func test_a_dossier_line_shows_its_targets_face() -> void:
 	assert_eq(c.portrait(), "chief")
 	assert_eq(c.speaker(), "analyst")
 	c.press()
+	c.advance(CodecCall.DWELL)
 	c.press()
 	assert_eq(c.portrait(), "handler", "no third entry: the speaker's own face")
 	for id in ["operative", "handler", "analyst", "chief", "researcher", "director"]:
