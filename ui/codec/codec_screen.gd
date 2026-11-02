@@ -1,7 +1,7 @@
 ## The paused full-screen Codec call, drawn in design px (1080 tall): two portraits, the frequency and a waveform
 ## between them over a tuning scale, the speaker tag as a slanted slab, and the line in a framed box just under
 ## the portraits. The call's furniture (rings, scale, meters, clock, pips) is ui/codec/codec_chrome.gd.
-## An incoming call (`ring`) first shows only the handler's frame and rings until it is answered.
+## An incoming call (`ring`) first shows no one: the frequency hunts and the scale sweeps until it is answered.
 ## LMB / Space / Enter answers, skips the typing, then moves on; `finished` after the last line.
 ## Add it over whatever is showing (Briefing) or to a paused tree (it keeps running).
 ## Portraits are ui/codec/portraits/<id>_<frame>.png, rendered once by tools/render_portraits.gd (frame 1 is
@@ -121,11 +121,12 @@ func _process(delta: float) -> void:
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_accept") or (e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT):
 		get_viewport().set_input_as_handled()
-		if _ringing:  # answering: the operative's frame wipes in
+		if _ringing:  # answering: both frames wipe in
 			_ringing = false
 			_t = 0.0
 			_line_t = 0.0
 			UiMotion.wipe(_left, true, 6, 0.24)
+			UiMotion.wipe(_right, true, 6, 0.24)
 			return
 		if StoryMotion.tuning(_t):  # the same key skips the tune-in
 			_t = StoryMotion.TUNE
@@ -169,8 +170,7 @@ func _draw() -> void:
 	var near := who == "operative"  # the Operative speaks from the left frame, everyone else from the right
 	var typing := talk.typing() and not _ringing
 	var rx := d.x - SIDE - PORTRAIT.x
-	var ring_c := Vector2(rx + PORTRAIT.x / 2, PORTRAIT_Y + PORTRAIT.y / 2) if _ringing else Vector2(d.x / 2, PORTRAIT_Y + 190)
-	CodecChrome.rings(self, ring_c, _ring_t if _ringing else _t, (_ringing or typing) and not still)
+	CodecChrome.rings(self, Vector2(d.x / 2, PORTRAIT_Y + 190), _ring_t if _ringing else _t, (_ringing or typing) and not still)
 	CodecChrome.corners(self, Rect2(40, BAR + 36, d.x - 80, d.y - 2 * BAR - 72), Color(GREEN, 0.3))
 	draw_rect(Rect2(0, 0, d.x, BAR), Color.BLACK)
 	draw_rect(Rect2(0, d.y - BAR, d.x, BAR), Color.BLACK)
@@ -178,25 +178,30 @@ func _draw() -> void:
 	var tag := tr("ui.codec.incoming" if _ringing else "ui.codec.in_progress").to_upper()
 	if not _ringing or int(_ring_t / 0.4) % 2 == 0:
 		HudPalette.hud_text(self, Vector2(80, 70), tag, 20, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 20, 0.4), 0, false)
-	var far_id := "handler" if _ringing else ("handler" if near else talk.portrait())
-	var far_name := tr("codec.speaker.handler") if (_ringing or near) else talk.speaker_name()
+	var far_id := "handler" if near else talk.portrait()
+	var far_name := tr("codec.speaker.handler") if near else talk.speaker_name()
 	var tear := Vector2(14.0 if _burst > BURST / 2 else -8.0, 0.0) if _burst > 0.0 else Vector2.ZERO
 	if not _ringing:
 		_portrait(_left, Vector2(SIDE, PORTRAIT_Y) + (tear if near else Vector2.ZERO), "operative", near, typing, k)
 		_slab(Vector2(SIDE, PORTRAIT_Y + PORTRAIT.y + 10), tr("codec.speaker.operative").to_upper(), false, near)
-	_portrait(_right, Vector2(rx, PORTRAIT_Y) + (tear if not near else Vector2.ZERO), far_id, _ringing or not near, typing, k)
-	_slab(Vector2(rx, PORTRAIT_Y + PORTRAIT.y + 10), far_name.to_upper(), true, _ringing or not near)
+		_portrait(_right, Vector2(rx, PORTRAIT_Y) + (tear if not near else Vector2.ZERO), far_id, not near, typing, k)
+		_slab(Vector2(rx, PORTRAIT_Y + PORTRAIT.y + 10), far_name.to_upper(), true, not near)
 	var freq := FREQUENCY if still else StoryMotion.frequency(_t, FREQUENCY)
+	if _ringing and not still:
+		freq = StoryMotion.scramble(_ring_t, FREQUENCY)  # hunting until answered
 	var ff := HudPalette.tracked(HudPalette.DISPLAY, 136, 0.04)
 	HudPalette.hud_text(self, Vector2(d.x / 2, PORTRAIT_Y + 130), freq, 136, GREEN, ff, 1, false)
 	var fw := ff.get_string_size(FREQUENCY, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 136)).x
 	HudPalette.hud_text(self, Vector2(d.x / 2 + fw / 2 + 14, PORTRAIT_Y + 128), "MHz", 24, GREEN_DIM, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.2), 0, false)
-	CodecChrome.scale(self, Vector2(d.x / 2, PORTRAIT_Y + 186), 420.0, 1.0 if still else clampf(_t / (StoryMotion.TUNE * 2.0), 0.0, 1.0))
+	var settle := 1.0 if still else clampf(_t / (StoryMotion.TUNE * 2.0), 0.0, 1.0)
+	if _ringing and not still:
+		settle = 0.5 + 0.5 * sin(_ring_t * 1.7)  # the scale sweeps back and forth under the needle
+	CodecChrome.scale(self, Vector2(d.x / 2, PORTRAIT_Y + 186), 420.0, settle)
 	_wave(Vector2(d.x / 2, PORTRAIT_Y + 280), typing)
 	var cells := 16
 	if not _ringing:
 		CodecChrome.meter(self, Vector2(SIDE - 48, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(near, typing and not still, 1), "TX")
-	CodecChrome.meter(self, Vector2(d.x - SIDE + 36, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(not near, typing and not still, 4), "RX")
+		CodecChrome.meter(self, Vector2(d.x - SIDE + 36, PORTRAIT_Y + PORTRAIT.y), cells, CodecChrome.level(not near, typing and not still, 4), "RX")
 	if _ringing:
 		var prompt := tr("ui.codec.answer").format({key = Prompts.key("codec_advance")}).to_upper()
 		HudPalette.hud_text(self, Vector2(d.x / 2, BOX_Y + BOX_H / 2), prompt, 30, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.3), 1, false)

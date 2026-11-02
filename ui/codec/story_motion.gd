@@ -22,6 +22,11 @@ static func tuning(t: float) -> bool:
 static func frequency(t: float, final: String) -> String:
 	if not tuning(t):
 		return final
+	return scramble(t, final)
+
+
+## `final` with its digits wandering in 30 Hz steps, its dot kept: a set still hunting for the line.
+static func scramble(t: float, final: String) -> String:
 	var s := ""
 	for i in final.length():
 		s += final[i] if final[i] == "." else str((int(t * 30.0) * 7 + i * 3 + final.unicode_at(i)) % 10)
