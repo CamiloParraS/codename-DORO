@@ -45,6 +45,7 @@ const STREAMS := {
 	&"dart_hit": "res://assets/audio/sfx_dart_hit.ogg",
 	&"dart_vest": "res://assets/audio/sfx_dart_vest.ogg",
 	&"choke": "res://assets/audio/sfx_choke.ogg",
+	&"checkpoint": "res://assets/audio/sfx_checkpoint.ogg",
 	&"gun_dry": "res://assets/audio/sfx_gun_dry.ogg",
 	&"reload_out": "res://assets/audio/sfx_reload_out.ogg",
 	&"reload_in": "res://assets/audio/sfx_reload_in.ogg",

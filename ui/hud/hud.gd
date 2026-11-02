@@ -11,6 +11,8 @@ const CALL_OUT_SECS := 0.2   # and slides back out, faster, when the call ends
 const CALL_SLIDE := 48.0     # design px of travel
 const CROSSHAIR_PX := 30.0  # logical px a side; the textures are 48, so this shrinks them to 5/8
 
+var _objective := HudObjective.new()  # the objective line and the CHECKPOINT card, top-centre
+
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -44,6 +46,8 @@ func _process(delta: float) -> void:
 	_select_left = maxf(_select_left - delta, 0.0)
 	_select_age += delta / maxf(Engine.time_scale, 0.05)
 	_read_run()
+	if _objective.update(delta, get_tree().get_first_node_in_group("mission_plan")):
+		Mixer.play(&"checkpoint")
 	if _operative and _operative.aiming:
 		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
 	_subs.tick(delta)
@@ -183,6 +187,7 @@ func _draw_design() -> void:
 	_radar(d)
 	_voiceprints(d)
 	_phase(d)
+	_objective.draw(_canvas, d, 0.0 if _operative.cine else 0.3 if radio_open else 1.0)
 	if not radio_open:
 		if _tip_left <= 0.0:  # a tip takes the top-left corner (Mission 1 has no cue anyway)
 			_aigis_cue()

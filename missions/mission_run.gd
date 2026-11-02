@@ -255,8 +255,6 @@ func _physics_process(delta: float) -> void:
 			SessionLog.current.mark("kill" if g.dead else "down", MissionPlaces.diagram_xy(g.global_position))
 			SessionLog.current.note("%s down (%s) at %s" % [g.name, "dead" if g.dead else "neutralized", MissionPlaces.where(g.global_position)])
 			if g.target:
-				if g.dead:
-					_say_objective()
 				for e in get_tree().get_nodes_in_group("extraction"):  # the Operative may already stand in it
 					if e.standing():
 						_on_extraction()
@@ -453,10 +451,6 @@ func _at_extraction(t: Guard) -> bool:
 	return (get_tree().get_nodes_in_group("extraction") + get_tree().get_nodes_in_group("target_zone")).any(func(e: Node) -> bool: return e.contains(t.global_position))
 
 
-func _say_objective() -> void:
-	get_tree().call_group("radio_log", "say", "INTEL", objective())  # ponytail: placeholder until the live Codec calls
-
-
 ## The current step's intel pickup in the Area, or null.
 func _step_intel() -> Node3D:
 	for i: Node3D in get_tree().get_nodes_in_group("intel"):
@@ -502,8 +496,7 @@ func _on_intel(intel: Node) -> void:
 	step = at + 1
 	hints.new_step()
 	_show_intel()
-	_say_objective()
-	take_checkpoint()
+	take_checkpoint()  # the HUD's objective line moves on and shows the CHECKPOINT card (HudObjective)
 
 
 func _on_extraction() -> void:

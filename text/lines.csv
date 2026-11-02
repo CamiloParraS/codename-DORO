@@ -328,6 +328,8 @@ ui.hud.vp,VP,VOZ
 ui.hud.operative,OPERATIVE,OPERATIVO
 ui.hud.jammed,JAMMED,BLOQUEADO
 ui.hud.life,LIFE,VIDA
+ui.hud.objective,OBJECTIVE,OBJETIVO
+ui.hud.checkpoint,CHECKPOINT,PUNTO DE CONTROL
 ui.hud.reloading,RELOADING,RECARGANDO
 ui.hud.empty,EMPTY,VACÍA
 ui.gear.tranq,TRANQ PISTOL,PISTOLA TRANQ.

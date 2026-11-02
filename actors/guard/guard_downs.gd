@@ -222,7 +222,7 @@ func answer(op: Node3D) -> void:
 		op.voiceprints.held.append(str(name))
 		get_tree().call_group("mission_tally", "event", "interrogated_voiceprint")
 	match what:
-		"objective":  # where, on the INTEL line (MissionRun._say_objective's)
+		"objective":  # where, on the INTEL line
 			get_tree().call_group("radio_log", "say", "INTEL", intel)
 		"scan":
 			op.items.scan_left = op.items.scan_time

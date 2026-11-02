@@ -74,6 +74,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - "Bullet passbys.wav" by Audionautics, https://freesound.org/s/134024/, CC BY 3.0 (`assets/audio/sfx_whiz_0-7.ogg`: its eight passes, trimmed and level-matched)
 - `impactMetal_light_000`-`002` (`assets/audio/sfx_ricochet_0-2.ogg`) and `impactPunch_medium_000`-`002` (`assets/audio/sfx_bullet_hit_0-2.ogg`), Impact Sounds by Kenney, https://kenney.nl/assets/impact-sounds, CC0 1.0
 - `question_002` (`assets/audio/sting_question.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
+- `confirmation_001` (`assets/audio/sfx_checkpoint.ogg`), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
 - `confirmation_002` (`assets/audio/sting_relief.ogg`, provisional), Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds, CC0 1.0
 - "Frequency Static Sound Effects" by bretbernhoft, https://opengameart.org/content/frequency-static-sound-effects, CC0 1.0
 - "airy_0", "urgent_0", "sector_0" (`assets/audio/music_patrol.ogg`, `music_alert.ogg`, `music_evasion.ogg`) from Dark Sci-Fi Audio Pack by SRG774, https://opengameart.org/content/dark-sci-fi-audio-pack, CC0 1.0

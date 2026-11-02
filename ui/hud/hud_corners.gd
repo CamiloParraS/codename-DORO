@@ -196,8 +196,13 @@ func _radar(d: Vector2) -> void:
 		c.draw_arc(o, ring, 0, TAU, 72, Color(HudPalette.LIGHT, 1.0 - _operative.ping_age / RadarModel.PING_TIME), 2.0, true)
 	var run: Node = get_tree().get_first_node_in_group("mission_plan")
 	for b: Dictionary in (run.radar_blips() if run else []):
-		var p := o + RadarModel.blip(RadarModel.flat(b.pos) - origin, 12)
-		if b.target:
+		var boff := RadarModel.flat(b.pos) - origin
+		var p := o + RadarModel.blip(boff, 12)
+		if boff.length() > RadarModel.RANGE:  # off the disc: an arrow on the rim pointing at it (a pinned diamond slid round the rim as he moved)
+			var out := boff.normalized()
+			var tip := o + out * (rad - 4.0)
+			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))
+		elif b.target:
 			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
 			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
