@@ -27,7 +27,7 @@ const CLOSING := 14.0   # m: closing on a guard, near enough that a thrown magaz
 const HOLDUP_NEAR := 10.0  # m: closing on a deck guard for a Hold-up (its range is 6 m: Holdup.RANGE)
 const MIN_SHOW := 1.5   # s a tip owns the screen before the next may replace it
 const BEAT := 0.8       # s between a tip done and the next
-const WAIT_MAX := 6.0   # s a tip stays up waiting to be done before the next may come
+const WAIT_MAX := 15.0  # s a tip stays up waiting to be done before the next may come (playtest 1: 6 s went before it was read)
 const GRACE := 0.6      # the deck's sight fill until the first sighting is over
 const SPOTTED := "spotted"  # the first sighting's tip and line (tutorial.spotted.*), not a verb
 

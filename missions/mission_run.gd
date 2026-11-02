@@ -39,6 +39,7 @@ var rank := Rank.new()             # run-wide: a Checkpoint never restores it
 var first_s := false               # set on commit: the slot's first S on this Mission (Requisition unlocks)
 var telegraphs_seen := {}          # Telegraph kinds Metis has already called this Mission
 var tutorial := Tutorial.new()     # Mission 1's first-use tips (campaign only)
+var lesson := ""                   # Mission 1's deck lesson (Lessons, set by the Harbour): the HUD shows it over the step
 var cine := {}                     # the takes this Mission plays ({intro, outro}: nodes under the Area's Cine); Campaign.cine_of unless set before _ready
 var take_playing := false          # a take (Cine) is on: the Rank clock, the Session log and the live calls hold; the tree is not paused
 var _enc_now := -1                 # the Encounter the Operative is in (encounter_at), -1 before the first frame

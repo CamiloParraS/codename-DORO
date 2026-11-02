@@ -46,7 +46,8 @@ func _process(delta: float) -> void:
 	_select_left = maxf(_select_left - delta, 0.0)
 	_select_age += delta / maxf(Engine.time_scale, 0.05)
 	_read_run()
-	if _objective.update(delta, get_tree().get_first_node_in_group("mission_plan")):
+	var run: Node = get_tree().get_first_node_in_group("mission_plan")
+	if _objective.update(delta, run, run.lesson if run else ""):
 		Mixer.play(&"checkpoint")
 	if _operative and _operative.aiming:
 		_crosshair(_operative.gun().crosshair)  # loaded here: a texture first loaded inside _draw draws white (Godot 4.7)
