@@ -31,3 +31,10 @@ func test_internal_height_is_480() -> void:
 	assert_eq(look.INTERNAL_HEIGHT, 480)
 	assert_eq(look.FOG_BEGIN, 20.0)
 	assert_eq(look.FOG_END, 60.0)
+
+
+func test_the_lens_bends_live_play_only() -> void:
+	var look: GDScript = load("res://ui/psx_look/psx_look.gd")
+	assert_true(look.lens_on(true, false), "the HUD up and the game running")
+	assert_false(look.lens_on(false, false), "a menu or a take: no HUD, a flat screen")
+	assert_false(look.lens_on(true, true), "pause or the Codec: the game is paused")
