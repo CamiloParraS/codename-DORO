@@ -6,6 +6,7 @@
 extends Control
 
 const MENU := "res://ui/main_menu/main_menu.tscn"
+const CREDITS := "res://ui/credits/credits.tscn"
 const SLOW := 0.3        # time scale while the order is on screen
 const STILL_SECONDS := 20.0
 const BED_FADE := 2.5    # seconds for an ending's bed to fade in, and out into the Epilogue
@@ -32,10 +33,15 @@ func _ready() -> void:
 	visible = model != null
 
 
-## From the Core terminal: the record the Mission just committed.
+## From the Core terminal: the record the Mission just committed. The campaign rolls the credits on the way to
+## `leave_to`; Free mode goes straight there.
 func begin() -> void:
 	var run := get_tree().get_first_node_in_group("mission_plan")
-	start(run.record if run else Campaign.record, leave_to)
+	if run == null or run.campaign:
+		Credits.then = leave_to
+		start(run.record if run else Campaign.record, CREDITS)
+	else:
+		start(run.record, leave_to)
 
 
 func start(record: Dictionary, then: String) -> void:

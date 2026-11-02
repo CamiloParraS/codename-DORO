@@ -661,3 +661,14 @@ ui.post.saw.down,PUT DOWN,ABATIDOS
 ui.post.saw.kill,KILLED,MUERTOS
 ui.post.saw.spotted,FIRST SPOTTED,PRIMER AVISTAMIENTO
 ui.post.saw.alert,ALERTS,ALERTAS
+ui.credits.made_by,A game by,Un juego de
+ui.credits.models,Models and animation,Modelos y animación
+ui.credits.textures,Textures,Texturas
+ui.credits.fonts,Typefaces,Tipografías
+ui.credits.music,Music,Música
+ui.credits.sound,Sound,Sonido
+ui.credits.photos,Photography,Fotografía
+ui.credits.shaders,Shaders,Shaders
+ui.credits.tools,Built with,Hecho con
+ui.credits.thanks,Thank you for playing,Gracias por jugar
+ui.credits.hold,[{key}] HOLD TO SPEED UP,[{key}] MANTÉN PARA ACELERAR

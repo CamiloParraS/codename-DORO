@@ -147,6 +147,17 @@ func _run() -> void:
 		fin.queue_free()
 		get_tree().paused = false
 		Engine.time_scale = 1.0
+	if all and any_of(["credits"]):
+		var cr: Credits = load("res://ui/credits/credits.tscn").instantiate()
+		get_tree().root.add_child(cr)
+		cr.set_process(false)  # posed: the roll neither moves nor leaves
+		cr._y = 900.0
+		cr.queue_redraw()
+		await shoot("credits")
+		cr._y = cr._end
+		cr.queue_redraw()
+		await shoot("credits_end")
+		cr.queue_free()
 	if all and any_of(["debug_overlay", "debug_report"]):
 		DebugOverlay.visible = true
 		await wait(0.5)
