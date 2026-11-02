@@ -12,7 +12,7 @@ const LIFT := preload("res://assets/audio/sfx_fulton_lift.ogg")
 const INFLATE := [0.4, 1.2]   # s the balloon goes up, s it is full
 const YANK := 1.6             # s the line goes taut and he leaves the ground
 const GRIP := 0.45            # s after the yank he is hanging from the line
-const TIE := 4.6              # m from his feet up to the balloon node (the cable hangs 3 m from it, down to his hands)
+const TIE := 5.05             # m from his feet up to the balloon node: its 3 m cable ends just under his hands (CharacterModel.GRAB_AT)
 const STEP := 0.1             # s between keys of the rise (linear between them, so balloon and body stay together)
 
 

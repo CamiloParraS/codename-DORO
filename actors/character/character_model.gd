@@ -1,7 +1,7 @@
 ## Nikita rigged to the Quaternius UE skeleton (tools/rig_nikita.py), driven by the baked clips. Kinds differ by
 ## tint and gear; the Target is the PSX suit on its own skeleton. Faces -Z like the actors that own it.
 class_name CharacterModel
-extends Node3D
+extends CharacterRig
 
 enum Kind { OPERATIVE, GUARD, TARGET }
 
@@ -82,6 +82,10 @@ const TWIST_BONE := "spine_01"
 const AIM_PITCH := deg_to_rad(2.0)
 ## Metres the rifle's handguard sits above the line through its grip, along the gun's up: where the off hand holds.
 const HANDGUARD := 0.09
+## Spans of a clip (fractions of its length) where the off hand lets go of the rifle: the reload's goes to the pouch
+## and the mag well while the gun hand keeps the rifle as it was. It eases off and back on over LET_GO_FADE.
+const LET_GO := {"reload": [0.17, 0.76]}
+const LET_GO_FADE := 0.07
 ## Weapon models by name; "grip" is where the hand holds them, in the file's own space.
 const GUNS := {
 	"tranq": {"scene": preload("res://assets/models/weapons/pistol.glb"), "grip": Vector3(-0.03, -0.03, 0), "muzzle": 0.35},
@@ -89,44 +93,16 @@ const GUNS := {
 }
 const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
 const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
-const GAZE_LIMIT := deg_to_rad(70.0)   # how far the head turns off the body's heading, sideways and up or down
-const GAZE_BLEND := 6.0                # per second, how fast the head comes onto a point or back to the clip
-## Feet planted on the ground: a TwoBoneIK3D per leg pulls the foot to the floor under it, within this reach (m).
-const FOOT_REACH := 0.3
-const FOOT_BLEND := 12.0       # per second, how fast the feet take to the ground or let go of it
-const FOOT_LIFT := 0.1         # m the foot bone can be off its standing height and still be planted; swinging feet are free
-const LEGS := [["thigh_l", "calf_l", "foot_l"], ["thigh_r", "calf_r", "foot_r"]]
-## Clips with both feet on the floor; the rest (a ladder, a fall, the carry) keep the clip's feet.
-const FOOT_CLIPS := ["idle", "walk", "run", "crouch_idle", "crouch_walk", "aim", "crouch_aim", "fire", "reload", "hit",
-	"look", "look_nervous", "talk", "talk_b", "point", "argue", "phone", "hand_to_ear", "startle"]
-## Neck and head trail the body a little: the spring bones that give a hit and a turn some follow-through.
-const SPRING_ROOT := "neck_01"
-const SPRING_END := "Head"
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
 
 @export var kind := Kind.GUARD
 
-var skeleton: Skeleton3D
 var _anim := AnimationPlayer.new()
-var _clip := ""
 var _since_step := 0.0
 var _busy := 0.0     # seconds left of a react() one-shot, which play() must not interrupt
-var _home: Node3D    # where the model lives while it rides someone's shoulder
-var _ragdoll: Ragdoll
-var _look: LookAtModifier3D  # turns the head to _gaze, weighted by _gaze_w
-var _gaze := Marker3D.new()
-var _gaze_w := 0.0
-var _gaze_on := false
-var _gun: Node3D     # the weapon in the right hand
 var _weapon := ""    # the name it was hold()n with, which picks the clip set
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
-var _spring: SpringBoneSimulator3D
-var _feet: Array[TwoBoneIK3D] = []
-var _foot_targets: Array[Marker3D] = []
-var _foot_poles: Array[Marker3D] = []
-var _foot_w := 0.0   # how much of the ground the feet take, 0..1
-var _foot_dy := [0.0, 0.0]  # m each foot is lifted or lowered, eased
-var _foot_h0 := [0.0, 0.0]  # m the foot bone stands above the sole line in the rest pose
+var _held := Transform3D()  # the rifle in the gun hand's frame as the off hand last held it
 
 
 ## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
@@ -176,134 +152,12 @@ func _ready() -> void:
 		_part("Nikita").material_override = tint
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
 			_part(part).visible = part in DRESS[kind]
-	_add_look_at()
-	_add_spring()
-	_add_foot_ik()
+	_rig()
 	play("idle")
 
 
-## A LookAtModifier3D on the head bone, aimed at the _gaze marker. Its axes come from the head's rest pose, since
-## the rigs disagree on which way a bone points.
-func _add_look_at() -> void:
-	var head := skeleton.find_bone("Head")
-	if head < 0:
-		for i in skeleton.get_bone_count():
-			if skeleton.get_bone_name(i).to_lower().ends_with("head"):
-				head = i
-				break
-	if head < 0:
-		return
-	_gaze.top_level = true
-	add_child(_gaze)
-	var rest := skeleton.get_bone_global_rest(head).basis.orthonormalized()
-	_look = LookAtModifier3D.new()
-	skeleton.add_child(_look)
-	_look.bone_name = skeleton.get_bone_name(head)
-	_look.target_node = _look.get_path_to(_gaze)
-	_look.forward_axis = _bone_axis(rest.inverse() * Vector3.BACK) as SkeletonModifier3D.BoneAxis  # the rig faces +Z
-	_look.primary_rotation_axis = (_bone_axis(rest.inverse() * Vector3.UP) >> 1) as Vector3.Axis  # yaw, about the bone's own up
-	_look.use_angle_limitation = true
-	_look.primary_limit_angle = GAZE_LIMIT
-	_look.secondary_limit_angle = GAZE_LIMIT / 2.0
-	_look.influence = 0.0
-
-
-## Spring bones on the neck and head, so a turn or a hit leaves the head a beat behind. Skipped on a rig without them.
-func _add_spring() -> void:
-	if skeleton.find_bone(SPRING_ROOT) < 0 or skeleton.find_bone(SPRING_END) < 0:
-		return
-	_spring = SpringBoneSimulator3D.new()
-	skeleton.add_child(_spring)
-	_spring.setting_count = 1
-	_spring.set_root_bone_name(0, SPRING_ROOT)
-	_spring.set_end_bone_name(0, SPRING_END)
-	_spring.set_extend_end_bone(0, true)
-	_spring.set_end_bone_direction(0, SkeletonModifier3D.BONE_DIRECTION_FROM_PARENT)
-	_spring.set_end_bone_length(0, 0.2)
-	_spring.set_center_from(0, SpringBoneSimulator3D.CENTER_FROM_NODE)  # walking moves the model, not the head's inertia
-	_spring.set_center_node(0, _spring.get_path_to(self))
-	_spring.set_stiffness(0, 3.0)
-	_spring.set_drag(0, 0.6)
-	_spring.set_gravity(0, 0.0)
-
-
-## One TwoBoneIK3D for both legs: thigh, calf and foot reach a target set each frame by _plant_feet. Skipped on a rig
-## without those bones (the Target's).
-func _add_foot_ik() -> void:
-	for leg: Array in LEGS:
-		for bone: String in leg:
-			if skeleton.find_bone(bone) < 0:
-				return
-	var ik := TwoBoneIK3D.new()
-	skeleton.add_child(ik)
-	ik.setting_count = LEGS.size()
-	for i in LEGS.size():
-		var target := Marker3D.new()
-		var pole := Marker3D.new()
-		for m in [target, pole]:
-			m.top_level = true
-			add_child(m)
-		ik.set_root_bone_name(i, LEGS[i][0])
-		ik.set_middle_bone_name(i, LEGS[i][1])
-		ik.set_end_bone_name(i, LEGS[i][2])
-		ik.set_target_node(i, ik.get_path_to(target))
-		ik.set_pole_node(i, ik.get_path_to(pole))
-		_foot_targets.append(target)
-		_foot_poles.append(pole)
-		_foot_h0[i] = skeleton.get_bone_global_rest(skeleton.find_bone(LEGS[i][2])).origin.y
-	ik.influence = 0.0
-	_feet.append(ik)
-
-
-## Sets each foot to the ground under it, but only while it is on the floor in the clip: a swinging foot keeps its arc.
-## The clip's pose is read here, before the modifier turns it into the planted one.
-func _plant_feet(delta: float) -> void:
-	if _feet.is_empty():
-		return
-	var limp := _ragdoll != null and _ragdoll.active()
-	var on := not limp and _home == null and is_visible_in_tree() and (_clip in FOOT_CLIPS or _clip in PISTOL_CLIPS.values())
-	_foot_w = move_toward(_foot_w, 1.0 if on else 0.0, FOOT_BLEND * delta)
-	_feet[0].influence = _foot_w
-	if _foot_w <= 0.0:
-		return
-	var space := get_world_3d().direct_space_state
-	var forward := -global_basis.z
-	for i in LEGS.size():
-		var pose := skeleton.global_transform * skeleton.get_bone_global_pose(skeleton.find_bone(LEGS[i][2]))
-		var knee := skeleton.global_transform * skeleton.get_bone_global_pose(skeleton.find_bone(LEGS[i][1]))
-		var want := 0.0
-		var from := Vector3(pose.origin.x, global_position.y + FOOT_REACH + 0.3, pose.origin.z)
-		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * (FOOT_REACH * 2.0 + 0.3), Ragdoll.WORLD))
-		if not hit.is_empty():
-			var planted := clampf(1.0 - (pose.origin.y - global_position.y - _foot_h0[i]) / FOOT_LIFT, 0.0, 1.0)
-			want = clampf(hit.position.y - global_position.y, -FOOT_REACH, FOOT_REACH) * planted
-		_foot_dy[i] = lerpf(_foot_dy[i], want, minf(FOOT_BLEND * delta, 1.0))
-		_foot_targets[i].global_transform = Transform3D(pose.basis, pose.origin + Vector3.UP * _foot_dy[i])
-		_foot_poles[i].global_position = knee.origin + forward
-
-
-## The BoneAxis (+X, -X, +Y, -Y, +Z, -Z) a bone-local direction points along most.
-static func _bone_axis(v: Vector3) -> int:
-	var a := v.abs().max_axis_index()
-	return a * 2 + (1 if v[a] < 0.0 else 0)
-
-
-## Turns the head to `point` (world space), or back to what the clip does for null. Eased in and out.
-func gaze(point: Variant) -> void:
-	_gaze_on = point != null
-	if _gaze_on:
-		_gaze.global_position = point
-
-
 func _process(delta: float) -> void:
-	var limp := _ragdoll != null and _ragdoll.active()
-	if _spring:
-		_spring.active = not limp  # the physical bones carry the head while it lies
-		var moving: bool = _clip in ["walk", "run", "crouch_walk"]  # the gait's own bob would shake the head
-		_spring.influence = move_toward(_spring.influence, 0.0 if moving else 1.0, 4.0 * delta)
-	if _look:
-		_gaze_w = move_toward(_gaze_w, 1.0 if _gaze_on else 0.0, GAZE_BLEND * delta)
-		_look.influence = _gaze_w
+	_drive_rig(delta)
 	_busy -= delta
 	_since_step += delta
 	if _since_step >= STEP:
@@ -347,15 +201,32 @@ func _brace() -> void:
 	var palm := r * PALM
 	var off := l * Vector3(0, PALM.y, 0)  # the off hand's palm (its bone points along the fingers too)
 	var reach := palm.distance_to(off)
-	if reach < BRACE_REACH.x or reach > BRACE_REACH.y:
-		_gun.transform = Transform3D(HAND_TO_GUN, PALM + HAND_TO_GUN * -grip)
-		return
-	var x := (off - palm) / reach  # the muzzle
-	var z := x.cross(hand * HAND_TO_GUN.y).normalized()
-	x = (off - z.cross(x) * HANDGUARD - palm).normalized()  # dipped so the handguard, not the grip line, meets the hand
-	z = x.cross(hand * HAND_TO_GUN.y).normalized()
-	var aim := hand.inverse() * Basis(x, z.cross(x), z)
-	_gun.transform = Transform3D(aim, PALM + aim * -grip)
+	var braced := Transform3D(HAND_TO_GUN, PALM + HAND_TO_GUN * -grip)
+	if reach >= BRACE_REACH.x and reach <= BRACE_REACH.y:
+		var x := (off - palm) / reach  # the muzzle
+		var z := x.cross(hand * HAND_TO_GUN.y).normalized()
+		x = (off - z.cross(x) * HANDGUARD - palm).normalized()  # dipped so the handguard, not the grip line, meets the hand
+		z = x.cross(hand * HAND_TO_GUN.y).normalized()
+		var aim := hand.inverse() * Basis(x, z.cross(x), z)
+		braced = Transform3D(aim, PALM + aim * -grip)
+	var w := _let_go()
+	if w <= 0.0:
+		_held = braced
+	_gun.transform = braced.interpolate_with(_held, w)
+
+
+## How far the off hand is off the rifle in a LET_GO clip, 0 (holding) to 1 (let go), eased at both ends.
+func _let_go() -> float:
+	if not LET_GO.has(_clip) or _anim.current_animation != _clip:
+		return 0.0
+	var u := _anim.current_animation_position / maxf(_anim.current_animation_length, 0.01)
+	var span: Array = LET_GO[_clip]
+	return smoothstep(0.0, 1.0, minf(u - span[0], span[1] - u) / LET_GO_FADE)
+
+
+## Pistol takes stand on both feet too.
+func _feet_down() -> bool:
+	return super() or _clip in PISTOL_CLIPS.values()
 
 
 func _rest_pose() -> Animation:
@@ -390,16 +261,18 @@ func _clips() -> AnimationLibrary:
 
 ## Plays a one-shot over whatever the model was doing, squeezed into `seconds` (0 = its own length).
 ## speed > 0 plays the start of a long clip at that speed for `seconds` instead of squeezing it whole.
-## Does nothing without the Mixamo bake.
-func react(clip: String, seconds := 0.0, speed := 0.0) -> void:
+## from (s) skips the clip's own lead-in. Does nothing without the Mixamo bake.
+func react(clip: String, seconds := 0.0, speed := 0.0, from := 0.0) -> void:
 	clip = _swapped(clip)
 	if not _anim.has_animation(clip):
 		return
-	var length := _anim.get_animation(clip).length
+	var length := _anim.get_animation(clip).length - from
 	_busy = seconds if seconds > 0.0 else length
 	_clip = clip
 	_anim.speed_scale = 1.0
 	_anim.play(clip, 0.1, speed if speed > 0.0 else length / _busy)
+	if from > 0.0:
+		_anim.seek(from)
 
 
 ## Plays a looping clip. ground_speed (m/s) paces a clip baked with a "speed" meta so the feet keep up with the body.

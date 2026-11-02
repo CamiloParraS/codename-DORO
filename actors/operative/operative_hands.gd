@@ -35,7 +35,7 @@ func _interact() -> void:
 			Guard.broadcast(get_tree(), g.global_position, choke_noise, "a struggle", g)
 	elif _crate_near():
 		items.resupply([tranq, rifle])
-		model.react("pick_up", 1.0, 2.0)  # the bend to the crate, not the clip's long stand back up
+		model.react("pick_up", 0.7, 3.3, 0.6)  # straight into the bend to the crate (the clip idles 0.6 s first); its long stand back up is cut
 	elif _ladder_near():
 		_mount(_ladder_near())
 

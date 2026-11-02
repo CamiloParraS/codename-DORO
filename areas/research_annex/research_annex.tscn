@@ -3806,7 +3806,7 @@ tracks/9/keys = {
 "times": PackedFloat32Array(0, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 9, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 10),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(27.6, 4.6, -15.6), Vector3(27.6, 4.6, -15.6), Vector3(27.6, 5.5901327, -15.6), Vector3(27.6, 6.248665, -15.6), Vector3(27.6, 6.709614, -15.6), Vector3(27.6, 7.054262, -15.6), Vector3(27.6, 7.331913, -15.6), Vector3(27.6, 7.5724683, -15.6), Vector3(27.6, 7.7940655, -15.6), Vector3(27.6, 8.007706, -15.6), Vector3(27.6, 8.22006, -15.6), Vector3(27.6, 8.435177, -15.6), Vector3(27.6, 8.655509, -15.6), Vector3(27.6, 8.882546, -15.6), Vector3(27.6, 9.117192, -15.6), Vector3(27.6, 9.359994, -15.6), Vector3(27.6, 9.611283, -15.6), Vector3(27.6, 9.871262, -15.6), Vector3(27.6, 10.140053, -15.6), Vector3(27.6, 10.417728, -15.6), Vector3(27.6, 10.704335, -15.6), Vector3(27.6, 10.9999, -15.6), Vector3(27.6, 11.30444, -15.6), Vector3(27.6, 11.617964, -15.6), Vector3(27.6, 11.940477, -15.6), Vector3(27.6, 12.271986, -15.6), Vector3(27.6, 12.612492, -15.6), Vector3(27.6, 12.961994, -15.6), Vector3(27.6, 13.3204975, -15.6), Vector3(27.6, 13.687998, -15.6), Vector3(27.6, 14.064499, -15.6), Vector3(27.6, 14.449999, -15.6), Vector3(27.6, 14.8445, -15.6), Vector3(27.6, 15.247999, -15.6), Vector3(27.6, 15.6605, -15.6), Vector3(27.6, 16.082, -15.6), Vector3(27.6, 16.5125, -15.6), Vector3(27.6, 16.952, -15.6), Vector3(27.6, 17.4005, -15.6), Vector3(27.6, 17.858, -15.6), Vector3(27.6, 18.3245, -15.6), Vector3(27.6, 18.8, -15.6), Vector3(27.6, 19.2845, -15.6), Vector3(27.6, 19.778, -15.6), Vector3(27.6, 20.2805, -15.6), Vector3(27.6, 20.792, -15.6), Vector3(27.6, 21.3125, -15.6), Vector3(27.6, 21.842001, -15.6), Vector3(27.6, 22.3805, -15.6), Vector3(27.6, 22.928, -15.6), Vector3(27.6, 23.4845, -15.6), Vector3(27.6, 24.050001, -15.6), Vector3(27.6, 24.6245, -15.6), Vector3(27.6, 25.208, -15.6), Vector3(27.6, 25.8005, -15.6), Vector3(27.6, 26.402, -15.6), Vector3(27.6, 27.0125, -15.6), Vector3(27.6, 27.632, -15.6), Vector3(27.6, 28.2605, -15.6), Vector3(27.6, 28.898, -15.6), Vector3(27.6, 29.5445, -15.6), Vector3(27.6, 30.2, -15.6), Vector3(27.6, 30.8645, -15.6), Vector3(27.6, 31.538, -15.6), Vector3(27.6, 32.2205, -15.6), Vector3(27.6, 32.912, -15.6), Vector3(27.6, 33.6125, -15.6), Vector3(27.6, 34.322, -15.6), Vector3(27.6, 35.0405, -15.6), Vector3(27.6, 35.767998, -15.6), Vector3(27.6, 36.504498, -15.6), Vector3(27.6, 37.25, -15.6), Vector3(27.6, 38.004498, -15.6), Vector3(27.6, 38.767998, -15.6), Vector3(27.6, 39.540497, -15.6), Vector3(27.6, 40.322, -15.6), Vector3(27.6, 41.1125, -15.6), Vector3(27.6, 41.912, -15.6), Vector3(27.6, 42.720497, -15.6), Vector3(27.6, 43.538, -15.6), Vector3(27.6, 44.3645, -15.6), Vector3(27.6, 45.199997, -15.6), Vector3(27.6, 46.0445, -15.6), Vector3(27.6, 46.898, -15.6), Vector3(27.6, 47.760498, -15.6), Vector3(27.6, 48.632, -15.6)]
+"values": [Vector3(27.6, 5.05, -15.6), Vector3(27.6, 5.05, -15.6), Vector3(27.6, 6.0401325, -15.6), Vector3(27.6, 6.6986656, -15.6), Vector3(27.6, 7.1596136, -15.6), Vector3(27.6, 7.504263, -15.6), Vector3(27.6, 7.7819133, -15.6), Vector3(27.6, 8.022469, -15.6), Vector3(27.6, 8.244066, -15.6), Vector3(27.6, 8.4577055, -15.6), Vector3(27.6, 8.67006, -15.6), Vector3(27.6, 8.885177, -15.6), Vector3(27.6, 9.105509, -15.6), Vector3(27.6, 9.332546, -15.6), Vector3(27.6, 9.567192, -15.6), Vector3(27.6, 9.809994, -15.6), Vector3(27.6, 10.061283, -15.6), Vector3(27.6, 10.321262, -15.6), Vector3(27.6, 10.590053, -15.6), Vector3(27.6, 10.867729, -15.6), Vector3(27.6, 11.154335, -15.6), Vector3(27.6, 11.4499, -15.6), Vector3(27.6, 11.75444, -15.6), Vector3(27.6, 12.067964, -15.6), Vector3(27.6, 12.390478, -15.6), Vector3(27.6, 12.721987, -15.6), Vector3(27.6, 13.062492, -15.6), Vector3(27.6, 13.411995, -15.6), Vector3(27.6, 13.770497, -15.6), Vector3(27.6, 14.137999, -15.6), Vector3(27.6, 14.514499, -15.6), Vector3(27.6, 14.9, -15.6), Vector3(27.6, 15.294499, -15.6), Vector3(27.6, 15.698, -15.6), Vector3(27.6, 16.1105, -15.6), Vector3(27.6, 16.532001, -15.6), Vector3(27.6, 16.962502, -15.6), Vector3(27.6, 17.402, -15.6), Vector3(27.6, 17.8505, -15.6), Vector3(27.6, 18.308, -15.6), Vector3(27.6, 18.7745, -15.6), Vector3(27.6, 19.25, -15.6), Vector3(27.6, 19.7345, -15.6), Vector3(27.6, 20.228, -15.6), Vector3(27.6, 20.7305, -15.6), Vector3(27.6, 21.242, -15.6), Vector3(27.6, 21.7625, -15.6), Vector3(27.6, 22.292, -15.6), Vector3(27.6, 22.830502, -15.6), Vector3(27.6, 23.377998, -15.6), Vector3(27.6, 23.934502, -15.6), Vector3(27.6, 24.5, -15.6), Vector3(27.6, 25.074501, -15.6), Vector3(27.6, 25.658, -15.6), Vector3(27.6, 26.2505, -15.6), Vector3(27.6, 26.852001, -15.6), Vector3(27.6, 27.462502, -15.6), Vector3(27.6, 28.082, -15.6), Vector3(27.6, 28.710499, -15.6), Vector3(27.6, 29.348, -15.6), Vector3(27.6, 29.9945, -15.6), Vector3(27.6, 30.650002, -15.6), Vector3(27.6, 31.314499, -15.6), Vector3(27.6, 31.987999, -15.6), Vector3(27.6, 32.6705, -15.6), Vector3(27.6, 33.362, -15.6), Vector3(27.6, 34.0625, -15.6), Vector3(27.6, 34.772, -15.6), Vector3(27.6, 35.4905, -15.6), Vector3(27.6, 36.218, -15.6), Vector3(27.6, 36.9545, -15.6), Vector3(27.6, 37.7, -15.6), Vector3(27.6, 38.4545, -15.6), Vector3(27.6, 39.218, -15.6), Vector3(27.6, 39.990498, -15.6), Vector3(27.6, 40.772, -15.6), Vector3(27.6, 41.5625, -15.6), Vector3(27.6, 42.362, -15.6), Vector3(27.6, 43.170498, -15.6), Vector3(27.6, 43.988, -15.6), Vector3(27.6, 44.8145, -15.6), Vector3(27.6, 45.649998, -15.6), Vector3(27.6, 46.4945, -15.6), Vector3(27.6, 47.348, -15.6), Vector3(27.6, 48.2105, -15.6), Vector3(27.6, 49.082, -15.6)]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
@@ -7535,36 +7535,36 @@ transform = Transform3D(0.03331496, -0.105647616, -0.99384534, 0, 0.9943973, -0.
 cast_shadow = 0
 mesh = SubResource("BoxMesh_vkr05")
 
-[node name="@Node3D@14" type="Node3D" parent="Backdrop/Surroundings" unique_id=943722676]
+[node name="@Node3D@16" type="Node3D" parent="Backdrop/Surroundings" unique_id=943722678]
 
-[node name="UtilityPole_45p5_m108p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=352038073]
+[node name="UtilityPole_45p5_m108p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1831621307]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.701126, -148)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_45p5_m108p0" unique_id=108778493 instance=ExtResource("78_tlknr")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m108p0" unique_id=174445951 instance=ExtResource("78_tlknr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m84p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=76000780]
+[node name="UtilityPole_45p5_m84p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576363470]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.479477, -124)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_45p5_m84p0" unique_id=1922968208 instance=ExtResource("78_tlknr")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m84p0" unique_id=883753938 instance=ExtResource("78_tlknr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=75924550]
+[node name="UtilityPole_45p5_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576287240]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.499898, -100)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_45p5_m60p0" unique_id=1258970698 instance=ExtResource("78_tlknr")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m60p0" unique_id=219756428 instance=ExtResource("78_tlknr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m36p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=75823273]
+[node name="UtilityPole_45p5_m36p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576185963]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.422246, -76)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_45p5_m36p0" unique_id=1910719469 instance=ExtResource("78_tlknr")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m36p0" unique_id=871505199 instance=ExtResource("78_tlknr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m12p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14" unique_id=75747043]
+[node name="UtilityPole_45p5_m12p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576109733]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.3967714, -52)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@14/UtilityPole_45p5_m12p0" unique_id=1246721959 instance=ExtResource("78_tlknr")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m12p0" unique_id=207507689 instance=ExtResource("78_tlknr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
 [node name="UtilityPoleWires" type="Node3D" parent="Backdrop/Surroundings" unique_id=1063547200]
@@ -8833,11 +8833,11 @@ visible = false
 [node name="Balloon" type="MeshInstance3D" parent="Cine/OutroProps" unique_id=51216172]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-[node name="@MeshInstance3D@19" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=765861918]
+[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=765861943]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 mesh = SubResource("CylinderMesh_u3n01")
 
-[node name="@Sprite3D@20" type="Sprite3D" parent="Cine/OutroProps/Balloon" unique_id=1139708971]
+[node name="@Sprite3D@22" type="Sprite3D" parent="Cine/OutroProps/Balloon" unique_id=1139708973]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 modulate = Color(1, 0.45, 0.15, 1)
 pixel_size = 0.125

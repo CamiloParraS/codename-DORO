@@ -9874,7 +9874,7 @@ script = ExtResource("104_alqs6")
 kind = 0
 
 [node name="@MeshInstance3D@25" type="MeshInstance3D" parent="Cine/OutroProps/Recruit" unique_id=402175998]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.05, 0)
 
 [node name="@MeshInstance3D@23" type="MeshInstance3D" parent="Cine/OutroProps/Recruit/@MeshInstance3D@25" unique_id=1593467851]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
