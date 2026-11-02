@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c442pm2la4ugu"
-path="res://.godot/imported/metal_bin_trash2.jpg-a1eba03d9270d69d8870956f03305047.ctex"
+path.s3tc="res://.godot/imported/metal_bin_trash2.jpg-a1eba03d9270d69d8870956f03305047.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "4e211985562f16a364b84a1be585978f"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/metal_bin_trash2.jpg"
-dest_files=["res://.godot/imported/metal_bin_trash2.jpg-a1eba03d9270d69d8870956f03305047.ctex"]
+dest_files=["res://.godot/imported/metal_bin_trash2.jpg-a1eba03d9270d69d8870956f03305047.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

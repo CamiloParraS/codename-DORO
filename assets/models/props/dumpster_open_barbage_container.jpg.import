@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxh4mq8dcmgk1"
-path="res://.godot/imported/dumpster_open_barbage_container.jpg-76a8b4ed4e2552b6c7861913f3b278a1.ctex"
+path.s3tc="res://.godot/imported/dumpster_open_barbage_container.jpg-76a8b4ed4e2552b6c7861913f3b278a1.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "fd03053351b640230a5962df12db3997"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/dumpster_open_barbage_container.jpg"
-dest_files=["res://.godot/imported/dumpster_open_barbage_container.jpg-76a8b4ed4e2552b6c7861913f3b278a1.ctex"]
+dest_files=["res://.godot/imported/dumpster_open_barbage_container.jpg-76a8b4ed4e2552b6c7861913f3b278a1.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
