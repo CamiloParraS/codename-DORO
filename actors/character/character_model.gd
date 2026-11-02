@@ -82,6 +82,12 @@ const TWIST_BONE := "spine_01"
 const AIM_PITCH := deg_to_rad(2.0)
 ## Metres the rifle's handguard sits above the line through its grip, along the gun's up: where the off hand holds.
 const HANDGUARD := 0.09
+## One-shots that play from the hips up (UPPER_ROOT and the bones under it) over whatever the legs are doing, so a
+## reload, a shot or a radio call doesn't stop the walk. The rest of react()'s clips (a bend to a crate, a startle,
+## a scan) take the whole body and hold play() off until they end.
+const UPPER_CLIPS := ["reload", "fire", "throw", "hit", "hand_to_ear", "talk", "talk_b", "point"]
+const UPPER_ROOT := "spine_01"
+const UPPER_FADE := 0.12  # s an upper-body one-shot takes to come over the base clip, and to leave it
 ## Spans of a clip (fractions of its length) where the off hand lets go of the rifle: the reload's goes to the pouch
 ## and the mag well while the gun hand keeps the rifle as it was. It eases off and back on over LET_GO_FADE.
 const LET_GO := {"reload": [0.17, 0.76]}
@@ -99,10 +105,17 @@ const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  
 
 var _anim := AnimationPlayer.new()
 var _since_step := 0.0
-var _busy := 0.0     # seconds left of a react() one-shot, which play() must not interrupt
+var _busy := 0.0     # seconds left of a whole-body react() one-shot, which play() must not interrupt
 var _weapon := ""    # the name it was hold()n with, which picks the clip set
 var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
 var _held := Transform3D()  # the rifle in the gun hand's frame as the off hand last held it
+var _upper_bones := {}     # bone name -> index, for UPPER_ROOT and everything under it
+var _shot := ""            # the upper-body one-shot over the base clip, "" for none
+var _shot_t := 0.0         # s into its clip
+var _shot_speed := 1.0
+var _shot_left := 0.0      # s before it starts to fade out
+var _shot_w := 0.0         # how much of the upper body it takes, 0..1
+var _shot_tracks := []     # [track, bone] for its rotation tracks on the upper body
 
 
 ## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
@@ -153,6 +166,13 @@ func _ready() -> void:
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
 			_part(part).visible = part in DRESS[kind]
 	_rig()
+	var root := skeleton.find_bone(UPPER_ROOT)
+	for i in skeleton.get_bone_count():
+		var b := i
+		while b >= 0 and b != root:
+			b = skeleton.get_bone_parent(b)
+		if b == root:
+			_upper_bones[skeleton.get_bone_name(i)] = i
 	play("idle")
 
 
@@ -162,14 +182,33 @@ func _process(delta: float) -> void:
 	_since_step += delta
 	if _since_step >= STEP:
 		_anim.advance(_since_step)
+		_layer(_since_step)
 		_since_step = 0.0
 		if _weapon == "rifle":
-			if _clip in SQUARED:
+			if _clip in SQUARED and (_shot == "" or _shot in SQUARED):  # not with a reload laid over the aim
 				for i in 2:  # a second pass takes up what the first left
 					_square_up()
 				_brace()
 				_turn(Vector3.RIGHT, -(AIM_PITCH - _muzzle_pitch()))  # leaning back raises it, the hands with it
 			_brace()
+
+
+## Lays the upper-body one-shot over the pose the base clip just set: each upper bone turns toward the shot's
+## rotation by its weight, which eases in, holds, and eases back out when its time is up.
+func _layer(delta: float) -> void:
+	if _shot == "":
+		return
+	_shot_t += delta * _shot_speed
+	_shot_left -= delta
+	_shot_w = move_toward(_shot_w, 1.0 if _shot_left > 0.0 else 0.0, delta / UPPER_FADE)
+	if _shot_w <= 0.0:
+		_shot = ""
+		return
+	var a := _anim.get_animation(_shot)
+	var t := clampf(_shot_t, 0.0, a.length)
+	for tb: Array in _shot_tracks:
+		var q := a.rotation_track_interpolate(tb[0], t)
+		skeleton.set_bone_pose_rotation(tb[1], skeleton.get_bone_pose_rotation(tb[1]).slerp(q, _shot_w))
 
 
 ## Twists the upper body about the vertical so the line between the palms points the way the rig faces (+Z).
@@ -215,13 +254,13 @@ func _brace() -> void:
 	_gun.transform = braced.interpolate_with(_held, w)
 
 
-## How far the off hand is off the rifle in a LET_GO clip, 0 (holding) to 1 (let go), eased at both ends.
+## How far the off hand is off the rifle in a LET_GO one-shot, 0 (holding) to 1 (let go), eased at both ends.
 func _let_go() -> float:
-	if not LET_GO.has(_clip) or _anim.current_animation != _clip:
+	if not LET_GO.has(_shot):
 		return 0.0
-	var u := _anim.current_animation_position / maxf(_anim.current_animation_length, 0.01)
-	var span: Array = LET_GO[_clip]
-	return smoothstep(0.0, 1.0, minf(u - span[0], span[1] - u) / LET_GO_FADE)
+	var u := _shot_t / maxf(_anim.get_animation(_shot).length, 0.01)
+	var span: Array = LET_GO[_shot]
+	return smoothstep(0.0, 1.0, minf(u - span[0], span[1] - u) / LET_GO_FADE) * _shot_w
 
 
 ## Pistol takes stand on both feet too.
@@ -261,18 +300,47 @@ func _clips() -> AnimationLibrary:
 
 ## Plays a one-shot over whatever the model was doing, squeezed into `seconds` (0 = its own length).
 ## speed > 0 plays the start of a long clip at that speed for `seconds` instead of squeezing it whole.
-## from (s) skips the clip's own lead-in. Does nothing without the Mixamo bake.
+## from (s) skips the clip's own lead-in. An UPPER_CLIPS clip leaves the legs to play(); any other takes the
+## whole body. Does nothing without the Mixamo bake.
 func react(clip: String, seconds := 0.0, speed := 0.0, from := 0.0) -> void:
+	var upper := clip in UPPER_CLIPS and kind != Kind.TARGET
 	clip = _swapped(clip)
 	if not _anim.has_animation(clip):
 		return
 	var length := _anim.get_animation(clip).length - from
-	_busy = seconds if seconds > 0.0 else length
+	var time := seconds if seconds > 0.0 else length
+	var rate := speed if speed > 0.0 else length / time
+	if upper:
+		if _shot != clip:
+			_shot_tracks = _upper_tracks(_anim.get_animation(clip))
+		_shot = clip
+		_shot_t = from
+		_shot_speed = rate
+		_shot_left = time
+		return
+	_end_shot()
+	_busy = time
 	_clip = clip
 	_anim.speed_scale = 1.0
-	_anim.play(clip, 0.1, speed if speed > 0.0 else length / _busy)
+	_anim.play(clip, 0.1, rate)
 	if from > 0.0:
 		_anim.seek(from)
+
+
+## [track, bone] for each rotation track `a` keys on the upper body.
+func _upper_tracks(a: Animation) -> Array:
+	var out := []
+	for i in a.get_track_count():
+		var bone := String(a.track_get_path(i).get_concatenated_subnames())
+		if a.track_get_type(i) == Animation.TYPE_ROTATION_3D and _upper_bones.has(bone):
+			out.append([i, _upper_bones[bone]])
+	return out
+
+
+## Drops an upper-body one-shot at once: a whole-body clip, a ride or a fall takes over.
+func _end_shot() -> void:
+	_shot = ""
+	_shot_w = 0.0
 
 
 ## Plays a looping clip. ground_speed (m/s) paces a clip baked with a "speed" meta so the feet keep up with the body.
@@ -371,6 +439,7 @@ func drop(push := Vector3.ZERO, at := "pelvis") -> void:
 	if _ragdoll == null:
 		_ragdoll = Ragdoll.new(skeleton)
 		add_child(_ragdoll)
+	_end_shot()
 	_ragdoll.start(push, at)
 
 
@@ -394,6 +463,7 @@ func get_up(fade := Ragdoll.BLEND) -> void:
 ## On `mount` (a carry_mount) the model lies in the fixed shoulder pose; null puts it back where it was.
 func ride(mount: Node3D) -> void:
 	if mount:
+		_end_shot()
 		get_up(0.0)  # it is about to be moved onto the shoulder, so there is nothing to ease
 		if not _home:
 			_home = get_parent_node_3d()

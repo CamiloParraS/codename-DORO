@@ -159,12 +159,11 @@ func test_a_radio_call_puts_the_hand_at_the_ear_without_a_spasm() -> void:
 		return
 	var m := CharacterModel.new()
 	_root().add_child(m)
-	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
 	var call_time := AlertChain.CALL_TIME - GuardAlert.FLINCH
 	m.react("hand_to_ear", call_time, CharacterModel.EAR_SPEED)
-	var head := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("Head")).origin
-	for i in int(call_time * 60):  # frame by frame, as the game advances it
-		anim.advance(1.0 / 60)
+	for i in int(call_time * 60):  # frame by frame, as the game advances it (the call is laid over the upper body)
+		m._process(1.0 / 60)
+	var head := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("Head")).origin  # where the head is now
 	var hand := m.skeleton.get_bone_global_pose(m.skeleton.find_bone("hand_r")).origin
 	assert_true(hand.distance_to(head) < 0.3, "right hand at the ear when the call ends (%.2f m)" % hand.distance_to(head))
 	m.free()
@@ -239,4 +238,44 @@ func test_secondary_motion_and_foot_ik_are_on_the_guard_rig() -> void:
 	assert_true(m._spring != null, "neck spring")
 	assert_eq(m._feet.size(), 1, "one TwoBoneIK3D")
 	assert_eq(m._feet[0].setting_count, 2, "a leg each")
+	m.free()
+
+
+func test_an_upper_body_one_shot_keeps_the_legs_walking() -> void:
+	if not ResourceLoader.exists(CharacterModel.MIXAMO):
+		return
+	var m := CharacterModel.new()
+	m.kind = CharacterModel.Kind.OPERATIVE
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	m.play("walk")
+	m.react("reload", 1.5)
+	m.play("run")
+	assert_eq(anim.current_animation, "run", "the legs still take play()'s clip")
+	for i in 30:
+		m._process(1.0 / 60)
+	var reload := anim.get_animation("reload")
+	var fore := m.skeleton.find_bone("lowerarm_l")
+	var track := reload.find_track(NodePath("%s:lowerarm_l" % anim.get_parent().get_path_to(m.skeleton)), Animation.TYPE_ROTATION_3D)
+	var want := reload.rotation_track_interpolate(track, m._shot_t)
+	assert_true(m.skeleton.get_bone_pose_rotation(fore).angle_to(want) < 0.01, "the arms follow the reload")
+	var thigh := m.skeleton.find_bone("thigh_l")
+	var run := anim.get_animation("run")
+	var leg := run.find_track(NodePath("%s:thigh_l" % anim.get_parent().get_path_to(m.skeleton)), Animation.TYPE_ROTATION_3D)
+	assert_true(m.skeleton.get_bone_pose_rotation(thigh).angle_to(run.rotation_track_interpolate(leg, anim.current_animation_position)) < 0.05, "the legs follow the run")
+	for i in 120:
+		m._process(1.0 / 60)
+	assert_eq(m._shot, "", "it fades out when its time is up")
+	m.free()
+
+
+func test_a_whole_body_one_shot_holds_the_walk_off() -> void:
+	if not ResourceLoader.exists(CharacterModel.MIXAMO):
+		return
+	var m := CharacterModel.new()
+	_root().add_child(m)
+	var anim: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+	m.react("pick_up", 0.7, 3.3, 0.6)
+	m.play("walk")
+	assert_eq(anim.current_animation, "pick_up", "the bend to a crate takes the legs too")
 	m.free()

@@ -21,6 +21,8 @@ const SPRING_END := "Head"
 ## hips 0.24 m, which is where these come from.
 const GRAB_CLIPS := ["lift_off", "hang"]
 const GRAB_AT := [2.22, 2.08]  # gun hand, off hand
+## Clips that need both hands free, so the gun is put away: a ladder's rungs.
+const STOW_CLIPS := ["climb"]
 const ARMS := [["upperarm_r", "lowerarm_r", "hand_r"], ["upperarm_l", "lowerarm_l", "hand_l"]]
 const WRIST := 0.07  # m from the wrist bone to where the mitt closes
 
@@ -169,11 +171,12 @@ func _add_arm_ik() -> void:
 	_arms.influence = 0.0
 
 
-## Eases the hands onto the line over the head in a GRAB_CLIPS clip, the gun stowed; off again in any other.
+## Eases the hands onto the line over the head in a GRAB_CLIPS clip, off again in any other. The gun is stowed
+## in those and in STOW_CLIPS.
 func _grab_line(delta: float) -> void:
 	var on := _clip in GRAB_CLIPS
 	if _gun:
-		_gun.visible = not on
+		_gun.visible = not on and _clip not in STOW_CLIPS
 	if not _arms:
 		return
 	_arms.influence = move_toward(_arms.influence, 1.0 if on else 0.0, 6.0 * delta)
