@@ -95,7 +95,7 @@ func _process(delta: float) -> void:
 		var before := _ring_t
 		_ring_t += delta
 		if before == 0.0 or int(before / RING_EVERY) != int(_ring_t / RING_EVERY):
-			Mixer.play(&"beep")
+			Mixer.play(&"codec_ring")
 		queue_redraw()
 		return
 	if not StoryMotion.still(self):
@@ -123,6 +123,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		if _ringing:  # answering: both frames wipe in
 			_ringing = false
+			Mixer.play(&"codec_answer")
 			_t = 0.0
 			_line_t = 0.0
 			UiMotion.wipe(_left, true, 6, 0.24)
@@ -140,6 +141,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 func _finish() -> void:  # closes on a cut: a short dark beat, then `finished`
+	Mixer.play(&"codec_end")
 	set_process_unhandled_input(false)
 	_cut = StoryMotion.CUT
 	queue_redraw()
