@@ -67,7 +67,8 @@ func _unhandled_input(e: InputEvent) -> void:
 			items.cycle(1 if e.is_action_pressed("item_next") else -1)
 	elif e.is_action_pressed("item_use") and not _choking and not radio_open:
 		if items.selected == Items.Kind.SCANNER:
-			items.use_scanner()
+			if items.use_scanner():
+				Mix.sfx_at(self, &"scanner_on", Vector3.INF, -4.0)
 		else:
 			throwing = items.can_throw(carrying != null)
 	elif e.is_action_pressed("shoulder_swap"):
