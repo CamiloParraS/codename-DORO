@@ -124,6 +124,8 @@ var _vsearched := false        # said "search" on reaching this suspicion's spot
 var _detour: Variant = null  # the Caution detour it walks now
 var _next_detour := 0
 var _spot_for: Variant = null  # the last known point its reserved search spot is for
+var _flank: Variant = null    # on Alert: the point wide of the spotter's line it runs to (Engage.flank_point), null = none
+var _callout_left := Engage.CALLOUT_EVERY  # s until it next takes the squad's callout of where the Operative is
 var _peek := Vector3.ZERO      # Suspicion: the hidden corner by the spot it checks after looking round the spot
 var _peek_for: Variant = null  # the last known point _peek is for (null: not picked yet)
 var _balloon: Node3D           # Fultoned: the balloon on its way up
@@ -273,6 +275,8 @@ func _changed(why: String) -> void:
 	AlertChain.area.release(self)  # a new state: any search spot it held is free
 	_spot_for = null
 	_peek_for = null
+	_flank = null  # release() above freed the squad's flank
+	_callout_left = Engage.CALLOUT_EVERY
 	_fanning = false
 	_swept = 0.0
 	_refresh_mark()

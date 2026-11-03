@@ -172,6 +172,13 @@ func hear(pos: Vector3, what: String) -> String:
 	return ""
 
 
+## A squadmate on Alert has eyes on the Operative at pos and this guard hasn't (for SIGHT_GRACE s): it
+## hunts toward the squad's sighting, not the spot it was radioed or last saw.
+func relay(pos: Vector3) -> void:
+	if state == State.ALERT and not calling and not (saw and unseen < SIGHT_GRACE):
+		last_known = pos
+
+
 ## Freed from a Hold-up by the Operative at pos: a Radio call on him (stoppable like any other).
 func freed(pos: Vector3) -> String:
 	if state == State.ALERT or calling:

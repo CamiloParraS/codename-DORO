@@ -37,6 +37,7 @@ var _held := {}       # searcher -> reserved spot (Vector3)
 var _searched := []   # spots swept since the last sighting: nobody is sent there again until the next one
 var _ring_for := Vector3.INF  # the point _ring was built round
 var _ring := []
+var _flanker: Variant = null  # the one guard flanking the Operative, null = nobody
 
 
 ## A guard or camera starts radioing a sighting at pos. Refused during Alert and Evasion (the guard joins
@@ -190,10 +191,27 @@ func stand_down() -> void:
 	_calls.clear()
 	_held.clear()
 	_searched.clear()
+	_flanker = null
 	phase = Phase.NORMAL
 	left = 0.0
 
 
-## The searcher left the search or was Neutralized.
+## `who` takes the one flank of the squad: true when nobody else holds it.
+func claim_flank(who: Variant) -> bool:
+	var stale: bool = _flanker is Object and not is_instance_valid(_flanker)  # freed (Fultoned) mid-flank
+	if _flanker != null and not stale and _flanker != who:
+		return false
+	_flanker = who
+	return true
+
+
+## `who` stops flanking (it sees the Operative, got there, or its state changed).
+func end_flank(who: Variant) -> void:
+	if _flanker == who:
+		_flanker = null
+
+
+## The searcher left the search or was Neutralized (or changed state: any flank it held is free too).
 func release(who: Variant) -> void:
 	_held.erase(who)
+	end_flank(who)

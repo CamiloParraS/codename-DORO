@@ -570,6 +570,7 @@ radio.checkin.3,Nothing to report.,Sin novedad.
 radio.checkin.4,Still on my rounds.,Sigo con mi ronda.
 radio.checkin.5,Checking in. Quiet.,Informo. Todo en calma.
 radio.hm,Hm?,¿Mm?
+guard.flanking,"Going round, keep him pinned!","¡Lo rodeo, mantenlo inmovilizado!"
 telegraph.radio_check,A guard just keyed the radio to call HQ back. Aigis is double-checking transmissions.,Un guardia acaba de llamar a la base para confirmar. Aigis está verificando las transmisiones.
 telegraph.head_check,Guards are glancing back before they turn. Aigis is watching your exits.,Los guardias miran atrás antes de girar. Aigis vigila tus salidas.
 telegraph.flank,"Reinforcements through the road entry, and they are coming round your side.","Refuerzos por la entrada de la carretera, y te rodean por el flanco."

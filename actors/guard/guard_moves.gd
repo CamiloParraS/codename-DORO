@@ -164,6 +164,7 @@ func chase(delta: float) -> void:
 		face(operative.global_position, delta)  # the retreat in the tree failed (cornered): stands and fires
 		return
 	var squad := _squad()
+	_callout(delta, squad)
 	var fan: bool = not _has_sight() and Engage.lost(squad[1])
 	if fan != _fanning:  # lost the Operative, or someone has it again: either way the spot it held is free
 		_fanning = fan
@@ -172,12 +173,53 @@ func chase(delta: float) -> void:
 	if _fanning:
 		search(delta, FAN_SPEED, 2.0)  # the squad lost it: each to its own spot round the last sighting
 		return
+	if _flank != null:
+		if _has_sight() or _fanning or _flat_dist(_flank) < REACHED or _at(_flank):
+			_stop_flank()  # it has the Operative, or got round: on with the ordinary chase
+		else:
+			_walk_to(_flank, CHASE_SPEED, delta)
+			return
 	_held = Engage.holds(squad[0], _has_sight(), _flat_dist(operative.global_position), squad[1], _held)
 	if _held:
 		_look_for(delta)
 		return
 	_walk_to(goal(), CHASE_SPEED, delta)
 	_look_for(delta)
+
+
+## Every Engage.CALLOUT_EVERY s, a guard without sight takes the squad's word for where the Operative is
+## (Engage.lead), a snapshot that is stale by the next one; the first comes that long into its Alert, so a
+## radioed guard first heads for the call. A guard far enough off (Engage.flank_point) takes the squad's one
+## flank, if free, and runs wide of the spotter's line of fire instead of straight in.
+func _callout(delta: float, squad: Array) -> void:
+	_callout_left -= delta
+	if _callout_left > 0.0:
+		return
+	_callout_left = Engage.CALLOUT_EVERY
+	var lead: Variant = Engage.lead(squad[1])
+	if lead == null or _has_sight():
+		return
+	alert.relay(lead.at)
+	var p: Variant = Engage.flank_point(lead.at, lead.from, global_position)
+	if p == null:
+		_stop_flank()
+		return
+	var map := _agent.get_navigation_map()
+	var q: Vector3 = NavigationServer3D.map_get_closest_point(map, p) if map.is_valid() else p
+	if q.distance_to(p) > Engage.FLANK_SNAP or not AlertChain.area.claim_flank(self):
+		_stop_flank()
+		return
+	if _flank == null:
+		_tele_left = Telegraph.DURATION
+		_tele_icon = Telegraph.FLANK_ICON  # the "!>" over its head, so the Operative can read the move
+		_refresh_mark()
+		radio_say(tr("guard.flanking"))
+	_flank = q
+
+
+func _stop_flank() -> void:
+	_flank = null
+	AlertChain.area.end_flank(self)
 
 
 ## Sight with a grace of RETREAT_GRACE s, so a flicker of the vision cone doesn't change what the guard is doing.
@@ -222,7 +264,7 @@ func _squad() -> Array:
 		if g == self:
 			me = squad.size()
 		squad.append({pos = g.global_position, unseen = g.alert.unseen, last_known = g.alert.last_known,
-			fresh = g.is_in_group("reinforcements") and not g.alert.saw})
+			fresh = g.is_in_group("reinforcements") and not g.alert.saw, saw = g.alert.saw})
 	return [me, squad]
 
 
