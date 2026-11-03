@@ -1,6 +1,6 @@
 ## The in-game HUD (docs/DESIGN.md), drawn by hand on `_canvas` in design px: 1080 tall, as wide as the window's
 ## aspect, scaled to the window and smoothly filtered. Corners: Aigis top-left, the phase plate top-centre, the
-## Radar top-right, life bottom-left, item and weapon cards bottom-right (the selector opens beside them when
+## Radar top-right with the objective under it, Voiceprints under the Aigis cue, life bottom-left, item and weapon cards bottom-right (the selector opens beside them when
 ## either changes), the live call and radio lines middle-left, and the text-free action prompt lower-middle.
 ## Only the crosshair stays on the 640x360 logical canvas, so its
 ## pixel art keeps its grid. Lives on CanvasLayer 1, above the banding pass (layer -1).
@@ -186,14 +186,15 @@ func _draw_design() -> void:
 	_edge_flash(d)
 	_life(d)
 	_radar(d)
-	_voiceprints(d)
 	_phase(d)
 	_objective.draw(_canvas, d, 0.0 if _operative.cine else 0.3 if radio_open else 1.0)
+	var cue_shown := not radio_open and _tip_left <= 0.0 and _aigis > 0.0 and _voice != ""
 	if not radio_open:
 		if _tip_left <= 0.0:  # a tip takes the top-left corner (Mission 1 has no cue anyway)
 			_aigis_cue()
 		_gear(d)
 		_selector(d)
+	_voiceprints(d, cue_shown)
 	var dim := 0.3 if radio_open else 1.0
 	_live_call(dim)
 	_subtitles(d, dim)
