@@ -73,6 +73,26 @@ func test_the_test_room_take_is_within_its_range_and_names_its_pcams() -> void:
 	assert_eq(pcam.priority, 0, "idle until the take raises it")
 
 
+func test_a_rail_take_gives_warm_views_along_its_dolly_looking_at_its_target() -> void:
+	_area = _room()
+	var p := Cine.take_of(_area, KEY)
+	var views := Cine.views(p)
+	assert_eq(views.size(), Cine.WARM_VIEWS, "one per sample along the rail")
+	var rig := _area.get_node("Cine/%sRig" % KEY) as Node3D
+	var clip := p.get_animation(Cine.CLIP)
+	var dolly := clip.find_track(NodePath("%sRig/Dolly:position" % KEY), Animation.TYPE_VALUE)
+	var look := clip.find_track(NodePath("%sRig/LookTarget:position" % KEY), Animation.TYPE_VALUE)
+	var first: Transform3D = views[0].xf
+	assert_true(first.origin.is_equal_approx(rig.global_transform * clip.track_get_key_value(dolly, 0)), "starts at the dolly's first key")
+	var last: Transform3D = views.back().xf
+	var aim: Vector3 = rig.global_transform * clip.track_get_key_value(look, clip.track_get_key_count(look) - 1)
+	assert_true((-last.basis.z).dot((aim - last.origin).normalized()) > 0.99, "ends looking at the last look target")
+
+
+func test_no_take_gives_no_warm_views() -> void:
+	assert_true(Cine.views(null).is_empty())
+
+
 func test_the_operative_has_a_gameplay_pcam_above_idle_takes() -> void:
 	_area = _room()
 	var op = _area.get_node("Operative")

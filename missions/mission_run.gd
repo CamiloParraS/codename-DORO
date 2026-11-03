@@ -78,6 +78,8 @@ func _ready() -> void:
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
 	var cover := get_tree().get_first_node_in_group("loading_cover")
 	if cover:  # the loading screen is still over the Area while its first frames compile: the take waits
+		if cine.has("intro") and CineLogic.plays(campaign, replay):
+			cover.warm(Cine.views(Cine.take_of(get_parent(), cine.intro)))  # and it shows the Area through the take first
 		await cover.lifted
 	if cine.has("intro") and not CineLogic.plays(campaign, replay):
 		pass  # Free mode: no take and no card, straight to the Preset
