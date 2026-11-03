@@ -5,7 +5,7 @@ class_name AigisVoice
 extends RefCounted
 
 const MAX_LINES := 3
-const MAX_CHARS := 140  # a line wraps to at most three rows of the saw page's 540 px column
+const MAX_CHARS := 110  # a line wraps to at most three rows of the saw page's 540 px column, two at 1080p
 
 ## The reply the model must give (JSON Schema). parse() checks it again: a schema is a request, not a promise.
 const SCHEMA := {

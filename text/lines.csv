@@ -681,6 +681,7 @@ ui.post.saw.down,PUT DOWN,ABATIDOS
 ui.post.saw.kill,KILLED,MUERTOS
 ui.post.saw.spotted,FIRST SPOTTED,PRIMER AVISTAMIENTO
 ui.post.saw.alert,ALERTS,ALERTAS
+ui.post.saw.analysing,ANALYSING,ANALIZANDO
 ui.credits.made_by,A game by,Un juego de
 ui.credits.models,Models and animation,Modelos y animación
 ui.credits.textures,Textures,Texturas

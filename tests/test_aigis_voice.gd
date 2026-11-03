@@ -119,12 +119,27 @@ func test_the_gemini_reply_text_is_its_answer_part() -> void:
 		assert_eq(LlmClient.gemini_text(bad), "", "no answer in %s" % bad)
 
 
+# ----- the saw page's panel -----
+
+const SAW := preload("res://ui/post_mission/post_mission_saw.gd")
+
+
+func test_the_panel_keeps_whole_lines_that_fit() -> void:
+	var row := SAW.row_h(24)
+	var lines := ["One short line.", "Another short line.", "A third."]
+	assert_eq(SAW.said_rows(lines, 2000.0, 24, row * 3).size(), 3, "room for all three")
+	var two := SAW.said_rows(lines, 2000.0, 24, row * 2.5)
+	assert_eq(two.map(func(r: Array) -> int: return r[1]), [0, 1], "the third line is dropped whole")
+	var long := SAW.said_rows(["word ".repeat(60)], 200.0, 24, row * 2)
+	assert_eq(long.size(), 2, "the first line always shows, cut to what fits")
+
+
 # ----- the save -----
 
 func test_the_comment_survives_a_save_and_a_bad_one_is_dropped() -> void:
-	var last := {mission = 0, counts = {}, shifted = "", analysis = {voice = "gorgo", lines = ["We will be ready."], source = "llm"}}
+	var last := {mission = 0, counts = {}, shifted = "", analysis = {voice = "gorgo", lines = ["We will be ready."], source = "llm", language = "es", pending = true}}
 	var back := Dossier.clean_last(JSON.parse_string(JSON.stringify(last)))
-	assert_eq(back.analysis, {voice = "gorgo", lines = ["We will be ready."], source = "llm"})
+	assert_eq(back.analysis, {voice = "gorgo", lines = ["We will be ready."], source = "llm", language = "es"}, "the language kept, pending never saved")
 	for bad: Variant in [{voice = "metis", lines = ["x"], source = "llm"}, {voice = "gorgo", lines = [3], source = "llm"},
 			{voice = "gorgo", lines = ["x"], source = "oracle"}, {voice = "gorgo", lines = [], source = "llm"}, "gorgo"]:
 		last.analysis = bad

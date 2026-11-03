@@ -171,7 +171,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_saw_wait", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -349,6 +349,11 @@ func _post(run: Node) -> void:
 	s.lesson_key = s.rank.lesson_key()  # Mission 1: the Rank page names the best of the run; the later pages keep the voice line
 	s.dossier = _fake_route(run)
 	s.dossier.bet = {event = "takedown", n = 3, most = false, got = 1, won = false}  # the learned page's forecast line
+	s.dossier.analysis = {voice = "pallas", source = "llm", pending = true, lines = [  # Aigis Voice: three lines at the 110-character cap
+		"You put 3 of ours down in the container lanes within 40 seconds, and not one of them saw your face.",
+		"I counted 5 taken from behind and a single alarm. You prefer the quiet way, and that is what I study most.",
+		"Next time ours will look behind them more often. I expect at least 4 of ours taken from behind. I will count.",
+	]}
 	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)
 	get_tree().paused = true
@@ -356,6 +361,11 @@ func _post(run: Node) -> void:
 	await shoot("post_mission_rank")
 	s.advance()
 	await wait(4.0)
+	await shoot("post_mission_saw_wait")  # the request still out: ANALYSING
+	s.dossier.analysis.erase("pending")
+	await wait(0.2)
+	s.advance()  # the first press finishes the typing
+	await wait(0.3)
 	await shoot("post_mission_saw")
 	s.advance()
 	await wait(2.5)
