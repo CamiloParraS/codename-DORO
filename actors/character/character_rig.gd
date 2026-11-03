@@ -45,6 +45,11 @@ var _foot_h0 := [0.0, 0.0]  # m the foot bone stands above the sole line in the 
 var _arms: TwoBoneIK3D
 var _grips: Array[Marker3D] = []  # wrist targets on the line
 var _elbows: Array[Marker3D] = []
+var _screen: VisibleOnScreenNotifier3D  # set by _watch_screen; none on the Operative, who is always in frame
+var _shown := true  # on screen (or limp): the modifiers run and the clip moves every frame
+
+## Box around a watched body, past its feet: a body just out of frame may still throw its shadow into it.
+const SCREEN_MARGIN := 1.5
 
 
 ## Adds every modifier the skeleton has bones for; once the body is in.
@@ -55,11 +60,29 @@ func _rig() -> void:
 	_add_arm_ik()
 
 
+## Watches whether the body is in the camera's frame; off it, _drive_rig turns the modifiers off.
+func _watch_screen() -> void:
+	_screen = VisibleOnScreenNotifier3D.new()
+	_screen.aabb = AABB(Vector3(-SCREEN_MARGIN, -0.5, -SCREEN_MARGIN), Vector3(SCREEN_MARGIN * 2.0, 2.5 + SCREEN_MARGIN, SCREEN_MARGIN * 2.0))
+	add_child(_screen)
+
+
+## Out of every camera's frame, with a camera to judge by (none in the headless tests).
+func _off_screen() -> bool:
+	return _screen != null and get_viewport().get_camera_3d() != null and not _screen.is_on_screen()
+
+
 ## Eases each modifier toward what the clip and the body's state want, once a frame.
 func _drive_rig(delta: float) -> void:
 	var limp := _ragdoll != null and _ragdoll.active()
+	var shown := limp or not _off_screen()  # a ragdoll keeps its full rate: it reads the pose it falls from
+	if shown != _shown:
+		_shown = shown
+		for m: SkeletonModifier3D in [_look, _arms] + _feet:
+			if m:
+				m.active = shown
 	if _spring:
-		_spring.active = not limp  # the physical bones carry the head while it lies
+		_spring.active = shown and not limp  # the physical bones carry the head while it lies
 		var moving: bool = _clip in ["walk", "run", "crouch_walk"]  # the gait's own bob would shake the head
 		_spring.influence = move_toward(_spring.influence, 0.0 if moving else 1.0, 4.0 * delta)
 	if _look:

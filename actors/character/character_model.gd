@@ -55,6 +55,8 @@ const PISTOL_CLIPS := {
 }
 ## Animation advances in steps of this many seconds, so every clip moves with the choppy framerate of a PSX game.
 const STEP := 0.0
+## Off screen (CharacterRig._watch_screen) the clip steps this coarsely: the pose only feeds a muzzle and a ragdoll's start.
+const OFFSCREEN_STEP := 0.25
 ## Gear parts shown per kind. Helmet and Vest are the guard Countermeasures: hidden until wear().
 const DRESS := {
 	Kind.OPERATIVE: ["Backpack", "Goggles", "Holster", "Knee_pads"],
@@ -183,6 +185,8 @@ func _ready() -> void:
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
 			_part(part).visible = part in DRESS[kind]
 	_rig()
+	if kind != Kind.OPERATIVE:
+		_watch_screen()
 	var root := skeleton.find_bone(UPPER_ROOT)
 	for i in skeleton.get_bone_count():
 		var b := i
@@ -197,7 +201,7 @@ func _process(delta: float) -> void:
 	_drive_rig(delta)
 	_busy -= delta
 	_since_step += delta
-	if _since_step >= STEP:
+	if _since_step >= (STEP if _shown else OFFSCREEN_STEP):
 		_anim.advance(_since_step)
 		_layer(_since_step)
 		_since_step = 0.0
