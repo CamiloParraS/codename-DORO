@@ -385,6 +385,8 @@ func _walk_to(pos: Vector3, speed: float, delta: float) -> void:
 
 func _on_velocity_computed(safe: Vector3) -> void:
 	velocity = Vector3(safe.x, 0, safe.z)
+	if velocity.is_zero_approx():
+		return  # standing (posted, Down, held): no slide to query; avoidance still answers when another guard pushes
 	move_and_slide()
 
 
