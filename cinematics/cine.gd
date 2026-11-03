@@ -14,6 +14,7 @@ signal held(skipped: bool)   # a `hold` take reached its last frame (or was skip
 const CLIP := "take"
 const ALONE := "Alone"  # a take key + this: the version for an Operative carrying nothing
 const LANDING_MAX := 2.0  # s to wait for the host to switch back before handing over anyway
+const WARM_VIEWS := 8     # samples along a rail take for the loading screen to warm (views)
 
 var lines: Array[String] = []   # the lower-third's translated lines (a Mission's intro card text)
 var fade_out := false           # an outro: ends on black
@@ -40,11 +41,46 @@ var _holding := false
 var _landing := 0.0
 var _at := 0.0                  # s into the take when it ended
 var _swallow := false           # control is back but the skip key is still down: the Operative stays locked until it is released
+var _worst := 0.0               # timing: the slowest frame of the take (s), and how many ran past HITCH
+var _hitches := 0
+var _frames := 0
+
+const HITCH := 0.05  # s: a frame this slow is a visible stall
 
 
 ## The take's AnimationPlayer in `area`, or null.
 static func take_of(area: Node, key: String) -> AnimationPlayer:
 	return area.get_node_or_null("Cine/" + key) as AnimationPlayer
+
+
+## Where `player`'s take looks from, for the loading screen to show its Area through before it lifts: each view's
+## shaders and shadow maps are then built behind the cover, not mid-take. A rail gives WARM_VIEWS samples of its
+## Dolly and LookTarget tracks; a fixed pcam (a relay's, a cut's) gives its own. Each is {xf: Transform3D, fov: 0 = the lens as is}.
+static func views(player: AnimationPlayer) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if player == null or not player.has_animation(CLIP):
+		return out
+	var clip := player.get_animation(CLIP)
+	for p in player.get_meta("pcams", []):
+		var pcam := player.get_node_or_null(p) as PhantomCamera3D
+		if pcam == null or pcam.look_at_target == null:
+			continue
+		var fov: float = pcam.camera_3d_resource.fov if pcam.camera_3d_resource else 0.0
+		var rig := pcam.get_parent() as Node3D
+		var dolly := clip.find_track(NodePath("%s/Dolly:position" % rig.name), Animation.TYPE_VALUE)
+		var look := clip.find_track(NodePath("%s/LookTarget:position" % rig.name), Animation.TYPE_VALUE)
+		if pcam.follow_mode == PhantomCamera3D.FollowMode.PATH and dolly >= 0 and look >= 0:
+			for i in WARM_VIEWS:
+				var t := clip.length * i / (WARM_VIEWS - 1)
+				out.append(_view(rig.global_transform * clip.value_track_interpolate(dolly, t), rig.global_transform * clip.value_track_interpolate(look, t), fov))
+		else:
+			out.append(_view(pcam.global_position, pcam.look_at_target.global_position, fov))
+	return out
+
+
+static func _view(from: Vector3, to: Vector3, fov: float) -> Dictionary:
+	var up := Vector3.UP if absf((to - from).normalized().y) < 0.99 else Vector3.BACK
+	return {xf = Transform3D(Basis(), from).looking_at(to, up), fov = fov}
 
 
 ## The take to play for `key`: its "Alone" sibling when the Area has one and the Operative carries nothing (an outro that shows
@@ -115,6 +151,10 @@ func _process(delta: float) -> void:
 		return
 	if done or _holding:
 		return
+	if not _ending:
+		_frames += 1
+		_worst = maxf(_worst, delta)
+		_hitches += int(delta >= HITCH)
 	if _ending:
 		_landing += delta
 		if _landing >= LANDING_MAX:
@@ -178,6 +218,7 @@ func _end() -> void:
 	_ending = true
 	_at = _player.current_animation_position
 	SessionLog.current.note(CineLogic.log_line(_key, skipped, _at))
+	print("[timing] take %s: %.1f s, %d frames, worst %.0f ms, %d over %.0f ms%s" % [_key, _at, _frames, _worst * 1000.0, _hitches, HITCH * 1000.0, " (skipped)" if skipped else ""])
 	_player.animation_finished.disconnect(_on_finished)
 	_player.stop(true)
 	if _op and not fade_out:

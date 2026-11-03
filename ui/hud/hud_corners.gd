@@ -265,21 +265,27 @@ func _jammed(o: Vector2, rad: float) -> void:
 	HudPalette.hud_label(c, o + Vector2(0, 7), tr("ui.hud.jammed"), 20, HudPalette.LIGHT, 0.32, HudPalette.LABEL_BOLD, 1)
 
 
-## Held Voiceprints under the Radar, right-aligned; past VP_SHOWN, a "+n".
-func _voiceprints(d: Vector2) -> void:
+## Held Voiceprints, top-left: under the Aigis cue's plate while the cue shows, up in the cue's own place while it
+## doesn't (Mission 1, or the radio open), and below the tutorial tip's corner while one is up. Left-aligned; past
+## VP_SHOWN, a "+n".
+func _voiceprints(d: Vector2, cue_shown: bool) -> void:
 	var held: Array = _operative.voiceprints.held
 	if held.is_empty():  # a bare "VP" with nothing under it is noise
 		return
-	var x := d.x - 64
-	var y := RadarModel.TOP + RadarModel.HALF * 2 + 32
+	var x := 70.0
+	var y := 56.0 + 14.0
+	if cue_shown:
+		y += 100.0 + 22.0  # the cue's plate ends at 142; leave a gap
+	elif _tip_left > 0.0:
+		y = 330.0
 	var rows: Array = held.slice(0, VP_SHOWN).map(func(n: String) -> String: return n)
 	if held.size() > VP_SHOWN:
 		rows.append("+%d" % (held.size() - VP_SHOWN))
-	var plate := Rect2(x - 150 - HudPalette.FADE_W, y - 22, 164 + HudPalette.FADE_W, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
-	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.35, 0.9, true)
-	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 2)
+	var plate := Rect2(x - 16, y - 22, 164 + HudPalette.FADE_W, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
+	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.35, 0.9, false)
+	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 0)
 	for i in rows.size():
-		HudPalette.hud_label(_canvas, Vector2(x, y + 24 + 22 * i), rows[i], 17, HudPalette.LIGHT_2, 0.12, HudPalette.LABEL, 2)
+		HudPalette.hud_label(_canvas, Vector2(x, y + 24 + 22 * i), rows[i], 17, HudPalette.LIGHT_2, 0.12, HudPalette.LABEL, 0)
 
 
 ## Top-centre, 56 px down: ALERT is a red slab with a slanted foot and the timer on a dark slab beside it;
@@ -503,7 +509,7 @@ const GEAR := {
 	&"rifle": [preload("res://assets/ui/icons/rifle.svg"), Vector2(199.5, 59.5), 1.0],
 	&"tranq": [preload("res://assets/ui/icons/tranq.svg"), Vector2(133, 63), 1.0],
 	&"scanner": [preload("res://assets/ui/icons/scanner.svg"), Vector2(52.5, 71.75), 1.0],
-	&"magazine": [preload("res://assets/ui/icons/magazine.svg"), Vector2(80, 72), 1.0],
+	&"magazine": [preload("res://assets/ui/icons/magazine.svg"), Vector2(63, 72), 1.0],
 	&"balloon": [preload("res://assets/ui/icons/balloon.svg"), Vector2(31.5, 78), 1.0],
 }
 

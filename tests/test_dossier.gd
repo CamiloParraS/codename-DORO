@@ -195,3 +195,85 @@ func test_floor_plan_fills_the_navmesh_and_outlines_only_its_edge() -> void:
 	assert_eq(plan.hi, Vector2(2, 2))
 	assert_eq(FloorPlan.from_mesh(PackedVector3Array(), []), {})
 	assert_eq(FloorPlan.of_area(null), {})
+
+
+# ----- the bet, the callsign and the hotspot -----
+
+func _last(counts: Dictionary) -> Dictionary:
+	var r := _record(1)
+	r.last = {mission = 0, counts = counts, shifted = ""}
+	return r
+
+
+func test_aigis_bets_on_what_the_operative_did_most_last_time() -> void:
+	assert_eq(Dossier.bet(_record(0)), {}, "no last Mission: nothing to bet on")
+	assert_eq(Dossier.bet(_last({"takedown": 4, "headshot": 2})), {event = "takedown", n = 3, most = false}, "3/4 of 4, rounded up")
+	assert_eq(Dossier.bet(_last({"takedown": 2, "headshot": 2})), {event = "takedown", n = 2, most = false}, "a tie goes to BET_EVENTS order")
+	assert_eq(Dossier.bet(_last({"spoof": 1})), {event = "alert", n = 0, most = true}, "nothing citable and no alarm: no alarm again")
+	assert_eq(Dossier.bet(_last({"alert": 1})), {}, "one alarm is nothing to bet on")
+
+
+func test_a_settled_bet_says_what_the_operative_gave() -> void:
+	assert_eq(Dossier.settle({}, {"takedown": 9}), {})
+	assert_true(Dossier.settle({event = "takedown", n = 3, most = false}, {"takedown": 3}).won)
+	assert_false(Dossier.settle({event = "takedown", n = 3, most = false}, {"takedown": 2}).won)
+	assert_true(Dossier.settle({event = "alert", n = 0, most = true}, {}).won, "a ceiling of 0 and no alarm")
+	var s := Dossier.settle({event = "alert", n = 0, most = true}, {"alert": 2})
+	assert_eq([s.got, s.won], [2, false])
+
+
+func test_complete_mission_settles_the_bet_and_files_the_old_callsign() -> void:
+	var r := Aigis.complete_mission(_record(0), {"takedown": 4, "spawned": 9})
+	assert_eq(r.last.bet, {}, "Mission 1 had no bet")
+	assert_eq(r.last.called, "callsign.none")
+	r = Aigis.complete_mission(r, {"takedown": 1, "spawned": 9})
+	assert_eq(r.last.bet, {event = "takedown", n = 3, most = false, got = 1, won = false})
+	assert_eq(r.last.called, "callsign.takedowns", "what Aigis called the Operative going into Mission 2")
+
+
+func test_the_callsign_is_the_top_habit_or_the_butcher() -> void:
+	assert_eq(Dossier.callsign(_record(1)), "callsign.none")
+	assert_eq(Dossier.callsign(_record(1, {"headshots": 40, "takedowns": 60})), "callsign.takedowns")
+	assert_eq(Dossier.callsign(_record(1, {"headshots": 50, "takedowns": 50})), "callsign.headshots", "ties in Habit order")
+	var r := _record(1, {"stealth": 90})
+	r.lethality = 5
+	r.denominator = 10
+	assert_eq(Dossier.callsign(r), "callsign.butcher", "Gorgo's band outranks any Habit")
+
+
+func test_the_hotspot_is_the_encounter_with_the_most_downs() -> void:
+	var enc := func(p: Vector2) -> int: return 1 if p.x < 10 else 2
+	var marks := [["down", 10.0, Vector2(1, 0)], ["kill", 40.0, Vector2(2, 0)], ["down", 50.0, Vector2(20, 0)],
+		["alert", 60.0, Vector2(21, 0)], ["spotted", 61.0, Vector2(21, 0)], ["down", 99.0, Vector2(3, 0)]]
+	assert_eq(Dossier.hotspot(marks, enc), {enc = 1, n = 3, secs = 89}, "alerts and spottings aren't the Operative's work")
+	assert_eq(Dossier.hotspot([["down", 1.0, Vector2(1, 0)]], enc), {}, "one down is chance")
+	assert_eq(Dossier.hotspot([["down", 1.0, Vector2(1, 0)], ["down", 2.0, Vector2(1, 0)]], func(_p: Vector2) -> int: return 0), {}, "outside every Encounter")
+
+
+func test_a_slot_keeps_the_bet_callsign_and_hotspot_and_drops_bad_ones() -> void:
+	var good := {"mission": 1.0, "bet": {"event": "takedown", "n": 3.0, "most": false, "got": 4.0, "won": true},
+		"called": "callsign.takedowns", "hot": {"enc": 2.0, "n": 4.0, "secs": 90.0}}
+	var c := Dossier.clean_last(good)
+	assert_eq(c.bet, {event = "takedown", n = 3, most = false, got = 4, won = true})
+	assert_eq(c.called, "callsign.takedowns")
+	assert_eq(c.hot, {enc = 2, n = 4, secs = 90})
+	var bad := Dossier.clean_last({"mission": 1.0, "bet": {"event": "nuke", "n": 3.0, "most": false, "got": 4.0, "won": true},
+		"called": "callsign.god", "hot": {"enc": "x"}})
+	assert_eq([bad.has("bet"), bad.has("called"), bad.has("hot")], [false, false, false])
+
+
+func test_every_new_dossier_line_has_text() -> void:
+	var t := _keys()
+	for e: String in Dossier.BET_EVENTS:
+		assert_true(t.has("bet." + e), e)
+	assert_true(t.has("bet.alert.most"))
+	for h: String in Aigis.HABITS + Dossier.CALLSIGNS:
+		assert_true(t.has("callsign." + h), h)
+	for v: String in ["pallas", "nike", "gorgo"]:
+		for k: String in ["bet", "bet.won", "bet.lost"]:
+			assert_true(t.has("brief.%s.%s" % [v, k]), "%s %s" % [v, k])
+	for m: int in Campaign.MISSIONS.size():
+		for e: int in range(1, Campaign.MISSIONS[m].encounters + 1):
+			assert_true(t.has("place.%d.%d" % [m, e]), "place %d %d" % [m, e])
+	for k: String in ["brief.pallas.callsign", "brief.pallas.callsign.renamed", "brief.pallas.hot.s", "brief.pallas.hot.m", "caught.contact"]:
+		assert_true(t.has(k), k)

@@ -184,7 +184,8 @@ func _briefing() -> void:
 	Campaign.start()
 	Campaign.slot = -1
 	Campaign.record = _record(1)
-	Campaign.record.merge({seen = {quiet_down = 6, takedown = 4}, last = {mission = 0, counts = {quiet_down = 6, takedown = 4}, shifted = "headshots"}})  # the Dossier: evidence and a shift
+	Campaign.record.merge({seen = {quiet_down = 6, takedown = 4}, last = {mission = 0, counts = {quiet_down = 6, takedown = 4}, shifted = "headshots",
+		bet = {event = "takedown", n = 3, most = false, got = 4, won = true}, called = "callsign.headshots", hot = {enc = 2, n = 4, secs = 90}}})  # the Dossier: evidence, a shift, a won bet, a renamed callsign, a hotspot
 	Campaign.gear = Requisition.new()
 	Campaign.gear.points = 7
 	Campaign.gear.signed = 4
@@ -347,6 +348,7 @@ func _post(run: Node) -> void:
 	s.voice_key = "post.pallas.clean"
 	s.lesson_key = s.rank.lesson_key()  # Mission 1: the Rank page names the best of the run; the later pages keep the voice line
 	s.dossier = _fake_route(run)
+	s.dossier.bet = {event = "takedown", n = 3, most = false, got = 1, won = false}  # the learned page's forecast line
 	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)
 	get_tree().paused = true

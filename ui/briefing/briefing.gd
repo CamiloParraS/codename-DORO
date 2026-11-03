@@ -21,6 +21,7 @@ var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
 var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
 var _line_t := 0.0
 var _skip := false                  # the first Mission: straight to its Codec call
+var _fit := 1.0                     # < 1 when the lines run past the "any key" row: the page draws smaller to fit
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
@@ -129,7 +130,12 @@ func _build_lines() -> Array:
 		keys.insert(keys.size() - 1, "brief.pallas.shift." + shift)
 	if plan.get("dissent", "") != "":  # a close call: the outvoted sponsor objects last
 		keys.insert(keys.size() - 1, plan.dissent)
-	for key: String in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
+	var named := _callsign_line()
+	if not named.is_empty():
+		keys.push_front(named)
+	for extra: Array in _file_lines():  # where, what it bet and how that went, the next bet: before the close
+		keys.insert(keys.size() - 1, extra)
+	for key: Variant in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
 		lines.append(_line(key))
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
 	lines.append_array(m.steps.map(func(s: Dictionary) -> Array: return ["objective", s.objective]))
@@ -137,8 +143,43 @@ func _build_lines() -> Array:
 	return lines
 
 
-## A plan key as a line. A Habit row cites what Aigis counted (Dossier.evidence) when the record says enough.
-func _line(key: String) -> Array:
+## Pallas names the file: the callsign Aigis has for the Operative ([key, args]), saying so when it changed
+## since the last Briefing. [] while nothing stands out.
+func _callsign_line() -> Array:
+	var now := Dossier.callsign(record)
+	if now == "callsign.none":
+		return []
+	var was: String = record.get("last", {}).get("called", "")
+	if was != "" and was != now and was != "callsign.none":
+		return ["brief.pallas.callsign.renamed", {was = tr(was), name = tr(now)}]
+	return ["brief.pallas.callsign", {name = tr(now)}]
+
+
+## The Dossier's other lines, as [key, args]: where the Operative did most last time (Pallas), the Dominant
+## Voice on its last forecast (won or lost), then its forecast for this Mission.
+func _file_lines() -> Array:
+	var out := []
+	var last: Dictionary = record.get("last", {})
+	var hot: Dictionary = last.get("hot", {})
+	if not hot.is_empty():
+		var place := tr("place.%d.%d" % [last.mission, hot.enc])
+		var mins := roundi(hot.secs / 60.0)
+		out.append(["brief.pallas.hot.m", {place = place, n = hot.n, m = mins}] if hot.secs >= 120 else ["brief.pallas.hot.s", {place = place, n = hot.n, s = maxi(hot.secs, 1)}])
+	var bet: Dictionary = last.get("bet", {})
+	if not bet.is_empty():
+		out.append(["brief.%s.bet.%s" % [plan.dominant, "won" if bet.won else "lost"], {bet = Dossier.bet_text(bet), got = bet.got}])
+	var next := Dossier.bet(record)
+	if not next.is_empty():
+		out.append(["brief.%s.bet" % plan.dominant, {bet = Dossier.bet_text(next)}])
+	return out
+
+
+## A plan key (or [key, format args]) as a line. A Habit row cites what Aigis counted (Dossier.evidence) when
+## the record says enough.
+func _line(entry: Variant) -> Array:
+	if entry is Array:
+		return ["voice", entry[0], tr(entry[0]).format(entry[1])]
+	var key: String = entry
 	if not key.begins_with("brief.pallas.habit."):
 		return ["hint" if ".hint." in key else "voice", key]
 	var ev := Dossier.evidence(record, key.get_slice(".", 3))
@@ -146,7 +187,7 @@ func _line(key: String) -> Array:
 
 
 func _draw() -> void:
-	var k := size.y / HudPalette.DESIGN_H
+	var k := size.y / HudPalette.DESIGN_H * _fit
 	var d := size / k
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	if _skip:
@@ -167,13 +208,13 @@ func _draw() -> void:
 				var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 64).x + 56
 				PixelKit.stair_fill(self, Rect2(0, y - 70, x - 40 + w, 90), HudPalette.LIGHT, 22.0)
 				HudPalette.hud_text(self, Vector2(x - 40, y), s, 64, HudPalette.DARK_INK, f, 0, false)  # the title sits left of the body column
-				y += 70
+				y += 84
 			"gap":
-				y += 24
+				y += 40
 			"head":
 				HudPalette.hud_text(self, Vector2(x, y), s.to_upper(), 24, HudPalette.LIGHT_2, HudPalette.tracked(disp, 24, 0.26), 0, false)
-				draw_rect(Rect2(x, y + 12, 400, 2), Color(HudPalette.LIGHT, 0.5))
-				y += 52
+				draw_rect(Rect2(x, y + 16, 400, 2), Color(HudPalette.LIGHT, 0.5))
+				y += 76
 			"band":  # the ending: its Voice, large
 				HudPalette.hud_text(self, Vector2(x, y + 20), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1]).to_upper()], 64, HudPalette.CYAN, HudPalette.tracked(disp, 64, 0.1), 0, false)
 				y += 80
@@ -192,11 +233,11 @@ func _draw() -> void:
 					_voice_head(Vector2(x + RIGHT_COL, y + 50), who, i, k)
 					var left := s.length()
 					for j in rows.size():
-						HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y + 96 + j * 44), rows[j].left(maxi(left, 0)), 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+						HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y + 100 + j * 46), rows[j].left(maxi(left, 0)), 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 						left -= rows[j].length() + 1
-				y += 96 + rows.size() * 44 - 12
-				draw_rect(Rect2(x, y, d.x - x * 2, 1), Color(HudPalette.LIGHT, 0.14))
-				y += 28
+				y += 100 + rows.size() * 46 - 12
+				draw_rect(Rect2(x, y + 8, d.x - x * 2, 1), Color(HudPalette.LIGHT, 0.14))
+				y += 52
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
 				_voice_head(Vector2(x, y), who, i, k)
@@ -205,15 +246,19 @@ func _draw() -> void:
 				for l in full:
 					HudPalette.hud_text(self, Vector2(x + TAG + 90, y), l.left(maxi(left, 0)), 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					left -= l.length() + 1
-					y += 38
-				y += 14
+					y += 42
+				y += 38
 			"objective":  # a sand step number, then the objective in Barlow
 				obj_n += 1
 				HudPalette.hud_text(self, Vector2(x, y), "%02d" % obj_n, 24, HudPalette.SAND, HudPalette.tracked(disp, 24, 0.08), 0, false)
 				for l in HudPalette.wrap(s, d.x - x * 2 - OBJ_INDENT, HudPalette.FIGURE_MED, 28):
 					HudPalette.hud_text(self, Vector2(x + OBJ_INDENT, y), l, 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-					y += 38
-				y += 6
+					y += 42
+				y += 20
+	var over := (y + 30.0) / (d.y - 110.0)  # the layout never changes while lines type: this settles in a frame or two
+	if over > 1.001:
+		_fit /= over
+		queue_redraw()
 	var af := HudPalette.tracked(disp, 22, 0.24)
 	var ak := tr("ui.brief.any_key").to_upper()
 	HudPalette.hud_text(self, Vector2(x, d.y - 60), ak, 22, HudPalette.LIGHT_2, af, 0, false)

@@ -12,6 +12,7 @@ const EVENTS := {
 	&"search": BARKS + "search", &"giveup": BARKS + "giveup", &"caution": BARKS + "caution",
 	&"partner": BARKS + "partner", &"holdup": BARKS + "holdup", &"balloon": BARKS + "balloon",
 	&"contact": GRUNTS + "radio", &"resolved": BARKS + "radio", &"choke": GRUNTS + "choke", &"pain": GRUNTS + "pain",
+	&"grunt": GRUNTS + "effort",  # under a Caught line
 }
 const PREFIX := {&"contact": "contact", &"resolved": "situation resolved"}  # these folders mix other lines
 const RADIO := [&"contact", &"resolved"]  # spoken over the radio: the Radio bus

@@ -51,3 +51,11 @@ res://
 ```
 
 Create folders when they're needed, not before (git doesn't track empty folders anyway).
+
+## Exporting a build
+
+Every preset bakes the shaders into the export (`shader_baker/enabled` in `export_presets.cfg`), so a player's first run doesn't compile them mid-play (playtest of 0.1.0: the first take crashed while they compiled). Baking needs a GPU: export from the editor, or from the command line **without** `--headless`, which skips the baker without a word and ships a build about 38 MB smaller:
+
+`godot --path . --export-release "Windows Desktop" build/windows/codename_doro.exe`
+
+The D3D12 shaders bake only on Windows. A first run prints `[timing]` lines to `%APPDATA%\Godot\app_userdata\codename doro\logs\godot.log` (the loading screen, then the intro take's worst frame), which is the place to look when a tester reports a stall or a crash.

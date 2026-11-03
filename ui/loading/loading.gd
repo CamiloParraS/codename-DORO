@@ -1,7 +1,8 @@
 ## The loading screen between a Briefing (or a menu) and the Area (playtest 1: the Codec's picture hung, then black,
 ## then a freeze, then the take). It lives on the root, so it outlasts the scene change: it loads the Area on a
 ## thread with a progress bar, swaps it in, and stays over it until frames come steadily (the first frames compile
-## the Area's shaders) before it fades. The intro take waits for it: MissionRun awaits `lifted`.
+## the Area's shaders) before it fades. The intro take waits for it: MissionRun awaits `lifted`, and first hands it the
+## take's views (`warm`), which it shows the Area through, WARM_FRAMES each, before it starts to settle.
 ## `Loading.go(tree, path, setup)`; setup(area) configures the instanced Area before it enters the tree.
 class_name Loading
 extends CanvasLayer
@@ -14,6 +15,7 @@ const STEADY := 1.0 / 30.0  # s: a frame this quick counts toward settling
 const STEADY_RUN := 4       # quick frames in a row that say the shaders are in
 const MAX_SETTLE := 4.0     # s it waits for that at most
 const DESIGN_H := 1080.0
+const WARM_FRAMES := 2      # frames each warm view is drawn
 
 var path := ""
 var setup := Callable()
@@ -27,6 +29,14 @@ var _run := 0
 var _waited := 0.0
 var _fading := -1.0
 var _canvas := Control.new()
+var _warm: Array[Dictionary] = []  # Cine.views of the take that plays when the cover lifts
+var _warm_i := 0
+var _warm_f := 0
+var _warm_cam: Camera3D
+var _warm_prev: Camera3D
+var _t0 := 0       # timing (ms since start): requested, read on its thread, swapped in, warm views done
+var _t_read := 0
+var _t_warm := 0
 
 
 ## Covers the screen and loads `path`; the Area replaces the current scene once loaded. One at a time.
@@ -55,6 +65,7 @@ func _ready() -> void:
 	_canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	_canvas.draw.connect(_draw_cover)
 	add_child(_canvas)
+	_t0 = Time.get_ticks_msec()
 	if ResourceLoader.load_threaded_request(path) != OK:
 		push_error("Loading: can't request %s" % path)
 
@@ -73,18 +84,63 @@ func _process(delta: float) -> void:
 		_progress = float(p[0]) if not p.is_empty() else _progress
 		_shown = lerpf(_shown, _progress * 0.9, minf(1.0, delta * 10.0))  # the last tenth is the settle
 		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			_t_read = Time.get_ticks_msec()
 			_swap(ResourceLoader.load_threaded_get(path))
 		elif status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 			push_error("Loading: %s failed" % path)
 			queue_free()
 		return
+	if _warm_step():
+		return
+	if _t_warm == 0:
+		_t_warm = Time.get_ticks_msec()
 	_frames += 1
 	_waited += delta
 	_run = _run + 1 if delta <= STEADY else 0
 	_shown = lerpf(_shown, 1.0, minf(1.0, delta * 6.0))
 	if settled(_frames, _run, _waited):
 		_fading = 0.0
+		var now := Time.get_ticks_msec()
+		print("[timing] loading %s: read %d ms, build+ready+warm %d ms (%d views), settle %d ms, total %d ms" % [path.get_file(),
+			_t_read - _t0, _t_warm - _t_read, _warm.size(), now - _t_warm, now - _t0])
 		lifted.emit()
+
+
+## Show the new Area through `views` (Cine.views) before settling.
+func warm(views: Array[Dictionary]) -> void:
+	_warm = views
+
+
+## Draws the next warm view through a camera of its own; false once they are done and the Area's camera is back.
+func _warm_step() -> bool:
+	if _warm_i >= _warm.size():
+		if _warm_cam:
+			if is_instance_valid(_warm_prev):
+				_warm_prev.make_current()
+			_warm_cam.queue_free()
+			_warm_cam = null
+		return false
+	if _warm_cam == null:
+		_warm_prev = get_viewport().get_camera_3d()
+		_warm_cam = Camera3D.new()
+		_warm_cam.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # each view is a cut, not a move
+		if _warm_prev:
+			_warm_cam.environment = _warm_prev.environment
+			_warm_cam.attributes = _warm_prev.attributes
+			_warm_cam.compositor = _warm_prev.compositor
+			_warm_cam.cull_mask = _warm_prev.cull_mask
+			_warm_cam.near = _warm_prev.near
+			_warm_cam.far = _warm_prev.far
+		get_tree().current_scene.add_child(_warm_cam)
+	var v := _warm[_warm_i]
+	_warm_cam.global_transform = v.xf
+	_warm_cam.fov = v.fov if v.fov > 0.0 else (_warm_prev.fov if _warm_prev else _warm_cam.fov)
+	_warm_cam.make_current()
+	_warm_f += 1
+	if _warm_f >= WARM_FRAMES:
+		_warm_f = 0
+		_warm_i += 1
+	return true
 
 
 func _swap(scene: PackedScene) -> void:

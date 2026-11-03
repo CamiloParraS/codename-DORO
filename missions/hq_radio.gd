@@ -32,6 +32,7 @@ func _process(delta: float) -> void:
 				_by_name(info, e.who).node.radio_say(tr(Checkin.LINES.pick_random()))
 		"silence":
 			send_nearest(e.pos, e.who, "no answer from %s" % e.who)
+			HqRadio.caught(get_tree(), &"silence")
 
 
 ## The guard HQ is waiting on ("" = no poll pending).
@@ -46,6 +47,14 @@ func answer() -> void:
 
 func say(line: String) -> void:
 	get_tree().call_group("radio_log", "say", "HQ", line)
+
+
+## A Countermeasure caught the Operative and HQ says so (Caught): the squelch and a subtitle.
+static func caught(tree: SceneTree, moment: StringName) -> void:
+	var key := Caught.area.line(moment, Time.get_ticks_msec() / 1000.0, randi())
+	if key != "":
+		Mixer.play(&"radio_on", Mix.RADIO)
+		tree.call_group("radio_log", "say", "HQ", TranslationServer.translate(key).format({name = Caught.area.callsign}))
 
 
 ## The up guard nearest `at` (other than `except`) goes to `spot` in suspicion.

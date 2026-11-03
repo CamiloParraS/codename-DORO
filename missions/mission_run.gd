@@ -78,6 +78,8 @@ func _ready() -> void:
 	var intro: Dictionary = Campaign.MISSIONS[record.mission].get("intro", {})
 	var cover := get_tree().get_first_node_in_group("loading_cover")
 	if cover:  # the loading screen is still over the Area while its first frames compile: the take waits
+		if cine.has("intro") and CineLogic.plays(campaign, replay):
+			cover.warm(Cine.views(Cine.take_of(get_parent(), cine.intro)))  # and it shows the Area through the take first
 		await cover.lifted
 	if cine.has("intro") and not CineLogic.plays(campaign, replay):
 		pass  # Free mode: no take and no card, straight to the Preset
@@ -511,6 +513,7 @@ func _on_extraction() -> void:
 	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
 	after.last.merge(Dossier.trail(SessionLog.current.missions.back()))  # the route Aigis draws back
+	after.last.hot = Dossier.hotspot(SessionLog.current.missions.back().marks, func(p: Vector2) -> int: return encounter_at(Vector3(p.x - MissionPlaces.DIAGRAM_ORIGIN, 0, p.y - MissionPlaces.DIAGRAM_ORIGIN)))
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
 	screen.dossier = after.last

@@ -21,6 +21,8 @@ var _lesson := -1
 
 func _ready() -> void:
 	var deployed: Dictionary = $MissionRun.plan.deployed
+	var record: Dictionary = $MissionRun.record  # Mission 1: Aigis has no name for the Operative yet
+	Caught.area = Caught.new(deployed, tr(Dossier.callsign(record)) if record.mission > 0 else "")
 	var guards := []
 	for post: Marker3D in $GuardPosts.get_children():
 		if post.has_meta("chat"):
@@ -106,6 +108,7 @@ func _process(delta: float) -> void:
 	var n := _waves.tick(AlertChain.area.alerts, alive, Deployment.squad_size($MissionRun.plan.deployed))
 	if n > 0:
 		_arrivals.append([n, ARRIVAL_DELAY])
+		HqRadio.caught(get_tree(), &"squad")
 	if Reinforcements.leaves(AlertChain.area.phase):
 		_arrivals.clear()  # Caution ended before they set out
 	for a: Array in _arrivals:
@@ -282,6 +285,7 @@ func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
 		g.target = true
 		g.get_node("Model").kind = CharacterModel.Kind.TARGET
 	g.name = post.name.replace("Post", "Guard")
+	g.sentry = sentry
 	if sentry:
 		if post.has_meta("scan"):
 			g.stops.append(stop_of(post))

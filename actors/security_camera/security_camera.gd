@@ -95,7 +95,8 @@ func _physics_process(delta: float) -> void:
 		last_reason = why
 	var chain := AlertChain.area
 	if alert.state == GuardAlert.State.ALERT and why != "":
-		chain.start_call(self, alert.last_known, AlertChain.CAMERA_CALL_TIME)  # once per full meter
+		if chain.start_call(self, alert.last_known, AlertChain.CAMERA_CALL_TIME):  # once per full meter
+			HqRadio.caught(get_tree(), &"camera")  # Stealth: the cameras were put up for him
 	elif chain.calling(self) and not seeing:
 		chain.stop_call(self)
 		alert.state = GuardAlert.State.PATROL  # the meter, still full, drains from here

@@ -263,6 +263,7 @@ func _stamp(d: Vector2, grade: String) -> void:
 
 
 func _draw_aigis(d: Vector2) -> void:
+	_bet_line(Vector2(80, 196))
 	var changed := strip.filter(func(e: Dictionary) -> bool: return e.arrow != 0)
 	if changed.is_empty():
 		HudPalette.hud_text(self, Vector2(80, 260), tr("ui.post.nothing").to_upper(), 34, HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 34, 0.2), 0, false)
@@ -284,6 +285,20 @@ func _draw_aigis(d: Vector2) -> void:
 	if _age >= FIRST + changed.size() * CARD + 0.4:
 		var ak := tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(self, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)
+
+
+## Aigis's forecast for the Mission against what the Operative did (the Dossier's settled bet), one line over
+## the rows: the forecast, the count, and the verdict, cyan when Aigis called it, sand when it was wrong.
+func _bet_line(at: Vector2) -> void:
+	var bet: Dictionary = dossier.get("bet", {})
+	if bet.is_empty():
+		return
+	var f := HudPalette.tracked(HudPalette.DISPLAY, 26, 0.2)
+	var said := tr("ui.post.bet").format({bet = Dossier.bet_text(bet), got = bet.got}).to_upper() + "   "
+	HudPalette.hud_text(self, at, said, 26, HudPalette.LIGHT_2, f, 0, false)
+	var x := at.x + f.get_string_size(said, HORIZONTAL_ALIGNMENT_LEFT, -1, HudPalette.legible(self, 26)).x  # the size hud_text draws at
+	var verdict := tr("ui.post.bet.won" if bet.won else "ui.post.bet.lost").to_upper()
+	HudPalette.hud_text(self, Vector2(x, at.y), verdict, 26, HudPalette.CYAN if bet.won else HudPalette.SAND, f, 0, false)
 
 
 ## One Habit the Profile moved on, as cause then effect: its glyph, name, arrow and pips on the left, and on the

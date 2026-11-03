@@ -7,6 +7,7 @@ extends "res://actors/guard/guard_moves.gd"
 ## drops (up until now) is seen by its partners.
 func neutralize() -> void:
 	var dropped := not is_down()
+	last_drop = "choke" if held else ""
 	_drop_item()  # darted, choked or killed: what he carried falls out
 	AlertChain.area.stop_call(self)
 	_cut_call()
@@ -65,6 +66,10 @@ func shoot(head: bool, from: Vector3) -> void:
 		if is_inside_tree():
 			move_and_collide(((global_position - from) * Vector3(1, 0, 1)).normalized() * HIT_STAGGER)
 		voice.say(&"pain")
+		if head and helmet:
+			caught(&"helmet")
+		elif vest:
+			caught(&"vest")
 		_changed(alert.hear(from, "a bullet"))
 
 
@@ -93,6 +98,10 @@ func tranquilize(head: bool, from: Vector3) -> void:
 		neutralize()
 		return
 	Mix.sfx_at(self, &"dart_vest" if vest else &"dart_hit")
+	if head and helmet:
+		caught(&"helmet")
+	elif vest:
+		caught(&"vest")
 	if stumble_left > 0.0:
 		return
 	if not vest:  # a vest stops the dart: the guard only hears it hit
@@ -336,6 +345,8 @@ func _sense_down() -> Array:
 		var q := PhysicsRayQueryParameters3D.create(eye, chest, 1, [get_rid(), operative.get_rid()])
 		if not get_world_3d().direct_space_state.intersect_ray(q).is_empty():
 			continue
+		if not g.known_down:
+			caught(&"found")  # Downs: HQ told them bodies would turn up
 		g.known_down = true
 		if rate > best[0]:
 			best = [rate, g.global_position]
@@ -362,6 +373,8 @@ func on_drop(who: Guard) -> void:
 	_changed(why)
 	radio_say("%s!" % who.name)
 	voice.say(&"partner")
+	if who.last_drop == "choke":
+		caught(&"partner")  # Takedowns: told to watch each other's backs
 	broadcast(get_tree(), global_position, GuardAlert.PARTNER_RANGE, "%s call out" % name, self)
 
 

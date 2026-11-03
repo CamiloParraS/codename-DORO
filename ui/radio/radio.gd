@@ -258,6 +258,7 @@ func _search(up: Array, line: String, from: Vector3) -> void:
 	if up.is_empty():
 		return
 	up[0].radio_say(line)
+	up[0].caught(&"exposed")  # Spoofing: Glaukopis was listening for him
 	var spot := from + Vector3(randf_range(-SEARCH_SPREAD, SEARCH_SPREAD), 0, randf_range(-SEARCH_SPREAD, SEARCH_SPREAD))
 	for r in up:
 		r.on_noise(spot, "a Spoofed transmission")
