@@ -29,6 +29,8 @@ const FLINCH_PUSH := 2.5        # m/s a hit that does not drop it shoves the bon
 const HIT_STAGGER := 0.3        # m a non-lethal rifle hit knocks a guard back
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
+const PEEK_AFTER := 2.0         # s a suspicious guard looks round the spot before it checks the nearest hidden corner
+const PEEK_REACH := 3.0         # m from the spot: where it looks for a corner it can't see behind
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MISS_BY := 0.7           # metres a missed shot passes from the Operative's chest
@@ -122,6 +124,8 @@ var _vsearched := false        # said "search" on reaching this suspicion's spot
 var _detour: Variant = null  # the Caution detour it walks now
 var _next_detour := 0
 var _spot_for: Variant = null  # the last known point its reserved search spot is for
+var _peek := Vector3.ZERO      # Suspicion: the hidden corner by the spot it checks after looking round the spot
+var _peek_for: Variant = null  # the last known point _peek is for (null: not picked yet)
 var _balloon: Node3D           # Fultoned: the balloon on its way up
 var _balloon_left := 0.0
 var _balloon_spot := Vector3.ZERO
@@ -268,6 +272,7 @@ func _changed(why: String) -> void:
 	order = {}  # whatever it was told, it now has its own reason to act
 	AlertChain.area.release(self)  # a new state: any search spot it held is free
 	_spot_for = null
+	_peek_for = null
 	_fanning = false
 	_swept = 0.0
 	_refresh_mark()
@@ -302,13 +307,38 @@ func goal() -> Vector3:
 ## the last known point.
 func search_spot() -> Vector3:
 	if alert.state != GuardAlert.State.EVASION and not alert.rushing and not _fanning:
-		return alert.last_known
+		return _peek if peeked() else alert.last_known
 	if _spot_for != alert.last_known:  # the search moved (a noise): give up the old spot
 		AlertChain.area.release(self)
 		_spot_for = alert.last_known
 		_swept = 0.0
 	var hunting := alert.state == GuardAlert.State.EVASION or _fanning  # a Suspicion responder keeps to the point and the fixed spots
 	return AlertChain.area.reserve(self, alert.last_known, global_position, hunting)
+
+
+## Has it picked the hidden corner for this spot: one for a look point that hasn't moved more than
+## GuardAlert.MOVED since (footsteps nudge it every frame).
+func peeked() -> bool:
+	return _peek_for != null and (_peek_for as Vector3).distance_to(alert.last_known) <= GuardAlert.MOVED
+
+
+## The point within PEEK_REACH of p, on the navmesh and the same floor, that this guard can't see from
+## where it stands (behind a crate, round a corner), nearest it; p itself when every one is in plain view.
+func hidden_corner(p: Vector3) -> Vector3:
+	var map := _agent.get_navigation_map()
+	var best := p
+	var best_d := INF
+	for i in 8:
+		var want := p + Vector3(cos(TAU * i / 8), 0.0, sin(TAU * i / 8)) * PEEK_REACH
+		var q := NavigationServer3D.map_get_closest_point(map, want) if map.is_valid() else want
+		if Vector2(q.x - want.x, q.z - want.z).length() > 1.0 or absf(q.y - p.y) > 1.0:
+			continue  # inside a wall, or another floor
+		if sees_point(q + Vector3.UP):
+			continue
+		if _flat_dist(q) < best_d:
+			best_d = _flat_dist(q)
+			best = q
+	return best
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:

@@ -127,7 +127,20 @@ func search(delta: float, speed: float, sweep: float) -> void:
 				model.react("look_nervous", LOOK_CLIP, 1.0)  # Evasion: the jittery scan
 				_looked = true  # one sweep per arrival
 			rotation.y += sin(_clock * 1.1) * sweep * delta
+			_check_corner()
 		_move_on(delta)
+
+
+## A suspicious guard (not a responder) that has looked round the spot for PEEK_AFTER s walks to the nearest
+## corner by it that it can't see behind, once per spot, and looks round there for the rest of LOOK_TIME
+## (GuardAlert counts the look-around only while it stands at its goal).
+func _check_corner() -> void:
+	if alert.state != GuardAlert.State.SUSPICION or alert.rushing or alert.calling:
+		return
+	if peeked() or alert.timer < PEEK_AFTER:
+		return
+	_peek = hidden_corner(alert.last_known)
+	_peek_for = alert.last_known
 
 
 ## A hunting searcher (Evasion, or fanning on Alert) looks round its spot for Engage.SWEEP_TIME, marks it
