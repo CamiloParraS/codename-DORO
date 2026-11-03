@@ -4,7 +4,7 @@
 ##   last: the Mission just completed: {mission, counts: its tally's events, shifted: the Habit the Operative
 ##         dropped ("" for none), path: [x, y, ...] flat in diagram metres every PATH_EVERY s, marks: [[kind, t, x, y]],
 ##         bet: the forecast it made for that Mission, settled ({event, n, most, got, won}, or {}),
-##         called: the callsign key it filed the Operative under before it}
+##         called: the callsign key it filed the Operative under before it, hot: hotspot() ({enc, n, secs}, or {})}
 ## A Free mode Preset has neither, so its Briefing falls back to the plain lines.
 ## Evidence: the number behind a Habit, from the last Mission when it says enough, else the campaign's count.
 class_name Dossier
@@ -25,6 +25,7 @@ const MARKS := ["down", "kill", "alert", "spotted"]
 ## The events Aigis bets on, in tie order; a bet asks for BET_SHARE of the last count again, rounded up.
 const BET_EVENTS := ["takedown", "headshot", "quiet_down", "fulton", "down_found", "spoof", "alert"]
 const BET_SHARE := 0.75
+const HOT_MARKS := ["down", "kill"]  # the marks the hotspot counts: the Operative's work, not the guards'
 const CALLSIGNS := ["butcher", "none"]  # besides one per Habit
 
 
@@ -111,6 +112,29 @@ static func callsign(record: Dictionary) -> String:
 	return "callsign." + (best if best != "" else "none")
 
 
+## Where the Operative did the most work: the Encounter holding the most HOT_MARKS (CITE_FROM or more), with
+## the seconds from its first to its last. marks: SessionLog's [[kind, seconds, Vector2 diagram]]; enc_of:
+## Vector2 -> Encounter id (0 = none). {enc, n, secs} or {}.
+static func hotspot(marks: Array, enc_of: Callable) -> Dictionary:
+	var by := {}  # enc -> [n, first, last]
+	for m: Array in marks:
+		if not m[0] in HOT_MARKS:
+			continue
+		var e: int = enc_of.call(m[2])
+		if e == 0:
+			continue
+		var t := float(m[1])
+		var s: Array = by.get(e, [0, t, t])
+		by[e] = [s[0] + 1, minf(s[1], t), maxf(s[2], t)]
+	var best := 0
+	for e: int in by:
+		if by[e][0] >= CITE_FROM and (best == 0 or by[e][0] > by[best][0]):
+			best = e
+	if best == 0:
+		return {}
+	return {enc = best, n = by[best][0], secs = roundi(by[best][2] - by[best][1])}
+
+
 ## What Aigis cites for a Habit: [line key, {n}], or [] when nothing says enough.
 ## "brief.evidence.<event>.last" when the last Mission had CITE_FROM or more, else ".total" from the campaign.
 static func evidence(record: Dictionary, habit: String) -> Array:
@@ -172,6 +196,9 @@ static func clean_last(v: Variant) -> Dictionary:
 	var called: Variant = v.get("called")
 	if called is String and called.trim_prefix("callsign.") in Aigis.HABITS + CALLSIGNS:
 		out.called = called
+	var hot: Variant = v.get("hot")
+	if hot is Dictionary and hot.get("enc") is float and hot.get("n") is float and hot.get("secs") is float:
+		out.hot = {enc = int(hot.enc), n = int(hot.n), secs = int(hot.secs)}
 	var path: Variant = v.get("path")
 	if path is Array and path.size() % 2 == 0 and path.all(func(x: Variant) -> bool: return x is float):
 		out.path = path

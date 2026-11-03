@@ -197,7 +197,7 @@ func test_floor_plan_fills_the_navmesh_and_outlines_only_its_edge() -> void:
 	assert_eq(FloorPlan.of_area(null), {})
 
 
-# ----- the bet and the callsign -----
+# ----- the bet, the callsign and the hotspot -----
 
 func _last(counts: Dictionary) -> Dictionary:
 	var r := _record(1)
@@ -240,3 +240,40 @@ func test_the_callsign_is_the_top_habit_or_the_butcher() -> void:
 	r.denominator = 10
 	assert_eq(Dossier.callsign(r), "callsign.butcher", "Gorgo's band outranks any Habit")
 
+
+func test_the_hotspot_is_the_encounter_with_the_most_downs() -> void:
+	var enc := func(p: Vector2) -> int: return 1 if p.x < 10 else 2
+	var marks := [["down", 10.0, Vector2(1, 0)], ["kill", 40.0, Vector2(2, 0)], ["down", 50.0, Vector2(20, 0)],
+		["alert", 60.0, Vector2(21, 0)], ["spotted", 61.0, Vector2(21, 0)], ["down", 99.0, Vector2(3, 0)]]
+	assert_eq(Dossier.hotspot(marks, enc), {enc = 1, n = 3, secs = 89}, "alerts and spottings aren't the Operative's work")
+	assert_eq(Dossier.hotspot([["down", 1.0, Vector2(1, 0)]], enc), {}, "one down is chance")
+	assert_eq(Dossier.hotspot([["down", 1.0, Vector2(1, 0)], ["down", 2.0, Vector2(1, 0)]], func(_p: Vector2) -> int: return 0), {}, "outside every Encounter")
+
+
+func test_a_slot_keeps_the_bet_callsign_and_hotspot_and_drops_bad_ones() -> void:
+	var good := {"mission": 1.0, "bet": {"event": "takedown", "n": 3.0, "most": false, "got": 4.0, "won": true},
+		"called": "callsign.takedowns", "hot": {"enc": 2.0, "n": 4.0, "secs": 90.0}}
+	var c := Dossier.clean_last(good)
+	assert_eq(c.bet, {event = "takedown", n = 3, most = false, got = 4, won = true})
+	assert_eq(c.called, "callsign.takedowns")
+	assert_eq(c.hot, {enc = 2, n = 4, secs = 90})
+	var bad := Dossier.clean_last({"mission": 1.0, "bet": {"event": "nuke", "n": 3.0, "most": false, "got": 4.0, "won": true},
+		"called": "callsign.god", "hot": {"enc": "x"}})
+	assert_eq([bad.has("bet"), bad.has("called"), bad.has("hot")], [false, false, false])
+
+
+func test_every_new_dossier_line_has_text() -> void:
+	var t := _keys()
+	for e: String in Dossier.BET_EVENTS:
+		assert_true(t.has("bet." + e), e)
+	assert_true(t.has("bet.alert.most"))
+	for h: String in Aigis.HABITS + Dossier.CALLSIGNS:
+		assert_true(t.has("callsign." + h), h)
+	for v: String in ["pallas", "nike", "gorgo"]:
+		for k: String in ["bet", "bet.won", "bet.lost"]:
+			assert_true(t.has("brief.%s.%s" % [v, k]), "%s %s" % [v, k])
+	for m: int in Campaign.MISSIONS.size():
+		for e: int in range(1, Campaign.MISSIONS[m].encounters + 1):
+			assert_true(t.has("place.%d.%d" % [m, e]), "place %d %d" % [m, e])
+	for k: String in ["brief.pallas.callsign", "brief.pallas.callsign.renamed", "brief.pallas.hot.s", "brief.pallas.hot.m", "caught.contact"]:
+		assert_true(t.has(k), k)

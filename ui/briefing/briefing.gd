@@ -133,7 +133,7 @@ func _build_lines() -> Array:
 	var named := _callsign_line()
 	if not named.is_empty():
 		keys.push_front(named)
-	for extra: Array in _file_lines():  # what it bet and how that went, the next bet: before the close
+	for extra: Array in _file_lines():  # where, what it bet and how that went, the next bet: before the close
 		keys.insert(keys.size() - 1, extra)
 	for key: Variant in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
 		lines.append(_line(key))
@@ -155,11 +155,16 @@ func _callsign_line() -> Array:
 	return ["brief.pallas.callsign", {name = tr(now)}]
 
 
-## The Dossier's other lines, as [key, args]: the Dominant Voice on its last forecast (won or lost), then its
-## forecast for this Mission.
+## The Dossier's other lines, as [key, args]: where the Operative did most last time (Pallas), the Dominant
+## Voice on its last forecast (won or lost), then its forecast for this Mission.
 func _file_lines() -> Array:
 	var out := []
 	var last: Dictionary = record.get("last", {})
+	var hot: Dictionary = last.get("hot", {})
+	if not hot.is_empty():
+		var place := tr("place.%d.%d" % [last.mission, hot.enc])
+		var mins := roundi(hot.secs / 60.0)
+		out.append(["brief.pallas.hot.m", {place = place, n = hot.n, m = mins}] if hot.secs >= 120 else ["brief.pallas.hot.s", {place = place, n = hot.n, s = maxi(hot.secs, 1)}])
 	var bet: Dictionary = last.get("bet", {})
 	if not bet.is_empty():
 		out.append(["brief.%s.bet.%s" % [plan.dominant, "won" if bet.won else "lost"], {bet = Dossier.bet_text(bet), got = bet.got}])

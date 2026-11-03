@@ -46,6 +46,7 @@ Which file owns which mechanic. Terms are the `docs/GLOSSARY.md` ones. Rules liv
 | Glaukopis: judging a Spoofed transmission | `ai/glaukopis.gd` | `test_glaukopis.gd` |
 | HQ polls, Hints | `ai/hq_poll.gd`, `ai/hint_tracker.gd` | `test_hq_poll.gd`, `test_hint_tracker.gd` |
 | Dossier: what Aigis cites back (Briefing evidence, dropped-Habit line, Voice dissent, evidence chatter, the "What Aigis saw" route) | `ai/dossier.gd`; `Aigis._dissent`; `ui/post_mission/post_mission_saw.gd` | `test_dossier.gd` |
+| Callsign, forecast, hotspot: the name Aigis files the Operative under (Briefing, guards' Radio call), its bet on the next Mission settled on the post-Mission "learned" page and in the next Briefing, and the Encounter it cites from the last route | `ai/dossier.gd` (`callsign`, `bet`, `settle`, `hotspot`); `ui/briefing/briefing.gd` (`_callsign_line`, `_file_lines`); `ui/post_mission/post_mission.gd` (`_bet_line`) | `test_dossier.gd` |
 | Caught lines: a guard (or HQ) names the Countermeasure that just caught the Operative, a subtitle over a grunt | `ai/caught.gd`; `Guard.caught` (`guard_body.gd`), hooks in `guard_downs.gd`, `guard.gd` (`_spotted_line`), `HqRadio.caught`, `security_camera.gd`, `radio.gd` `_search`, `harbour.gd` (arms `Caught.area`) | `test_caught.gd` |
 | Mission tally, Rank, Session log | `ai/mission_tally.gd`, `ai/rank.gd`, `ai/session_log.gd` | `test_mission_tally.gd`, `test_rank.gd` |
 | Every Mission as data | `missions/campaign.gd` | `test_campaign.gd` |

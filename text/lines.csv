@@ -717,6 +717,8 @@ callsign.butcher,the Butcher,el Carnicero
 callsign.none,the intruder,el intruso
 brief.pallas.callsign,Pallas: Our file on you has a name now: {name}.,Palas: Nuestro expediente sobre ti ya tiene nombre: {name}.
 brief.pallas.callsign.renamed,Pallas: We filed you as {was}. That no longer fits. You are {name} now.,Palas: Te archivamos como {was}. Ya no encaja. Ahora eres {name}.
+brief.pallas.hot.s,"Pallas: {place}, last time. {n} of ours down in {s} seconds. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {s} segundos. Lo he visto una y otra vez."
+brief.pallas.hot.m,"Pallas: {place}, last time. {n} of ours down in {m} minutes. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {m} minutos. Lo he visto una y otra vez."
 bet.takedown,at least {n} of ours taken from behind,al menos {n} de los nuestros atrapados por la espalda
 bet.headshot,at least {n} shots to the head,al menos {n} tiros a la cabeza
 bet.quiet_down,at least {n} of ours downed unseen,al menos {n} de los nuestros abatidos sin ser visto
@@ -737,3 +739,15 @@ brief.gorgo.bet.lost,Gorgo: I expected {bet}. You gave me {got}. The file is cor
 ui.post.bet,Aigis forecast: {bet} · you: {got},Aigis pronosticó: {bet} · tú: {got}
 ui.post.bet.won,Called it,Acertó
 ui.post.bet.lost,Wrong,Falló
+place.0.1,The freighter deck,La cubierta del carguero
+place.0.2,The container lanes,Los pasillos de contenedores
+place.0.3,The Operations building,El edificio de Operaciones
+place.1.1,The motor pool,El parque móvil
+place.1.2,The summit,La cima
+place.1.3,The barracks terrace,La terraza de los barracones
+place.2.1,The yard,El patio
+place.2.2,The strip and the core,La franja y el núcleo
+place.2.3,The archive,El archivo
+place.3.1,The quay and yard,El muelle y el patio
+place.3.2,The Operations building,El edificio de Operaciones
+place.3.3,The Core room,La sala del Núcleo

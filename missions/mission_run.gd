@@ -511,6 +511,7 @@ func _on_extraction() -> void:
 	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
 	after.last.merge(Dossier.trail(SessionLog.current.missions.back()))  # the route Aigis draws back
+	after.last.hot = Dossier.hotspot(SessionLog.current.missions.back().marks, func(p: Vector2) -> int: return encounter_at(Vector3(p.x - MissionPlaces.DIAGRAM_ORIGIN, 0, p.y - MissionPlaces.DIAGRAM_ORIGIN)))
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
 	screen.dossier = after.last
