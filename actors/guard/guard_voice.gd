@@ -104,6 +104,22 @@ func radio_line(event: StringName, key := "") -> void:
 		Mixer.play(&"radio_off", Mix.RADIO)
 
 
+## A grunt under a Caught line, on a one-shot player of its own so it never cuts a bark or a Radio call.
+func grunt() -> void:
+	if not is_inside_tree():
+		return
+	var p := AudioStreamPlayer3D.new()
+	p.stream = _takes_of(&"grunt")
+	p.bus = Mix.VOICE
+	p.volume_db = BARK_DB
+	p.max_distance = max_distance
+	p.attenuation_filter_cutoff_hz = attenuation_filter_cutoff_hz
+	p.pitch_scale = Bark.pitch(str(get_parent().name))
+	p.finished.connect(p.queue_free)
+	add_child(p)
+	p.play()
+
+
 ## A dart or choke during the call: cuts the call's line and any sequence behind it, with no off squelch.
 func cut_call() -> void:
 	_seq += 1

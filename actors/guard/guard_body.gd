@@ -89,6 +89,8 @@ var carry_only := false          # a Target a Fulton would kill (Campaign `carry
 var target := false              # a Mission Target: unarmed, weighs 3, flees to safe_room on alert
 var safe_room := Vector3.ZERO    # where a Target runs on alert and stays until evasion ends
 var role := ""                   # its post's role (patroller, observer...), "" = none
+var sentry := false              # Stealth L3: an overwatch sentry on a high point
+var last_drop := ""              # how it last went Down: "choke" or "" (its partners' Caught line reads it)
 var encounter := 0               # the Encounter its post belongs to (0 = none)
 var detours: Array[Vector3] = [] # spots in its Encounter, one visited per patrol loop in Caution (the Area sets them)
 
@@ -332,6 +334,17 @@ func say_line(key: String, args := {}) -> void:
 	var text := tr(key).format(args)  # args: a line's {n}, e.g. evidence chatter
 	get_tree().call_group("radio_log", "say", name, text)
 	voice.speak(key, text)
+
+
+## A Countermeasure caught the Operative (Caught): this guard says so, a subtitle over a grunt. True when
+## it did (the moment's Habit is deployed and the Area hasn't said it lately).
+func caught(moment: StringName) -> bool:
+	var key := Caught.area.line(moment, Time.get_ticks_msec() / 1000.0, rng.randi())
+	if key == "":
+		return false
+	get_tree().call_group("radio_log", "say", name, tr(key).format({name = Caught.area.callsign}))
+	voice.grunt()
+	return true
 
 
 ## A line on the radio (an ack, an exposure line): a subtitle only. It isn't a check-in, so no ((·))

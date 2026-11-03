@@ -294,9 +294,21 @@ func _radio_call() -> void:
 			model.react("hand_to_ear", AlertChain.CALL_TIME - GuardAlert.FLINCH, CharacterModel.EAR_SPEED))
 	_was_calling = true
 	voice.call_in(func() -> bool: return AlertChain.area.calling(self))
+	if not alert.heard:
+		_spotted_line()
 	for g: Guard in get_tree().get_nodes_in_group("guards"):
 		if g != self and GuardAlert.in_earshot(g.global_position, global_position, AlertChain.SHOUT_RANGE):
 			g.on_shout(alert.last_known, self)
+
+
+## A spotter names what caught the Operative (Caught: he turned round on him, a sentry saw him), else who it is:
+## the callsign Aigis filed him under (none on Mission 1).
+func _spotted_line() -> void:
+	var close := operative != null and _flat_dist(operative.global_position) <= Caught.BEHIND
+	if (close and caught(&"behind")) or (sentry and caught(&"sentry")):
+		return
+	if Caught.area.callsign != "":
+		radio_say(tr("caught.contact").format({name = Caught.area.callsign}))
 
 
 ## A spotter's "!" within earshot: run to his sighting point.

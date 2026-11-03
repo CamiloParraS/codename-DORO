@@ -686,3 +686,34 @@ ui.credits.shaders,Shaders,Shaders
 ui.credits.tools,Built with,Hecho con
 ui.credits.thanks,Thank you for playing,Gracias por jugar
 ui.credits.hold,[{key}] HOLD TO SPEED UP,[{key}] MANTÉN PARA ACELERAR
+caught.contact,Contact! It's {name}!,¡Contacto! ¡Es {name}!
+caught.helmet.1,Ha! Helmet. HQ said {name} goes for the head.,¡Ja! Casco. La base dijo que {name} apunta a la cabeza.
+caught.helmet.2,That rang my helmet! Aigis called it: {name} aims high.,¡Me ha sonado el casco! Aigis lo sabía: {name} apunta alto.
+caught.vest.1,Vest took it! They kitted us out for {name}.,¡El chaleco lo paró! Nos equiparon para {name}.
+caught.vest.2,Still standing. Aigis knew {name} would come shooting.,Sigo en pie. Aigis sabía que {name} vendría disparando.
+caught.squad.1,Squad inbound. Aigis expected a fight from {name}.,Escuadra en camino. Aigis esperaba que {name} buscara pelea.
+caught.squad.2,Sending more guns. Aigis says {name} never runs.,Mandamos más armas. Aigis dice que {name} nunca huye.
+caught.behind.1,Turned round just in time! HQ said {name} comes from behind.,¡Me giré justo a tiempo! La base dijo que {name} viene por la espalda.
+caught.behind.2,There you are. They told us to watch our backs for {name}.,Ahí estás. Nos dijeron que vigiláramos la espalda por {name}.
+caught.partner.1,"From behind, just like they said! It's {name}!","¡Por la espalda, como dijeron! ¡Es {name}!"
+caught.partner.2,"They warned us! That's how {name} works, from behind!","¡Nos avisaron! Así trabaja {name}, por la espalda."
+caught.found.1,Another one down. HQ said {name} leaves them lying around.,Otro caído. La base dijo que {name} los va dejando tirados.
+caught.found.2,Man down! Aigis had us looking for exactly this.,¡Hombre caído! Aigis nos tenía buscando justo esto.
+caught.silence.1,No answer. That's how {name} works. Go and check.,Sin respuesta. Así trabaja {name}. Id a comprobarlo.
+caught.silence.2,Silence again. Aigis said {name} would leave gaps in the roll call.,Silencio otra vez. Aigis dijo que {name} dejaría huecos en el recuento.
+caught.exposed.1,Glaukopis was waiting for that voice. It's {name}.,Glaukopis esperaba esa voz. Es {name}.
+caught.exposed.2,Fake voice on the net. Aigis said {name} would try it.,Voz falsa en la red. Aigis dijo que {name} lo intentaría.
+caught.sentry.1,Got you from up here! Aigis put me here for {name}.,¡Te veo desde aquí arriba! Aigis me puso aquí por {name}.
+caught.sentry.2,Overwatch has eyes on {name}! Just like Aigis planned.,"¡La vigilancia lo tiene! Es {name}, tal como planeó Aigis."
+caught.camera.1,Camera has eyes on {name}. Aigis knew where to hang them.,La cámara lo ha pillado: es {name}. Aigis sabía dónde colgarlas.
+caught.camera.2,Camera feed: it's {name}. The quiet corners aren't quiet any more.,Cámara: es {name}. Los rincones tranquilos ya no lo son.
+callsign.stealth,the Ghost,el Fantasma
+callsign.combat,the Brawler,el Camorrista
+callsign.headshots,the Marksman,el Tirador
+callsign.takedowns,the Strangler,el Estrangulador
+callsign.downs,the Sandman,el Hombre de Arena
+callsign.spoofing,the False Voice,la Voz Falsa
+callsign.butcher,the Butcher,el Carnicero
+callsign.none,the intruder,el intruso
+brief.pallas.callsign,Pallas: Our file on you has a name now: {name}.,Palas: Nuestro expediente sobre ti ya tiene nombre: {name}.
+brief.pallas.callsign.renamed,Pallas: We filed you as {was}. That no longer fits. You are {name} now.,Palas: Te archivamos como {was}. Ya no encaja. Ahora eres {name}.

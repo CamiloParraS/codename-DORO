@@ -2,7 +2,8 @@
 ## two optional record keys beside the Profile, and SaveSlots carries them:
 ##   seen: {event: count} over every completed Mission (the TRIGGERS events and kill)
 ##   last: the Mission just completed: {mission, counts: its tally's events, shifted: the Habit the Operative
-##         dropped ("" for none), path: [x, y, ...] flat in diagram metres every PATH_EVERY s, marks: [[kind, t, x, y]]}
+##         dropped ("" for none), path: [x, y, ...] flat in diagram metres every PATH_EVERY s, marks: [[kind, t, x, y]],
+##         called: the callsign key it filed the Operative under before it}
 ## A Free mode Preset has neither, so its Briefing falls back to the plain lines.
 ## Evidence: the number behind a Habit, from the last Mission when it says enough, else the campaign's count.
 class_name Dossier
@@ -20,6 +21,7 @@ const EVIDENCE := {
 const CITE_FROM := 2       # a count worth citing: one alone reads as chance (and keeps every line plural)
 const MAX_PATH := 400      # trail points kept in a save; a longer trail is thinned evenly
 const MARKS := ["down", "kill", "alert", "spotted"]
+const CALLSIGNS := ["butcher", "none"]  # besides one per Habit
 
 
 ## The events a record keeps in `seen`.
@@ -53,6 +55,21 @@ static func shifted(before: Dictionary, gained: Dictionary) -> String:
 		if p >= Aigis.POINTS_PER_LEVEL and int(gained.get(h, 0)) == 0 and (best == "" or p > int(before.get(best, 0))):
 			best = h
 	return best
+
+
+## The name Aigis files the Operative under, as a key: "callsign.butcher" once the Lethality ratio reaches
+## Gorgo's band, else the Habit with the most points ("callsign.<habit>", ties in Habit order), else
+## "callsign.none" while nothing stands out.
+static func callsign(record: Dictionary) -> String:
+	var r := Aigis.lethality_ratio(record)
+	if not is_nan(r) and r >= Aigis.GORGO_FROM:
+		return "callsign.butcher"
+	var best := ""
+	var points: Dictionary = record.get("points", {})
+	for h: String in Aigis.HABITS:
+		if int(points.get(h, 0)) > 0 and (best == "" or int(points[h]) > int(points[best])):
+			best = h
+	return "callsign." + (best if best != "" else "none")
 
 
 ## What Aigis cites for a Habit: [line key, {n}], or [] when nothing says enough.
@@ -109,6 +126,9 @@ static func clean_last(v: Variant) -> Dictionary:
 		return {}
 	var shift: String = v.get("shifted", "")
 	var out := {mission = int(v.mission), counts = clean_seen(v.get("counts")), shifted = shift if shift in Aigis.HABITS else ""}
+	var called: Variant = v.get("called")
+	if called is String and called.trim_prefix("callsign.") in Aigis.HABITS + CALLSIGNS:
+		out.called = called
 	var path: Variant = v.get("path")
 	if path is Array and path.size() % 2 == 0 and path.all(func(x: Variant) -> bool: return x is float):
 		out.path = path

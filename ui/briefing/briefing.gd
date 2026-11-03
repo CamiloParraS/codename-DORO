@@ -130,7 +130,10 @@ func _build_lines() -> Array:
 		keys.insert(keys.size() - 1, "brief.pallas.shift." + shift)
 	if plan.get("dissent", "") != "":  # a close call: the outvoted sponsor objects last
 		keys.insert(keys.size() - 1, plan.dissent)
-	for key: String in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
+	var named := _callsign_line()
+	if not named.is_empty():
+		keys.push_front(named)
+	for key: Variant in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
 		lines.append(_line(key))
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
 	lines.append_array(m.steps.map(func(s: Dictionary) -> Array: return ["objective", s.objective]))
@@ -138,8 +141,24 @@ func _build_lines() -> Array:
 	return lines
 
 
-## A plan key as a line. A Habit row cites what Aigis counted (Dossier.evidence) when the record says enough.
-func _line(key: String) -> Array:
+## Pallas names the file: the callsign Aigis has for the Operative ([key, args]), saying so when it changed
+## since the last Briefing. [] while nothing stands out.
+func _callsign_line() -> Array:
+	var now := Dossier.callsign(record)
+	if now == "callsign.none":
+		return []
+	var was: String = record.get("last", {}).get("called", "")
+	if was != "" and was != now and was != "callsign.none":
+		return ["brief.pallas.callsign.renamed", {was = tr(was), name = tr(now)}]
+	return ["brief.pallas.callsign", {name = tr(now)}]
+
+
+## A plan key (or [key, format args]) as a line. A Habit row cites what Aigis counted (Dossier.evidence) when
+## the record says enough.
+func _line(entry: Variant) -> Array:
+	if entry is Array:
+		return ["voice", entry[0], tr(entry[0]).format(entry[1])]
+	var key: String = entry
 	if not key.begins_with("brief.pallas.habit."):
 		return ["hint" if ".hint." in key else "voice", key]
 	var ev := Dossier.evidence(record, key.get_slice(".", 3))

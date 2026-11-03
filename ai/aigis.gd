@@ -156,7 +156,8 @@ static func complete_mission(record: Dictionary, tally: Dictionary) -> Dictionar
 	out.lethality += GUARD_DEATH * int(tally.get("kill", 0)) + TARGET_DEATH * int(tally.get("target_kill", 0))
 	out.denominator += GUARD_DEATH * int(tally.get("spawned", 0)) + TARGET_DEATH * int(tally.get("targets", 0))
 	out.seen = Dossier.add_seen(record.get("seen", {}), tally)  # what the Briefing can cite (Dossier)
-	out.last = {mission = record.mission, counts = Dossier.counts_of(tally), shifted = Dossier.shifted(record.points, gained)}
+	out.last = {mission = record.mission, counts = Dossier.counts_of(tally), shifted = Dossier.shifted(record.points, gained),
+		called = Dossier.callsign(record)}
 	out.mission += 1
 	return out
 

@@ -195,3 +195,16 @@ func test_floor_plan_fills_the_navmesh_and_outlines_only_its_edge() -> void:
 	assert_eq(plan.hi, Vector2(2, 2))
 	assert_eq(FloorPlan.from_mesh(PackedVector3Array(), []), {})
 	assert_eq(FloorPlan.of_area(null), {})
+
+
+# ----- the callsign -----
+
+func test_the_callsign_is_the_top_habit_or_the_butcher() -> void:
+	assert_eq(Dossier.callsign(_record(1)), "callsign.none")
+	assert_eq(Dossier.callsign(_record(1, {"headshots": 40, "takedowns": 60})), "callsign.takedowns")
+	assert_eq(Dossier.callsign(_record(1, {"headshots": 50, "takedowns": 50})), "callsign.headshots", "ties in Habit order")
+	var r := _record(1, {"stealth": 90})
+	r.lethality = 5
+	r.denominator = 10
+	assert_eq(Dossier.callsign(r), "callsign.butcher", "Gorgo's band outranks any Habit")
+
