@@ -403,7 +403,8 @@ ui.settings.max_fps,MAX FPS,FPS MÁXIMOS
 ui.settings.aigis_key,AIGIS ANALYSIS KEY,CLAVE DE ANÁLISIS DE AIGIS
 ui.settings.aigis_key.none,NONE,NINGUNA
 ui.settings.aigis_key.env,FROM SYSTEM,DEL SISTEMA
-ui.settings.aigis_key.paste,"Paste a Gemini API key, ENTER to save","Pega una clave de API de Gemini, ENTER para guardar"
+ui.settings.aigis_key.paste,Paste a Gemini API key here,Pega aquí una clave de API de Gemini
+ui.settings.aigis_key.keys,ENTER  SAVE   ·   ESC  CANCEL   ·   EMPTY  CLEARS IT,ENTER  GUARDAR   ·   ESC  CANCELAR   ·   VACÍA  LA BORRA
 ui.settings.aigis_key.note,"Optional. With a Gemini API key, Aigis comments on each Mission in its own words. The key is kept on this computer in plain text. On Google's free tier, the Mission stats sent may be used by Google. Empty: Aigis uses its stock lines.","Opcional. Con una clave de API de Gemini, Aigis comenta cada Misión con sus propias palabras. La clave se guarda en este equipo en texto plano. En el nivel gratuito de Google, las estadísticas enviadas pueden ser usadas por Google. Vacía: Aigis usa sus frases de siempre."
 ui.on,ON,SÍ
 ui.off,OFF,NO

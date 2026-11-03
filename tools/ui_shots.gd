@@ -105,7 +105,7 @@ func _run() -> void:
 		return
 	var all := lang == "en"
 	# --- menus
-	if all and any_of(["title", "main_menu", "mission_select", "settings"]):
+	if all and any_of(["title", "main_menu", "mission_select", "settings", "settings_key"]):
 		await scene(MENU)
 		await wait(0.6)
 		await shoot("title")
@@ -125,6 +125,12 @@ func _run() -> void:
 		menu._settings()
 		await wait(0.6)
 		await shoot("settings")
+		if want("settings_key"):  # the Aigis Voice key editor, open over the list
+			var panel: Control = menu.get_child(menu.get_child_count() - 1)
+			panel._key_btn.grab_focus()
+			panel._open_key()
+			await wait(0.4)
+			await shoot("settings_key")
 	if all and want("free_mode"):
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
