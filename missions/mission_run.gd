@@ -516,6 +516,7 @@ func _on_extraction() -> void:
 	var after := Aigis.complete_mission(record, tally.counts)
 	after.last.merge(Dossier.trail(SessionLog.current.missions.back()))  # the route Aigis draws back
 	after.last.hot = Dossier.hotspot(SessionLog.current.missions.back().marks, func(p: Vector2) -> int: return encounter_at(Vector3(p.x - MissionPlaces.DIAGRAM_ORIGIN, 0, p.y - MissionPlaces.DIAGRAM_ORIGIN)))
+	AigisComment.start(self, after, campaign)  # last.analysis: the fallback now, the model's comment when it lands
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
 	screen.dossier = after.last

@@ -18,6 +18,7 @@ var _stage := Control.new()
 var _list := UiMenu.new(WIDTH)
 var _icon := TextureRect.new()
 var _icons := {}  # row button -> icon texture
+var _note := Label.new()  # the key row's note, where the icon sits
 
 
 func _ready() -> void:
@@ -49,6 +50,7 @@ func _ready() -> void:
 	_toggle("ui.settings.fullscreen", "fs", "fullscreen")
 	_toggle("ui.settings.reduce_motion", "motion", "reduce_motion")
 	_fps_row()
+	_key_row()
 	var back := _list.add_row("ui.back", func() -> void:
 		Mixer.click()
 		closed.emit()
@@ -66,6 +68,7 @@ func _layout() -> void:
 	_stage.scale = Vector2(k, k)
 	_stage.size = size / k
 	_icon.position = Vector2(_stage.size.x - 220 - ICON_SIZE, 300)
+	_note.position = _icon.position - Vector2(120, 0)
 
 
 func _put(key: String, v: Variant) -> void:
@@ -161,6 +164,64 @@ func _fps_row() -> void:
 			step.call(1 if e.is_action_pressed("ui_right") else -1)
 			Mixer.play(&"tick")
 			b.accept_event())
+
+
+## Aigis Voice's Gemini key (LlmClient): the row shows NONE, FROM SYSTEM (GEMINI_API_KEY) or the key's last four;
+## press opens a masked field over the value, ENTER saves (empty clears), ESC or leaving it cancels. While the row
+## is selected the note on where the key lives replaces the icon.
+func _key_row() -> void:
+	var ctl := SettingCtl.new()
+	var label := func() -> String:
+		var k: String = _values.get("llm_key", "")
+		if k != "":
+			return "****" + k.right(4)
+		return tr("ui.settings.aigis_key.env") if OS.get_environment(LlmClient.KEY_ENV) != "" else tr("ui.settings.aigis_key.none")
+	ctl.options = [label.call()]
+	var b := _list.add_row("ui.settings.aigis_key")
+	ctl.row = b
+	ctl.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	ctl.offset_left = -CTL_W - 20
+	ctl.offset_right = -20
+	ctl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(ctl)
+	_note.text = "ui.settings.aigis_key.note"
+	_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_note.add_theme_font_override("font", HudPalette.FIGURE_MED)
+	_note.add_theme_font_size_override("font_size", 28)
+	_note.modulate = HudPalette.LIGHT_2
+	_note.visible = false
+	_note.size = Vector2(ICON_SIZE + 120, ICON_SIZE)
+	_note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_stage.add_child(_note)
+	b.focus_entered.connect(func() -> void:
+		_icon.visible = false
+		_note.visible = true)
+	b.focus_exited.connect(func() -> void: _note.visible = false)
+	b.pressed.connect(func() -> void:
+		var edit := LineEdit.new()
+		edit.secret = true
+		edit.placeholder_text = tr("ui.settings.aigis_key.paste")
+		edit.add_theme_font_size_override("font_size", 24)
+		edit.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+		edit.offset_left = -CTL_W - 20
+		edit.offset_right = -20
+		b.add_child(edit)
+		edit.grab_focus()
+		var done := func(save: bool) -> void:
+			if not is_instance_valid(edit) or edit.is_queued_for_deletion():
+				return
+			if save:
+				_put("llm_key", edit.text.strip_edges())
+				ctl.options = [label.call()]
+				Mixer.click()
+			edit.queue_free()
+			b.grab_focus()
+		edit.text_submitted.connect(func(_t: String) -> void: done.call(true))
+		edit.focus_exited.connect(func() -> void: done.call(false))
+		edit.gui_input.connect(func(e: InputEvent) -> void:
+			if e.is_action_pressed("ui_cancel"):
+				edit.accept_event()
+				done.call(false)))
 
 
 ## The value drawn at a row's right edge: a track and a number (a slider) or pills (a toggle, language).

@@ -8,7 +8,9 @@ const LANGUAGES := ["en", "es"]
 ## 0 is AUTO: no cap, vsync paces frames at the display's own rate. A fixed cap that doesn't divide the refresh rate
 ## (60 on a 144 Hz screen) holds frames for 2 or 3 refreshes in turn, and slow motion judders (the menu backdrop's push).
 const FPS_CAPS := [0, 60, 120, 144]
-const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false, max_fps = 0}
+## llm_key / llm_model: Aigis Voice's Gemini key (plain text, this machine only) and model (LlmClient).
+const DEFAULTS := {sensitivity = 0.0025, invert_y = false, language = "en", fullscreen = false, volume = 1.0, reduce_motion = false, max_fps = 0,
+	llm_key = "", llm_model = "gemini-3.5-flash-lite"}
 const SENS_RANGE := Vector2(0.0005, 0.008)
 
 static var current: Dictionary = DEFAULTS.duplicate()
@@ -33,6 +35,10 @@ static func load_file(path := PATH) -> Dictionary:
 			out.max_fps = int(d.max_fps)
 		if d.get("volume") is float:
 			out.volume = clampf(d.volume, 0.0, 1.0)
+		if d.get("llm_key") is String:
+			out.llm_key = d.llm_key.strip_edges()
+		if d.get("llm_model") is String and d.llm_model.strip_edges() != "":
+			out.llm_model = d.llm_model.strip_edges()
 	return out
 
 
