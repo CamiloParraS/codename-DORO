@@ -497,6 +497,7 @@ func _on_intel(intel: Node) -> void:
 	var at := _doable(intel.name)
 	if ended or at < step:
 		return
+	Mixer.play(&"intel")
 	get_tree().call_group("codec_live", "live_call", _steps()[at].call)
 	SessionLog.current.note("step %d done (%s)" % [at + 1, intel.name])
 	step = at + 1
@@ -509,6 +510,7 @@ func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
 	SessionLog.current.note("extracted")
+	Mixer.play(&"mission_complete", Mixer.UI, 1.0, -6.0)
 	_finish()
 	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
