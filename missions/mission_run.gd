@@ -417,7 +417,7 @@ func encounter_at(pos: Vector3) -> int:
 func objective() -> String:
 	if step >= _steps().size() and not _targets_left().is_empty():
 		return tr("objective.targets") + ": " + ", ".join(_targets_left().map(func(t: Guard) -> String: return t.name))
-	return Campaign.objective(record.mission, step)
+	return Campaign.objective(mission, step)  # not record.mission: a commit moves the record past the Core (4), whose scene outlives the Mission
 
 
 ## The objective and where its intel lies from `from` ("<objective> · 42 m north-east", Holdup.bearing), or ""

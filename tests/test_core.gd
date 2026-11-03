@@ -24,6 +24,14 @@ func test_only_the_core_waits_for_the_terminal_to_save_the_slot() -> void:
 	assert_false(MissionRun.saves_on_commit({mission = Campaign.MISSIONS.size()}))
 
 
+func test_the_objective_survives_the_commit_that_moves_the_record_past_the_core() -> void:
+	var run := MissionRun.new()
+	run.mission = 3
+	run.record = {mission = Campaign.MISSIONS.size()}  # what the Core's commit leaves; the HUD polls objective() every frame
+	assert_true(run.objective() != "")
+	run.free()
+
+
 ## The Harbour again, but landed at the south pier's tip, not on the freighter: the same place, not the same Mission.
 func test_it_starts_on_the_south_pier_with_the_freighter_empty() -> void:
 	var core: Node = load(SCENE).instantiate()
