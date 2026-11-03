@@ -18,6 +18,11 @@ const GUARD_SKINS := [
 	preload("res://assets/models/characters/guard/guard_hazmat.png"),
 ]
 const OPERATIVE_SKIN := preload("res://assets/models/characters/operative.png")
+## Painted gear, on the part's own UVs in Nikita_Rigged.glb (the body skin is OPERATIVE_SKIN, on Nikita's sheet).
+const GEAR_SKINS := {
+	"Backpack": preload("res://assets/models/characters/backpack.jpg"),
+	"Goggles": preload("res://assets/models/characters/goggles.jpg"),
+}
 const CLIPS := preload("res://assets/models/animations/clips.res")
 ## Mixamo clips retargeted by tools/bake_mixamo.gd. Gitignored, so it may be missing: the Quaternius clips cover for it.
 const MIXAMO := "res://assets/models/animations/mixamo_clips.res"
@@ -165,6 +170,14 @@ static func guard_clip(down: bool, speed: float, dead := false) -> String:
 	return "walk" if speed > 0.3 else "idle"
 
 
+static func _psx_material(texture: Texture2D) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_texture = texture
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	m.roughness = 0.9
+	return m
+
+
 func _ready() -> void:
 	var body: Node3D = (TARGET_BODY if kind == Kind.TARGET else BODY).instantiate()
 	body.rotation.y = PI  # the rig faces +Z
@@ -177,11 +190,10 @@ func _ready() -> void:
 	_anim.deterministic = true  # bones a clip doesn't key (the Quaternius clips skip spine_01) go back to rest
 	_anim.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	if kind != Kind.TARGET:
-		var tint := StandardMaterial3D.new()  # a PSX look: the Operative's skin, or a guard's by its name
-		tint.albedo_texture = OPERATIVE_SKIN if kind == Kind.OPERATIVE else GUARD_SKINS[String(get_parent().name).hash() % GUARD_SKINS.size()]
-		tint.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		tint.roughness = 0.9
-		_part("Nikita").material_override = tint
+		# a PSX look: the Operative's skin, or a guard's by its name
+		_part("Nikita").material_override = _psx_material(OPERATIVE_SKIN if kind == Kind.OPERATIVE else GUARD_SKINS[String(get_parent().name).hash() % GUARD_SKINS.size()])
+		for part in GEAR_SKINS:  # guards never show these, so the painted kit only reaches the Operative
+			_part(part).material_override = _psx_material(GEAR_SKINS[part])
 		for part in ["Helmet", "Vest", "Chest_rig", "Backpack", "Goggles", "Holster", "Knee_pads", "Shemag"]:
 			_part(part).visible = part in DRESS[kind]
 	_rig()
