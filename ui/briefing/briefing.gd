@@ -208,13 +208,13 @@ func _draw() -> void:
 				var w := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 64).x + 56
 				PixelKit.stair_fill(self, Rect2(0, y - 70, x - 40 + w, 90), HudPalette.LIGHT, 22.0)
 				HudPalette.hud_text(self, Vector2(x - 40, y), s, 64, HudPalette.DARK_INK, f, 0, false)  # the title sits left of the body column
-				y += 70
+				y += 84
 			"gap":
-				y += 24
+				y += 40
 			"head":
 				HudPalette.hud_text(self, Vector2(x, y), s.to_upper(), 24, HudPalette.LIGHT_2, HudPalette.tracked(disp, 24, 0.26), 0, false)
-				draw_rect(Rect2(x, y + 12, 400, 2), Color(HudPalette.LIGHT, 0.5))
-				y += 52
+				draw_rect(Rect2(x, y + 16, 400, 2), Color(HudPalette.LIGHT, 0.5))
+				y += 76
 			"band":  # the ending: its Voice, large
 				HudPalette.hud_text(self, Vector2(x, y + 20), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1]).to_upper()], 64, HudPalette.CYAN, HudPalette.tracked(disp, 64, 0.1), 0, false)
 				y += 80
@@ -233,11 +233,11 @@ func _draw() -> void:
 					_voice_head(Vector2(x + RIGHT_COL, y + 50), who, i, k)
 					var left := s.length()
 					for j in rows.size():
-						HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y + 96 + j * 44), rows[j].left(maxi(left, 0)), 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+						HudPalette.hud_text(self, Vector2(x + RIGHT_COL, y + 100 + j * 46), rows[j].left(maxi(left, 0)), 34, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 						left -= rows[j].length() + 1
-				y += 96 + rows.size() * 44 - 12
-				draw_rect(Rect2(x, y, d.x - x * 2, 1), Color(HudPalette.LIGHT, 0.14))
-				y += 28
+				y += 100 + rows.size() * 46 - 12
+				draw_rect(Rect2(x, y + 8, d.x - x * 2, 1), Color(HudPalette.LIGHT, 0.14))
+				y += 52
 			"voice":
 				var who := VoiceBlip.voice_of(_lines[i][1])
 				_voice_head(Vector2(x, y), who, i, k)
@@ -246,15 +246,15 @@ func _draw() -> void:
 				for l in full:
 					HudPalette.hud_text(self, Vector2(x + TAG + 90, y), l.left(maxi(left, 0)), 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					left -= l.length() + 1
-					y += 38
-				y += 14
+					y += 42
+				y += 38
 			"objective":  # a sand step number, then the objective in Barlow
 				obj_n += 1
 				HudPalette.hud_text(self, Vector2(x, y), "%02d" % obj_n, 24, HudPalette.SAND, HudPalette.tracked(disp, 24, 0.08), 0, false)
 				for l in HudPalette.wrap(s, d.x - x * 2 - OBJ_INDENT, HudPalette.FIGURE_MED, 28):
 					HudPalette.hud_text(self, Vector2(x + OBJ_INDENT, y), l, 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-					y += 38
-				y += 6
+					y += 42
+				y += 20
 	var over := (y + 30.0) / (d.y - 110.0)  # the layout never changes while lines type: this settles in a frame or two
 	if over > 1.001:
 		_fit /= over
