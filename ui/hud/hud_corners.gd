@@ -503,7 +503,7 @@ const GEAR := {
 	&"rifle": [preload("res://assets/ui/icons/rifle.svg"), Vector2(199.5, 59.5), 1.0],
 	&"tranq": [preload("res://assets/ui/icons/tranq.svg"), Vector2(133, 63), 1.0],
 	&"scanner": [preload("res://assets/ui/icons/scanner.svg"), Vector2(52.5, 71.75), 1.0],
-	&"magazine": [preload("res://assets/ui/icons/magazine.svg"), Vector2(80, 72), 1.0],
+	&"magazine": [preload("res://assets/ui/icons/magazine.svg"), Vector2(63, 72), 1.0],
 	&"balloon": [preload("res://assets/ui/icons/balloon.svg"), Vector2(31.5, 78), 1.0],
 }
 
