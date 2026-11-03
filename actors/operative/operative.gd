@@ -235,6 +235,8 @@ func _fire() -> void:
 	var quiet := arm.suppressed()
 	if not arm.fire(carrying != null):
 		return
+	if quiet and not arm.suppressed():  # that was the last shot the can had in it
+		Mix.sfx_at(self, &"suppressor_break", Vector3.INF, 2.0)
 	get_tree().call_group("mission_tally", "event", "rifle" if arm.lethal else "dart")
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot", null, true)
