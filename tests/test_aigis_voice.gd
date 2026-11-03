@@ -146,6 +146,19 @@ func test_the_briefing_opens_with_the_models_comment_in_its_language() -> void:
 	assert_eq(AigisVoice.briefing_lines({last = {analysis = {voice = "gorgo", lines = ["x"], source = "llm"}}}, "en"), [], "no language: never shown")
 
 
+# ----- the outcome log -----
+
+func test_each_outcome_is_appended_to_the_log() -> void:
+	var path := "user://test_aigis_voice_log.txt"
+	DirAccess.remove_absolute(path)
+	AigisComment.log_line("asked", path)
+	AigisComment.log_line("fallback after 12000 ms (no reply)", path)
+	var lines := FileAccess.get_file_as_string(path).strip_edges().split("\n")
+	DirAccess.remove_absolute(path)
+	assert_eq(lines.size(), 2)
+	assert_true(lines[1].ends_with("  fallback after 12000 ms (no reply)"), lines[1])
+
+
 # ----- the save -----
 
 func test_the_comment_survives_a_save_and_a_bad_one_is_dropped() -> void:
