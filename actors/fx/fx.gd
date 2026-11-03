@@ -18,6 +18,11 @@ static func glow(c: Color) -> StandardMaterial3D:
 	return m
 
 
+## Fx move or flicker: a caster in a shadowed light's range makes that light re-render every caster near it, so none casts.
+static func shadowless(g: GeometryInstance3D) -> void:
+	g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+
 ## A pixel-art sprite for the world: nearest-filtered and unlit, `billboard` to face the camera. `size` is metres per art pixel.
 static func pixel_sprite(tex: Texture2D, size: float, billboard := true) -> Sprite3D:
 	var s := Sprite3D.new()
@@ -27,6 +32,7 @@ static func pixel_sprite(tex: Texture2D, size: float, billboard := true) -> Spri
 		s.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	s.shaded = false
 	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	shadowless(s)
 	return s
 
 
@@ -39,6 +45,7 @@ static func puff(parent: Node, pos: Vector3, c: Color, n := 8, speed := 2.5, lif
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	px.material = mat
 	p.mesh = px
+	shadowless(p)
 	p.amount = n
 	p.one_shot = true
 	p.explosiveness = 1.0
@@ -79,6 +86,7 @@ static func tracer(parent: Node, from: Vector3, to: Vector3) -> MeshInstance3D:
 	b.size = Vector3(0.02, 0.02, from.distance_to(to))
 	b.material = glow(Color(1, 0.9, 0.55))
 	t.mesh = b
+	shadowless(t)
 	parent.add_child(t)
 	t.global_position = (from + to) / 2.0
 	if from.distance_squared_to(to) > 0.0001:
@@ -100,10 +108,13 @@ static func balloon() -> MeshInstance3D:
 	c.radial_segments = 4
 	c.material = glow(Color(0.15, 0.15, 0.15))
 	cable.mesh = c
+	shadowless(cable)
 	cable.position.y = -1.5
 	b.add_child(cable)
 	var art: Node3D = BALLOON_MODEL.instantiate()  # origin at the knot; the teardrop rises 2.5 m above it
 	art.position.y = -0.1
+	for g in art.find_children("*", "GeometryInstance3D", true, false):
+		shadowless(g)
 	b.add_child(art)
 	b.scale = Vector3.ONE * 0.05
 	return b
@@ -116,6 +127,7 @@ static func lamp(c: Color, size: float) -> MeshInstance3D:
 	box.size = Vector3.ONE * size
 	box.material = glow(c)
 	m.mesh = box
+	shadowless(m)
 	return m
 
 
