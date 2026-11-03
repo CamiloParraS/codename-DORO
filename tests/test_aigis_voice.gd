@@ -134,6 +134,18 @@ func test_the_panel_keeps_whole_lines_that_fit() -> void:
 	assert_eq(long.size(), 2, "the first line always shows, cut to what fits")
 
 
+# ----- the next Briefing -----
+
+func test_the_briefing_opens_with_the_models_comment_in_its_language() -> void:
+	var r := {last = {analysis = {voice = "gorgo", lines = ["We will be ready.", "Bring more."], source = "llm", language = "en"}}}
+	assert_eq(AigisVoice.briefing_lines(r, "en"), [["gorgo", "We will be ready."], ["gorgo", "Bring more."]])
+	assert_eq(AigisVoice.briefing_lines(r, "es"), [], "written in English: a Spanish Briefing says its own lines")
+	r.last.analysis.source = "fallback"
+	assert_eq(AigisVoice.briefing_lines(r, "en"), [], "the fallback repeats what the Briefing already says")
+	assert_eq(AigisVoice.briefing_lines({}, "en"), [], "no Mission played yet")
+	assert_eq(AigisVoice.briefing_lines({last = {analysis = {voice = "gorgo", lines = ["x"], source = "llm"}}}, "en"), [], "no language: never shown")
+
+
 # ----- the save -----
 
 func test_the_comment_survives_a_save_and_a_bad_one_is_dropped() -> void:

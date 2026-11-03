@@ -129,6 +129,8 @@ func _build_lines() -> Array:
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
 	lines.append(["gap", ""])
+	for said: Array in AigisVoice.briefing_lines(record, TranslationServer.get_locale().left(2)):  # Aigis Voice opens: its comment on the last Mission
+		lines.append(["voice", "brief.%s.said" % said[0], said[1]])  # not a text key: the key only names the Voice (VoiceBlip.voice_of)
 	var keys: Array = plan.briefing_keys.duplicate()
 	var shift: String = record.get("last", {}).get("shifted", "")
 	if shift != "":  # Aigis saw the Operative drop a Habit: said after the rows, before the close

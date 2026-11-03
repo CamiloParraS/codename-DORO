@@ -117,6 +117,15 @@ static func _tr(key: String) -> String:
 	return String(TranslationServer.translate(key))
 
 
+## What the next Briefing opens with: the model's comment on the last Mission as [voice, text] lines, only when it
+## was written in `locale` (a fallback says what the Briefing already does). [] otherwise.
+static func briefing_lines(record: Dictionary, locale: String) -> Array:
+	var said: Dictionary = record.get("last", {}).get("analysis", {})
+	if said.get("source", "") != "llm" or said.get("language", "") != locale:
+		return []
+	return said.lines.map(func(l: String) -> Array: return [said.voice, l])
+
+
 ## The reply text as {voice, lines}, or {} when it fails a check: JSON with one of the five Voices and 1 to
 ## MAX_LINES non-blank lines of at most MAX_CHARS, and no number in them that the facts don't hold.
 static func parse(text: String, facts: Dictionary) -> Dictionary:

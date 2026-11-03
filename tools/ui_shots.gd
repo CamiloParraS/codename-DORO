@@ -185,7 +185,8 @@ func _briefing() -> void:
 	Campaign.slot = -1
 	Campaign.record = _record(1)
 	Campaign.record.merge({seen = {quiet_down = 6, takedown = 4}, last = {mission = 0, counts = {quiet_down = 6, takedown = 4}, shifted = "headshots",
-		bet = {event = "takedown", n = 3, most = false, got = 4, won = true}, called = "callsign.headshots", hot = {enc = 2, n = 4, secs = 90}}})  # the Dossier: evidence, a shift, a won bet, a renamed callsign, a hotspot
+		bet = {event = "takedown", n = 3, most = false, got = 4, won = true}, called = "callsign.headshots", hot = {enc = 2, n = 4, secs = 90},
+		analysis = {voice = "gorgo", source = "llm", language = TranslationServer.get_locale().left(2), lines = ["4 of ours taken from behind, and you thought the dark would keep you.", "Next time they look back."]}}})  # the Dossier: evidence, a shift, a won bet, a renamed callsign, a hotspot
 	Campaign.gear = Requisition.new()
 	Campaign.gear.points = 7
 	Campaign.gear.signed = 4
