@@ -21,6 +21,7 @@ var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
 var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
 var _line_t := 0.0
 var _skip := false                  # the first Mission: straight to its Codec call
+var _fit := 1.0                     # < 1 when the lines run past the "any key" row: the page draws smaller to fit
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
@@ -146,7 +147,7 @@ func _line(key: String) -> Array:
 
 
 func _draw() -> void:
-	var k := size.y / HudPalette.DESIGN_H
+	var k := size.y / HudPalette.DESIGN_H * _fit
 	var d := size / k
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
 	if _skip:
@@ -214,6 +215,10 @@ func _draw() -> void:
 					HudPalette.hud_text(self, Vector2(x + OBJ_INDENT, y), l, 28, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					y += 38
 				y += 6
+	var over := (y + 30.0) / (d.y - 110.0)  # the layout never changes while lines type: this settles in a frame or two
+	if over > 1.001:
+		_fit /= over
+		queue_redraw()
 	var af := HudPalette.tracked(disp, 22, 0.24)
 	var ak := tr("ui.brief.any_key").to_upper()
 	HudPalette.hud_text(self, Vector2(x, d.y - 60), ak, 22, HudPalette.LIGHT_2, af, 0, false)
