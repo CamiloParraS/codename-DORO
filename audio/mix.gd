@@ -23,6 +23,11 @@ const STREAMS := {
 	&"patrol": "res://assets/audio/music_patrol.ogg",
 	&"ambience": "res://assets/audio/ambience_hum.ogg",
 	&"ambience_outdoor": "res://assets/audio/ambience_outdoor.ogg",
+	&"ambience_wind": "res://assets/audio/ambience_wind.ogg",
+	&"ambience_vent": "res://assets/audio/ambience_vent.ogg",
+	&"ambience_sea": "res://assets/audio/ambience_finale_sea.ogg",
+	&"menu": "res://assets/audio/music_menu.ogg",
+	&"interlude": "res://assets/audio/music_interlude.ogg",
 	&"knock": "res://assets/audio/sfx_knock.ogg",
 	&"sting_question": "res://assets/audio/sting_question.ogg",
 	&"sting_alert": "res://assets/audio/sting_alert.ogg",
@@ -62,6 +67,18 @@ const STREAMS := {
 	&"beep": "res://assets/audio/sfx_radio_on.ogg",
 	&"thump": "res://assets/audio/sfx_body_fall.ogg",
 	&"radio_static": "res://assets/audio/sfx_radio_static.ogg",
+	&"suppressor_break": "res://assets/audio/sfx_suppressor_break.ogg",
+	&"codec_ring": "res://assets/audio/sfx_codec_ring.ogg",
+	&"codec_answer": "res://assets/audio/sfx_codec_answer.ogg",
+	&"codec_end": "res://assets/audio/sfx_codec_end.ogg",
+	&"intel": "res://assets/audio/sfx_intel.ogg",
+	&"gameover_hit": "res://assets/audio/sfx_gameover_hit.ogg",
+	&"gameover_drone": "res://assets/audio/sfx_gameover_drone.ogg",
+	&"mission_complete": "res://assets/audio/sfx_mission_complete.ogg",
+	&"scanner_on": "res://assets/audio/sfx_scanner_on.ogg",
+	&"lift_door": "res://assets/audio/sfx_lift_door.ogg",
+	&"transition": "res://assets/audio/sfx_transition.ogg",
+	&"camera_lock": "res://assets/audio/sfx_camera_lock.ogg",
 	&"finale_transmit": "res://assets/audio/sfx_finale_transmit.ogg",
 	&"finale_glitch": "res://assets/audio/sfx_finale_glitch.ogg",
 	&"finale_steam": "res://assets/audio/sfx_finale_steam.ogg",
@@ -73,6 +90,12 @@ const CROUCH_STEP_CUTOFF_HZ := 1500.0  # ...and muffled by a lowpass
 const CARRY_STEP_PITCH := 0.8   # heavier
 
 const OUTDOOR_DB := -24.0  # crickets bed under open sky
+const WIND_DB := -26.0     # wind under open sky
+const SEA_DB := -24.0      # surf under the open sky of the harbour
+const VENT_DB := -26.0     # air handling under a roof
+const SCREEN_DB := -8.0    # a screen's own music (menu, interlude)
+const SCREEN_FADE_DB := 40.0
+const SCREENS := [&"menu", &"interlude"]
 
 var _vol := {}             # bus -> linear 0..1
 var _duck := 0.0           # current music duck, dB (0 or MusicState.DUCK_DB)
@@ -84,6 +107,10 @@ var _beat := AlertBeat.new()
 var _music := {}           # track -> AudioStreamPlayer
 var _scaled := false       # a hit-stop owns Engine.time_scale until it is restored
 var _outdoor: AudioStreamPlayer
+var _wind: AudioStreamPlayer
+var _sea: AudioStreamPlayer
+var _vent: AudioStreamPlayer
+var _screen := &""         # the screen music that owns the speakers: &"menu", &"interlude" or none
 var _blip: AudioStreamPlayer   # one player for every text blip: a new blip cuts the last, so none stack
 
 
@@ -94,6 +121,11 @@ func _ready() -> void:
 		_music[t] = _looped(t, MUSIC)
 	_looped(&"ambience", AMBIENCE).volume_db = -12.0  # quiet bed under everything
 	_outdoor = _looped(&"ambience_outdoor", AMBIENCE)
+	_wind = _looped(&"ambience_wind", AMBIENCE)
+	_sea = _looped(&"ambience_sea", AMBIENCE)
+	_vent = _looped(&"ambience_vent", AMBIENCE)
+	for t in SCREENS:
+		_music[t] = _looped(t, MUSIC)
 
 
 func _process(delta: float) -> void:
@@ -113,14 +145,42 @@ func _process(delta: float) -> void:
 	var op := get_tree().get_first_node_in_group("operative")
 	apply_scale(_beat.scale(now, get_tree().paused or (op != null and op.health.dead())))
 	var want := _state.update(delta, states)
-	if op == null:
+	if op == null or _screen != &"":
 		want = &""  # menus and briefings: no patrol loop
 	for t in _music:
 		var p: AudioStreamPlayer = _music[t]
-		p.volume_db = move_toward(p.volume_db, MusicState.ceiling_db(t) if t == want else SILENT, FADE_DB * delta)
+		if t in SCREENS:
+			p.volume_db = move_toward(p.volume_db, SCREEN_DB if t == _screen else SILENT, SCREEN_FADE_DB * delta)
+		else:
+			p.volume_db = move_toward(p.volume_db, MusicState.ceiling_db(t) if t == want else SILENT, FADE_DB * delta)
 	var sky := op != null and NoFulton.open_sky(get_tree(), op.global_position)
-	_outdoor.volume_db = move_toward(_outdoor.volume_db, OUTDOOR_DB if sky else SILENT, 12.0 * delta)
+	var roofed := op != null and not sky
+	_bed(_outdoor, OUTDOOR_DB if sky else SILENT, delta)
+	_bed(_wind, WIND_DB if sky else SILENT, delta)
+	_bed(_sea, SEA_DB if sky and _by_the_sea() else SILENT, delta)
+	_bed(_vent, VENT_DB if roofed else SILENT, delta)
 	advance_duck(delta)
+
+
+## The screen music for the screen on show (`track` is &"menu" or &"interlude"); gameplay music steps aside.
+func screen(track: StringName) -> void:
+	_screen = track
+
+
+## A screen leaving: it gives the speakers back unless another screen has already taken them.
+func screen_off(track: StringName) -> void:
+	if _screen == track:
+		_screen = &""
+
+
+func _bed(p: AudioStreamPlayer, db: float, delta: float) -> void:
+	p.volume_db = move_toward(p.volume_db, db, 12.0 * delta)
+
+
+## Is the Area on show the harbour, where open sky means surf.
+func _by_the_sea() -> bool:
+	var scene := get_tree().current_scene
+	return scene != null and scene.scene_file_path.contains("harbour")
 
 
 ## A short freeze for a hit or a takedown; the same hit-stop the "!" uses.

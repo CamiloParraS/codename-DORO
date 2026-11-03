@@ -148,3 +148,20 @@ func test_ui_click_plays_on_the_ui_bus() -> void:
 	var p := m.get_child(0) as AudioStreamPlayer
 	assert_eq(p.bus, Mix.UI)
 	m.free()
+
+
+func test_every_stream_exists() -> void:
+	for k: StringName in Mix.STREAMS:
+		var v: Variant = Mix.STREAMS[k]
+		for path: String in ([v] if v is String else v):
+			assert_true(FileAccess.file_exists(path), "%s: %s" % [k, path])
+
+
+func test_screen_music_is_handed_back_only_by_its_owner() -> void:
+	var m := Mix.new()
+	m.screen(&"menu")
+	m.screen_off(&"interlude")
+	assert_eq(m._screen, &"menu")
+	m.screen_off(&"menu")
+	assert_eq(m._screen, &"")
+	m.free()

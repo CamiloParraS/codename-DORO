@@ -39,7 +39,12 @@ var _stamped := false
 var _was_skipped := false
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"interlude")
+
+
 func _ready() -> void:
+	Mixer.screen(&"interlude")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR

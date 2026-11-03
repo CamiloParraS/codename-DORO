@@ -25,6 +25,10 @@ var _fit := 1.0                     # < 1 when the lines run past the "any key" 
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"interlude")
+
+
 func _ready() -> void:
 	add_to_group("mission_plan")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -41,6 +45,7 @@ func _ready() -> void:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] in ["voice", "habit", "hint"] else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(l[2], "") if l[0] != "band" else "", voice))
+	Mixer.screen(&"interlude")
 	var scan := UiScan.make(HudPalette.BACKDROP, true, true, HudPalette.BACKDROP_DIM)
 	scan.show_behind_parent = true  # under the page's own drawing
 	add_child(scan)
