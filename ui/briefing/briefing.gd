@@ -133,6 +133,8 @@ func _build_lines() -> Array:
 	var named := _callsign_line()
 	if not named.is_empty():
 		keys.push_front(named)
+	for extra: Array in _file_lines():  # what it bet and how that went, the next bet: before the close
+		keys.insert(keys.size() - 1, extra)
 	for key: Variant in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
 		lines.append(_line(key))
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
@@ -151,6 +153,20 @@ func _callsign_line() -> Array:
 	if was != "" and was != now and was != "callsign.none":
 		return ["brief.pallas.callsign.renamed", {was = tr(was), name = tr(now)}]
 	return ["brief.pallas.callsign", {name = tr(now)}]
+
+
+## The Dossier's other lines, as [key, args]: the Dominant Voice on its last forecast (won or lost), then its
+## forecast for this Mission.
+func _file_lines() -> Array:
+	var out := []
+	var last: Dictionary = record.get("last", {})
+	var bet: Dictionary = last.get("bet", {})
+	if not bet.is_empty():
+		out.append(["brief.%s.bet.%s" % [plan.dominant, "won" if bet.won else "lost"], {bet = Dossier.bet_text(bet), got = bet.got}])
+	var next := Dossier.bet(record)
+	if not next.is_empty():
+		out.append(["brief.%s.bet" % plan.dominant, {bet = Dossier.bet_text(next)}])
+	return out
 
 
 ## A plan key (or [key, format args]) as a line. A Habit row cites what Aigis counted (Dossier.evidence) when

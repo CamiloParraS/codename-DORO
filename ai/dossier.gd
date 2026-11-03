@@ -3,6 +3,7 @@
 ##   seen: {event: count} over every completed Mission (the TRIGGERS events and kill)
 ##   last: the Mission just completed: {mission, counts: its tally's events, shifted: the Habit the Operative
 ##         dropped ("" for none), path: [x, y, ...] flat in diagram metres every PATH_EVERY s, marks: [[kind, t, x, y]],
+##         bet: the forecast it made for that Mission, settled ({event, n, most, got, won}, or {}),
 ##         called: the callsign key it filed the Operative under before it}
 ## A Free mode Preset has neither, so its Briefing falls back to the plain lines.
 ## Evidence: the number behind a Habit, from the last Mission when it says enough, else the campaign's count.
@@ -21,6 +22,9 @@ const EVIDENCE := {
 const CITE_FROM := 2       # a count worth citing: one alone reads as chance (and keeps every line plural)
 const MAX_PATH := 400      # trail points kept in a save; a longer trail is thinned evenly
 const MARKS := ["down", "kill", "alert", "spotted"]
+## The events Aigis bets on, in tie order; a bet asks for BET_SHARE of the last count again, rounded up.
+const BET_EVENTS := ["takedown", "headshot", "quiet_down", "fulton", "down_found", "spoof", "alert"]
+const BET_SHARE := 0.75
 const CALLSIGNS := ["butcher", "none"]  # besides one per Habit
 
 
@@ -55,6 +59,41 @@ static func shifted(before: Dictionary, gained: Dictionary) -> String:
 		if p >= Aigis.POINTS_PER_LEVEL and int(gained.get(h, 0)) == 0 and (best == "" or p > int(before.get(best, 0))):
 			best = h
 	return best
+
+
+## Aigis's forecast for the next Mission, from the last one: the bet event it did most (CITE_FROM or more
+## times), at least BET_SHARE of that count again; with none and no alarm, no alarm again (a ceiling of 0).
+## {event, n, most: true when n is a ceiling}, or {} with no last Mission or nothing to bet on.
+static func bet(record: Dictionary) -> Dictionary:
+	var last: Dictionary = record.get("last", {})
+	if last.is_empty():
+		return {}
+	var c: Dictionary = last.get("counts", {})
+	var best := ""
+	for e: String in BET_EVENTS:
+		if int(c.get(e, 0)) >= CITE_FROM and (best == "" or int(c[e]) > int(c[best])):
+			best = e
+	if best != "":
+		return {event = best, n = maxi(CITE_FROM, ceili(int(c[best]) * BET_SHARE)), most = false}
+	if int(c.get("alert", 0)) == 0:
+		return {event = "alert", n = 0, most = true}
+	return {}
+
+
+## A bet against the Mission's tally: the bet plus {got, won}, or {} for no bet.
+static func settle(b: Dictionary, tally: Dictionary) -> Dictionary:
+	if b.is_empty():
+		return {}
+	var got := int(tally.get(b.event, 0))
+	var out := b.duplicate()
+	out.got = got
+	out.won = got <= int(b.n) if b.most else got >= int(b.n)
+	return out
+
+
+## The forecast as words: "bet.<event>" (or "bet.<event>.most") formatted with its n.
+static func bet_text(b: Dictionary) -> String:
+	return TranslationServer.translate("bet.%s%s" % [b.event, ".most" if b.most else ""]).format({n = int(b.n)})
 
 
 ## The name Aigis files the Operative under, as a key: "callsign.butcher" once the Lethality ratio reaches
@@ -126,6 +165,10 @@ static func clean_last(v: Variant) -> Dictionary:
 		return {}
 	var shift: String = v.get("shifted", "")
 	var out := {mission = int(v.mission), counts = clean_seen(v.get("counts")), shifted = shift if shift in Aigis.HABITS else ""}
+	var b: Variant = v.get("bet")
+	if b is Dictionary and b.get("event") in BET_EVENTS and b.get("most") is bool and b.get("won") is bool \
+			and b.get("n") is float and b.get("got") is float:
+		out.bet = {event = b.event, n = int(b.n), most = b.most, got = int(b.got), won = b.won}
 	var called: Variant = v.get("called")
 	if called is String and called.trim_prefix("callsign.") in Aigis.HABITS + CALLSIGNS:
 		out.called = called

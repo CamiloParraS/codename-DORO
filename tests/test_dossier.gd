@@ -197,7 +197,39 @@ func test_floor_plan_fills_the_navmesh_and_outlines_only_its_edge() -> void:
 	assert_eq(FloorPlan.of_area(null), {})
 
 
-# ----- the callsign -----
+# ----- the bet and the callsign -----
+
+func _last(counts: Dictionary) -> Dictionary:
+	var r := _record(1)
+	r.last = {mission = 0, counts = counts, shifted = ""}
+	return r
+
+
+func test_aigis_bets_on_what_the_operative_did_most_last_time() -> void:
+	assert_eq(Dossier.bet(_record(0)), {}, "no last Mission: nothing to bet on")
+	assert_eq(Dossier.bet(_last({"takedown": 4, "headshot": 2})), {event = "takedown", n = 3, most = false}, "3/4 of 4, rounded up")
+	assert_eq(Dossier.bet(_last({"takedown": 2, "headshot": 2})), {event = "takedown", n = 2, most = false}, "a tie goes to BET_EVENTS order")
+	assert_eq(Dossier.bet(_last({"spoof": 1})), {event = "alert", n = 0, most = true}, "nothing citable and no alarm: no alarm again")
+	assert_eq(Dossier.bet(_last({"alert": 1})), {}, "one alarm is nothing to bet on")
+
+
+func test_a_settled_bet_says_what_the_operative_gave() -> void:
+	assert_eq(Dossier.settle({}, {"takedown": 9}), {})
+	assert_true(Dossier.settle({event = "takedown", n = 3, most = false}, {"takedown": 3}).won)
+	assert_false(Dossier.settle({event = "takedown", n = 3, most = false}, {"takedown": 2}).won)
+	assert_true(Dossier.settle({event = "alert", n = 0, most = true}, {}).won, "a ceiling of 0 and no alarm")
+	var s := Dossier.settle({event = "alert", n = 0, most = true}, {"alert": 2})
+	assert_eq([s.got, s.won], [2, false])
+
+
+func test_complete_mission_settles_the_bet_and_files_the_old_callsign() -> void:
+	var r := Aigis.complete_mission(_record(0), {"takedown": 4, "spawned": 9})
+	assert_eq(r.last.bet, {}, "Mission 1 had no bet")
+	assert_eq(r.last.called, "callsign.none")
+	r = Aigis.complete_mission(r, {"takedown": 1, "spawned": 9})
+	assert_eq(r.last.bet, {event = "takedown", n = 3, most = false, got = 1, won = false})
+	assert_eq(r.last.called, "callsign.takedowns", "what Aigis called the Operative going into Mission 2")
+
 
 func test_the_callsign_is_the_top_habit_or_the_butcher() -> void:
 	assert_eq(Dossier.callsign(_record(1)), "callsign.none")

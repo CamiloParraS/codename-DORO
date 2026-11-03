@@ -347,6 +347,7 @@ func _post(run: Node) -> void:
 	s.voice_key = "post.pallas.clean"
 	s.lesson_key = s.rank.lesson_key()  # Mission 1: the Rank page names the best of the run; the later pages keep the voice line
 	s.dossier = _fake_route(run)
+	s.dossier.bet = {event = "takedown", n = 3, most = false, got = 1, won = false}  # the learned page's forecast line
 	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)
 	get_tree().paused = true

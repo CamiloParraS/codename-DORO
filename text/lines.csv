@@ -717,3 +717,23 @@ callsign.butcher,the Butcher,el Carnicero
 callsign.none,the intruder,el intruso
 brief.pallas.callsign,Pallas: Our file on you has a name now: {name}.,Palas: Nuestro expediente sobre ti ya tiene nombre: {name}.
 brief.pallas.callsign.renamed,Pallas: We filed you as {was}. That no longer fits. You are {name} now.,Palas: Te archivamos como {was}. Ya no encaja. Ahora eres {name}.
+bet.takedown,at least {n} of ours taken from behind,al menos {n} de los nuestros atrapados por la espalda
+bet.headshot,at least {n} shots to the head,al menos {n} tiros a la cabeza
+bet.quiet_down,at least {n} of ours downed unseen,al menos {n} de los nuestros abatidos sin ser visto
+bet.fulton,at least {n} of ours lifted into the sky,al menos {n} de los nuestros alzados al cielo
+bet.down_found,at least {n} of ours found asleep,al menos {n} de los nuestros hallados dormidos
+bet.spoof,at least {n} false orders on our radio,al menos {n} órdenes falsas en nuestra radio
+bet.alert,at least {n} alarms,al menos {n} alarmas
+bet.alert.most,not a single alarm,ni una sola alarma
+brief.pallas.bet,Pallas: My forecast: {bet}. Prove me wrong.,Palas: Mi pronóstico: {bet}. Demuéstrame que me equivoco.
+brief.nike.bet,Nike: I'm calling it now: {bet}.,Nike: Lo digo ya: {bet}.
+brief.gorgo.bet,Gorgo: Expect {bet}. We will be counting.,Gorgo: Espero {bet}. Estaremos contando.
+brief.pallas.bet.won,Pallas: I forecast {bet}. You gave me {got}. You are easy to read.,Palas: Pronostiqué {bet}. Me diste {got}. Eres fácil de leer.
+brief.nike.bet.won,Nike: I called {bet}. You gave me {got}. Predictable.,Nike: Dije {bet}. Me diste {got}. Predecible.
+brief.gorgo.bet.won,Gorgo: I said {bet}. You gave me {got}. You never change.,Gorgo: Dije {bet}. Me diste {got}. Nunca cambias.
+brief.pallas.bet.lost,Pallas: I forecast {bet}. You gave me {got}. You are changing. Noted.,Palas: Pronostiqué {bet}. Me diste {got}. Estás cambiando. Anotado.
+brief.nike.bet.lost,Nike: I called {bet}. You gave me {got}. Clever. Not twice.,Nike: Dije {bet}. Me diste {got}. Listo. No dos veces.
+brief.gorgo.bet.lost,Gorgo: I expected {bet}. You gave me {got}. The file is corrected.,Gorgo: Esperaba {bet}. Me diste {got}. El expediente está corregido.
+ui.post.bet,Aigis forecast: {bet} · you: {got},Aigis pronosticó: {bet} · tú: {got}
+ui.post.bet.won,Called it,Acertó
+ui.post.bet.lost,Wrong,Falló
