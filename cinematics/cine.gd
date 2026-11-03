@@ -41,6 +41,11 @@ var _holding := false
 var _landing := 0.0
 var _at := 0.0                  # s into the take when it ended
 var _swallow := false           # control is back but the skip key is still down: the Operative stays locked until it is released
+var _worst := 0.0               # timing: the slowest frame of the take (s), and how many ran past HITCH
+var _hitches := 0
+var _frames := 0
+
+const HITCH := 0.05  # s: a frame this slow is a visible stall
 
 
 ## The take's AnimationPlayer in `area`, or null.
@@ -146,6 +151,10 @@ func _process(delta: float) -> void:
 		return
 	if done or _holding:
 		return
+	if not _ending:
+		_frames += 1
+		_worst = maxf(_worst, delta)
+		_hitches += int(delta >= HITCH)
 	if _ending:
 		_landing += delta
 		if _landing >= LANDING_MAX:
@@ -209,6 +218,7 @@ func _end() -> void:
 	_ending = true
 	_at = _player.current_animation_position
 	SessionLog.current.note(CineLogic.log_line(_key, skipped, _at))
+	print("[timing] take %s: %.1f s, %d frames, worst %.0f ms, %d over %.0f ms%s" % [_key, _at, _frames, _worst * 1000.0, _hitches, HITCH * 1000.0, " (skipped)" if skipped else ""])
 	_player.animation_finished.disconnect(_on_finished)
 	_player.stop(true)
 	if _op and not fade_out:

@@ -34,6 +34,9 @@ var _warm_i := 0
 var _warm_f := 0
 var _warm_cam: Camera3D
 var _warm_prev: Camera3D
+var _t0 := 0       # timing (ms since start): requested, read on its thread, swapped in, warm views done
+var _t_read := 0
+var _t_warm := 0
 
 
 ## Covers the screen and loads `path`; the Area replaces the current scene once loaded. One at a time.
@@ -62,6 +65,7 @@ func _ready() -> void:
 	_canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	_canvas.draw.connect(_draw_cover)
 	add_child(_canvas)
+	_t0 = Time.get_ticks_msec()
 	if ResourceLoader.load_threaded_request(path) != OK:
 		push_error("Loading: can't request %s" % path)
 
@@ -80,6 +84,7 @@ func _process(delta: float) -> void:
 		_progress = float(p[0]) if not p.is_empty() else _progress
 		_shown = lerpf(_shown, _progress * 0.9, minf(1.0, delta * 10.0))  # the last tenth is the settle
 		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			_t_read = Time.get_ticks_msec()
 			_swap(ResourceLoader.load_threaded_get(path))
 		elif status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 			push_error("Loading: %s failed" % path)
@@ -87,12 +92,17 @@ func _process(delta: float) -> void:
 		return
 	if _warm_step():
 		return
+	if _t_warm == 0:
+		_t_warm = Time.get_ticks_msec()
 	_frames += 1
 	_waited += delta
 	_run = _run + 1 if delta <= STEADY else 0
 	_shown = lerpf(_shown, 1.0, minf(1.0, delta * 6.0))
 	if settled(_frames, _run, _waited):
 		_fading = 0.0
+		var now := Time.get_ticks_msec()
+		print("[timing] loading %s: read %d ms, build+ready+warm %d ms (%d views), settle %d ms, total %d ms" % [path.get_file(),
+			_t_read - _t0, _t_warm - _t_read, _warm.size(), now - _t_warm, now - _t0])
 		lifted.emit()
 
 
