@@ -16,6 +16,7 @@ const FIDGET_STOP := 1.0  # a stop this long left may become a look around
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
+const CHOKED_TIME := 150.0      # the same after a choke: the close-in takedown buys more time than a dart
 const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
 const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal hit

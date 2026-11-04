@@ -3,9 +3,10 @@
 extends "res://actors/guard/guard_moves.gd"
 
 
-## Put out of action (a choke); choking a Neutralized guard again restarts the clock. A guard that
-## drops (up until now) is seen by its partners.
-func neutralize() -> void:
+## Put out of action (a dart, or a choke: held, or `choked`); Down NEUTRALIZED_TIME s, CHOKED_TIME after
+## a choke. Choking a Neutralized guard again restarts the clock. A guard that drops (up until now) is seen
+## by its partners.
+func neutralize(choked := false) -> void:
 	var dropped := not is_down()
 	last_drop = "choke" if held else ""
 	_drop_item()  # darted, choked or killed: what he carried falls out
@@ -13,7 +14,7 @@ func neutralize() -> void:
 	_cut_call()
 	_vstate = GuardAlert.State.PATROL
 	AlertChain.area.release(self)
-	neutral_left = NEUTRALIZED_TIME
+	neutral_left = CHOKED_TIME if choked or held else NEUTRALIZED_TIME
 	stumble_left = 0.0
 	held = false
 	held_up = false

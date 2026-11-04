@@ -20,7 +20,7 @@ func _interact() -> void:
 	var g := _nearest(true)
 	if g:
 		if not g.dead:
-			g.neutralize()  # hoisting a Neutralized guard re-chokes it: the 90 s start over
+			g.neutralize(true)  # hoisting a Neutralized guard re-chokes it: the choke clock starts over
 		carrying = g
 		g.carrier = self
 		return
