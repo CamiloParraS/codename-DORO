@@ -4,7 +4,7 @@ extends Gun
 
 const LOAD_SIZE := 4
 const TOTAL := 8
-const BODY_DELAY := 3.0      # a body shot Neutralizes this long after the hit
+const BODY_DELAY := 2.0      # a body shot Neutralizes this long after the hit
 
 
 func _init() -> void:
