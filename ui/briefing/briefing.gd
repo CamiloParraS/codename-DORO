@@ -158,18 +158,9 @@ func _build_lines() -> Array:
 		said_text.append(said[1])
 	if not said_text.is_empty():
 		lines.append(["voice", "brief.%s.said" % said_by, " ".join(said_text)])  # not a text key: the key only names the Voice (VoiceBlip.voice_of)
-	var spoken := lines.size() > 4  # Aigis Voice already commented on the last Mission
-	var keys: Array = plan.briefing_keys.filter(func(k: String) -> bool: return ".habit." in k or ".hint." in k or k.ends_with(".close"))  # the rows and the close: the one-off asides (a head check, a flank) are cut to leave room for large type
-	var shift: String = record.get("last", {}).get("shifted", "")
-	if shift != "":  # Aigis saw the Operative drop a Habit: said after the rows, before the close
-		keys.insert(keys.size() - 1, "brief.pallas.shift." + shift)
-	if plan.get("dissent", "") != "":  # a close call: the outvoted sponsor objects last
-		keys.insert(keys.size() - 1, plan.dissent)
-	var named := [] if spoken else _callsign_line()  # its comment names the Operative when it has one
-	if not named.is_empty():
-		keys.push_front(named)
-	for extra: Array in _file_lines():  # where, what it bet and how that went, the next bet: before the close
-		keys.insert(keys.size() - 1, extra)
+	var keys: Array = plan.briefing_keys.filter(func(k: String) -> bool: return ".habit." in k or ".hint." in k)  # the Habit cards and their answers: the asides, the close, the shift and the callsign are cut
+	for extra: Array in _file_lines():  # then the one line on what to do next: the forecast
+		keys.append(extra)
 	for key: Variant in keys:  # a Habit's row is Pallas naming it ("habit"), then its sponsor's line ("hint")
 		lines.append(_line(key))
 	lines.append_array([["gap", ""], ["head", "ui.brief.objectives"]])
@@ -205,8 +196,7 @@ func _line(entry: Variant) -> Array:
 	var key: String = entry
 	if not key.begins_with("brief.pallas.habit."):
 		return ["hint" if ".hint." in key else "voice", key]
-	var ev := Dossier.evidence(record, key.get_slice(".", 3))
-	return ["habit", key, tr("ui.habit." + key.get_slice(".", 3)), tr(ev[0]).format(ev[1]) if not ev.is_empty() else ""]  # a card: the Habit's name and levels, what Aigis counted, then (the "hint" line) the sponsor's answer
+	return ["habit", key, tr("ui.habit." + key.get_slice(".", 3))]  # a card: the Habit's name and levels, then (the "hint" line) the sponsor's answer
 
 
 func _draw() -> void:
@@ -349,13 +339,11 @@ func _card(at: Vector2, w: float, h: float, i: int) -> void:
 func _mission_facts(at: Vector2) -> float:
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var rows: Array = []
-	if m.get("intro", {}).has("area"):
-		rows.append(["ui.brief.area", tr(m.intro.area).to_upper()])
 	if not m.targets.is_empty():
 		rows.append(["ui.brief.target", ", ".join(m.targets)])
 	var par := int(Rank.par(record.mission))
 	@warning_ignore("integer_division")
-	rows.append(["ui.brief.par", "%d:%02d  ·  %d %s" % [par / 60, par % 60, m.encounters, tr("ui.brief.encounters").to_upper()]])
+	rows.append(["ui.brief.par", "%d:%02d" % [par / 60, par % 60]])
 	var f := HudPalette.tracked(HudPalette.LABEL, 26, 0.22)
 	HudPalette.hud_text(self, at, tr("ui.brief.mission").to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.26), 0, false)
 	draw_rect(Rect2(at.x, at.y + 18, LEFT_W, 2), Color(HudPalette.LIGHT, 0.5))
