@@ -727,6 +727,9 @@ brief.pallas.callsign,Pallas: Our file on you has a name now: {name}.,Palas: Nue
 brief.pallas.callsign.renamed,Pallas: We filed you as {was}. That no longer fits. You are {name} now.,Palas: Te archivamos como {was}. Ya no encaja. Ahora eres {name}.
 brief.pallas.hot.s,"Pallas: {place}, last time. {n} of ours down in {s} seconds. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {s} segundos. Lo he visto una y otra vez."
 brief.pallas.hot.m,"Pallas: {place}, last time. {n} of ours down in {m} minutes. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {m} minutos. Lo he visto una y otra vez."
+aigis.fact.hot.s,{place}: {n} of ours down in {s} seconds.,{place}: {n} de los nuestros caídos en {s} segundos.
+aigis.fact.hot.m,{place}: {n} of ours down in {m} minutes.,{place}: {n} de los nuestros caídos en {m} minutos.
+aigis.fact.kills,{n} of ours killed.,{n} de los nuestros muertos.
 bet.takedown,at least {n} of ours taken from behind,al menos {n} de los nuestros atrapados por la espalda
 bet.headshot,at least {n} shots to the head,al menos {n} tiros a la cabeza
 bet.quiet_down,at least {n} of ours downed unseen,al menos {n} de los nuestros abatidos sin ser visto

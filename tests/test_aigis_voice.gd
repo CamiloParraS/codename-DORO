@@ -35,13 +35,22 @@ func test_facts_hold_what_aigis_decided_about_the_mission() -> void:
 	assert_eq(f.voice, "pallas", "no kills: Pallas's band speaks")
 	assert_eq(f.callsign, "the Strangler")
 	assert_eq(f.events, ["1 alarms last time. You stayed to fight.", "5 of ours taken from behind last time."], "the Briefing's own lines, in Habit order")
-	assert_false(f.has("kills"), "nobody killed")
-	assert_eq(f.hotspot, {place = "The container lanes", n = 3, seconds = 40})
+	assert_eq(f.hotspot, "The container lanes: 3 of ours down in 40 seconds.", "a finished sentence: the model can't pair the wrong numbers")
 	assert_eq(f.next_mission, "MISSION 2: RADIO RELAY STATION")
 	assert_eq(f.next_countermeasures, [{countermeasure = "They will look behind them more often.", sponsor = "pallas"}])
 	assert_eq(f.next_forecast, "at least 4 of ours taken from behind")
 	assert_false(f.has("last_forecast"), "Mission 1 had no forecast to settle")
 	assert_false(f.has("dropped_habit"), "nothing dropped")
+
+
+func test_kills_and_a_long_hotspot_are_sentences_too() -> void:
+	TranslationServer.set_locale("es")
+	var after := Aigis.complete_mission(Aigis.new_record(), {kill = 3, quiet_down = 5, spawned = 9})
+	after.last.hot = {enc = 3, n = 4, secs = 150}
+	var f := AigisVoice.facts(after, _plan(after))
+	TranslationServer.set_locale("en")
+	assert_contains(f.events, "3 de los nuestros muertos.")
+	assert_eq(f.hotspot, "El edificio de Operaciones: 4 de los nuestros caídos en 3 minutos.", "150 s rounds to 3 minutes, as the Briefing says it")
 
 
 func test_facts_are_in_the_players_language() -> void:

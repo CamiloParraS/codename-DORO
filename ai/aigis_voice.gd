@@ -41,11 +41,10 @@ static func facts(after: Dictionary, plan: Dictionary) -> Dictionary:
 		callsign = _tr(Dossier.callsign(after)),
 		events = _events(last.get("counts", {})),
 	}
-	if int(last.get("counts", {}).get("kill", 0)) > 0:
-		f.kills = int(last.counts.kill)
 	var hot: Dictionary = last.get("hot", {})
-	if not hot.is_empty():
-		f.hotspot = {place = _tr("place.%d.%d" % [played, hot.enc]), n = hot.n, seconds = hot.secs}
+	if not hot.is_empty():  # a finished sentence, as the Briefing times it: the model can't pair the wrong numbers
+		var place := _tr("place.%d.%d" % [played, hot.enc])
+		f.hotspot = _tr("aigis.fact.hot.m").format({place = place, n = hot.n, m = roundi(hot.secs / 60.0)}) if hot.secs >= 120 				else _tr("aigis.fact.hot.s").format({place = place, n = hot.n, s = maxi(hot.secs, 1)})
 	var bet: Dictionary = last.get("bet", {})
 	if not bet.is_empty():
 		f.last_forecast = {forecast = Dossier.bet_text(bet), got = bet.got, came_true = bet.won}
@@ -71,8 +70,8 @@ static func prompt(f: Dictionary) -> Dictionary:
 		"Comment on what the intruder did and hint at what waits next. Address the intruder as \"you\"; call the guards \"ours\".",
 		"Use only the facts given. Every number you write must appear in the facts, written as digits; never invent a count, a time or a name.",
 		"A fact that is missing did not happen: don't mention it.",
-		"The facts: events are what Aigis counted in the Mission just played (\"last time\" is that Mission); kills: guards killed.",
-		"hotspot: the place where the intruder put n of ours down within that many seconds. last_forecast: what Aigis predicted for",
+		"The facts: events are what Aigis counted in the Mission just played (\"last time\" is that Mission).",
+		"hotspot: the place where the intruder put the most of ours down, and how fast. Keep each number with what it counts. last_forecast: what Aigis predicted for",
 		"this Mission, what it got, and whether it came true. dropped_habit: a habit the intruder stopped using. next_countermeasures:",
 		"what Aigis deploys in next_mission against the intruder, and which Voice asked for it. next_forecast: Aigis's prediction for it.",
 		"No speaker name, no quotes, no markdown. Reply with JSON: {\"voice\": \"%s\", \"lines\": [...]}." % voice,
@@ -110,6 +109,8 @@ static func _events(counts: Dictionary) -> Array:
 		for e: String in Dossier.EVIDENCE[h]:
 			if int(counts.get(e, 0)) > 0:
 				out.append(_tr("brief.evidence.%s.last" % e).format({n = int(counts[e])}))
+	if int(counts.get("kill", 0)) > 0:
+		out.append(_tr("aigis.fact.kills").format({n = int(counts.kill)}))
 	return out
 
 
