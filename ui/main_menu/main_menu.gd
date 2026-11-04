@@ -22,7 +22,12 @@ var _backdrop := MenuBackdrop.new()
 var _on_title := true
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"menu")
+
+
 func _ready() -> void:
+	Mixer.screen(&"menu")
 	GameSettings.apply(GameSettings.load_file())
 	get_window().title = "Ghost Layer"
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

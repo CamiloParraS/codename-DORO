@@ -400,6 +400,12 @@ ui.settings.fullscreen,FULLSCREEN,PANTALLA COMPLETA
 ui.settings.volume,MASTER VOLUME,VOLUMEN GENERAL
 ui.settings.reduce_motion,REDUCE MOTION,REDUCIR MOVIMIENTO
 ui.settings.max_fps,MAX FPS,FPS MÁXIMOS
+ui.settings.aigis_key,AIGIS ANALYSIS KEY,CLAVE DE ANÁLISIS DE AIGIS
+ui.settings.aigis_key.none,NONE,NINGUNA
+ui.settings.aigis_key.env,FROM SYSTEM,DEL SISTEMA
+ui.settings.aigis_key.paste,Paste a Gemini API key here,Pega aquí una clave de API de Gemini
+ui.settings.aigis_key.keys,ENTER  SAVE   ·   ESC  CANCEL   ·   EMPTY  CLEARS IT,ENTER  GUARDAR   ·   ESC  CANCELAR   ·   VACÍA  LA BORRA
+ui.settings.aigis_key.note,"Optional. With a Gemini API key, Aigis comments on each Mission in its own words. The key is kept on this computer in plain text. On Google's free tier, the Mission stats sent may be used by Google. Empty: Aigis uses its stock lines.","Opcional. Con una clave de API de Gemini, Aigis comenta cada Misión con sus propias palabras. La clave se guarda en este equipo en texto plano. En el nivel gratuito de Google, las estadísticas enviadas pueden ser usadas por Google. Vacía: Aigis usa sus frases de siempre."
 ui.on,ON,SÍ
 ui.off,OFF,NO
 ui.pause.title,PAUSED,PAUSA
@@ -676,6 +682,7 @@ ui.post.saw.down,PUT DOWN,ABATIDOS
 ui.post.saw.kill,KILLED,MUERTOS
 ui.post.saw.spotted,FIRST SPOTTED,PRIMER AVISTAMIENTO
 ui.post.saw.alert,ALERTS,ALERTAS
+ui.post.saw.analysing,ANALYSING,ANALIZANDO
 ui.credits.made_by,A game by,Un juego de
 ui.credits.models,Models and animation,Modelos y animación
 ui.credits.textures,Textures,Texturas
@@ -720,6 +727,9 @@ brief.pallas.callsign,Pallas: Our file on you has a name now: {name}.,Palas: Nue
 brief.pallas.callsign.renamed,Pallas: We filed you as {was}. That no longer fits. You are {name} now.,Palas: Te archivamos como {was}. Ya no encaja. Ahora eres {name}.
 brief.pallas.hot.s,"Pallas: {place}, last time. {n} of ours down in {s} seconds. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {s} segundos. Lo he visto una y otra vez."
 brief.pallas.hot.m,"Pallas: {place}, last time. {n} of ours down in {m} minutes. I have watched it again and again.","Palas: {place}, la última vez. {n} de los nuestros caídos en {m} minutos. Lo he visto una y otra vez."
+aigis.fact.hot.s,{place}: {n} of ours down in {s} seconds.,{place}: {n} de los nuestros caídos en {s} segundos.
+aigis.fact.hot.m,{place}: {n} of ours down in {m} minutes.,{place}: {n} de los nuestros caídos en {m} minutos.
+aigis.fact.kills,{n} of ours killed.,{n} de los nuestros muertos.
 bet.takedown,at least {n} of ours taken from behind,al menos {n} de los nuestros atrapados por la espalda
 bet.headshot,at least {n} shots to the head,al menos {n} tiros a la cabeza
 bet.quiet_down,at least {n} of ours downed unseen,al menos {n} de los nuestros abatidos sin ser visto

@@ -6,4 +6,8 @@ extends StaticBody3D
 func _ready() -> void:
 	for i in get_tree().get_nodes_in_group("intel"):
 		if i.name == "IntelLift":
-			i.reached.connect(queue_free)
+			i.reached.connect(func() -> void:
+				var host := get_parent() as Node3D  # the door is freed, so the sound rides on the Area
+				if host:
+					Mix.sfx_at(host, &"lift_door", global_position)
+				queue_free())

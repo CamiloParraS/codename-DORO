@@ -39,7 +39,12 @@ var _stamped := false
 var _was_skipped := false
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"interlude")
+
+
 func _ready() -> void:
+	Mixer.screen(&"interlude")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -52,7 +57,7 @@ func _process(delta: float) -> void:
 	if page == 0:
 		_sounds()
 	elif pages()[page] == "saw":
-		SAW.sounds(self)
+		SAW.sounds(self, delta)
 	queue_redraw()
 
 
@@ -84,10 +89,10 @@ func pages() -> Array[String]:
 	return out
 
 
-## The next page, or commit after the last. A press while the route still draws finishes it first.
+## The next page, or commit after the last. A press while the route still draws, or Aigis's comment still types,
+## finishes that first.
 func advance() -> void:
-	if pages()[page] == "saw" and _age < SAW.done_at(self):
-		_age = SAW.done_at(self)
+	if pages()[page] == "saw" and SAW.skip(self):
 		return
 	if page < pages().size() - 1:
 		page += 1

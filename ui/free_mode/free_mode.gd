@@ -25,7 +25,12 @@ var _plain: StyleBox  # the Mission cells' untinted idle look
 var _custom := VBoxContainer.new()
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"menu")
+
+
 func _ready() -> void:
+	Mixer.screen(&"menu")
 	add_to_group("mission_plan")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

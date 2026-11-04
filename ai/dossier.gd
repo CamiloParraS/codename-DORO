@@ -4,7 +4,8 @@
 ##   last: the Mission just completed: {mission, counts: its tally's events, shifted: the Habit the Operative
 ##         dropped ("" for none), path: [x, y, ...] flat in diagram metres every PATH_EVERY s, marks: [[kind, t, x, y]],
 ##         bet: the forecast it made for that Mission, settled ({event, n, most, got, won}, or {}),
-##         called: the callsign key it filed the Operative under before it, hot: hotspot() ({enc, n, secs}, or {})}
+##         called: the callsign key it filed the Operative under before it, hot: hotspot() ({enc, n, secs}, or {}),
+##         analysis: Aigis Voice's comment on it ({voice, lines, source: "llm" or "fallback", language}, AigisVoice)}
 ## A Free mode Preset has neither, so its Briefing falls back to the plain lines.
 ## Evidence: the number behind a Habit, from the last Mission when it says enough, else the campaign's count.
 class_name Dossier
@@ -199,6 +200,12 @@ static func clean_last(v: Variant) -> Dictionary:
 	var hot: Variant = v.get("hot")
 	if hot is Dictionary and hot.get("enc") is float and hot.get("n") is float and hot.get("secs") is float:
 		out.hot = {enc = int(hot.enc), n = int(hot.n), secs = int(hot.secs)}
+	var said: Variant = v.get("analysis")  # Aigis Voice's comment on the Mission (AigisVoice)
+	if said is Dictionary and said.get("voice") in Aigis.VOICES and said.get("source") in ["llm", "fallback"] \
+			and said.get("lines") is Array and not said.lines.is_empty() and said.lines.all(func(l: Variant) -> bool: return l is String):
+		out.analysis = {voice = said.voice, lines = said.lines.slice(0, AigisVoice.MAX_LINES), source = said.source}
+		if said.get("language") in GameSettings.LANGUAGES:
+			out.analysis.language = said.language
 	var path: Variant = v.get("path")
 	if path is Array and path.size() % 2 == 0 and path.all(func(x: Variant) -> bool: return x is float):
 		out.path = path

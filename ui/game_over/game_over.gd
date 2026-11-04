@@ -22,7 +22,14 @@ var _stage := Control.new()
 var _dial: UiDial
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"gameover")
+
+
 func _ready() -> void:
+	Mixer.screen(&"gameover")  # no music: dead air, a boom, a drone
+	Mixer.play(&"gameover_hit", Mixer.UI, 1.0, -4.0)
+	Mixer.play(&"gameover_drone", Mixer.UI, 1.0, -12.0)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

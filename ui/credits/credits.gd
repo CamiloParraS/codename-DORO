@@ -38,7 +38,12 @@ var _end := 0.0     # the roll's length: where it stops with the thanks centred
 var _leaving := false
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"menu")
+
+
 func _ready() -> void:
+	Mixer.screen(&"menu")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

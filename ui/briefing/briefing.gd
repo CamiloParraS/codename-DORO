@@ -28,6 +28,10 @@ var _fit := 1.0                     # < 1 when the lines run past the "any key" 
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"interlude")
+
+
 func _ready() -> void:
 	add_to_group("mission_plan")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -44,6 +48,7 @@ func _ready() -> void:
 		# objectives and headings have no Voice: shown at once
 		var voice := VoiceBlip.voice_of(l[1]) if l[0] in ["voice", "habit", "hint"] else ""
 		_blips.append(VoiceBlip.new(_prefix.sub(l[2], "") if l[0] != "band" else "", voice))
+	Mixer.screen(&"interlude")
 	var scan := UiScan.make(HudPalette.BACKDROP, true, true, HudPalette.BACKDROP_DIM)
 	scan.show_behind_parent = true  # under the page's own drawing
 	add_child(scan)
@@ -127,6 +132,8 @@ func _build_lines() -> Array:
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
 	lines.append(["gap", ""])
+	for said: Array in AigisVoice.briefing_lines(record, TranslationServer.get_locale().left(2)):  # Aigis Voice opens: its comment on the last Mission
+		lines.append(["voice", "brief.%s.said" % said[0], said[1]])  # not a text key: the key only names the Voice (VoiceBlip.voice_of)
 	var keys: Array = plan.briefing_keys.duplicate()
 	var shift: String = record.get("last", {}).get("shifted", "")
 	if shift != "":  # Aigis saw the Operative drop a Habit: said after the rows, before the close

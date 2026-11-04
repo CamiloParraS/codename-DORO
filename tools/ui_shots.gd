@@ -108,7 +108,7 @@ func _run() -> void:
 		return
 	var all := lang == "en"
 	# --- menus
-	if all and any_of(["title", "main_menu", "slots_new", "slots_load", "mission_select", "settings"]):
+	if all and any_of(["title", "main_menu", "slots_new", "slots_load", "mission_select", "settings", "settings_key"]):
 		await scene(MENU)
 		await wait(0.6)
 		await shoot("title")
@@ -138,6 +138,12 @@ func _run() -> void:
 		await shoot("settings")
 	if all and want("loading"):
 		await _loading()
+		if want("settings_key"):  # the Aigis Voice key editor, open over the list
+			var panel: Control = menu.get_child(menu.get_child_count() - 1)
+			panel._key_btn.grab_focus()
+			panel._open_key()
+			await wait(0.4)
+			await shoot("settings_key")
 	if all and want("free_mode"):
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
@@ -184,7 +190,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_checkpoint", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_checkpoint", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_saw_wait", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -198,7 +204,8 @@ func _briefing() -> void:
 	Campaign.slot = -1
 	Campaign.record = _record(1)
 	Campaign.record.merge({seen = {quiet_down = 6, takedown = 4}, last = {mission = 0, counts = {quiet_down = 6, takedown = 4}, shifted = "headshots",
-		bet = {event = "takedown", n = 3, most = false, got = 4, won = true}, called = "callsign.headshots", hot = {enc = 2, n = 4, secs = 90}}})  # the Dossier: evidence, a shift, a won bet, a renamed callsign, a hotspot
+		bet = {event = "takedown", n = 3, most = false, got = 4, won = true}, called = "callsign.headshots", hot = {enc = 2, n = 4, secs = 90},
+		analysis = {voice = "gorgo", source = "llm", language = TranslationServer.get_locale().left(2), lines = ["4 of ours taken from behind, and you thought the dark would keep you.", "Next time they look back."]}}})  # the Dossier: evidence, a shift, a won bet, a renamed callsign, a hotspot
 	Campaign.gear = Requisition.new()
 	Campaign.gear.points = 7
 	Campaign.gear.signed = 4
@@ -371,6 +378,11 @@ func _post(run: Node) -> void:
 	s.lesson_key = s.rank.lesson_key()  # Mission 1: the Rank page names the best of the run; the later pages keep the voice line
 	s.dossier = _fake_route(run)
 	s.dossier.bet = {event = "takedown", n = 3, most = false, got = 1, won = false}  # the learned page's forecast line
+	s.dossier.analysis = {voice = "pallas", source = "llm", pending = true, lines = [  # Aigis Voice: three lines at the 110-character cap
+		"You put 3 of ours down in the container lanes within 40 seconds, and not one of them saw your face.",
+		"I counted 5 taken from behind and a single alarm. You prefer the quiet way, and that is what I study most.",
+		"Next time ours will look behind them more often. I expect at least 4 of ours taken from behind. I will count.",
+	]}
 	s.floor_plan = FloorPlan.of_area(run.get_parent())
 	run._overlay(s)
 	get_tree().paused = true
@@ -378,6 +390,11 @@ func _post(run: Node) -> void:
 	await shoot("post_mission_rank")
 	s.advance()
 	await wait(4.0)
+	await shoot("post_mission_saw_wait")  # the request still out: ANALYSING
+	s.dossier.analysis.erase("pending")
+	await wait(0.2)
+	s.advance()  # the first press finishes the typing
+	await wait(0.3)
 	await shoot("post_mission_saw")
 	s.advance()
 	await wait(2.5)

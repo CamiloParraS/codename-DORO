@@ -67,7 +67,8 @@ func _unhandled_input(e: InputEvent) -> void:
 			items.cycle(1 if e.is_action_pressed("item_next") else -1)
 	elif e.is_action_pressed("item_use") and not _choking and not radio_open:
 		if items.selected == Items.Kind.SCANNER:
-			items.use_scanner()
+			if items.use_scanner():
+				Mix.sfx_at(self, &"scanner_on", Vector3.INF, -4.0)
 		else:
 			throwing = items.can_throw(carrying != null)
 	elif e.is_action_pressed("shoulder_swap"):
@@ -235,6 +236,8 @@ func _fire() -> void:
 	var quiet := arm.suppressed()
 	if not arm.fire(carrying != null):
 		return
+	if quiet and not arm.suppressed():  # that was the last shot the can had in it
+		Mix.sfx_at(self, &"suppressor_break", Vector3.INF, 2.0)
 	get_tree().call_group("mission_tally", "event", "rifle" if arm.lethal else "dart")
 	if not quiet:
 		Guard.broadcast(get_tree(), global_position, Rifle.NOISE_RANGE, "a gunshot", null, true)

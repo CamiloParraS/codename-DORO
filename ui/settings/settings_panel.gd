@@ -18,6 +18,10 @@ var _stage := Control.new()
 var _list := UiMenu.new(WIDTH)
 var _icon := TextureRect.new()
 var _icons := {}  # row button -> icon texture
+var _note := Label.new()  # the key row's note, where the icon sits
+var _key_btn: Button      # the key row, and its value pill
+var _key_ctl: SettingCtl
+var _key_veil: ColorRect  # the open key editor, null when closed
 
 
 func _ready() -> void:
@@ -49,6 +53,7 @@ func _ready() -> void:
 	_toggle("ui.settings.fullscreen", "fs", "fullscreen")
 	_toggle("ui.settings.reduce_motion", "motion", "reduce_motion")
 	_fps_row()
+	_key_row()
 	var back := _list.add_row("ui.back", func() -> void:
 		Mixer.click()
 		closed.emit()
@@ -66,6 +71,7 @@ func _layout() -> void:
 	_stage.scale = Vector2(k, k)
 	_stage.size = size / k
 	_icon.position = Vector2(_stage.size.x - 220 - ICON_SIZE, 300)
+	_note.position = _icon.position - Vector2(120, 0)
 
 
 func _put(key: String, v: Variant) -> void:
@@ -161,6 +167,125 @@ func _fps_row() -> void:
 			step.call(1 if e.is_action_pressed("ui_right") else -1)
 			Mixer.play(&"tick")
 			b.accept_event())
+
+
+## Aigis Voice's Gemini key (LlmClient): the row shows NONE, FROM SYSTEM (GEMINI_API_KEY) or the key's last four;
+## press opens the key editor (_open_key). While the row is selected the note on where the key lives replaces the icon.
+func _key_row() -> void:
+	var ctl := SettingCtl.new()
+	_key_ctl = ctl
+	ctl.options = [_key_label()]
+	var b := _list.add_row("ui.settings.aigis_key")
+	_key_btn = b
+	ctl.row = b
+	ctl.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	ctl.offset_left = -CTL_W - 20
+	ctl.offset_right = -20
+	ctl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(ctl)
+	_note.text = "ui.settings.aigis_key.note"
+	_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_note.add_theme_font_override("font", HudPalette.FIGURE_MED)
+	_note.add_theme_font_size_override("font_size", 28)
+	_note.modulate = HudPalette.LIGHT_2
+	_note.visible = false
+	_note.size = Vector2(ICON_SIZE + 120, ICON_SIZE)
+	_note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_stage.add_child(_note)
+	b.focus_entered.connect(func() -> void:
+		_icon.visible = false
+		_note.visible = true)
+	b.focus_exited.connect(func() -> void: _note.visible = false)
+	b.pressed.connect(_open_key)
+
+
+func _key_label() -> String:
+	var k: String = _values.get("llm_key", "")
+	if k != "":
+		return "****" + k.right(4)
+	return tr("ui.settings.aigis_key.env") if OS.get_environment(LlmClient.KEY_ENV) != "" else tr("ui.settings.aigis_key.none")
+
+
+## The key editor: a box over the dimmed settings (the veil takes every click, so hovering the rows can't pull
+## focus out of the field) with a masked field. ENTER saves (empty clears), ESC or a click on the veil cancels;
+## either way focus goes back to the row.
+func _open_key() -> void:
+	if is_instance_valid(_key_veil):
+		return
+	_key_veil = ColorRect.new()
+	_key_veil.color = Color(0, 0, 0, 0.7)
+	_key_veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	_stage.add_child(_key_veil)
+	_key_veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)  # follows _stage through a resize
+	var box := PanelContainer.new()
+	var frame := StyleBoxFlat.new()
+	frame.bg_color = HudPalette.GROUND
+	frame.border_color = HudPalette.CYAN
+	frame.set_border_width_all(3)
+	frame.set_content_margin_all(40)
+	box.add_theme_stylebox_override("panel", frame)
+	box.custom_minimum_size.x = 900
+	_key_veil.add_child(box)
+	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER)  # centred, growing both ways as it fills
+	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	box.grow_vertical = Control.GROW_DIRECTION_BOTH
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 22)
+	box.add_child(col)
+	var title := Label.new()
+	title.text = "ui.settings.aigis_key"
+	title.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 40, 0.14))
+	title.add_theme_font_size_override("font_size", 40)
+	title.add_theme_color_override("font_color", HudPalette.CYAN)
+	col.add_child(title)
+	var edit := LineEdit.new()
+	edit.secret = true
+	edit.placeholder_text = tr("ui.settings.aigis_key.paste")
+	edit.text = _values.get("llm_key", "")
+	edit.custom_minimum_size.y = 64
+	edit.add_theme_font_override("font", HudPalette.FIGURE_MED)
+	edit.add_theme_font_size_override("font_size", 30)
+	edit.add_theme_color_override("font_color", HudPalette.LIGHT)
+	edit.add_theme_color_override("font_placeholder_color", HudPalette.LIGHT_3)
+	edit.add_theme_color_override("caret_color", HudPalette.CYAN)
+	var field := StyleBoxFlat.new()
+	field.bg_color = Color(0, 0, 0, 0.5)
+	field.border_color = Color(HudPalette.LIGHT, 0.5)
+	field.set_border_width_all(2)
+	field.set_content_margin_all(14)
+	for s in ["normal", "focus", "read_only"]:
+		edit.add_theme_stylebox_override(s, field)
+	col.add_child(edit)
+	var hint := Label.new()
+	hint.text = "ui.settings.aigis_key.keys"
+	hint.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2))
+	hint.add_theme_font_size_override("font_size", 22)
+	hint.add_theme_color_override("font_color", HudPalette.LIGHT_3)
+	col.add_child(hint)
+	var close := func(save: bool) -> void:
+		if not is_instance_valid(_key_veil) or _key_veil.is_queued_for_deletion():
+			return
+		if save:
+			_put("llm_key", edit.text.strip_edges())
+			_key_ctl.options = [_key_label()]
+			Mixer.click()
+		_key_veil.queue_free()
+		_key_btn.grab_focus()
+	edit.text_submitted.connect(func(_t: String) -> void: close.call(true))
+	edit.gui_input.connect(func(e: InputEvent) -> void:
+		if e.is_action_pressed("ui_cancel"):
+			edit.accept_event()
+			close.call(false))
+	_key_veil.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed and not box.get_global_rect().has_point(e.global_position):
+			close.call(false))
+	for side in ["focus_neighbor_top", "focus_neighbor_bottom", "focus_neighbor_left", "focus_neighbor_right", "focus_next", "focus_previous"]:
+		edit.set(side, NodePath("."))  # up/down/tab stay in the field: the rows behind the veil never take focus
+	edit.focus_exited.connect(func() -> void:
+		if is_instance_valid(_key_veil) and not _key_veil.is_queued_for_deletion():
+			edit.grab_focus.call_deferred())
+	edit.grab_focus.call_deferred()
+	edit.caret_column = edit.text.length()
 
 
 ## The value drawn at a row's right edge: a track and a number (a slider) or pills (a toggle, language).
