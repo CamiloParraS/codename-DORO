@@ -83,7 +83,7 @@ static func draw_page(s: Control, d: Vector2) -> void:
 
 ## What each mark means and how many the route has reached, on a stack of plates, then the Mission clock big under them.
 static func _legend(s: Control, at: Vector2, marks: Array, t: float, clock: String) -> void:
-	var f := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.2)
+	var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 30, 0.16)  # Barlow Condensed: the summary reads as data, Antonio stays on the headline
 	var y := at.y
 	for kind: String in LEGEND:
 		var n := marks.filter(func(m: Array) -> bool: return m[0] == kind and m[1] <= t).size()
@@ -92,11 +92,11 @@ static func _legend(s: Control, at: Vector2, marks: Array, t: float, clock: Stri
 		PixelKit.cut_fill(s, Rect2(row.position, Vector2(6, row.size.y)), HudPalette.DMG if kind == "alert" or kind == "kill" else HudPalette.SAND if kind == "down" else HudPalette.LIGHT, 0)
 		_mark(s, kind, Vector2(at.x + 44, y + 30), 1.0)
 		HudPalette.hud_text(s, Vector2(at.x + 84, y + 40), s.tr("ui.post.saw." + kind).to_upper(), 28, HudPalette.LIGHT_2 if n > 0 else HudPalette.LIGHT_3, f, 0, false)
-		HudPalette.hud_text(s, Vector2(at.x + 500, y + 43), "%02d" % n, 38, HudPalette.LIGHT if n > 0 else HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.06), 2, false)
+		HudPalette.hud_text(s, Vector2(at.x + 500, y + 43), "%02d" % n, 38, HudPalette.LIGHT if n > 0 else HudPalette.LIGHT_3, HudPalette.FIGURE, 2, false)
 		y += 72
 	y += 22
 	PixelKit.dashes(s, Vector2(at.x, y), 540.0, Color(HudPalette.LIGHT, 0.3), 2, 2)
-	HudPalette.hud_text(s, Vector2(at.x, y + 110), clock, 96, HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 96, 0.04), 0, false)
+	HudPalette.hud_text(s, Vector2(at.x, y + 110), clock, 88, HudPalette.CYAN, HudPalette.FIGURE, 0, false)
 
 
 ## A mark's shape: Down a sand dot, kill a red cross, spotted a light ring, Alert a red triangle.
