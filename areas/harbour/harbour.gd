@@ -17,6 +17,9 @@ var _arrivals: Array[Array] = []  # [squad size, seconds left]
 var _reinforcements := 0  # ever sent, for unique names (a Checkpoint restore removes some, never reuses a name)
 var _lessons := Lessons.new()  # Mission 1's deck lessons, on the HUD's objective line
 var _lesson := -1
+var _smoke_cued := false
+const SMOKE_CUE_RANGE := Chat.HEARD  # metres: where their lines start to show
+const SMOKE_CUE_SECS := 0.4
 
 
 func _ready() -> void:
@@ -134,8 +137,32 @@ func _teach() -> void:
 	if i == Lessons.EXIT and _lesson != i and not run.tutorial.seen.has("radio"):
 		run.tutorial.seen["radio"] = true  # said now, not again on the first Spoof
 		get_tree().call_group("radio_log", "say", "METIS", tr(Tutorial.line_key("radio")))
+	_smoke_cue(op, run)
+	if i == -1 and run.step == 0:
+		_skip_smoke(run)  # off the ship without the smoke break: on to the Foreman
 	_lesson = i
 	run.lesson = Lessons.line(i)
+
+
+## Leaving the freighter forfeits the smoke break: the objective moves on to the Foreman, with no call or Checkpoint.
+func _skip_smoke(run: MissionRun) -> void:
+	SessionLog.current.note("step 1 skipped (left the deck)")
+	run.step = 1
+	run.hints.new_step()
+	run._show_intel()
+
+
+## The first time the Operative comes within earshot of the smoke-break pair (step 1), the camera turns to them, as the
+## Core's PlantCue does to its stair. Once per run.
+func _smoke_cue(op: Node3D, run: MissionRun) -> void:
+	if _smoke_cued or run.step != 0:
+		return
+	var a := get_node_or_null("GuardPA") as Guard
+	var b := get_node_or_null("GuardPB") as Guard
+	if a == null or b == null or a.chat == null or a._flat_dist(op.global_position) > SMOKE_CUE_RANGE:
+		return
+	_smoke_cued = true
+	op.glance((a.global_position + b.global_position) / 2.0, SMOKE_CUE_SECS)
 
 
 func _send(n: int) -> void:
