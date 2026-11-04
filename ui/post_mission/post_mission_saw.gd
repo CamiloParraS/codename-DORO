@@ -12,7 +12,7 @@ const GRID := 10.0     # metres between grid lines
 const POP := 0.18      # s a fresh mark stays enlarged
 const LEGEND := ["down", "kill", "spotted", "alert"]
 const SAID_W := 540.0    # Aigis Voice's panel: the legend column's width
-const SAID_FS := 24      # its lines (raised on small windows, see HudPalette.legible)
+const SAID_FS := 26      # its lines (raised on small windows, see HudPalette.legible)
 const SAID_BOTTOM := 940.0  # its last row ends with the route's plan, above the "any key" prompt
 const SAID_HEAD := 64.0     # the header plate and its rule, above the rows
 const CLOCK_FS := 64        # the Mission clock under the legend
@@ -94,12 +94,12 @@ static func said_rows(lines: Array, width: float, fs: int, height: float) -> Arr
 
 
 static func row_h(fs: int) -> float:
-	return roundf(fs * 1.3)
+	return roundf(fs * 1.38)
 
 
 ## Where the comment's header sits: under the legend's plates and the Mission clock (see _legend).
 static func _said_top() -> float:
-	return 200.0 + LEGEND.size() * 72 + 22 + CLOCK_DROP + 36
+	return 200.0 + LEGEND.size() * 72 + 22 + CLOCK_DROP + 60
 
 
 static func draw_page(s: Control, d: Vector2) -> void:
