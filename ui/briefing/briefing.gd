@@ -90,19 +90,32 @@ func _typing() -> bool:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if e.is_pressed() and not e.is_echo() and (e is InputEventKey or e is InputEventMouseButton):
+	if e.is_pressed() and not e.is_echo() and e is InputEventKey:
 		get_viewport().set_input_as_handled()
-		if _typing():  # first press skips the typing and stops the blips
-			_blips.map(func(b: VoiceBlip) -> void: b.skip())
-			Mixer.stop_blips()
-			queue_redraw()
-		elif e is InputEventKey and e.keycode == KEY_R and not Campaign.done():
-			open_requisition()
-		elif Campaign.done():
-			Campaign.start()
-			UiTransition.go(get_tree(), ProjectSettings.get_setting("application/run/main_scene"))
-		else:
-			_open_codec()
+		_press(e)
+
+
+## A click arrives here, not in _unhandled_input: a full-rect Control takes the mouse in the GUI step first.
+func _gui_input(e: InputEvent) -> void:
+	if e is InputEventMouseButton and e.pressed:
+		accept_event()
+		_press(e)
+
+
+func _press(e: InputEvent) -> void:
+	if _skip or not is_processing_unhandled_input():  # the first Mission has no page; once the call is open the page is done
+		return
+	if _typing():  # first press skips the typing and stops the blips
+		_blips.map(func(b: VoiceBlip) -> void: b.skip())
+		Mixer.stop_blips()
+		queue_redraw()
+	elif e is InputEventKey and e.keycode == KEY_R and not Campaign.done():
+		open_requisition()
+	elif Campaign.done():
+		Campaign.start()
+		UiTransition.go(get_tree(), ProjectSettings.get_setting("application/run/main_scene"))
+	else:
+		_open_codec()
 
 
 ## The Mission's title card if it has one (black, so the Codec call follows without a flash of this page),
