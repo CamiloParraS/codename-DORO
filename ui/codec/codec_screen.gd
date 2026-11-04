@@ -56,7 +56,6 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_IGNORE  # a STOP Control eats the click before _unhandled_input sees it
 	for f in ResourceLoader.list_directory(PORTRAITS.get_base_dir()):  # not in _draw: a texture first loaded there draws white (Godot 4.7)
 		if f.ends_with(".png"):
 			_faces[PORTRAITS.get_base_dir().path_join(f)] = load(PORTRAITS.get_base_dir().path_join(f))
@@ -120,25 +119,39 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if e.is_action_pressed("ui_accept") or (e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT):
+	if e.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
-		if _ringing:  # answering: both frames wipe in
-			_ringing = false
-			Mixer.play(&"codec_answer")
-			_t = 0.0
-			_line_t = 0.0
-			UiMotion.wipe(_left, true, 6, 0.24)
-			UiMotion.wipe(_right, true, 6, 0.24)
-			return
-		if StoryMotion.tuning(_t):  # the same key skips the tune-in
-			_t = StoryMotion.TUNE
-			return
-		talk.press()
-		if talk.index != _line:
-			_line = talk.index
-			_line_t = 0.0
-		if talk.done():
-			_finish()
+		_advance()
+
+
+## A click arrives here, not in _unhandled_input: a full-rect Control takes the mouse in the GUI step first.
+func _gui_input(e: InputEvent) -> void:
+	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+		accept_event()
+		_advance()
+
+
+## Answers the ring, skips the tune-in, or presses the line on.
+func _advance() -> void:
+	if _cut >= 0.0:  # closing: no second press
+		return
+	if _ringing:  # answering: both frames wipe in
+		_ringing = false
+		Mixer.play(&"codec_answer")
+		_t = 0.0
+		_line_t = 0.0
+		UiMotion.wipe(_left, true, 6, 0.24)
+		UiMotion.wipe(_right, true, 6, 0.24)
+		return
+	if StoryMotion.tuning(_t):  # the same key skips the tune-in
+		_t = StoryMotion.TUNE
+		return
+	talk.press()
+	if talk.index != _line:
+		_line = talk.index
+		_line_t = 0.0
+	if talk.done():
+		_finish()
 
 
 func _finish() -> void:  # closes on a cut: a short dark beat, then `finished`
