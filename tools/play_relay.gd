@@ -168,7 +168,7 @@ func mission_2() -> void:
 	check(await seen(op, "GuardA2", at(56, 67.8), true, 10.0) == 0.0, "A2 never sees the east door behind him")
 	for n in ["GuardB1A", "GuardB1B"]:
 		check(await seen(op, n, at(74.5, 44, 3), true, 20.0) == 0.0, "%s never sees the eavesdrop spot beside him" % n)
-	check(await seen(op, "GuardB3", at(27, 39, 3), false, 16.0) == 0.0, "B3 looks up at the summit, not along the west carry line")
+	check(await seen(op, "GuardB3", at(27, 39, 3), false, 16.0) == 0.0, "B3 looks east at the mess, not along the west carry line")
 	check(await seen(op, "GuardC3", at(40, 20, 6), true, 25.0) > 0.0, "C3's hold looks at the console")
 
 	# step 1: hold up A2 from behind (the east door), question him: the keys

@@ -5578,11 +5578,11 @@ font_size = 87
 outline_size = 0
 width = 800.0
 
-[node name="@MeshInstance3D@16" type="MeshInstance3D" parent="NavRegion/Solid/Identity" unique_id=965387630]
+[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="NavRegion/Solid/Identity" unique_id=965387658]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 8.5, -25.97)
 mesh = SubResource("BoxMesh_30gil")
 
-[node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/@MeshInstance3D@16" unique_id=655591234]
+[node name="Text" type="Label3D" parent="NavRegion/Solid/Identity/@MeshInstance3D@21" unique_id=1751382238]
 auto_translate_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
 shaded = true
@@ -6933,88 +6933,88 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -80,
 [node name="shed2" type="Node3D" parent="Backdrop/Surroundings/Dressing/Shed_m40p0_30p0" unique_id=456798355 instance=ExtResource("99_63k22")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9073486e-06, -2.1361256, 0)
 
-[node name="@Node3D@17" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001327]
+[node name="@Node3D@22" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001355]
 
-[node name="MountainA_m20p0_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=1247249450]
+[node name="MountainA_m20p0_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22" unique_id=808771910]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 32.312126, -100)
 
-[node name="mountain_a2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/MountainA_m20p0_m60p0" unique_id=495737846]
+[node name="mountain_a2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22/MountainA_m20p0_m60p0" unique_id=1807893266]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.312126, 0)
 
-[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@17/MountainA_m20p0_m60p0/mountain_a2" unique_id=1978149346]
+[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@22/MountainA_m20p0_m60p0/mountain_a2" unique_id=269350398]
 material_override = SubResource("ShaderMaterial_cywmr")
 mesh = SubResource("ArrayMesh_m2nug")
 
-[node name="MountainB_60p0_m68p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=288814666]
+[node name="MountainB_60p0_m68p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22" unique_id=470753254]
 transform = Transform3D(0.76604444, 0, -0.6427876, 0, 1, 0, 0.6427876, 0, 0.76604444, 20, 33.679028, -108)
 
-[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_60p0_m68p0" unique_id=1762131511]
+[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_60p0_m68p0" unique_id=240087507]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, -31.479027, 0)
 
-[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_60p0_m68p0/mountain_b2" unique_id=396277987]
+[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_60p0_m68p0/mountain_b2" unique_id=669872511]
 material_override = SubResource("ShaderMaterial_cywmr")
 mesh = SubResource("ArrayMesh_010hv")
 
-[node name="MountainA_140p0_m40p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=280040046]
+[node name="MountainA_140p0_m40p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22" unique_id=1989046154]
 transform = Transform3D(-0.50000006, 0, -0.8660254, 0, 1, 0, 0.8660254, 0, -0.50000006, 100, 29.080914, -80)
 
-[node name="mountain_a2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/MountainA_140p0_m40p0" unique_id=2112450618]
+[node name="mountain_a2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22/MountainA_140p0_m40p0" unique_id=1277122390]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, -27.280914, 0)
 
-[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@17/MountainA_140p0_m40p0/mountain_a2" unique_id=1732010278]
+[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@22/MountainA_140p0_m40p0/mountain_a2" unique_id=23211330]
 material_override = SubResource("ShaderMaterial_cywmr")
 mesh = SubResource("ArrayMesh_m2nug")
 
-[node name="MountainB_m70p0_20p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=1583027007]
+[node name="MountainB_m70p0_20p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22" unique_id=1764965595]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -110, 26.551403, -20)
 
-[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_m70p0_20p0" unique_id=1730818732]
+[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_m70p0_20p0" unique_id=208774728]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, -25.755568, 0)
 
-[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_m70p0_20p0/mountain_b2" unique_id=703967512]
+[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_m70p0_20p0/mountain_b2" unique_id=977562036]
 material_override = SubResource("ShaderMaterial_cywmr")
 mesh = SubResource("ArrayMesh_010hv")
 
-[node name="MountainB_160p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17" unique_id=1675972209]
+[node name="MountainB_160p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22" unique_id=1237494669]
 transform = Transform3D(-0.9396926, 0, 0.34202015, 0, 1, 0, -0.34202015, 0, -0.9396926, 120, 20.04094, 60)
 
-[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_160p0_100p0" unique_id=1937033438]
+[node name="mountain_b2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_160p0_100p0" unique_id=1101705210]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, -25.755568, 0)
 
-[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@17/MountainB_160p0_100p0/mountain_b2" unique_id=1849205962]
+[node name="Mesh0" type="MeshInstance3D" parent="Backdrop/Surroundings/@Node3D@22/MountainB_160p0_100p0/mountain_b2" unique_id=140407014]
 material_override = SubResource("ShaderMaterial_cywmr")
 mesh = SubResource("ArrayMesh_010hv")
 
-[node name="@Node3D@18" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001328]
+[node name="@Node3D@23" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001356]
 
-[node name="Pylon_m70p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=1765155156]
+[node name="Pylon_m70p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23" unique_id=1092178032]
 transform = Transform3D(0.049937643, 0, -0.99875236, 0, 1, 0, 0.99875236, 0, 0.049937643, -110, 36.62567, 60)
 
-[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18/Pylon_m70p0_100p0" unique_id=1652456743 instance=ExtResource("101_728qh")]
+[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23/Pylon_m70p0_100p0" unique_id=172627139 instance=ExtResource("101_728qh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.98341, 0)
 
-[node name="Pylon_m10p0_97p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=431910765]
+[node name="Pylon_m10p0_97p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23" unique_id=606743305]
 transform = Transform3D(0.033314813, 0, -0.9994449, 0, 1, 0, 0.9994449, 0, 0.033314813, -50, 11.182314, 57)
 
-[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18/Pylon_m10p0_97p0" unique_id=1263588640 instance=ExtResource("101_728qh")]
+[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23/Pylon_m10p0_97p0" unique_id=502917436 instance=ExtResource("101_728qh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.98341, 0)
 
-[node name="Pylon_50p0_96p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=585570851]
+[node name="Pylon_50p0_96p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23" unique_id=851169855]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 10, 6.9282637, 56)
 
-[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18/Pylon_50p0_96p0" unique_id=631478038 instance=ExtResource("101_728qh")]
+[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23/Pylon_50p0_96p0" unique_id=1194104754 instance=ExtResource("101_728qh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.98341, 0)
 
-[node name="Pylon_110p0_97p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=658795441]
+[node name="Pylon_110p0_97p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23" unique_id=833627981]
 transform = Transform3D(-0.033314783, 0, -0.9994449, 0, 1, 0, 0.9994449, 0, -0.033314783, 70, 19.722958, 57)
 
-[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18/Pylon_110p0_97p0" unique_id=1614798052 instance=ExtResource("101_728qh")]
+[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23/Pylon_110p0_97p0" unique_id=854126848 instance=ExtResource("101_728qh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.98341, 0)
 
-[node name="Pylon_170p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18" unique_id=662414872]
+[node name="Pylon_170p0_100p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23" unique_id=2136921396]
 transform = Transform3D(-0.049937613, 0, -0.99875236, 0, 1, 0, 0.99875236, 0, -0.049937613, 130, 46.5978, 60)
 
-[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@18/Pylon_170p0_100p0" unique_id=357465451 instance=ExtResource("101_728qh")]
+[node name="pylon2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@23/Pylon_170p0_100p0" unique_id=1025119495 instance=ExtResource("101_728qh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.98341, 0)
 
 [node name="PylonWires" type="Node3D" parent="Backdrop/Surroundings" unique_id=1595662406]
@@ -7419,42 +7419,42 @@ transform = Transform3D(-0.049937494, -0.4546592, -0.88926446, 0, 0.8903754, -0.
 cast_shadow = 0
 mesh = SubResource("BoxMesh_jgqom")
 
-[node name="@Node3D@19" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001329]
+[node name="@Node3D@24" type="Node3D" parent="Backdrop/Surroundings" unique_id=1811001357]
 
-[node name="UtilityPole_92p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=265042463]
+[node name="UtilityPole_92p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=1974048571]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 52, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_92p0_38p7" unique_id=322231267 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_92p0_38p7" unique_id=1182857727 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_112p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=278282696]
+[node name="UtilityPole_112p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=840909412]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 72, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_112p0_38p7" unique_id=1806079820 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_112p0_38p7" unique_id=141981928 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_132p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=2039423946]
+[node name="UtilityPole_132p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=454567014]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 92, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_132p0_38p7" unique_id=2081543374 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_132p0_38p7" unique_id=417445482 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_152p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=1653081548]
+[node name="UtilityPole_152p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=68224616]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 112, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_152p0_38p7" unique_id=209523280 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_152p0_38p7" unique_id=692909036 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_172p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=1266739150]
+[node name="UtilityPole_172p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=1829365866]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 132, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_172p0_38p7" unique_id=484986834 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_172p0_38p7" unique_id=968372590 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_192p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19" unique_id=880396752]
+[node name="UtilityPole_192p0_38p7" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24" unique_id=1443023468]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 152, 7.5, -1.3)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@19/UtilityPole_192p0_38p7" unique_id=760450388 instance=ExtResource("102_mtqcx")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@24/UtilityPole_192p0_38p7" unique_id=1243836144 instance=ExtResource("102_mtqcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
 [node name="UtilityPoleWires" type="Node3D" parent="Backdrop/Surroundings" unique_id=1984862840]
@@ -8302,7 +8302,7 @@ metadata/role = "investigator"
 metadata/enc = 3
 
 [node name="PostB3" type="Marker3D" parent="GuardPosts" unique_id=964980041 groups=["guard_post"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3, -4)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6, 3, 5)
 metadata/scan = 60.0
 metadata/role = "gatekeeper"
 metadata/enc = 3
@@ -8580,8 +8580,9 @@ visible = false
 [node name="Balloon" type="MeshInstance3D" parent="Cine/OutroProps" unique_id=1741905764]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=863118706]
+[node name="@MeshInstance3D@29" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=863118711]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+cast_shadow = 0
 mesh = SubResource("CylinderMesh_vt0gn")
 
 [node name="_balloon_export" type="Node3D" parent="Cine/OutroProps/Balloon" unique_id=846570234 instance=ExtResource("117_qaarc")]
