@@ -322,7 +322,7 @@ func _guide(delta: float, alerting: bool) -> void:
 	if not op:
 		return
 	if not _opened:
-		if not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
+		if not get_tree().has_node("/root/Loading") and not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
 			_opened = true
 			get_tree().call_group("codec_live", "live_call", Campaign.MISSIONS[record.mission].open)
 		return
