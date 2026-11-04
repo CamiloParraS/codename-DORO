@@ -35,7 +35,7 @@ Where things live:
 
 Keep our scripts near 500 lines; the pre-commit hook rejects one past 600 (`addons/` is exempt). Split along a real seam (an `extends` chain, a helper the file owns), not at a count.
 
-After adding a `class_name` run `godot --headless --path . --import` before the suite, or other scripts fail with "Identifier not declared".
+After adding a `class_name` or editing `text/lines.csv`, run `godot --headless --path . --import` before the suite or a screenshot, or scripts fail with "Identifier not declared" and screens show raw text keys. The suite is the typecheck: `--check-only --script` runs without the autoloads and reports false errors (`Identifier not found: Mixer`).
 
 `docs/mechanics-map.md` maps each mechanic (Takedown, Scanner cones, Alert chain, Aigis, HUD…) to its file and test suite; open it before grepping for where a mechanic lives.
 
