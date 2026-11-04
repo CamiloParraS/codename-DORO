@@ -54,6 +54,16 @@ func _ready() -> void:
 	_toggle("ui.settings.reduce_motion", "motion", "reduce_motion")
 	_fps_row()
 	_key_row()
+	var credits := _list.add_row("ui.settings.credits")
+	credits.pressed.connect(func() -> void:
+		Mixer.click()
+		var roll: Credits = load("res://ui/credits/credits.tscn").instantiate()
+		roll.overlay = true
+		add_child(roll)
+		roll.tree_exited.connect(func() -> void:
+			if is_inside_tree():
+				credits.grab_focus()))
+	credits.focus_entered.connect(func() -> void: _icon.visible = false)
 	var back := _list.add_row("ui.back", func() -> void:
 		Mixer.click()
 		closed.emit()

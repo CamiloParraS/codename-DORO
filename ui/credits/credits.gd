@@ -30,6 +30,7 @@ const SECTIONS := [
 ]
 
 static var then := MENU  # set by the finale before it comes here
+var overlay := false  # opened over the settings screen: Esc or the end closes it, no scene change, the menu music keeps playing
 
 var _y := 0.0       # how far the roll has risen
 var _held := 0.0    # s since the roll stopped
@@ -39,11 +40,13 @@ var _leaving := false
 
 
 func _exit_tree() -> void:
-	Mixer.screen_off(&"menu")
+	if not overlay:
+		Mixer.screen_off(&"menu")
 
 
 func _ready() -> void:
-	Mixer.screen(&"menu")
+	if not overlay:
+		Mixer.screen(&"menu")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -85,6 +88,9 @@ func _leave() -> void:
 	if _leaving:
 		return
 	_leaving = true
+	if overlay:
+		queue_free()
+		return
 	UiTransition.go(get_tree(), then if then != "" else MENU)
 
 

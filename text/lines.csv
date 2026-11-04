@@ -393,6 +393,7 @@ ui.mission_short.1,MISSION 2,MISIÓN 2
 ui.mission_short.2,MISSION 3,MISIÓN 3
 ui.mission_short.3,CORE,NÚCLEO
 ui.settings.title,SETTINGS,AJUSTES
+ui.settings.credits,CREDITS,CRÉDITOS
 ui.settings.sensitivity,SENSITIVITY,SENSIBILIDAD
 ui.settings.invert_y,INVERT Y,INVERTIR Y
 ui.settings.language,LANGUAGE,IDIOMA
