@@ -321,7 +321,7 @@ func _card_h(card_w: float) -> float:
 ## A Habit's card at `at`: a glass plate, its glyph, name and levels deployed, then what Aigis counted.
 func _card(at: Vector2, w: float, h: float, i: int) -> void:
 	var hab: String = String(_lines[i][1]).get_slice(".", 3)
-	PixelKit.cut_fill(self, Rect2(at, Vector2(w, h)), Color(HudPalette.GLASS, 0.85), 5)
+	PixelKit.cut_fill(self, Rect2(at, Vector2(w, h)), Color(HudPalette.GLASS, 0.4), 5)
 	PixelKit.frame(self, Rect2(at, Vector2(w, h)), Color(HudPalette.CYAN, 0.35), 5)
 	PixelKit.cut_fill(self, Rect2(at, Vector2(w, 6)), HudPalette.CYAN, 0)
 	HabitGlyphs.draw(self, hab, at + Vector2(28, 14), HudPalette.CYAN, 5.0)
