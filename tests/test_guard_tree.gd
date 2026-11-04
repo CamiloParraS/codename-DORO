@@ -160,3 +160,33 @@ func test_guards_follow_the_path_closely_enough_to_turn_through_a_doorway() -> v
 	var g: Node = ResourceLoader.load("res://actors/guard/guard.tscn", "", ResourceLoader.CACHE_MODE_IGNORE).instantiate()
 	assert_true((g.get_node("NavAgent") as NavigationAgent3D).path_desired_distance <= 0.25)
 	g.free()
+
+
+## A guard sent somewhere it can't reach (a rail edge, a deck above it) stops short with the path unfinished.
+## WalkStall calls that arrived once it has gained nothing for AFTER s, so it searches from where it stands
+## instead of standing there for good (play_harbour's stopped call: two responders froze by the port rail).
+func test_a_walk_that_stops_gaining_counts_as_arrived() -> void:
+	var w := WalkStall.new()
+	var goal := Vector3(26, 2, 6)
+	for d: float in [8.0, 6.0, 4.0, 2.0, 1.4]:  # closing in: never stuck
+		w.step(goal, d, 0.25)
+		assert_false(w.stuck(goal), "still gaining at %.1f m" % d)
+	for i in 5:  # 1.25 s pinned at 1.33 m
+		w.step(goal, 1.33, 0.25)
+	assert_false(w.stuck(goal), "not yet: under AFTER")
+	w.step(goal, 1.33, 0.5)
+	assert_true(w.stuck(goal), "AFTER s without gaining GAIN: as close as it gets")
+
+
+func test_a_stall_is_per_goal_and_a_nudged_goal_is_the_same_goal() -> void:
+	var w := WalkStall.new()
+	var goal := Vector3(26, 2, 6)
+	w.step(goal, 5.0, 0.1)
+	w.step(goal, 5.0, WalkStall.AFTER)
+	assert_true(w.stuck(goal))
+	assert_true(w.stuck(goal + Vector3(0, 0, 0.2)), "a sighting point nudged by footsteps is the same place")
+	assert_false(w.stuck(goal + Vector3(6, 0, 0)), "another goal: not stuck there")
+	w.step(goal + Vector3(6, 0, 0), 9.0, 0.1)  # walking to the new goal starts over
+	assert_false(w.stuck(goal + Vector3(6, 0, 0)))
+	w.step(goal + Vector3(6, 0, 0), 9.0 - WalkStall.GAIN * 0.5, WalkStall.AFTER)  # creeping by less than GAIN is no progress
+	assert_true(w.stuck(goal + Vector3(6, 0, 0)))

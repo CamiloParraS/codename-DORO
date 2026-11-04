@@ -135,6 +135,7 @@ var _balloon_seen: Array[Guard] = []
 var _glint: Node3D             # a red radio glint at the head while on the Radio call
 var _vest: Node3D              # an amber vest light while the Area is in Caution
 @onready var _agent: NavigationAgent3D = $NavAgent
+var _stall := WalkStall.new()  # a walk that stopped getting closer counts as arrived (arrived())
 @onready var _mark: Label3D = $Mark
 var _sleep: Sprite3D  # the asleep mark, see _sleep_mark()
 var _mark_art: Sprite3D  # the pixel art for what _mark says, see _sync_mark()
@@ -287,7 +288,8 @@ func _changed(why: String) -> void:
 func arrived() -> bool:
 	if _fleeing():
 		return _flat_dist(safe_room) < SAFE_REACH or _at(safe_room)
-	return _at(goal())
+	var g := goal()
+	return _at(g) or _stall.stuck(g)  # stuck short of a goal it can't reach: as close as it gets
 
 
 ## A Target on alert or in evasion runs to its safe room and stays there until the evasion ends.
@@ -406,6 +408,7 @@ func face(pos: Vector3, delta: float) -> void:
 
 
 func _walk_to(pos: Vector3, speed: float, delta: float) -> void:
+	_stall.step(pos, _flat_dist(pos), delta)  # before the early return: a guard stopped dead is the stall it counts
 	if not _agent.target_position.is_equal_approx(pos):
 		_agent.target_position = pos
 	var next := _agent.get_next_path_position()
