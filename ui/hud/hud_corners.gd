@@ -19,6 +19,7 @@ const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
 const MINT := HudPalette.MINT  # the live call card's tint
 const WEAPON_FADE := 18  # dither pixels in the weapon card's fade, longer than the other plates'
 const WEAPON_INSET := 76.0  # px the weapon card's content starts in from its edge
+const OBJECTIVE_HUE := 0.75  # how far the Radar's objective diamonds are pulled from white toward gold
 const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corners are cut by
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
@@ -203,13 +204,13 @@ func _radar(d: Vector2) -> void:
 		if boff.length() > RadarModel.RANGE:  # off the disc: an arrow on the rim pointing at it (a pinned diamond slid round the rim as he moved)
 			var out := boff.normalized()
 			var tip := o + out * (rad - 4.0)
-			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))
+			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, OBJECTIVE_HUE))
 		elif b.target:
 			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
 			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
 			var diamond := PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)])
-			var gold := HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3)  # white with a slight gold hue
+			var gold := HudPalette.LIGHT.lerp(HudPalette.GOLD, OBJECTIVE_HUE)  # white pulled well toward gold
 			var lv := RadarModel.level(b.pos.y - _operative.global_position.y)
 			if lv == 0:
 				HudPalette.px_poly(c, diamond, gold)
