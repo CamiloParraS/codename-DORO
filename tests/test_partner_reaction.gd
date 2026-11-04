@@ -132,3 +132,39 @@ func test_a_held_up_guard_seen_by_a_partner_is_freed_and_the_partner_reacts() ->
 	assert_true(b.alert.calling, "the freed guard radios, and shouts")
 	assert_eq(a.last_reason, "Nikos shouted, running over", "saw him kneel, then hears him")
 	_free([a, b])
+
+
+func test_a_helmeted_headshot_knocks_the_helmet_off_and_the_next_one_lands() -> void:
+	var op := _operative()
+	var a := _guard("A", 0, 0)
+	a.wear_helmet()
+	a.shoot(true, Vector3(0, 1.5, 10))
+	assert_false(a.dead, "the helmet took it")
+	assert_false(a.helmet, "knocked off")
+	a.hits = 0  # only the headshot rule here, not the second body hit
+	a.shoot(true, Vector3(0, 1.5, 10))
+	assert_true(a.dead, "the bare head")
+	_free([a, op])
+
+
+func test_a_dart_to_a_helmet_knocks_it_off_without_sleep_and_the_next_drops_him() -> void:
+	var op := _operative()
+	var a := _guard("A", 0, 0)
+	a.wear_helmet()
+	a.tranquilize(true, Vector3(0, 1.5, 10))
+	assert_false(a.helmet, "knocked off")
+	assert_false(a.is_down())
+	assert_eq(a.stumble_left, 0.0, "that dart puts nobody to sleep")
+	a.tranquilize(true, Vector3(0, 1.5, 10))
+	assert_true(a.is_down(), "the bare head")
+	_free([a, op])
+
+
+func test_a_checkpoint_restore_puts_a_knocked_off_helmet_back_on() -> void:
+	var op := _operative()
+	var a := _guard("A", 0, 0)
+	a.wear_helmet()
+	a.tranquilize(true, Vector3(0, 1.5, 10))
+	a.return_to_post()
+	assert_true(a.helmet)
+	_free([a, op])

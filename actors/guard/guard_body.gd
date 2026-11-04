@@ -26,6 +26,7 @@ const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
 const SHOT_PUSH := 4.5          # m/s where a rifle bullet lands: the head takes it faster, as it weighs less
 const HEAD_SHOT_PUSH := 6.0
 const FLINCH_PUSH := 2.5        # m/s a hit that does not drop it shoves the bone it landed on
+const HELMET_PUSH := 3.5        # m/s a knocked-off helmet flies away from the shot
 const HIT_STAGGER := 0.3        # m a non-lethal rifle hit knocks a guard back
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
@@ -79,7 +80,8 @@ var carrier: Node3D:             # the Operative carrying this guard
 		model.ride(v.model.carry_mount() if v else null)
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
-var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
+var helmet := false              # Headshots Countermeasure: the first headshot knocks it off instead of landing
+var helmet_issued := false       # deployed with one: a Checkpoint restore puts a knocked-off helmet back on
 var vest := false                # Combat L1: tranq body shots do nothing, rifle body hits take longer
 var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)

@@ -52,13 +52,18 @@ func kill(from := Vector3.INF, head := false) -> void:
 		get_tree().call_group("mission_tally", "event", "alert_kill")
 
 
-## A rifle bullet from `from`: a headshot kills at once (a helmet makes it a body hit), the second body
-## hit kills, and a first one leaves it suspicious where the shot came from.
+## A rifle bullet from `from`: a headshot kills at once (a helmet makes it a body hit and flies off, so
+## the next headshot lands), the second body hit kills, and a first one leaves it suspicious where the
+## shot came from.
 func shoot(head: bool, from: Vector3) -> void:
 	if head:
 		get_tree().call_group("mission_tally", "event", "headshot")
 	hits += 1
-	if bullet_kills(head, helmet, hits, body_hits_to_kill):
+	var stopped := head and helmet
+	var kills := bullet_kills(head, helmet, hits, body_hits_to_kill)
+	if stopped:
+		_lose_helmet(from)
+	if kills:
 		kill(from, head)
 	else:
 		model.react("hit", HIT_TIME)
@@ -66,7 +71,7 @@ func shoot(head: bool, from: Vector3) -> void:
 		if is_inside_tree():
 			move_and_collide(((global_position - from) * Vector3(1, 0, 1)).normalized() * HIT_STAGGER)
 		voice.say(&"pain")
-		if head and helmet:
+		if stopped:
 			caught(&"helmet")
 		elif vest:
 			caught(&"vest")
@@ -89,18 +94,25 @@ static func bullet_kills(head: bool, has_helmet: bool, hit_count: int, to_kill :
 	return (head and not has_helmet) or hit_count >= to_kill
 
 
-## A tranq dart from `from`: a headshot Neutralizes at once (a helmet makes it a body shot), a body
-## shot after BODY_DELAY, meanwhile the guard stumbles, is suspicious and can't radio.
+## A tranq dart from `from`: a headshot Neutralizes at once, a body shot after BODY_DELAY, meanwhile the
+## guard stumbles, is suspicious and can't radio. A helmet takes the headshot and flies off: no sleep from
+## that dart, but the next one to the bare head drops him.
 func tranquilize(head: bool, from: Vector3) -> void:
 	if head:
 		get_tree().call_group("mission_tally", "event", "headshot")  # the habit counts, helmet or not
 	if head and not helmet:
 		neutralize()
 		return
-	Mix.sfx_at(self, &"dart_vest" if vest else &"dart_hit")
-	if head and helmet:
+	if head:
+		Mix.sfx_at(self, &"dart_vest")
 		caught(&"helmet")
-	elif vest:
+		_lose_helmet(from)
+		model.react("hit", HIT_TIME)
+		voice.say(&"pain")
+		_changed(alert.hear(from, "a dart"))
+		return
+	Mix.sfx_at(self, &"dart_vest" if vest else &"dart_hit")
+	if vest:
 		caught(&"vest")
 	if stumble_left > 0.0:
 		return
@@ -112,10 +124,17 @@ func tranquilize(head: bool, from: Vector3) -> void:
 	_changed(alert.hear(from, "a dart"))
 
 
-## Headshots Countermeasure: a visible helmet; headshots count as body hits from now on.
+## Headshots Countermeasure: a visible helmet; the next headshot knocks it off instead of landing.
 func wear_helmet() -> void:
 	helmet = true
+	helmet_issued = true
 	model.wear("Helmet")
+
+
+## A headshot from `from` knocked the helmet off: it tumbles away, and headshots land from now on.
+func _lose_helmet(from: Vector3) -> void:
+	helmet = false
+	model.knock_off("Helmet", _away_from(from) * HELMET_PUSH + Vector3.UP * 2.0)
 
 
 ## Combat L1: a visible vest.
@@ -140,9 +159,11 @@ func wake(from: Vector3) -> void:
 
 
 ## Checkpoint restore: alive (even if killed since), standing at its post, alert cleared, starting its
-## patrol over. A helmet (a Countermeasure) stays on.
+## patrol over. A helmet (a Countermeasure) is back on, even one knocked off since.
 func return_to_post() -> void:
 	dead = false
+	if helmet_issued and not helmet:
+		wear_helmet()
 	_fell = false  # a guard killed on its feet since would keep playing the "dead" clip
 	wake(global_position)  # up, off any shoulder, solid again
 	alert = GuardAlert.new()  # remembering nothing, not even waking

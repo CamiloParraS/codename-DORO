@@ -472,6 +472,23 @@ func wear(item: String) -> void:
 		piece.visible = true
 
 
+## Knocks a worn Countermeasure piece off the head ("Helmet"): hidden on the body, a loose copy where it
+## sat tumbles away at `push` m/s (Fx.tumble).
+func knock_off(item: String, push: Vector3) -> void:
+	var piece := _part(item)
+	if not piece or not piece.visible or not is_inside_tree():
+		return
+	piece.visible = false
+	var head := skeleton.find_bone("Head")
+	var posed := skeleton.get_bone_global_pose(head) * skeleton.get_bone_global_rest(head).affine_inverse()
+	var at := skeleton.global_transform * posed * skeleton.global_transform.affine_inverse() * piece.global_transform
+	var copy := piece.duplicate() as MeshInstance3D
+	copy.skin = null
+	copy.skeleton = NodePath()
+	copy.visible = true
+	Fx.tumble(get_tree().current_scene if get_tree().current_scene else get_tree().root, copy, at, push)
+
+
 func _part(part: String) -> MeshInstance3D:
 	return skeleton.find_child(part, true, false)
 
