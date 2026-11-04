@@ -13,9 +13,9 @@ func _facts() -> Dictionary:
 	return {voice = "gorgo", counts = {takedown = 3, alert = 1}, hot = {place = "The container lanes", n = 3, secs = 40}}
 
 
-## Mission 1 played as a strangler: 5 takedowns (L1 Takedowns), one alarm, the work done in the container lanes.
+## Mission 1 played as a strangler: 7 takedowns (L1 Takedowns), one alarm, the work done in the container lanes.
 func _after() -> Dictionary:
-	var after := Aigis.complete_mission(Aigis.new_record(), {takedown = 5, alert = 1, spawned = 9})
+	var after := Aigis.complete_mission(Aigis.new_record(), {takedown = 7, alert = 1, spawned = 9})
 	after.last.hot = {enc = 2, n = 3, secs = 40}
 	return after
 
@@ -34,11 +34,11 @@ func test_facts_hold_what_aigis_decided_about_the_mission() -> void:
 	assert_eq(f.language, "en")
 	assert_eq(f.voice, "pallas", "no kills: Pallas's band speaks")
 	assert_eq(f.callsign, "the Strangler")
-	assert_eq(f.events, ["1 alarms last time. You stayed to fight.", "5 of ours taken from behind last time."], "the Briefing's own lines, in Habit order")
+	assert_eq(f.events, ["1 alarms last time. You stayed to fight.", "7 of ours taken from behind last time."], "the Briefing's own lines, in Habit order")
 	assert_eq(f.hotspot, "The container lanes: 3 of ours down in 40 seconds.", "a finished sentence: the model can't pair the wrong numbers")
 	assert_eq(f.next_mission, "MISSION 2: RADIO RELAY STATION")
 	assert_eq(f.next_countermeasures, [{countermeasure = "They will look behind them more often.", sponsor = "pallas"}])
-	assert_eq(f.next_forecast, "at least 4 of ours taken from behind")
+	assert_eq(f.next_forecast, "at least 6 of ours taken from behind")
 	assert_false(f.has("last_forecast"), "Mission 1 had no forecast to settle")
 	assert_false(f.has("dropped_habit"), "nothing dropped")
 
@@ -59,7 +59,7 @@ func test_facts_are_in_the_players_language() -> void:
 	var f := AigisVoice.facts(after, _plan(after))
 	TranslationServer.set_locale("en")
 	assert_eq(f.language, "es")
-	assert_contains(f.events, "5 de los nuestros atrapados por la espalda la última vez.")
+	assert_contains(f.events, "7 de los nuestros atrapados por la espalda la última vez.")
 	assert_eq(f.next_countermeasures[0].countermeasure, "Mirarán atrás más a menudo.")
 
 
@@ -79,7 +79,7 @@ func test_the_fallback_cites_the_evidence_and_closes_in_the_dominant_voice() -> 
 	TranslationServer.set_locale("en")
 	var after := _after()
 	assert_eq(AigisVoice.fallback(after, _plan(after)), {voice = "pallas", lines = [
-		"5 of ours taken from behind last time.",
+		"7 of ours taken from behind last time.",
 		"Walk softly. We are watching.",
 	]}, "the speaker's name is the panel's header, not the line's")
 

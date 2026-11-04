@@ -36,8 +36,8 @@ const TRIGGERS := {
 	"alert": ["combat", 30],            # an alert raised; any alert also means "not a ghost Mission"
 	"loud_shot": ["combat", 5],
 	"alert_kill": ["combat", 15],       # a kill during an alert
-	"headshot": ["headshots", 20],      # tranq or rifle
-	"takedown": ["takedowns", 20],      # choke or kill from behind
+	"headshot": ["headshots", 15],      # tranq or rifle
+	"takedown": ["takedowns", 15],      # choke or kill from behind
 	"down_found": ["downs", 25],        # a guard found a Down guard
 	"woken": ["downs", 15],             # a Neutralized guard woken by another
 	"fulton": ["downs", 15],            # a guard Fultoned: gone missing, no body (a Target's is target_fulton: nothing)
