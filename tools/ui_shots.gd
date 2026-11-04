@@ -136,14 +136,14 @@ func _run() -> void:
 		menu._settings()
 		await wait(0.6)
 		await shoot("settings")
-	if all and want("loading"):
-		await _loading()
 		if want("settings_key"):  # the Aigis Voice key editor, open over the list
 			var panel: Control = menu.get_child(menu.get_child_count() - 1)
 			panel._key_btn.grab_focus()
 			panel._open_key()
 			await wait(0.4)
 			await shoot("settings_key")
+	if all and want("loading"):
+		await _loading()
 	if all and want("free_mode"):
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
