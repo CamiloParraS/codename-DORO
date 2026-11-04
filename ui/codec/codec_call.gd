@@ -5,7 +5,7 @@ class_name CodecCall
 extends RefCounted
 
 const HOLD := 2.0  # seconds a finished line stays up in a live call
-const DWELL := 0.5  # s a finished line holds before a press may move on (playtest 1: two quick clicks a line skipped the briefing)
+const DWELL := 0.2  # s a finished line holds before a press may move on (playtest 1: two quick clicks a line skipped the briefing)
 
 var lines: Array     # [[speaker, key], ...]; a third entry names the portrait to show instead
 var index := 0
