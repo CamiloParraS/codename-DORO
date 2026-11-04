@@ -369,9 +369,9 @@ func _at(t: Vector3) -> bool:
 # --- Radio -------------------------------------------------------------------------------------
 
 ## A spoken conversation line (chat, escort, field chatter): subtitle plus its clip or mumble, from this guard.
-func say_line(key: String, args := {}) -> void:
+func say_line(key: String, args := {}, long := false) -> void:
 	var text := tr(key).format(args)  # args: a line's {n}, e.g. evidence chatter
-	get_tree().call_group("radio_log", "say", name, text)
+	get_tree().call_group("radio_log", "say", name, text, long)  # long: stays up longer, other guards' lines don't push it out (Subtitles)
 	voice.speak(key, text)
 
 

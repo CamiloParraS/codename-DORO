@@ -90,8 +90,8 @@ func _draw() -> void:
 
 
 ## Radio line from a guard (call_group "radio_log").
-func say(who: String, text: String) -> void:
-	_subs.add(who, text)
+func say(who: String, text: String, long := false) -> void:
+	_subs.add(who, text, long)
 
 
 ## Mission 1's tutorial prompt (call_group "tutorial_tip"): `text` its steps, `title` the verb on its sand slab.
@@ -368,7 +368,7 @@ func _subtitles(d: Vector2, dim: float) -> float:
 	var row_h := maxf(34.0, fs * 1.3)
 	for l: Dictionary in _subs.lines:
 		var rows := HudPalette.wrap(l["text"], SUB_W, HudPalette.FIGURE_MED, fs)
-		blocks.append([_who(l["who"]), rows, minf(Subtitles.alpha(l["age"]), clampf(l["age"] / 0.2, 0.0, 1.0)) * dim])
+		blocks.append([_who(l["who"]), rows, minf(Subtitles.alpha(l["age"], l["life"]), clampf(l["age"] / 0.2, 0.0, 1.0)) * dim])
 		total += 28 + rows.size() * row_h + 10
 	var y := SUB_BOTTOM - total
 	var top := y
