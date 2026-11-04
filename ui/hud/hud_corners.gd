@@ -23,13 +23,15 @@ const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corner
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
 const CALL := Vector2(64, 410)  # the live call card's corner
-const CALL_W := 430.0
-const FACE := 76.0
+const CALL_W := 700.0
+const CALL_GAP := 28.0  # px of air between the Voiceprints plate and the live call card
+const FACE := 88.0
 const HABIT_W := 56.0  # px per Habit column on the Aigis cue
 const SUB_W := 1000.0  # subtitles and tips: centred, lower middle
 const SUB_BOTTOM := 1010.0  # near the bottom edge; the action prompt sits above it
 const PORTRAIT := "res://ui/codec/portraits/%s_%d.png"
 
+var vp_bottom := 0.0  # where the Voiceprints plate ends (0 with none): the live call card keeps CALL_GAP below it
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
 var _lost := 1.0  # where the red lost segment ends
 var _lost_hold := 0.0
@@ -270,6 +272,7 @@ func _jammed(o: Vector2, rad: float) -> void:
 ## VP_SHOWN, a "+n".
 func _voiceprints(d: Vector2, cue_shown: bool) -> void:
 	var held: Array = _operative.voiceprints.held
+	vp_bottom = 0.0
 	if held.is_empty():  # a bare "VP" with nothing under it is noise
 		return
 	var x := 70.0
@@ -282,6 +285,7 @@ func _voiceprints(d: Vector2, cue_shown: bool) -> void:
 	if held.size() > VP_SHOWN:
 		rows.append("+%d" % (held.size() - VP_SHOWN))
 	var plate := Rect2(x - 16, y - 22, 164 + HudPalette.FADE_W, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
+	vp_bottom = plate.end.y
 	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.35, 0.9, false)
 	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 0)
 	for i in rows.size():

@@ -319,32 +319,33 @@ func _live_call(dim: float) -> float:
 	var who := "handler" if _live.speaker() == "operative" else _live.portrait()
 	var frame := 1 if _live.typing() and int(Time.get_ticks_msec() / 160.0) % 2 == 0 else 0
 	var tex := _portrait(who, frame)
-	var tx := CALL.x + 12 + FACE + 16
-	var call_fs := HudPalette.legible(c, 24)  # wrapped at the size it is drawn at, so a small window loses no words
-	var call_row := maxf(32.0, call_fs * 1.3)
-	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - CALL.x) - 18, HudPalette.FIGURE_MED, call_fs)
+	var origin := Vector2(CALL.x, maxf(CALL.y, vp_bottom + CALL_GAP if vp_bottom > 0.0 else 0.0))  # clear of the Voiceprints
+	var tx := origin.x + 16 + FACE + 20
+	var call_fs := HudPalette.legible(c, 26)  # wrapped at the size it is drawn at, so a small window loses no words
+	var call_row := maxf(35.0, call_fs * 1.35)
+	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - origin.x) - 22, HudPalette.FIGURE_MED, call_fs)
 	var rows := full.size()
-	var box := Rect2(CALL, Vector2(CALL_W, maxf(FACE + 26, 62 + rows * call_row)))
+	var box := Rect2(origin, Vector2(CALL_W, maxf(FACE + 28, 58 + rows * call_row)))
 	HudPalette.plate(c, Rect2(box.position, box.size + Vector2(HudPalette.FADE_W, 0)), HudPalette.GLASS, 0.4 * dim, 0.92 * dim, false)  # borderless, dithering away on its inner side like the other plates
 	if tex:
 		_face.texture = tex
-		_face.position = (CALL + Vector2(12 + slide, 14)) * k
+		_face.position = (origin + Vector2(16 + slide, 16)) * k
 		_face.size = Vector2.ONE * FACE * k
 		_face.modulate = Color(MINT, dim)
 		_face.visible = true
-		PixelKit.frame(c, PixelKit.snap(Rect2(CALL + Vector2(12, 14), Vector2.ONE * FACE)), Color(MINT, 0.7 * dim), 1)
-	var name_f := HudPalette.tracked(HudPalette.LABEL_BOLD, 18, 0.3)
+		PixelKit.frame(c, PixelKit.snap(Rect2(origin + Vector2(16, 16), Vector2.ONE * FACE)), Color(MINT, 0.7 * dim), 1)
+	var name_f := HudPalette.tracked(HudPalette.LABEL_BOLD, 20, 0.3)
 	var nm := _live.speaker_name().to_upper()
-	HudPalette.hud_text(c, Vector2(tx, CALL.y + 34), nm, 18, Color(MINT, dim), name_f, 0, false)
-	var bx := tx + name_f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x + 14
+	HudPalette.hud_text(c, Vector2(tx, origin.y + 40), nm, 20, Color(MINT, dim), name_f, 0, false)
+	var bx := tx + name_f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x + 14
 	for i in 3:  # three bars that step only while text is typing
 		var hgt := 4.0 + 10.0 * float(int((absf(sin(Time.get_ticks_msec() / 130.0 + i * 1.7))) * 3.0) + 1) / 3.0 if _live.typing() else 4.0
-		c.draw_rect(Rect2(bx + i * 5, CALL.y + 27 - hgt / 2, 3, hgt), Color(MINT, dim))
+		c.draw_rect(Rect2(bx + i * 5, origin.y + 32 - hgt / 2, 3, hgt), Color(MINT, dim))
 	var left := _live.shown().length()
-	var y := CALL.y + 66
+	var y := origin.y + 70
 	for i in rows:
 		var l: String = full[i]
-		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 24, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
+		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 26, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
 		left -= l.length() + 1
 		y += call_row
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
