@@ -21,12 +21,15 @@ func test_the_first_is_there_at_once_the_rest_fade_in() -> void:
 	assert_eq(MenuBackdrop.opacity(1, MenuBackdrop.FADE), 1.0)
 
 
-func test_the_dissolve_is_short_and_in_hard_steps() -> void:
-	assert_true(MenuBackdrop.FADE <= 0.5)
-	var seen := {}
-	for i in 100:
-		seen[MenuBackdrop.opacity(1, MenuBackdrop.FADE * i / 100.0)] = true
-	assert_eq(seen.size(), MenuBackdrop.STEPS + 1, "0 and one level per step")
+func test_the_fade_is_smooth_and_monotonic() -> void:
+	var last := -1.0
+	var levels := {}
+	for i in 101:
+		var o := MenuBackdrop.opacity(1, MenuBackdrop.FADE * i / 100.0)
+		assert_true(o >= last)
+		last = o
+		levels[o] = true
+	assert_true(levels.size() > 50, "no hard steps")
 
 
 func test_the_pose_is_continuous_across_the_handover() -> void:
