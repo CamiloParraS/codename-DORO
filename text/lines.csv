@@ -506,6 +506,12 @@ ui.brief.complete,CAMPAIGN COMPLETE,CAMPAÑA COMPLETADA
 ui.brief.ending,ENDING,FINAL
 ui.brief.any_key,PRESS ANY KEY,PULSA CUALQUIER TECLA
 ui.brief.requisition,REQUISITION,REQUISICIÓN
+ui.brief.mission,MISSION,MISIÓN
+ui.brief.area,AREA,ZONA
+ui.brief.target,TARGET,BLANCO
+ui.brief.encounters,ENCOUNTERS,ENCUENTROS
+ui.brief.par,PAR TIME,TIEMPO PAR
+ui.brief.level,LEVEL {n} / 3,NIVEL {n} / 3
 ui.voice.promachos,PROMACHOS,PRÓMACOS
 ui.voice.nike,NIKE,NIKE
 ui.voice.pallas,PALLAS,PALAS

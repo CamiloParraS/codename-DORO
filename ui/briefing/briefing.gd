@@ -9,13 +9,19 @@ extends Control
 
 const REQUISITION := preload("res://ui/requisition/requisition.gd")
 const GLYPHS: Dictionary = preload("res://ui/finale/finale.gd").GLYPHS
-const TAG := 170  # px from the margin to a Voice line's text: room for "() GLAUKOPIS"
-const MARGIN := 24
-const LEFT_W := 640.0     # px: the objectives column
-const HINT_FS := 38       # px: the page's reading size (voice lines, hints, objectives)
-const HINT_ROW := 54      # px between their rows
-const GUTTER := 90.0      # px between the columns
-const OBJ_INDENT := 64.0  # px from the margin to an objective's text, past its number
+const MARGIN_X := 96.0    # px: the page's side margin (design px, 1080 tall)
+const TAG := 200          # px from a Voice line's head to its text: room for "() GLAUKOPIS"
+const LEFT_W := 600.0     # px: the objectives column
+const GUTTER := 70.0      # px between the columns
+const CARD_GAP := 36.0    # px between the Habit cards
+const FS := 40            # px: the page's reading size (Aigis's comment)
+const ROW := 54           # px between its rows
+const OBJ_FS := 38        # px: an objective, and the lines that close the page
+const OBJ_ROW := 48
+const CARD_FS := 34       # px: a Habit card's hint; its evidence is EVID_FS
+const CARD_ROW := 46
+const EVID_FS := 30
+const EVID_ROW := 40
 
 var record: Dictionary
 var plan: Dictionary
@@ -24,8 +30,6 @@ var _blips: Array[VoiceBlip] = []   # one per line, typed out in turn
 var _typing_i := -1                 # the line being typed and how long ago it began: its Voice's glyph pulse
 var _line_t := 0.0
 var _skip := false                  # the first Mission: straight to its Codec call
-var _head_y := 0.0                  # where the left column starts: level with the transcript's first head
-var _right_end := 0.0               # where the transcript column ended
 var _fit := 1.0                     # < 1 when the lines run past the "any key" row: the page draws smaller to fit
 var _prefix := RegEx.create_from_string("^(\\[[a-z]+\\]|[A-Za-zÁÉÍÓÚáéíóú]+:)\\s*")  # "[pallas] " or "Palas: "
 
@@ -147,8 +151,13 @@ func _build_lines() -> Array:
 	var m: Dictionary = Campaign.MISSIONS[record.mission]
 	var lines: Array = [["title", "ui.mission.%d" % record.mission], ["gap", ""], ["head", "ui.brief.title"]]
 	lines.append(["gap", ""])
-	for said: Array in AigisVoice.briefing_lines(record, TranslationServer.get_locale().left(2)):  # Aigis Voice opens: its comment on the last Mission
-		lines.append(["voice", "brief.%s.said" % said[0], said[1]])  # not a text key: the key only names the Voice (VoiceBlip.voice_of)
+	var said_by := ""  # Aigis Voice opens with its comment on the last Mission: its lines run together as one paragraph
+	var said_text := PackedStringArray()
+	for said: Array in AigisVoice.briefing_lines(record, TranslationServer.get_locale().left(2)):
+		said_by = said[0]
+		said_text.append(said[1])
+	if not said_text.is_empty():
+		lines.append(["voice", "brief.%s.said" % said_by, " ".join(said_text)])  # not a text key: the key only names the Voice (VoiceBlip.voice_of)
 	var spoken := lines.size() > 4  # Aigis Voice already commented on the last Mission
 	var keys: Array = plan.briefing_keys.filter(func(k: String) -> bool: return ".habit." in k or ".hint." in k or k.ends_with(".close"))  # the rows and the close: the one-off asides (a head check, a flank) are cut to leave room for large type
 	var shift: String = record.get("last", {}).get("shifted", "")
@@ -196,7 +205,8 @@ func _line(entry: Variant) -> Array:
 	var key: String = entry
 	if not key.begins_with("brief.pallas.habit."):
 		return ["hint" if ".hint." in key else "voice", key]
-	return ["habit", key, tr("ui.habit." + key.get_slice(".", 3))]  # the Habit's name: its row is the name and its levels, the line under it the hint
+	var ev := Dossier.evidence(record, key.get_slice(".", 3))
+	return ["habit", key, tr("ui.habit." + key.get_slice(".", 3)), tr(ev[0]).format(ev[1]) if not ev.is_empty() else ""]  # a card: the Habit's name and levels, what Aigis counted, then (the "hint" line) the sponsor's answer
 
 
 func _draw() -> void:
@@ -208,24 +218,20 @@ func _draw() -> void:
 		return
 	draw_rect(Rect2(Vector2.ZERO, d), Color(HudPalette.INK, 0.55))  # over the backdrop
 	var y := 110.0
-	var x := 110.0
+	var x := MARGIN_X
 	var disp := HudPalette.DISPLAY
-	var lw := LEFT_W  # two columns under the title: the objectives (what the Mission asks) stay put on the left,
-	var col_r := x + lw + GUTTER  # and Aigis's transcript (what it noticed) types out on the right
-	var rw := d.x - col_r - x
-	var body_w := minf(rw - TAG - 90, 1000.0)
-	var obj_n := 0  # objectives are numbered, in the order the Mission asks for them
-	var left_col := false
+	var col_r := x + LEFT_W + GUTTER  # two columns under the title: the Mission's own facts and objectives stay put on the left,
+	var rw := d.x - col_r - x           # and Aigis, across the wide right one, types out what it noticed
+	var card_w := (rw - CARD_GAP) / 2.0
+	var card_h := _card_h(card_w)
+	var head_y := 0.0
+	var yl := 0.0           # the left column's cursor
+	var card := -1          # the Habit card being drawn, and where the row of cards starts
+	var cards_y := 0.0
+	var obj_n := 0
 	for i in _lines.size():
 		var kind: String = _lines[i][0]
 		var s := _blips[i].shown()
-		if kind == "objective" or (kind == "head" and _lines[i][1] == "ui.brief.objectives"):
-			s = _lines[i][2]  # the Mission's asks are on the page at once: only Aigis's voice types
-			if not left_col:  # the right column is done above them in line order: start the left one level with its head
-				left_col = true
-				_right_end = y
-				y = _head_y
-		var cx := x if left_col else col_r
 		match kind:
 			"title":
 				var f := HudPalette.tracked(disp, 64, 0.12)
@@ -236,56 +242,64 @@ func _draw() -> void:
 			"gap":
 				y += 34
 			"head":
-				if not left_col:
-					_head_y = y  # the left column's head lines up with the first (Aigis) head
-				HudPalette.hud_text(self, Vector2(cx, y), s.to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(disp, 30, 0.26), 0, false)
-				draw_rect(Rect2(cx, y + 18, (lw if left_col else rw), 2), Color(HudPalette.LIGHT, 0.5))
-				y += 84
+				var on_left: bool = _lines[i][1] == "ui.brief.objectives"
+				var hx := x if on_left else col_r
+				if on_left:
+					yl = head_y + 84
+				else:
+					head_y = y
+					y += 84
+				var hs: String = _lines[i][2] if on_left else s
+				HudPalette.hud_text(self, Vector2(hx, head_y), hs.to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(disp, 30, 0.26), 0, false)
+				draw_rect(Rect2(hx, head_y + 18, LEFT_W if on_left else rw, 2), Color(HudPalette.LIGHT, 0.5))
 			"band":  # the ending: its Voice, large
 				HudPalette.hud_text(self, Vector2(x, y + 20), "%s %s" % [GLYPHS[_lines[i][1]], tr("ui.voice." + _lines[i][1]).to_upper()], 64, HudPalette.CYAN, HudPalette.tracked(disp, 64, 0.1), 0, false)
 				y += 80
-			"habit":  # the Habit Aigis noticed: its glyph, name and the levels it has deployed
+			"habit":  # a card: glyph, name and levels, then what Aigis counted
+				card += 1
+				if card == 0:
+					cards_y = y
 				if s != "":
-					var h: String = String(_lines[i][1]).get_slice(".", 3)
-					HabitGlyphs.draw(self, h, Vector2(cx, y - 26), HudPalette.CYAN, 5.0)
-					HudPalette.hud_text(self, Vector2(cx + 76, y + 12), _lines[i][2].to_upper(), 48, HudPalette.LIGHT, HudPalette.tracked(disp, 48, 0.06), 0, false)
-					for p in 3:
-						draw_rect(Rect2(cx + 76 + p * 34, y + 28, 28, 9), HudPalette.SAND if p < int(plan.deployed.get(h, 0)) else Color(HudPalette.LIGHT, 0.2))
-				y += 80
-			"hint":  # what that Habit now meets: the sponsoring Voice and its line, closing the row
-				var who := VoiceBlip.voice_of(_lines[i][1])
-				var rows := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), rw - 76, HudPalette.FIGURE_MED, HINT_FS)
+					_card(Vector2(col_r + card * (card_w + CARD_GAP), cards_y), card_w, card_h, i)
+				if card == 1:
+					y = cards_y + card_h + 56
+			"hint":  # the sponsoring Voice's answer, closing its card
+				var hx := col_r + maxi(card, 0) * (card_w + CARD_GAP)
+				var rows := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), card_w - 56, HudPalette.FIGURE_MED, CARD_FS)
 				if s != "":
-					_voice_head(Vector2(cx + 76, y + 26), who, i, k)
+					var base := cards_y + 100.0 + _ev_rows(i - 1, card_w) * EVID_ROW + 62.0
+					_voice_head(Vector2(hx + 28, base), VoiceBlip.voice_of(_lines[i][1]), i, k, 28)
 					var left := s.length()
 					for j in rows.size():
-						HudPalette.hud_text(self, Vector2(cx + 76, y + 84 + j * HINT_ROW), rows[j].left(maxi(left, 0)), HINT_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+						HudPalette.hud_text(self, Vector2(hx + 28, base + 50 + j * CARD_ROW), rows[j].left(maxi(left, 0)), CARD_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 						left -= rows[j].length() + 1
-				y += 84 + (rows.size() - 1) * HINT_ROW + 34
-				draw_rect(Rect2(cx, y, rw, 1), Color(HudPalette.LIGHT, 0.14))
-				y += 52
+				if card == 0 and not _lines.slice(i + 1).any(func(l: Array) -> bool: return l[0] == "habit"):
+					y = cards_y + card_h + 56  # a lone card: the row is done
 			"voice":
-				var who := VoiceBlip.voice_of(_lines[i][1])
-				_voice_head(Vector2(cx, y), who, i, k)
-				var full := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), body_w, HudPalette.FIGURE_MED, HINT_FS)
+				var big := card < 0  # Aigis's comment above the cards reads large; the lines that close the page a step down
+				var vfs := FS if big else OBJ_FS
+				var vrow := ROW if big else OBJ_ROW - 4
+				var full := HudPalette.wrap(_prefix.sub(_lines[i][2], ""), rw - TAG, HudPalette.FIGURE_MED, vfs)
+				_voice_head(Vector2(col_r, y), VoiceBlip.voice_of(_lines[i][1]), i, k, 32 if big else 28)
 				var left := s.length()
 				for l in full:
-					HudPalette.hud_text(self, Vector2(cx + TAG + 90, y), l.left(maxi(left, 0)), HINT_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+					HudPalette.hud_text(self, Vector2(col_r + TAG, y), l.left(maxi(left, 0)), vfs, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
 					left -= l.length() + 1
-					y += HINT_ROW
-				y += 30
+					y += vrow
+				y += 28 if big else 14
 			"objective":  # a sand step number, then the objective in Barlow
 				obj_n += 1
-				HudPalette.hud_text(self, Vector2(cx, y), "%02d" % obj_n, 34, HudPalette.SAND, HudPalette.tracked(disp, 34, 0.08), 0, false)
-				for l in HudPalette.wrap(s, lw - OBJ_INDENT, HudPalette.FIGURE_MED, HINT_FS):
-					HudPalette.hud_text(self, Vector2(cx + OBJ_INDENT, y), l, HINT_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
-					y += HINT_ROW
-				y += 30
-	if left_col:
-		y = maxf(y, _right_end)  # the page is as tall as its taller column
+				HudPalette.hud_text(self, Vector2(x, yl), "%02d" % obj_n, 36, HudPalette.SAND, HudPalette.tracked(disp, 36, 0.08), 0, false)
+				for l in HudPalette.wrap(_lines[i][2], LEFT_W - 72.0, HudPalette.FIGURE_MED, OBJ_FS):  # the Mission's asks are on the page at once: only Aigis types
+					HudPalette.hud_text(self, Vector2(x + 72, yl), l, OBJ_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+					yl += OBJ_ROW
+				yl += 16
+	if yl > 0.0 and not Campaign.done():
+		yl = _mission_facts(Vector2(x, yl + 12))
+	y = maxf(y, yl)  # the page is as tall as its taller column
 	var over := (y + 30.0) / (d.y - 110.0)  # the layout never changes while lines type: this settles in a frame or two
-	if over > 1.001:
-		_fit /= over
+	if over > 1.001 or (over < 0.92 and _fit < 1.0):  # too tall: draw smaller; room to spare after an early frame shrank it: grow back
+		_fit = minf(_fit / over, 1.0)
 		queue_redraw()
 	var af := HudPalette.tracked(disp, 26, 0.24)
 	var ak := tr("ui.brief.any_key").to_upper()
@@ -296,15 +310,74 @@ func _draw() -> void:
 		HudPalette.hud_text(self, Vector2(rx + kw + 14, d.y - 60), tr("ui.brief.requisition").to_upper(), 26, HudPalette.LIGHT_2, af, 0, false)
 
 
+## How many rows a Habit card's evidence takes (the "habit" line at `i`, 0 when it has none).
+func _ev_rows(i: int, card_w: float) -> int:
+	var ev: String = _lines[i][3] if i >= 0 and _lines[i].size() > 3 else ""
+	return 0 if ev == "" else HudPalette.wrap(ev, card_w - 56, HudPalette.FIGURE_MED, EVID_FS).size()
+
+
+## The Habit cards' common height: the name block, the longest evidence, then the answer's head and its longest text.
+func _card_h(card_w: float) -> float:
+	var ev := 0
+	var ans := 1
+	for i in _lines.size():
+		if _lines[i][0] == "habit":
+			ev = maxi(ev, _ev_rows(i, card_w))
+		elif _lines[i][0] == "hint":
+			ans = maxi(ans, HudPalette.wrap(_prefix.sub(_lines[i][2], ""), card_w - 56, HudPalette.FIGURE_MED, CARD_FS).size())
+	return 100.0 + ev * EVID_ROW + 62.0 + 50.0 + (ans - 1) * CARD_ROW + 36.0
+
+
+## A Habit's card at `at`: a glass plate, its glyph, name and levels deployed, then what Aigis counted.
+func _card(at: Vector2, w: float, h: float, i: int) -> void:
+	var hab: String = String(_lines[i][1]).get_slice(".", 3)
+	PixelKit.cut_fill(self, Rect2(at, Vector2(w, h)), Color(HudPalette.GLASS, 0.85), 5)
+	PixelKit.frame(self, Rect2(at, Vector2(w, h)), Color(HudPalette.CYAN, 0.35), 5)
+	PixelKit.cut_fill(self, Rect2(at, Vector2(w, 6)), HudPalette.CYAN, 0)
+	HabitGlyphs.draw(self, hab, at + Vector2(28, 14), HudPalette.CYAN, 5.0)
+	HudPalette.hud_text(self, at + Vector2(100, 60), _lines[i][2].to_upper(), 50, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 50, 0.06), 0, false)
+	var lvl := int(plan.deployed.get(hab, 0))
+	for p in 3:
+		draw_rect(Rect2(at.x + 100 + p * 36, at.y + 76, 30, 10), HudPalette.SAND if p < lvl else Color(HudPalette.LIGHT, 0.2))
+	HudPalette.hud_text(self, at + Vector2(100 + 3 * 36 + 18, 88), tr("ui.brief.level").format({n = lvl}).to_upper(), 24, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.LABEL, 24, 0.2), 0, false)
+	var rows := HudPalette.wrap(_lines[i][3] if _lines[i].size() > 3 else "", w - 56, HudPalette.FIGURE_MED, EVID_FS)
+	for j in rows.size():
+		HudPalette.hud_text(self, at + Vector2(28, 138 + j * EVID_ROW), rows[j], EVID_FS, HudPalette.LIGHT_2, HudPalette.FIGURE_MED, 0, false)
+
+
+## The Mission's own facts under its objectives (Area, Target, Encounters, par); returns where they end.
+func _mission_facts(at: Vector2) -> float:
+	var m: Dictionary = Campaign.MISSIONS[record.mission]
+	var rows: Array = []
+	if m.get("intro", {}).has("area"):
+		rows.append(["ui.brief.area", tr(m.intro.area).to_upper()])
+	if not m.targets.is_empty():
+		rows.append(["ui.brief.target", ", ".join(m.targets)])
+	var par := int(Rank.par(record.mission))
+	@warning_ignore("integer_division")
+	rows.append(["ui.brief.par", "%d:%02d  ·  %d %s" % [par / 60, par % 60, m.encounters, tr("ui.brief.encounters").to_upper()]])
+	var f := HudPalette.tracked(HudPalette.LABEL, 26, 0.22)
+	HudPalette.hud_text(self, at, tr("ui.brief.mission").to_upper(), 30, HudPalette.LIGHT_2, HudPalette.tracked(HudPalette.DISPLAY, 30, 0.26), 0, false)
+	draw_rect(Rect2(at.x, at.y + 18, LEFT_W, 2), Color(HudPalette.LIGHT, 0.5))
+	var y := at.y + 64
+	for row: Array in rows:
+		HudPalette.hud_text(self, Vector2(at.x, y), tr(row[0]).to_upper(), 26, HudPalette.LIGHT_3, f, 0, false)
+		HudPalette.hud_text(self, Vector2(at.x + 200, y), row[1], 30, HudPalette.LIGHT, HudPalette.FIGURE, 0, false)
+		y += 46
+	return y
+
+
 ## A Voice's mark, then its name, both in Aigis cyan; the mark pulses while its line types. No frame: a box round
 ## "[]" or "()" reads as a missing glyph.
-func _voice_head(at: Vector2, who: String, i: int, k: float) -> void:
+func _voice_head(at: Vector2, who: String, i: int, k: float, fs := 30) -> void:
 	var disp := HudPalette.DISPLAY
 	var glyph: String = GLYPHS[who]
-	var gf := HudPalette.tracked(disp, 30, 0.0)
-	var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 30).x
+	var gf := HudPalette.tracked(disp, fs, 0.0)
+	var w := gf.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var pk := StoryMotion.pulse(_line_t if i == _typing_i and not _blips[i].done() else 99.0)
-	draw_set_transform((Vector2(at.x, at.y - 2) + Vector2(w / 2, -13)) * k, 0.0, Vector2(k, k) * pk)
-	draw_string(gf, Vector2(-w / 2, 13), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 30, HudPalette.CYAN)
+	draw_set_transform((Vector2(at.x, at.y - 2) + Vector2(w / 2, -fs * 0.43)) * k, 0.0, Vector2(k, k) * pk)
+	var gp := Vector2(-w / 2, fs * 0.43)
+	draw_string_outline(gf, gp, glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, HudPalette.CYAN)  # a stroke round it: the glyph reads bold
+	draw_string(gf, gp, glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, HudPalette.CYAN)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
-	HudPalette.hud_text(self, Vector2(at.x + w + 14, at.y - 2), tr("ui.voice." + who).to_upper(), 30, HudPalette.CYAN, HudPalette.tracked(disp, 30, 0.2), 0, false)
+	HudPalette.hud_text(self, Vector2(at.x + w + 16, at.y - 2), tr("ui.voice." + who).to_upper(), fs, HudPalette.CYAN, HudPalette.tracked(disp, fs, 0.2), 0, false)
