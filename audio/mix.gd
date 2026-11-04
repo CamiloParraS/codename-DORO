@@ -111,7 +111,8 @@ var _wind: AudioStreamPlayer
 var _sea: AudioStreamPlayer
 var _vent: AudioStreamPlayer
 var _screen := &""         # the screen music that owns the speakers: &"menu", &"interlude" or none
-var _blip: AudioStreamPlayer   # one player for every text blip: a new blip cuts the last, so none stack
+var _on_call := false      # a Codec call is on screen
+var _blip: AudioStreamPlayer  # one player for every text blip: a new blip cuts the last, so none stack
 
 
 func _ready() -> void:
@@ -150,7 +151,8 @@ func _process(delta: float) -> void:
 	for t in _music:
 		var p: AudioStreamPlayer = _music[t]
 		if t in SCREENS:
-			p.volume_db = move_toward(p.volume_db, SCREEN_DB if t == _screen else SILENT, SCREEN_FADE_DB * delta)
+			var on: bool = t == _screen and not _on_call  # a Codec call over a screen takes the speakers: its music fades out
+			p.volume_db = move_toward(p.volume_db, SCREEN_DB if on else SILENT, SCREEN_FADE_DB * delta)
 		else:
 			p.volume_db = move_toward(p.volume_db, MusicState.ceiling_db(t) if t == want else SILENT, FADE_DB * delta)
 	var sky := op != null and NoFulton.open_sky(get_tree(), op.global_position)
@@ -239,6 +241,7 @@ func volume(bus: StringName) -> float:
 
 
 func codec_call(playing: bool) -> void:
+	_on_call = playing
 	_duck_to = MusicState.duck_db(playing)
 
 
