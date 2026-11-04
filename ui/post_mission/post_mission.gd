@@ -163,7 +163,7 @@ func _draw() -> void:
 		_:
 			_draw_aigis(d)
 	var said := lesson_key if view == "rank" and lesson_key != "" else voice_key
-	if said != "":  # the Metis ticker
+	if said != "" and view == "rank":  # the Metis ticker: on the Rank page only, where the line is about the run; the later pages are Aigis's
 		draw_rect(Rect2(0, d.y - 64, d.x, 64), Color.BLACK)
 		draw_rect(Rect2(0, d.y - 64, 130, 64), HudPalette.DMG)
 		HudPalette.hud_text(self, Vector2(65, d.y - 24), "METIS", 18, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 18, 0.3), 1, false)
