@@ -422,7 +422,21 @@ func _build() -> void:
 		_marker(split, n, PAIR_SPLIT[n][0], PAIR_SPLIT[n][1], {leaves = PAIR_SPLIT[n][2]}, "split_post")
 	var eavesdrops := _group(_root, "EavesdropSpots")
 	for n in EAVESDROP:
-		_marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
+		var spot := _marker(eavesdrops, n, EAVESDROP[n], 0, {}, "eavesdrop_spot")
+		# where to stand: the Spoof ring's art (RadioLook), flat on the deck, small and dim, widest frame
+		var ring := Sprite3D.new()
+		ring.name = "Ring"
+		ring.texture = RadioLook.RING_ICON
+		ring.hframes = 5
+		ring.frame = 4
+		ring.pixel_size = 0.9 / 15.5  # 0.9 m radius
+		ring.axis = Vector3.AXIS_Y
+		ring.shaded = false
+		ring.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		ring.set_script(load("res://areas/harbour/pulse_ring.gd"))  # pulses its opacity about 0.3
+		ring.position = Vector3(0, 0.05, 0)
+		spot.add_child(ring)
+		ring.owner = _root
 	_rooms(ROOMS)
 
 	_actors()
