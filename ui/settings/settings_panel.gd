@@ -71,7 +71,7 @@ func _layout() -> void:
 	_stage.scale = Vector2(k, k)
 	_stage.size = size / k
 	_icon.position = Vector2(_stage.size.x - 220 - ICON_SIZE, 300)
-	_note.position = _icon.position - Vector2(120, 0)
+	_note.position = _icon.position + Vector2(-120, ICON_SIZE + 24)  # under the icon
 
 
 func _put(key: String, v: Variant) -> void:
@@ -169,8 +169,8 @@ func _fps_row() -> void:
 			b.accept_event())
 
 
-## Aigis Voice's Gemini key (LlmClient): the row shows NONE, FROM SYSTEM (GEMINI_API_KEY) or the key's last four;
-## press opens the key editor (_open_key). While the row is selected the note on where the key lives replaces the icon.
+## Aigis Voice's API key (LlmClient): the row shows NONE, FROM SYSTEM or the key's last four; press opens the key
+## editor (_open_key). While the row is selected its key icon shows, and the note on where the key lives under it.
 func _key_row() -> void:
 	var ctl := SettingCtl.new()
 	_key_ctl = ctl
@@ -186,14 +186,14 @@ func _key_row() -> void:
 	_note.text = "ui.settings.aigis_key.note"
 	_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_note.add_theme_font_override("font", HudPalette.FIGURE_MED)
-	_note.add_theme_font_size_override("font_size", 28)
+	_note.add_theme_font_size_override("font_size", 26)
 	_note.modulate = HudPalette.LIGHT_2
 	_note.visible = false
-	_note.size = Vector2(ICON_SIZE + 120, ICON_SIZE)
+	_note.size = Vector2(ICON_SIZE + 120, 220)
 	_note.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_stage.add_child(_note)
 	b.focus_entered.connect(func() -> void:
-		_icon.visible = false
+		_show_icon("key")
 		_note.visible = true)
 	b.focus_exited.connect(func() -> void: _note.visible = false)
 	b.pressed.connect(_open_key)
@@ -213,53 +213,87 @@ func _open_key() -> void:
 	if is_instance_valid(_key_veil):
 		return
 	_key_veil = ColorRect.new()
-	_key_veil.color = Color(0, 0, 0, 0.7)
+	_key_veil.color = Color(0, 0, 0, 0.72)
 	_key_veil.mouse_filter = Control.MOUSE_FILTER_STOP
 	_stage.add_child(_key_veil)
 	_key_veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)  # follows _stage through a resize
+	if not UiMotion.reduced():  # the veil comes up in a short fade, the box with it
+		_key_veil.modulate.a = 0.0
+		create_tween().tween_property(_key_veil, "modulate:a", 1.0, 0.14)
 	var box := PanelContainer.new()
 	var frame := StyleBoxFlat.new()
-	frame.bg_color = HudPalette.GROUND
+	frame.bg_color = Color(HudPalette.GROUND, 0.97)
+	frame.border_width_top = 6  # the cyan bar on top, like the Habit cards
 	frame.border_color = HudPalette.CYAN
-	frame.set_border_width_all(3)
-	frame.set_content_margin_all(40)
+	frame.set_content_margin_all(48)
+	frame.shadow_color = Color(0, 0, 0, 0.5)
+	frame.shadow_size = 28
 	box.add_theme_stylebox_override("panel", frame)
-	box.custom_minimum_size.x = 900
+	box.custom_minimum_size.x = 1000
 	_key_veil.add_child(box)
 	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER)  # centred, growing both ways as it fills
 	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	box.grow_vertical = Control.GROW_DIRECTION_BOTH
 	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 22)
+	col.add_theme_constant_override("separation", 24)
 	box.add_child(col)
+	var head := HBoxContainer.new()  # the key icon, then the title
+	head.add_theme_constant_override("separation", 24)
+	col.add_child(head)
+	var mark := TextureRect.new()
+	mark.texture = load(ICONS % "key")
+	mark.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	mark.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	mark.custom_minimum_size = Vector2(64, 64)
+	mark.modulate = HudPalette.CYAN
+	mark.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	head.add_child(mark)
 	var title := Label.new()
 	title.text = "ui.settings.aigis_key"
-	title.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 40, 0.14))
-	title.add_theme_font_size_override("font_size", 40)
-	title.add_theme_color_override("font_color", HudPalette.CYAN)
-	col.add_child(title)
+	title.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 44, 0.14))
+	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_color_override("font_color", HudPalette.LIGHT)
+	title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(title)
+	var rule := ColorRect.new()
+	rule.color = Color(HudPalette.LIGHT, 0.25)
+	rule.custom_minimum_size.y = 2
+	col.add_child(rule)
+	var about := Label.new()  # what the key is for, so the box explains itself
+	about.text = "ui.settings.aigis_key.note"
+	about.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	about.custom_minimum_size.x = 900
+	about.add_theme_font_override("font", HudPalette.FIGURE_MED)
+	about.add_theme_font_size_override("font_size", 26)
+	about.add_theme_color_override("font_color", HudPalette.LIGHT_2)
+	col.add_child(about)
 	var edit := LineEdit.new()
 	edit.secret = true
 	edit.placeholder_text = tr("ui.settings.aigis_key.paste")
 	edit.text = _values.get("llm_key", "")
-	edit.custom_minimum_size.y = 64
+	edit.custom_minimum_size.y = 72
 	edit.add_theme_font_override("font", HudPalette.FIGURE_MED)
-	edit.add_theme_font_size_override("font_size", 30)
+	edit.add_theme_font_size_override("font_size", 32)
 	edit.add_theme_color_override("font_color", HudPalette.LIGHT)
 	edit.add_theme_color_override("font_placeholder_color", HudPalette.LIGHT_3)
 	edit.add_theme_color_override("caret_color", HudPalette.CYAN)
-	var field := StyleBoxFlat.new()
-	field.bg_color = Color(0, 0, 0, 0.5)
-	field.border_color = Color(HudPalette.LIGHT, 0.5)
-	field.set_border_width_all(2)
-	field.set_content_margin_all(14)
-	for s in ["normal", "focus", "read_only"]:
-		edit.add_theme_stylebox_override(s, field)
+	edit.add_theme_color_override("selection_color", Color(HudPalette.CYAN, 0.35))
+	var field := StyleBoxFlat.new()  # a dark well with a quiet base line; the base line lights cyan while typing
+	field.bg_color = Color(HudPalette.LIGHT, 0.06)
+	field.border_color = Color(HudPalette.LIGHT, 0.35)
+	field.border_width_bottom = 3
+	field.set_content_margin_all(18)
+	var field_on := field.duplicate() as StyleBoxFlat
+	field_on.border_color = HudPalette.CYAN
+	field_on.bg_color = Color(HudPalette.CYAN, 0.08)
+	edit.add_theme_stylebox_override("normal", field)
+	edit.add_theme_stylebox_override("read_only", field)
+	edit.add_theme_stylebox_override("focus", field_on)
 	col.add_child(edit)
 	var hint := Label.new()
 	hint.text = "ui.settings.aigis_key.keys"
-	hint.add_theme_font_override("font", HudPalette.tracked(HudPalette.DISPLAY, 22, 0.2))
-	hint.add_theme_font_size_override("font_size", 22)
+	hint.add_theme_font_override("font", HudPalette.tracked(HudPalette.LABEL, 24, 0.22))
+	hint.add_theme_font_size_override("font_size", 24)
 	hint.add_theme_color_override("font_color", HudPalette.LIGHT_3)
 	col.add_child(hint)
 	var close := func(save: bool) -> void:
