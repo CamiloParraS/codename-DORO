@@ -26,7 +26,23 @@ const STOW_CLIPS := ["climb"]
 const ARMS := [["upperarm_r", "lowerarm_r", "hand_r"], ["upperarm_l", "lowerarm_l", "hand_l"]]
 const WRIST := 0.07  # m from the wrist bone to where the mitt closes
 
+## A carried body lies on its back across the carrier's forearms, in front of his chest: its head to his left, its feet to
+## his right (the model's up runs to -X, its front faces the sky). The origin is at the feet; the back sits ~0.12 m under it.
+const CRADLE := Transform3D(Basis(Vector3(0, 0, 1), Vector3(-1, 0, 0), Vector3(0, -1, 0)), Vector3(1.0, 1.22, -0.4))
+## m the model drops when it hangs from a Fulton line: the cable ends at the node's origin, so the chest hangs from it.
+const HUNG_DROP := 1.35
+## Limbs of a limp body (cradled or hung): [upper, lower, end] bones per limb. Nikita's rig, then the Target's Mixamo one.
+const LIMP_BONES := {
+	"quaternius": {"arm_l": ["upperarm_l", "lowerarm_l", "hand_l"], "arm_r": ["upperarm_r", "lowerarm_r", "hand_r"],
+		"leg_l": ["thigh_l", "calf_l", "foot_l"], "leg_r": ["thigh_r", "calf_r", "foot_r"], "neck": ["neck_01", "Head"]},
+	"mixamo": {"arm_l": ["mixamorig_LeftArm", "mixamorig_LeftForeArm", "mixamorig_LeftHand"],
+		"arm_r": ["mixamorig_RightArm", "mixamorig_RightForeArm", "mixamorig_RightHand"],
+		"leg_l": ["mixamorig_LeftUpLeg", "mixamorig_LeftLeg", "mixamorig_LeftFoot"],
+		"leg_r": ["mixamorig_RightUpLeg", "mixamorig_RightLeg", "mixamorig_RightFoot"], "neck": ["mixamorig_Neck", "mixamorig_Head"]},
+}
+
 var skeleton: Skeleton3D
+var _limp := ""  # "cradle" (lying across a carrier's arms), "hung" (posed on a Fulton line) or "ragdoll" (hanging from one): limp, whatever the clip
 var _clip := ""
 var _home: Node3D    # where the model lives while it rides someone's shoulder
 var _ragdoll: Ragdoll
@@ -50,6 +66,44 @@ var _shown := true  # on screen (or limp): the modifiers run and the clip moves 
 
 ## Box around a watched body, past its feet: a body just out of frame may still throw its shadow into it.
 const SCREEN_MARGIN := 1.5
+
+
+## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
+## strafe (Locomotion.STRAFE_DIRS) is the way an aiming Operative moves relative to his facing: the legs walk that way.
+static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool, task := "", strafe := "") -> String:
+	if choking:
+		return "takedown"
+	if task != "":
+		return task
+	if carrying:
+		return "carry" if moving else "carry_idle"
+	if aiming and not moving:  # moving, the legs walk and operative_upper() holds the aim over them
+		return "crouch_aim" if crouching else "aim"
+	if aiming and strafe != "":  # the legs step the way he goes, so a sideways move isn't a forward walk skating
+		return ("crouch_walk_" if crouching else "walk_") + strafe
+	if crouching:
+		return "crouch_walk" if moving else "crouch_idle"
+	if moving:
+		return "walk" if walking or aiming else "run"  # aiming slows him to a walk (Locomotion.speed)
+	return "idle"
+
+
+## The aim the Operative's upper body holds over a walk (aiming on the move: he strafes facing the crosshair), or "".
+static func operative_upper(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, task := "") -> String:
+	if not aiming or not moving or choking or carrying or task != "":
+		return ""
+	return "crouch_aim" if crouching else "aim"
+
+
+## Which clip a guard shows, by flat speed (m/s). dead is one killed on its feet: it falls instead of sleeping.
+static func guard_clip(down: bool, speed: float, dead := false) -> String:
+	if dead:
+		return "dead"
+	if down:
+		return "down"
+	if speed > 3.0:
+		return "run"
+	return "walk" if speed > 0.3 else "idle"
 
 
 ## Adds every modifier the skeleton has bones for; once the body is in.
@@ -254,3 +308,74 @@ func gaze(point: Variant) -> void:
 	_gaze_on = point != null
 	if _gaze_on:
 		_gaze.global_position = point
+
+
+## Bone names of this rig's limbs (LIMP_BONES), or {} on a rig that has neither set.
+func _limp_bones() -> Dictionary:
+	for set: String in LIMP_BONES:
+		if skeleton.find_bone(LIMP_BONES[set].neck[1]) >= 0:
+			return LIMP_BONES[set]
+	return {}
+
+
+## Turns `bone` (skeleton bone names) so the line from it to `child` points along `dir` (world space).
+func _aim(bone: String, child: String, dir: Vector3) -> void:
+	var i := skeleton.find_bone(bone)
+	var c := skeleton.find_bone(child)
+	if i < 0 or c < 0:
+		return
+	var pose := skeleton.get_bone_global_pose(i)
+	var cur := (skeleton.get_bone_global_pose(c).origin - pose.origin).normalized()
+	var want := (skeleton.global_basis.orthonormalized().inverse() * dir).normalized()
+	if cur.is_zero_approx() or want.is_zero_approx() or cur.dot(want) < -0.9999:
+		return
+	pose.basis = Basis(Quaternion(cur, want)) * pose.basis
+	skeleton.set_bone_global_pose(i, pose)
+
+
+## Over the rest pose of a limp body (cradled or hung): arms and legs hang down, the head lolls, all swaying a little.
+func _limp_pose() -> void:
+	if _limp != "cradle" and _limp != "hung":  # a ragdoll hangs by itself
+		return
+	var b := _limp_bones()
+	if b.is_empty():
+		return
+	var t := Time.get_ticks_msec() / 1000.0
+	var sway := sin(t * 1.7) * 0.1
+	var right := global_basis.x.normalized()
+	var top := global_basis.y.normalized()   # up the body, to the head
+	var fwd := -global_basis.z.normalized()  # the way its chest faces
+	var down := Vector3.DOWN
+	for k in 2:
+		var side := right * (-1.0 if k == 0 else 1.0)
+		var arm: Array = b["arm_l" if k == 0 else "arm_r"]
+		var leg: Array = b["leg_l" if k == 0 else "leg_r"]
+		if _limp == "cradle":
+			_aim(arm[0], arm[1], down + side * 0.15 + top * sway)
+			_aim(arm[1], arm[2], down + side * 0.05 + top * sway * 1.5)
+			_aim(leg[0], leg[1], -top + down * 0.35 + side * 0.08)  # the thighs trail along the body, the knees give
+			_aim(leg[1], leg[2], down - top * 0.2 + top * sway)
+		else:
+			_aim(arm[0], arm[1], down + side * 0.25 + fwd * sway)
+			_aim(arm[1], arm[2], down + side * 0.1 + fwd * sway * 1.5)
+			_aim(leg[0], leg[1], down + side * 0.06)
+			_aim(leg[1], leg[2], down - fwd * 0.12 + fwd * sway)
+	var neck: Array = b.neck
+	# the head falls back off the arm; hung, it drops onto the chest
+	_aim(neck[0], neck[1], top + down * 0.9 if _limp == "cradle" else Vector3.UP + fwd * 0.7)
+
+
+## The carrier's arms under the body he carries: upper arms down, forearms level in front of him, held out as a cradle.
+func _cradle_arms(holder: Node3D) -> void:
+	if holder == null or holder.get_child_count() == 0:
+		return
+	var b := _limp_bones()
+	if b.is_empty():
+		return
+	var right := global_basis.x.normalized()
+	var fwd := -global_basis.z.normalized()
+	for k in 2:
+		var s := -1.0 if k == 0 else 1.0
+		var arm: Array = b["arm_l" if k == 0 else "arm_r"]
+		_aim(arm[0], arm[1], Vector3.DOWN * 0.9 + fwd * 0.3 + right * s * 0.1)
+		_aim(arm[1], arm[2], fwd - right * s * 0.25 + Vector3.UP * 0.05)

@@ -307,8 +307,9 @@ func fulton() -> void:
 	lift.pitch_scale = 1.0
 	create_tween().tween_property(lift, "pitch_scale", 1.6, RISE_TIME)  # pitched up as it rises
 	_balloon_spot = global_position
+	var waist := model.hang()  # the cable takes him by the waist: he dangles from it as a ragdoll instead of rising lying down
 	_balloon = Fx.balloon()
-	_balloon.position.y = 3.0
+	_balloon.position.y = 3.0 + waist  # the cable runs 3 m down from the balloon, to the waist
 	add_child(_balloon)
 	create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS).tween_property(_balloon, "scale", Vector3.ONE, Fx.INFLATE)
 	var t := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)  # per tick, so physics interpolation smooths it

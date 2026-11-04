@@ -73,7 +73,6 @@ const EAR_SPEED := 3.0
 ## m/s the climbing_ladder clip climbs at: its gripping hand slides down the body this fast. pace() scales the clip
 ## from it so the hands hold the rungs instead of sliding up them.
 const CLIMB_SPEED := 0.7
-const CARRY_BONE := "spine_03"
 const HAND_BONE := "hand_r"
 const OFF_HAND := "hand_l"
 ## The rifle swings to point at the off hand while it is this far (m) from the gun hand, so it sits in both hands
@@ -110,14 +109,13 @@ const GUNS := {
 const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
 const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
-
 @export var kind := Kind.GUARD
 
 var _anim := AnimationPlayer.new()
 var _since_step := 0.0
 var _busy := 0.0     # seconds left of a whole-body react() one-shot, which play() must not interrupt
 var _weapon := ""    # the name it was hold()n with, which picks the clip set
-var _holder: Node3D  # model space on the shoulder bone; a carried guard's model hangs here
+var _holder: Node3D  # a carried guard's model hangs here, under this model
 var _held := Transform3D()  # the rifle in the gun hand's frame as the off hand last held it
 var _upper_bones := {}     # bone name -> index, for UPPER_ROOT and everything under it
 var _shot := ""            # the upper-body one-shot over the base clip, "" for none
@@ -130,44 +128,6 @@ var _upper_hold := ""      # a looping clip the upper body holds over the base c
 var _upper_hold_t := 0.0
 var _upper_hold_w := 0.0         # eases in and out over UPPER_FADE
 var _upper_hold_tracks := []
-
-
-## Which clip the Operative shows. task is a clip for what it is busy at (climb, use, crouch_idle for a Fulton), or "".
-## strafe (Locomotion.STRAFE_DIRS) is the way an aiming Operative moves relative to his facing: the legs walk that way.
-static func operative_clip(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, walking: bool, task := "", strafe := "") -> String:
-	if choking:
-		return "takedown"
-	if task != "":
-		return task
-	if carrying:
-		return "carry" if moving else "carry_idle"
-	if aiming and not moving:  # moving, the legs walk and operative_upper() holds the aim over them
-		return "crouch_aim" if crouching else "aim"
-	if aiming and strafe != "":  # the legs step the way he goes, so a sideways move isn't a forward walk skating
-		return ("crouch_walk_" if crouching else "walk_") + strafe
-	if crouching:
-		return "crouch_walk" if moving else "crouch_idle"
-	if moving:
-		return "walk" if walking or aiming else "run"  # aiming slows him to a walk (Locomotion.speed)
-	return "idle"
-
-
-## The aim the Operative's upper body holds over a walk (aiming on the move: he strafes facing the crosshair), or "".
-static func operative_upper(choking: bool, carrying: bool, aiming: bool, crouching: bool, moving: bool, task := "") -> String:
-	if not aiming or not moving or choking or carrying or task != "":
-		return ""
-	return "crouch_aim" if crouching else "aim"
-
-
-## Which clip a guard shows, by flat speed (m/s). dead is one killed on its feet: it falls instead of sleeping.
-static func guard_clip(down: bool, speed: float, dead := false) -> String:
-	if dead:
-		return "dead"
-	if down:
-		return "down"
-	if speed > 3.0:
-		return "run"
-	return "walk" if speed > 0.3 else "idle"
 
 
 static func _psx_material(texture: Texture2D) -> StandardMaterial3D:
@@ -216,6 +176,8 @@ func _process(delta: float) -> void:
 	if _since_step >= (STEP if _shown else OFFSCREEN_STEP):
 		_anim.advance(_since_step)
 		_layer(_since_step)
+		_limp_pose()
+		_cradle_arms(_holder)
 		_since_step = 0.0
 		if _weapon == "rifle":
 			if (_clip in SQUARED or _upper_hold_w > 0.5) and (_shot == "" or _shot in SQUARED):  # not with a reload laid over the aim
@@ -368,6 +330,8 @@ func _clips() -> AnimationLibrary:
 ## from (s) skips the clip's own lead-in. An UPPER_CLIPS clip leaves the legs to play(); any other takes the
 ## whole body. Does nothing without the Mixamo bake.
 func react(clip: String, seconds := 0.0, speed := 0.0, from := 0.0) -> void:
+	if _limp != "":
+		return
 	var upper := clip in UPPER_CLIPS and kind != Kind.TARGET
 	clip = _swapped(clip)
 	if not _anim.has_animation(clip):
@@ -410,6 +374,8 @@ func _end_shot() -> void:
 
 ## Plays a looping clip. ground_speed (m/s) paces a clip baked with a "speed" meta so the feet keep up with the body.
 func play(clip: String, ground_speed := 0.0) -> void:
+	if _limp != "":
+		return  # lying in someone's arms or hanging from a line, it is limp whatever the guard asks for
 	clip = _swapped(clip)
 	if _busy > 0.0:
 		return
@@ -502,11 +468,11 @@ func _on_bone(bone: String, node: Node3D) -> void:
 	at.add_child(node)
 
 
-## Where a carried guard's model hangs: the shoulder bone, in model space.
+## Where a carried guard's model hangs: the carrier's model root, where the CRADLE pose lays it across his arms.
 func carry_mount() -> Node3D:
 	if not _holder:
 		_holder = Node3D.new()
-		_on_bone(CARRY_BONE, _holder)
+		add_child(_holder)
 	return _holder
 
 
@@ -549,7 +515,7 @@ func get_up(fade := Ragdoll.BLEND) -> void:
 		_ragdoll.stop(fade)
 
 
-## On `mount` (a carry_mount) the model lies in the fixed shoulder pose; null puts it back where it was.
+## On `mount` (a carry_mount) the model hangs limp over the shoulder; null puts it back where it was.
 func ride(mount: Node3D) -> void:
 	if mount:
 		_end_shot()
@@ -557,15 +523,55 @@ func ride(mount: Node3D) -> void:
 		if not _home:
 			_home = get_parent_node_3d()
 		reparent(mount, false)
-		physics_interpolation_mode = PHYSICS_INTERPOLATION_MODE_OFF  # the bone moves per frame, not per tick
-		transform = CARRIED
-		_clip = "down"
-		_anim.play("down")
-		_anim.seek(_anim.get_animation("down").length, true)
+		physics_interpolation_mode = PHYSICS_INTERPOLATION_MODE_OFF  # the carrier's pose moves per frame, not per tick
+		# laid on its back across the carrier's arms: the rest pose, then _limp_pose() lets the limbs and head hang
+		transform = CRADLE
+		_limp = "cradle"
+		_clip = "limp"
+		_anim.speed_scale = 1.0
+		_anim.play("RESET")
+		_pose_now()  # not a frame of the standing rest pose first
 	elif _home:
+		_limp = ""
 		reparent(_home, false)
 		physics_interpolation_mode = PHYSICS_INTERPOLATION_MODE_INHERIT
 		transform = Transform3D.IDENTITY
 		reset_physics_interpolation()
 		_home = null
 		drop()  # put down: it slumps to the ground
+
+
+## Applies the rest pose and the limp limbs this very frame, so a body that has just been put in someone's arms
+## or on a line never shows the standing pose.
+func _pose_now() -> void:
+	_anim.advance(0.0)
+	_limp_pose()
+
+
+## Hangs from a Fulton line by the waist: the hips follow the line (the clip's rest pose) and every other bone is a
+## ragdoll swinging from them. Returns the height (m above the model's origin) the cable must end at: the hips.
+## The Target's rig has no physical bones, so it hangs by the chest in a posed limp instead.
+func hang() -> float:
+	_end_shot()
+	get_up(0.0)
+	_clip = "limp"
+	_anim.speed_scale = 1.0
+	_anim.play("RESET")
+	if kind == Kind.TARGET:
+		_limp = "hung"
+		_pose_now()
+		return HUNG_DROP
+	_limp = "ragdoll"
+	_anim.advance(0.0)  # standing at the line first, then the body goes physical
+	if _ragdoll == null:
+		_ragdoll = Ragdoll.new(skeleton)
+		add_child(_ragdoll)
+	_ragdoll.hang()
+	return _bone_height("pelvis", 1.0)
+
+
+func _bone_height(bone: String, fallback: float) -> float:
+	var i := skeleton.find_bone(bone)
+	if i < 0:
+		return fallback
+	return to_local(skeleton.to_global(skeleton.get_bone_global_rest(i).origin)).y
