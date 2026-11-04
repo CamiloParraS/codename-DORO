@@ -56,6 +56,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	mouse_filter = Control.MOUSE_FILTER_IGNORE  # a STOP Control eats the click before _unhandled_input sees it
 	for f in ResourceLoader.list_directory(PORTRAITS.get_base_dir()):  # not in _draw: a texture first loaded there draws white (Godot 4.7)
 		if f.ends_with(".png"):
 			_faces[PORTRAITS.get_base_dir().path_join(f)] = load(PORTRAITS.get_base_dir().path_join(f))
