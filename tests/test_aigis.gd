@@ -80,7 +80,7 @@ func test_mission_points_follow_the_trigger_table() -> void:
 		"down_found": 1, "woken": 2, "spoof": 2, "spoof_exposed": 1,
 	}))
 	assert_eq(pts, {
-		"stealth": 30, "combat": 30 + 15 + 15, "headshots": 40, "takedowns": 60,
+		"stealth": 30, "combat": 30 + 15 + 15, "headshots": 30, "takedowns": 45,
 		"downs": 25 + 30, "spoofing": 40 + 20,
 	})
 
@@ -152,7 +152,7 @@ func test_decay_stops_at_zero() -> void:
 
 func test_used_habits_add_their_points_and_do_not_decay() -> void:
 	var r := Aigis.complete_mission(_record(CORE, {"headshots": 200, "takedowns": 200}), _loud({"headshot": 1}))
-	assert_eq(r.points.headshots, 220)
+	assert_eq(r.points.headshots, 215)
 	assert_eq(r.points.takedowns, 150)
 
 
@@ -295,7 +295,7 @@ func test_simulated_loud_campaign_turns_gorgo_and_answers_combat() -> void:
 
 func test_simulated_style_change_moves_aigis_away() -> void:
 	# Headshots for three Missions, then a quiet ghost Mission with no headshots before the Core.
-	var shooter := {"headshot": 6, "alert": 1, "loud_shot": 2, "spawned": 9}
+	var shooter := {"headshot": 7, "alert": 1, "loud_shot": 2, "spawned": 9}
 	var ghost := {"quiet_down": 6, "spawned": 9}
 	var rs := _campaign([shooter, shooter, shooter])
 	assert_eq(Aigis.level(rs[3].points.headshots, CORE), 3)

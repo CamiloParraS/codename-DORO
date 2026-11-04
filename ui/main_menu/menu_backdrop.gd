@@ -1,5 +1,5 @@
 ## The title and main menu's backdrop: screenshots of the Areas, one after another, each arriving over the last as
-## a short stepped pixel dissolve while it pushes in and pans slowly (a Ken Burns). Each is graded towards one
+## a smooth crossfade while it pushes in and pans slowly (a Ken Burns). Each is graded towards one
 ## duotone (teal-black shadows, pale highlights) so the six read as one camera, and a MenuFeed over them captions the
 ## Area and locks onto the people in it. Drawn under the UiScan. Under reduced motion it holds the first picture, still.
 class_name MenuBackdrop
@@ -23,9 +23,7 @@ const SLIDES: Array[Dictionary] = [
 const MARK_ASPECT := 0.75  # a person's bracket is this wide for its height
 const HOLD := 9.0    # s each picture is the front one
 const SHADER := preload("res://ui/main_menu/menu_dissolve.gdshader")
-const FADE := 0.4    # s the next one takes to dissolve in
-const STEPS := 8     # hard steps of the dissolve (the UI's wipe is eight too)
-const BLOCK := 10.0  # px of a dissolve block at 1080 tall
+const FADE := 1.2    # s the next one takes to fade in
 const ZOOM := Vector2(1.08, 1.15)  # scale at the start and end of a picture's life: a slow push reads smooth
 const PAN := 0.025   # of the stage size, either side of centre (the start zoom leaves 0.04 spare)
 const DIRS: Array[Vector2] = [Vector2(1, 0.3), Vector2(-1, -0.3), Vector2(0.6, -1), Vector2(-0.6, 1)]
@@ -59,10 +57,10 @@ static func front(t: float) -> int:
 	return int(t / HOLD)
 
 
-## How much of the front slide shows `age` seconds in, in `STEPS` hard steps: the first is simply there, the rest
-## dissolve in over the last.
+## How much of the front slide shows `age` seconds in, eased: the first is simply there, the rest fade in over the
+## last.
 static func opacity(index: int, age: float) -> float:
-	return 1.0 if index == 0 else ceilf(clampf(age / FADE, 0.0, 1.0) * STEPS) / STEPS
+	return 1.0 if index == 0 else smoothstep(0.0, 1.0, age / FADE)
 
 
 func _ready() -> void:
@@ -73,7 +71,7 @@ func _ready() -> void:
 	for i in 2:
 		var r := TextureRect.new()
 		r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		r.stretch_mode = TextureRect.STRETCH_SCALE  # the shader crops to cover and poses, at sub-pixel precision
 		r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		r.material = ShaderMaterial.new()
@@ -124,8 +122,10 @@ func _watch(i: int, age: float) -> void:
 
 func _place(r: TextureRect, index: int, age: float, alpha: float) -> void:
 	var p := pose(index, age)
-	r.pivot_offset = size / 2.0
-	r.scale = Vector2.ONE * p.scale
-	r.position = p.shift * size
-	r.material.set_shader_parameter("progress", alpha)
-	r.material.set_shader_parameter("block", maxf(BLOCK * size.y / 1080.0, 3.0))
+	var tex := r.texture.get_size()
+	var cover := Vector2(1.0, tex.x * size.y / (tex.y * size.x)) if size.x / size.y > tex.x / tex.y 			else Vector2(tex.y * size.x / (tex.x * size.y), 1.0)
+	var m := r.material as ShaderMaterial
+	m.set_shader_parameter("zoom", p.scale)
+	m.set_shader_parameter("shift", p.shift)
+	m.set_shader_parameter("cover", cover)
+	m.set_shader_parameter("progress", alpha)

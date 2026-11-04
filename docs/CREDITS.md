@@ -10,7 +10,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Blocky Characters, Survival Kit, City Kit (Industrial) by Kenney, https://kenney.nl
   License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
 - Kenney Survival Kit `box-large` and City Kit (Industrial) `shipping-container-a/b` (`assets/models/props/`, skinned onto the greybox crates by `areas/prop_skin.gd`), https://kenney.nl, CC0 1.0
-- Characters PSX `Character_Male_36` by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (`assets/models/characters/target/`, the Target's body; its clips are Mixamo, baked by `tools/bake_target.gd`)
+- Characters PSX `Character_Male_36` and `Character_23_Female_Doctor` by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (`assets/models/characters/target/`, the Targets' bodies: the female doctor is the Lead Researcher; their clips are Mixamo, baked by `tools/bake_target.gd`)
 - Modern Rebel Soldier (PSX) by yugg0, https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1
   Free for personal and commercial use per the author's page; rig from Mixamo; basemesh from Sketchfab (see the author's page).
 - Characters PSX by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0
@@ -57,6 +57,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Tiny Texture Pack 2 by Screaming Brain Studios, https://opengameart.org/content/tiny-texture-pack-2, CC0 1.0
 - Textures derived from ambientCG, https://ambientcg.com (CC0 1.0), and Poly Haven, https://polyhaven.com (CC0 1.0), downscaled to 64-128 px.
 - Foxtex, Foxhead, https://foxh3ad.itch.io/foxtexcom, CC0 1.0
+- Game icon and boot splash (`assets/branding/`): made for this project by the team, no third-party material.
 - Crosshairs (`crosshair_4_small.png`, `crosshair_21.png`) from Pizza Doggy's Mystery Package vol. 14 (Crosshairs Pack v1.0), https://itch.io/profile/pizzadoggy. Same license as the models above (Pizza Doggy's Game Assets License Agreement).
 
 ## Fonts
@@ -115,3 +116,5 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Phantom Camera 0.11.0.4, Ramokz, https://github.com/ramokz/phantom-camera, MIT (addons/phantom_camera/).
 - Finale stills (`assets/stills/`), Unsplash License, cropped to 16:9: island in fog by Jakub Flis, https://unsplash.com/photos/pXcTpEj6nCw; radio dish at dusk by Alec Favale, https://unsplash.com/photos/gkFH7kcuzug; lava meeting the sea by Sebastien Gabriel, https://unsplash.com/photos/TG-Ea4dvDm0.
 - Finale sounds, Freesound, CC0, from the original WAVs (`_raw/audio/finale_sounds/`), loudness-matched with ffmpeg: "Dark Sci-Fi Signal" by qubodup, https://freesound.org/s/814045/ (`sfx_finale_transmit.ogg`); "Glitch Noise 1" by Flying_Deer_Fx, https://freesound.org/s/369145/ (`sfx_finale_glitch.ogg`); "Gentle Waves - Quiet Beach" by amholma, https://freesound.org/s/376795/ (`ambience_finale_sea.ogg`); "System shutdown" by colorsCrimsonTears, https://freesound.org/s/540321/ (`sfx_finale_shutdown.ogg`); "hawaii_kilauea_lava_lake.wav" by e__, https://freesound.org/s/172936/ (`ambience_finale_lava.ogg`); "Steam.wav" by SukritSen, https://freesound.org/s/398077/ (`sfx_finale_steam.ogg`).
+- "Main Theme" (`assets/audio/music_menu.ogg`) and "Cold Principle" (`assets/audio/music_interlude.ogg`), source: public archive (the main menu / the screens between Missions; converted to Ogg Vorbis). Author and licence to be confirmed.
+- Suppressor break, Codec ring/answer/hang-up, intel chime, camera lock, transition whoosh, Game Over hit and drone, Mission-complete sting, Scanner ping, lift door, wind and vent beds (`assets/audio/sfx_suppressor_break.ogg`, `sfx_codec_*.ogg`, `sfx_intel.ogg`, `sfx_camera_lock.ogg`, `ambience_wind.ogg`, `ambience_vent.ogg`): synthesized by `tools/make_sfx.py`, CC0. Surf under the harbour's open sky reuses `ambience_finale_sea.ogg`.

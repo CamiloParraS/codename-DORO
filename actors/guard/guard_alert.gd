@@ -13,6 +13,8 @@ const DRAIN := 0.25        # meter drain per second while the Operative is out o
 const LOOK_TIME := 5.0     # seconds a suspicious guard looks around the spot before giving up
 const NOISE_GRACE := 1.0   # a noise later than this into Suspicion adds NOISE_FILL to the meter
 const NOISE_FILL := 0.35
+const MOVED := 2.5         # m: a noise this far from a suspicious guard's look point is a new place to look
+const SIGHT_GRACE := 0.7   # s: a hunting guard that saw the Operative this recently ignores noise and the squad's word
 const CAMERA_LOSE_TIME := 3.0  # a camera drops its alert this quickly: it never searches
 const FOOTSTEP_RANGE := 6.0  # noise ranges in metres, no wall occlusion
 const KNOCK_RANGE := 10.0
@@ -132,26 +134,49 @@ func see_drop(pos: Vector3, name_: String) -> String:
 
 
 ## A noise reached this guard: suspicion at the source, never an alert by itself. A suspicious guard
-## moves its look point there without restarting the look-around, and a noise more than NOISE_GRACE s
-## into Suspicion adds NOISE_FILL to the meter, so repeated noise escalates (footsteps never do: only sight alerts). A searching guard moves
-## its search there.
+## moves its look point there; continuous noise (footsteps, or one near the point) never restarts the
+## look-around, but a discrete noise more than MOVED m off is a new place to look: the look-around starts
+## over and the reason restarts the tree (the "huh?" turn). A noise more than NOISE_GRACE s into Suspicion
+## adds NOISE_FILL to the meter, so repeated noise escalates (footsteps never do: only sight alerts).
+## A hunting guard that hasn't had sight for SIGHT_GRACE s, and a searching one, go for the noise.
+## Footsteps arrive every frame a runner is in earshot, so they move the point without a reason.
 func hear(pos: Vector3, what: String) -> String:
-	if state == State.ALERT and not calling and what == "footsteps":
-		last_known = pos  # an alerted guard still turns to a runner it can't see
+	if calling:
 		return ""
-	if state == State.ALERT or calling:
-		return ""
+	var steps := what == "footsteps"
+	match state:
+		State.ALERT:
+			if saw and unseen < SIGHT_GRACE:
+				return ""  # eyes on the Operative beat a noise
+			last_known = pos
+			return "" if steps else "heard %s, hunting there" % what
+		State.EVASION:
+			last_known = pos
+			timer = 0.0
+			return "" if steps else "heard %s, searching there" % what
+		State.PATROL:
+			last_known = pos
+			meter = maxf(meter, SUSPECT_AT)
+			return _go(State.SUSPICION, "heard %s" % what)
+	var moved := last_known.distance_to(pos) > MOVED
 	last_known = pos
-	if state == State.PATROL:
-		meter = maxf(meter, SUSPECT_AT)
-		return _go(State.SUSPICION, "heard %s" % what)
-	if state == State.SUSPICION and since > NOISE_GRACE and what != "footsteps":
+	if steps:
+		return ""
+	if since > NOISE_GRACE:
 		meter = minf(meter + NOISE_FILL, 1.0)
 		if meter >= 1.0:
 			return _call("heard %s again" % what)
-	elif state == State.EVASION:
+	if moved:
 		timer = 0.0
+		return "heard %s over there" % what
 	return ""
+
+
+## A squadmate on Alert has eyes on the Operative at pos and this guard hasn't (for SIGHT_GRACE s): it
+## hunts toward the squad's sighting, not the spot it was radioed or last saw.
+func relay(pos: Vector3) -> void:
+	if state == State.ALERT and not calling and not (saw and unseen < SIGHT_GRACE):
+		last_known = pos
 
 
 ## Freed from a Hold-up by the Operative at pos: a Radio call on him (stoppable like any other).

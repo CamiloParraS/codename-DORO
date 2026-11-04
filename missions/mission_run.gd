@@ -322,7 +322,7 @@ func _guide(delta: float, alerting: bool) -> void:
 	if not op:
 		return
 	if not _opened:
-		if not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
+		if not get_tree().get_first_node_in_group("loading_cover") and not get_tree().get_nodes_in_group("guards").any(func(g: Guard) -> bool: return g.seen_rate > 0.0):
 			_opened = true
 			get_tree().call_group("codec_live", "live_call", Campaign.MISSIONS[record.mission].open)
 		return
@@ -497,6 +497,7 @@ func _on_intel(intel: Node) -> void:
 	var at := _doable(intel.name)
 	if ended or at < step:
 		return
+	Mixer.play(&"intel")
 	get_tree().call_group("codec_live", "live_call", _steps()[at].call)
 	SessionLog.current.note("step %d done (%s)" % [at + 1, intel.name])
 	step = at + 1
@@ -509,11 +510,13 @@ func _on_extraction() -> void:
 	if ended or step < _steps().size() or not _targets_left().is_empty():
 		return
 	SessionLog.current.note("extracted")
+	Mixer.play(&"mission_complete", Mixer.UI, 1.0, -6.0)
 	_finish()
 	_show_intel()
 	var after := Aigis.complete_mission(record, tally.counts)
 	after.last.merge(Dossier.trail(SessionLog.current.missions.back()))  # the route Aigis draws back
 	after.last.hot = Dossier.hotspot(SessionLog.current.missions.back().marks, func(p: Vector2) -> int: return encounter_at(Vector3(p.x - MissionPlaces.DIAGRAM_ORIGIN, 0, p.y - MissionPlaces.DIAGRAM_ORIGIN)))
+	AigisComment.start(self, after, campaign)  # last.analysis: the fallback now, the model's comment when it lands
 	var par := Rank.par(record.mission)
 	var screen := SCREEN.new()
 	screen.dossier = after.last

@@ -4,10 +4,13 @@
 ## call; a completed one through Alert, Evasion and Caution, with Reinforcements from the bridge), every way a
 ## Hold-up ends (Alert, 6 m, a partner's sight, a choke), a guard looking at a balloon, a Game Over and
 ## Continue, and the Core's Target (play_core walks the Core's layout). Prints PASS/FAIL.
-##   godot --headless --fixed-fps 60 --path . tools/play_harbour.tscn
+##   godot --headless --fixed-fps 60 --path . tools/play_harbour.tscn [-- <section> [xN]]   (SECTIONS; it refuses to run without --fixed-fps)
 ## (a scene, not --script, so the autoloads exist). Guards' alert meters are reset every frame while the
 ## Operative is teleported about, so a check reads what a guard sees without the whole Area going to Alert.
 extends Node
+
+const PlayKit := preload("res://tools/play_kit.gd")
+const SECTIONS: Array[String] = ["mission_1", "chain", "holdups", "continues", "core"]  # in order; each loads its own Area
 
 var fails := 0
 var calm := true      # reset every guard's alert each frame
@@ -17,11 +20,14 @@ var _area: Node
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	TranslationServer.set_locale("en")  # the prompt checks read English text, whatever the machine's language
-	await mission_1()
-	await chain()
-	await holdups()
-	await continues()
-	await core()
+	if not await PlayKit.fixed_fps(self, scene_file_path):
+		return
+	var run := PlayKit.sections(self, SECTIONS)  # `-- chain x5`: one section, five times
+	if run.is_empty():
+		return  # an unknown section: sections() quit with 2
+	for section in run:
+		print("=== %s" % section)
+		await call(section)
 	print("play_harbour: %d failed" % fails)
 	get_tree().quit(1 if fails else 0)
 
@@ -37,6 +43,7 @@ func check(ok: bool, what: String) -> void:
 	print(("PASS  " if ok else "FAIL  ") + what)
 	if not ok:
 		fails += 1
+		PlayKit.dump_guards(get_tree())  # why: every guard's state, reason and goal
 
 
 func frames(n: int) -> void:

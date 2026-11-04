@@ -36,6 +36,32 @@ static func pixel_sprite(tex: Texture2D, size: float, billboard := true) -> Spri
 	return s
 
 
+## A loose piece knocked off a body (a helmet): `shape`'s mesh drawn at world transform `at` becomes a
+## rigid box thrown at `push` m/s with a spin, landing on the world (layer 1). Gone after `life` s.
+static func tumble(parent: Node, shape: MeshInstance3D, at: Transform3D, push: Vector3, life := 12.0) -> RigidBody3D:
+	var box := shape.get_aabb()
+	var s := at.basis.get_scale()
+	var body := RigidBody3D.new()
+	body.collision_layer = 0
+	body.collision_mask = 1
+	body.mass = 1.2
+	var col := CollisionShape3D.new()
+	var bs := BoxShape3D.new()
+	bs.size = (box.size * s).max(Vector3.ONE * 0.05)
+	col.shape = bs
+	body.add_child(col)
+	shape.transform = Transform3D(Basis.from_scale(s), -(s * box.get_center()))
+	shadowless(shape)
+	body.add_child(shape)
+	parent.add_child(body)
+	body.global_transform = Transform3D(at.basis.orthonormalized(), at * box.get_center())
+	body.reset_physics_interpolation()
+	body.linear_velocity = push
+	body.angular_velocity = Vector3(randf_range(-8, 8), randf_range(-8, 8), randf_range(-8, 8))
+	body.create_tween().tween_callback(body.queue_free).set_delay(life)
+	return body
+
+
 ## A burst of n small square pixels thrown out of pos, falling back: dust, sparks, a dart's puff.
 static func puff(parent: Node, pos: Vector3, c: Color, n := 8, speed := 2.5, life := 0.45) -> CPUParticles3D:
 	var p := CPUParticles3D.new()

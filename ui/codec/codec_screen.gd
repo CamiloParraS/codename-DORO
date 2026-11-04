@@ -95,7 +95,7 @@ func _process(delta: float) -> void:
 		var before := _ring_t
 		_ring_t += delta
 		if before == 0.0 or int(before / RING_EVERY) != int(_ring_t / RING_EVERY):
-			Mixer.play(&"beep")
+			Mixer.play(&"codec_ring")
 		queue_redraw()
 		return
 	if not StoryMotion.still(self):
@@ -119,27 +119,43 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if e.is_action_pressed("ui_accept") or (e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT):
+	if e.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
-		if _ringing:  # answering: both frames wipe in
-			_ringing = false
-			_t = 0.0
-			_line_t = 0.0
-			UiMotion.wipe(_left, true, 6, 0.24)
-			UiMotion.wipe(_right, true, 6, 0.24)
-			return
-		if StoryMotion.tuning(_t):  # the same key skips the tune-in
-			_t = StoryMotion.TUNE
-			return
-		talk.press()
-		if talk.index != _line:
-			_line = talk.index
-			_line_t = 0.0
-		if talk.done():
-			_finish()
+		_advance()
+
+
+## A click arrives here, not in _unhandled_input: a full-rect Control takes the mouse in the GUI step first.
+func _gui_input(e: InputEvent) -> void:
+	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+		accept_event()
+		_advance()
+
+
+## Answers the ring, skips the tune-in, or presses the line on.
+func _advance() -> void:
+	if _cut >= 0.0:  # closing: no second press
+		return
+	if _ringing:  # answering: both frames wipe in
+		_ringing = false
+		Mixer.play(&"codec_answer")
+		_t = 0.0
+		_line_t = 0.0
+		UiMotion.wipe(_left, true, 6, 0.24)
+		UiMotion.wipe(_right, true, 6, 0.24)
+		return
+	if StoryMotion.tuning(_t):  # the same key skips the tune-in
+		_t = StoryMotion.TUNE
+		return
+	talk.press()
+	if talk.index != _line:
+		_line = talk.index
+		_line_t = 0.0
+	if talk.done():
+		_finish()
 
 
 func _finish() -> void:  # closes on a cut: a short dark beat, then `finished`
+	Mixer.play(&"codec_end")
 	set_process_unhandled_input(false)
 	_cut = StoryMotion.CUT
 	queue_redraw()
@@ -278,14 +294,21 @@ func _subtitle(d: Vector2) -> void:
 		CodecChrome.pips(self, Vector2(box.position.x, box.end.y + 30), talk.lines.size(), talk.index)
 	HudPalette.hud_text(self, Vector2(d.x / 2, top + (54 if over_picture else 58)), talk.speaker_name().to_upper(), 24, GREEN, HudPalette.tracked(HudPalette.DISPLAY, 24, 0.3), 1, false)
 	var font := HudPalette.FIGURE
-	var full := HudPalette.wrap(talk.text(), d.x - 840, font, 36)
+	var first := 108.0 if over_picture else 112.0  # baseline of the first row below the box's top
+	var room := (box.size.y if not over_picture else 190.0) - first - 22.0  # px under it before the box's edge
+	var wide := (box.size.x if not over_picture else d.x - 160.0) - 96.0
+	var fs := 36
+	var full := HudPalette.wrap(talk.text(), wide, font, fs)
+	while fs > 22 and (full.size() - 1) * fs * 1.33 > room:  # a long line shrinks to fit its box, never past the edge
+		fs -= 2
+		full = HudPalette.wrap(talk.text(), wide, font, fs)
 	var left := talk.shown().length()
 	for i in full.size():  # wrapped on the whole line, so typing never reflows
 		var row := full[i].left(maxi(left, 0))
-		var w := font.get_string_size(full[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 36).x
-		var p := Vector2(d.x / 2 - w / 2, top + (108 if over_picture else 112) + i * 48)
-		draw_string_outline(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 6, Color.BLACK)
-		draw_string(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, 36, Color.WHITE)
+		var w := font.get_string_size(full[i], HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var p := Vector2(d.x / 2 - w / 2, top + first + i * fs * 1.33)
+		draw_string_outline(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color.BLACK)
+		draw_string(font, p, row, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color.WHITE)
 		left -= full[i].length() + 1
 	var next := tr("ui.codec.next").format({key = Prompts.word("codec_advance")})
 	var count := "%d / %d" % [talk.index + 1, talk.lines.size()]

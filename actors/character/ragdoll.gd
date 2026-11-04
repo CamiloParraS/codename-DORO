@@ -31,7 +31,7 @@ const FLINCH_HOLD := 0.1   # s the hit bones stay at the peak before the clip ta
 const FLINCH_FADE := 0.35  # s they take to let go
 const PELVIS_BLEND := 1.4  # the hips rise this much slower than the limbs get up (x BLEND)
 
-enum Mode { OFF, FLINCH, LIMP }
+enum Mode { OFF, FLINCH, LIMP, HANG }
 
 var skeleton: Skeleton3D
 var _sim: PhysicalBoneSimulator3D
@@ -49,7 +49,7 @@ func _init(skel: Skeleton3D = null) -> void:
 
 ## Is the body lying limp (a flinch is not).
 func active() -> bool:
-	return _mode == Mode.LIMP
+	return _mode == Mode.LIMP or _mode == Mode.HANG
 
 
 ## Where the body lies: the pelvis, in world space.
@@ -72,6 +72,27 @@ func start(push := Vector3.ZERO, at := "pelvis") -> void:
 	var body: PhysicalBone3D = _sim.get_node_or_null(at)
 	if body and push != Vector3.ZERO:
 		body.apply_central_impulse(push * body.mass)
+
+
+## Hangs from the hips: every bone but the pelvis goes physical, so the pelvis follows the model (a Fulton line moving
+## it) and the rest of the body swings and dangles from it. Nothing hits it: it is out of the Area's reach.
+func hang() -> void:
+	if _sim == null:
+		_build()
+	if _fade:
+		_fade.kill()
+	_left = 0.0
+	_mode = Mode.HANG
+	_set_layer(0)
+	var names: Array[StringName] = []
+	for bone: String in BONES:
+		if bone != "pelvis" and _sim.get_node_or_null(bone):
+			names.append(StringName(bone))
+	_sim.influence = 1.0
+	_sim.physical_bones_start_simulation(names)
+	var spine: PhysicalBone3D = _sim.get_node_or_null("spine_02")
+	if spine:
+		spine.apply_central_impulse(spine.global_basis.z * 0.4 * spine.mass)  # a first slump to start the sway
 
 
 ## A hit that does not put it down: the bones around `at` go physical and take `push` (m/s), then the clip takes

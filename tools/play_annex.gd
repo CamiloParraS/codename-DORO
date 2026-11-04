@@ -6,6 +6,8 @@
 ## teleported about, so a check reads what a guard sees without the whole Area going to Alert.
 extends Node
 
+const PlayKit := preload("res://tools/play_kit.gd")
+
 var fails := 0
 var calm := true
 var _area: Node
@@ -14,6 +16,8 @@ var _area: Node
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	TranslationServer.set_locale("en")
+	if not await PlayKit.fixed_fps(self, scene_file_path):
+		return
 	await mission_3()
 	print("play_annex: %d failed" % fails)
 	get_tree().quit(1 if fails else 0)
@@ -30,6 +34,7 @@ func check(ok: bool, what: String) -> void:
 	print(("PASS  " if ok else "FAIL  ") + what)
 	if not ok:
 		fails += 1
+		PlayKit.dump_guards(get_tree())  # why: every guard's state, reason and goal
 
 
 func frames(n: int) -> void:
@@ -142,11 +147,13 @@ func mission_3() -> void:
 	for l in legs:
 		var r := path_len(l[1], l[2])
 		check(r[1] < 0.6, "walkable: %s, %.1f m" % [l[0], r[0]])
-	# the way in by the hall's east door runs past the dock guard
-	var way := NavigationServer3D.map_get_path(map, start, at(55, 49), true)
-	var a9_at := at(57, 62)
-	var near: float = Array(way).map(func(p: Vector3) -> float: return Vector2(p.x - a9_at.x, p.z - a9_at.z).length()).min()
-	check(near < 8.0, "start → the hall's east door passes the dock guard (%.1f m)" % near)
+	# the way in by the hall's east door runs up the dock lane, past the dock guard (A9 at 57, 62), and the lane
+	# north of the door stays open for the spoof walk: yard dressing once boxed the door in (a bin south of it,
+	# dumpsters north), leaving it reachable only from inside. Direct walks, so a prop that blocks a lane fails here.
+	var lane := path_len(at(57, 60), at(57.5, 49))
+	check(lane[1] < 0.6 and lane[0] < 13.0, "the dock lane runs straight to the hall's east door past the dock guard (%.1f m)" % lane[0])
+	var north := path_len(at(57.5, 49), at(59, 31))
+	check(north[1] < 0.6 and north[0] < 21.0, "from the east door the lane north stays open (%.1f m)" % north[0])
 	# the vault's back door is the short way from the south corridor: through the clean room, not round the ring
 	var back := path_len(at(36, 42.5), at(46, 37))
 	check(back[0] < 16.0, "the back door is direct (%.1f m)" % back[0])

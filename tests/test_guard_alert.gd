@@ -172,16 +172,79 @@ func test_noise_redirects_a_search() -> void:
 	var a := _evading()
 	_run(a, 8.0, 0.0, true)
 	var there := Vector3(-10, 0, 3)
-	assert_eq(a.hear(there, "a knock"), "")
+	assert_eq(a.hear(there, "a knock"), "heard a knock, searching there")
 	assert_eq(a.state, S.EVASION)
 	assert_eq(a.last_known, there)
 	assert_eq(a.timer, 0.0, "the 12 s start over at the new spot")
 
 
-func test_noise_doesnt_distract_an_alerted_guard() -> void:
+func test_noise_doesnt_distract_an_alerted_guard_with_eyes_on_the_operative() -> void:
 	var a := _alerted()
+	a.tick(DT, 1.0, SPOT, "test", false)
 	assert_eq(a.hear(Vector3(-10, 0, 3), "a knock"), "")
 	assert_eq(a.last_known, SPOT)
+	_run(a, GuardAlert.SIGHT_GRACE + 0.1, 0.0)
+	assert_eq(a.hear(Vector3(-10, 0, 3), "a knock"), "heard a knock, hunting there", "lost sight: the noise is a lead")
+	assert_eq(a.last_known, Vector3(-10, 0, 3))
+
+
+func test_a_noise_elsewhere_starts_the_look_around_over_but_one_nearby_does_not() -> void:
+	var a := GuardAlert.new()
+	a.hear(SPOT, "a knock")
+	_run(a, GuardAlert.LOOK_TIME - 0.5, 0.0, true)
+	assert_eq(a.hear(SPOT + Vector3(1, 0, 0), "a knock"), "", "next to the point: the same look-around")
+	assert_true(a.timer > GuardAlert.LOOK_TIME - 1.0)
+	a.meter = 0.0  # so the noise fill can't start a call
+	var far := SPOT + Vector3(8, 0, 0)
+	assert_eq(a.hear(far, "a knock"), "heard a knock over there")
+	assert_eq(a.timer, 0.0)
+	assert_eq(a.last_known, far)
+	assert_eq(_run(a, GuardAlert.LOOK_TIME - 0.5, 0.0, true), [], "a full look-around at the new place")
+	assert_eq(a.state, S.SUSPICION)
+
+
+func test_a_blind_hunter_takes_the_squads_sighting_but_one_with_sight_keeps_its_own() -> void:
+	var a := _alerted()
+	a.relay(Vector3(4, 0, 4))
+	assert_eq(a.last_known, Vector3(4, 0, 4), "radioed: it hunts where the squad sees it")
+	a.tick(DT, 1.0, SPOT, "test", false)
+	a.relay(Vector3(9, 0, 9))
+	assert_eq(a.last_known, SPOT, "its own eyes win")
+	var p := GuardAlert.new()
+	p.relay(Vector3(9, 0, 9))
+	assert_eq(p.last_known, Vector3.ZERO, "only on Alert")
+
+
+func test_the_squads_lead_is_the_freshest_sighting_of_a_guard_that_saw() -> void:
+	assert_eq(Engage.lead([]), null)
+	var squad := [{unseen = 0.0, saw = false, last_known = Vector3(1, 0, 0), pos = Vector3.ZERO},
+		{unseen = 0.3, saw = true, last_known = Vector3(2, 0, 0), pos = Vector3.ZERO},
+		{unseen = 0.1, saw = true, last_known = Vector3(3, 0, 0), pos = Vector3(0, 0, 5)},
+		{unseen = 5.0, saw = true, last_known = Vector3(4, 0, 0), pos = Vector3.ZERO}]
+	assert_eq(Engage.lead(squad), {at = Vector3(3, 0, 0), from = Vector3(0, 0, 5)})
+	assert_eq(Engage.lead([squad[3]]), null, "nobody has sight")
+
+
+func test_a_flanker_goes_wide_of_the_spotters_line_on_its_own_side_and_past_the_operative() -> void:
+	var at := Vector3(0, 0, 0)
+	var from := Vector3(0, 0, 10)  # the spotter, looking down -z at the Operative
+	var p: Vector3 = Engage.flank_point(at, from, Vector3(20, 0, 5))
+	assert_eq(p, Vector3(Engage.FLANK_DIST, 0, -Engage.FLANK_PAST), "the +x side, beyond the Operative")
+	var q: Vector3 = Engage.flank_point(at, from, Vector3(-20, 0, 5))
+	assert_eq(q.x, -Engage.FLANK_DIST, "the -x side for a guard on it")
+	assert_eq(Engage.flank_point(at, from, Vector3(5, 0, 5)), null, "close in: straight at it")
+	assert_eq(Engage.flank_point(at, at, Vector3(20, 0, 0)), null, "no line of fire to go wide of")
+
+
+func test_the_squad_has_one_flank() -> void:
+	var c := AlertChain.new()
+	assert_true(c.claim_flank("A"))
+	assert_true(c.claim_flank("A"), "its own again")
+	assert_false(c.claim_flank("B"), "taken")
+	c.release("A")
+	assert_true(c.claim_flank("B"), "freed when A changes state")
+	c.stand_down()
+	assert_true(c.claim_flank("C"))
 
 
 func test_quiet_frames_return_no_reason() -> void:
@@ -438,8 +501,8 @@ func test_an_alerted_guard_turns_to_a_shot_or_footsteps_it_cannot_see_the_source
 	assert_eq(a.last_known, Vector3(4, 0, 4))
 	assert_eq(a.hear(Vector3(1, 0, 1), "footsteps"), "")
 	assert_eq(a.last_known, Vector3(1, 0, 1))
-	a.hear(Vector3(9, 0, 9), "a knock")
-	assert_eq(a.last_known, Vector3(1, 0, 1), "other noises are still ignored")
+	assert_eq(a.hear(Vector3(9, 0, 9), "a knock"), "heard a knock, hunting there")
+	assert_eq(a.last_known, Vector3(9, 0, 9), "a radioed guard goes for any noise")
 
 
 func test_continuous_noise_moves_the_look_point_but_never_restarts_the_look_around() -> void:

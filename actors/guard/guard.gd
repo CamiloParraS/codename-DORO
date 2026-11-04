@@ -14,6 +14,7 @@ func _ready() -> void:
 	_seed.call_deferred()  # repeatable per guard, after the Area names it; tests reseed (a method, so a guard freed first is skipped)
 	if target:
 		add_to_group("targets")
+		fit_hitbox()
 	else:
 		model.hold("rifle")
 	add_child(voice)
@@ -164,7 +165,7 @@ func _check_in(delta: float) -> void:
 		var who: Guard = self if chat.speaker() == 0 else chat_partner
 		# Chat isn't radio: a subtitle only when the Operative is close enough to overhear it.
 		if line != "" and is_instance_valid(who) and who.chatting() and operative and who._flat_dist(operative.global_position) <= Chat.HEARD:
-			who.say_line(line)
+			who.say_line(line, {}, chat.lines == Chat.SMOKE)  # the smoke break is step 1: its lines linger
 		if line != "" and is_instance_valid(who):
 			who.speak_gesture(Chat.TURN)
 	if target_chat:

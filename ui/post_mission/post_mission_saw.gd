@@ -1,6 +1,8 @@
 ## The post-Mission "WHAT AIGIS SAW" page, drawn on the screen (static: the screen owns the age and the Dossier).
 ## The Operative's route seen from above (diagram x right, y down: north up) plays back over SAW_SECS, each mark
-## popping in when the route reaches it with a tick; beside it what Aigis counted. Design px, like the screen.
+## popping in when the route reaches it with a tick; beside it what Aigis counted, and under that Aigis Voice's
+## comment on the run (the Dossier's analysis: ANALYSING while the request is out, then typed with its Voice's
+## blips once the route has drawn). Design px, like the screen.
 extends RefCounted
 
 const SAW_SECS := 3.2  # the whole route, however long the Mission was
@@ -9,6 +11,12 @@ const PAD := 6.0       # metres of margin round the route
 const GRID := 10.0     # metres between grid lines
 const POP := 0.18      # s a fresh mark stays enlarged
 const LEGEND := ["down", "kill", "spotted", "alert"]
+const SAID_W := 540.0    # Aigis Voice's panel: the legend column's width
+const SAID_FS := 26      # its lines (raised on small windows, see HudPalette.legible)
+const SAID_BOTTOM := 940.0  # its last row ends with the route's plan, above the "any key" prompt
+const SAID_HEAD := 64.0     # the header plate and its rule, above the rows
+const CLOCK_FS := 64        # the Mission clock under the legend
+const CLOCK_DROP := 76.0    # from the legend's rule to the clock's baseline
 
 
 static func done_at(_s: Control) -> float:
@@ -25,13 +33,73 @@ static func total_t(dossier: Dictionary) -> float:
 	return maxf((n - 1) * float(dossier.get("every", SessionLog.PATH_EVERY)), 0.001)
 
 
-## A tick per mark as the route reaches it.
-static func sounds(s: Control) -> void:
+## A tick per mark as the route reaches it; then Aigis Voice's comment types out with its Voice's blips.
+static func sounds(s: Control, delta: float) -> void:
 	var t := shown_t(s)
 	var due: int = s.dossier.get("marks", []).filter(func(m: Array) -> bool: return m[1] <= t).size()
 	if due > int(s.get_meta("saw_ticked", 0)):
 		s.set_meta("saw_ticked", due)
 		Mixer.play(&"tick")
+	var typer := _typer(s)
+	if typer and not typer.done():
+		var p := typer.advance(delta)
+		if not p.is_empty():
+			Mixer.blip(p.back())  # one blip per frame: they never stack
+
+
+## A press on this page: finishes the route, then the typing. False when nothing is left to finish.
+static func skip(s: Control) -> bool:
+	if s._age < done_at(s):
+		s._age = done_at(s)
+		return true
+	var typer := _typer(s)
+	if typer and not typer.done():
+		typer.skip()
+		Mixer.stop_blips()
+		return true
+	return false
+
+
+## The comment's typewriter, made once the route has drawn and the request is settled (so the text never changes
+## under it); null before that, or with no comment. Reduced motion shows it at once.
+static func _typer(s: Control) -> VoiceBlip:
+	var said: Dictionary = s.dossier.get("analysis", {})
+	if said.is_empty() or said.get("pending", false) or s._age < done_at(s):
+		return null
+	if not s.has_meta("saw_typer"):  # every line, joined as the rows join them: a resize rewraps, the count still lines up
+		var typer := VoiceBlip.new(" ".join(said.lines), said.voice)
+		if UiMotion.reduced():
+			typer.skip()
+		s.set_meta("saw_typer", typer)
+	return s.get_meta("saw_typer")
+
+
+## The comment's rows at the size it draws at in this window.
+static func _rows(s: Control) -> Array:
+	return said_rows(s.dossier.analysis.lines, SAID_W - 24.0, HudPalette.legible(s, SAID_FS), SAID_BOTTOM - _said_top() - SAID_HEAD)
+
+
+## The comment's lines wrapped to `width` at `fs` as [text, line index] rows, whole lines only while they fit in
+## `height` (the first line always shows, cut to what fits).
+static func said_rows(lines: Array, width: float, fs: int, height: float) -> Array:
+	var most := maxi(1, floori(height / row_h(fs)))
+	var out := []
+	for i in lines.size():
+		var wrapped := HudPalette.wrap(lines[i], width, HudPalette.FIGURE_MED, fs)
+		if not out.is_empty() and out.size() + wrapped.size() > most:
+			break
+		for r in wrapped:
+			out.append([r, i])
+	return out.slice(0, most)
+
+
+static func row_h(fs: int) -> float:
+	return roundf(fs * 1.38)
+
+
+## Where the comment's header sits: under the legend's plates and the Mission clock (see _legend).
+static func _said_top() -> float:
+	return 200.0 + LEGEND.size() * 72 + 22 + CLOCK_DROP + 60
 
 
 static func draw_page(s: Control, d: Vector2) -> void:
@@ -76,14 +144,16 @@ static func draw_page(s: Control, d: Vector2) -> void:
 	@warning_ignore("integer_division")
 	var clock := "T+ %d:%02d" % [int(t) / 60, int(t) % 60]
 	_legend(s, Vector2(area.end.x + 60, area.position.y), marks, t, clock)
-	if s._age >= done_at(s):
+	_said(s, Vector2(area.end.x + 60, _said_top()))
+	var typer := _typer(s)
+	if s._age >= done_at(s) and not (typer and not typer.done()):
 		var ak := s.tr("ui.brief.any_key").to_upper()
 		HudPalette.hud_text(s, Vector2(d.x - 80, d.y - 110), ak, 26, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3), 2, false)
 
 
 ## What each mark means and how many the route has reached, on a stack of plates, then the Mission clock big under them.
 static func _legend(s: Control, at: Vector2, marks: Array, t: float, clock: String) -> void:
-	var f := HudPalette.tracked(HudPalette.DISPLAY, 28, 0.2)
+	var f := HudPalette.tracked(HudPalette.LABEL_BOLD, 30, 0.16)  # Barlow Condensed: the summary reads as data, Antonio stays on the headline
 	var y := at.y
 	for kind: String in LEGEND:
 		var n := marks.filter(func(m: Array) -> bool: return m[0] == kind and m[1] <= t).size()
@@ -92,11 +162,45 @@ static func _legend(s: Control, at: Vector2, marks: Array, t: float, clock: Stri
 		PixelKit.cut_fill(s, Rect2(row.position, Vector2(6, row.size.y)), HudPalette.DMG if kind == "alert" or kind == "kill" else HudPalette.SAND if kind == "down" else HudPalette.LIGHT, 0)
 		_mark(s, kind, Vector2(at.x + 44, y + 30), 1.0)
 		HudPalette.hud_text(s, Vector2(at.x + 84, y + 40), s.tr("ui.post.saw." + kind).to_upper(), 28, HudPalette.LIGHT_2 if n > 0 else HudPalette.LIGHT_3, f, 0, false)
-		HudPalette.hud_text(s, Vector2(at.x + 500, y + 43), "%02d" % n, 38, HudPalette.LIGHT if n > 0 else HudPalette.LIGHT_3, HudPalette.tracked(HudPalette.DISPLAY, 38, 0.06), 2, false)
+		HudPalette.hud_text(s, Vector2(at.x + 500, y + 43), "%02d" % n, 38, HudPalette.LIGHT if n > 0 else HudPalette.LIGHT_3, HudPalette.FIGURE, 2, false)
 		y += 72
 	y += 22
 	PixelKit.dashes(s, Vector2(at.x, y), 540.0, Color(HudPalette.LIGHT, 0.3), 2, 2)
-	HudPalette.hud_text(s, Vector2(at.x, y + 110), clock, 96, HudPalette.CYAN, HudPalette.tracked(HudPalette.DISPLAY, 96, 0.04), 0, false)
+	HudPalette.hud_text(s, Vector2(at.x, y + CLOCK_DROP), clock, CLOCK_FS, HudPalette.CYAN, HudPalette.FIGURE, 0, false)
+
+
+## Aigis Voice's comment (the Dossier's analysis) under the clock: a cyan tab and "AIGIS · <VOICE>", then
+## "ANALYSING" with cycling dots while the request is out, then the lines typing in, a cyan pip at each line's start.
+static func _said(s: Control, at: Vector2) -> void:
+	var said: Dictionary = s.dossier.get("analysis", {})
+	if said.is_empty():
+		return
+	var pending: bool = said.get("pending", false)
+	var hf := HudPalette.tracked(HudPalette.DISPLAY, 26, 0.3)
+	PixelKit.cut_fill(s, Rect2(at, Vector2(6, 34)), HudPalette.CYAN, 0)
+	var head := "AIGIS" if pending else "AIGIS  ·  " + s.tr("ui.voice." + said.voice)
+	HudPalette.hud_text(s, at + Vector2(20, 28), head.to_upper(), 26, HudPalette.CYAN, hf, 0, false)
+	PixelKit.dashes(s, at + Vector2(0, 48), SAID_W, Color(HudPalette.CYAN, 0.3), 2, 2)
+	var top := at.y + SAID_HEAD
+	if pending:
+		var dots := ".".repeat(int(Time.get_ticks_msec() / 350.0) % 4)
+		HudPalette.hud_text(s, Vector2(at.x + 24, top + 30), s.tr("ui.post.saw.analysing").to_upper() + dots, 26, HudPalette.LIGHT_3, hf, 0, false)
+		return
+	var typer := _typer(s)
+	if typer == null:
+		return
+	var fs := HudPalette.legible(s, SAID_FS)
+	var rows := _rows(s)
+	var left := typer.shown().length()
+	var y := top + fs
+	for j in rows.size():
+		if left <= 0:
+			break
+		if j == 0 or rows[j][1] != rows[j - 1][1]:
+			s.draw_rect(Rect2(at.x + 2, y - fs * 0.45, 8, 8), HudPalette.CYAN)
+		HudPalette.hud_text(s, Vector2(at.x + 24, y), String(rows[j][0]).left(left), SAID_FS, HudPalette.LIGHT, HudPalette.FIGURE_MED, 0, false)
+		left -= String(rows[j][0]).length() + 1
+		y += row_h(fs)
 
 
 ## A mark's shape: Down a sand dot, kill a red cross, spotted a light ring, Alert a red triangle.

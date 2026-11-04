@@ -6,6 +6,8 @@
 ## teleported about, so a check reads what a guard sees without the whole Area going to Alert.
 extends Node
 
+const PlayKit := preload("res://tools/play_kit.gd")
+
 var fails := 0
 var calm := true
 var _area: Node
@@ -14,6 +16,8 @@ var _area: Node
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	TranslationServer.set_locale("en")
+	if not await PlayKit.fixed_fps(self, scene_file_path):
+		return
 	await core()
 	print("play_core: %d failed" % fails)
 	get_tree().quit(1 if fails else 0)
@@ -30,6 +34,7 @@ func check(ok: bool, what: String) -> void:
 	print(("PASS  " if ok else "FAIL  ") + what)
 	if not ok:
 		fails += 1
+		PlayKit.dump_guards(get_tree())  # why: every guard's state, reason and goal
 
 
 func frames(n: int) -> void:

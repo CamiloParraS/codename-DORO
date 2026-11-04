@@ -98,7 +98,7 @@ const GUARD_POSTS := [
 	["PostA1", [32, 60, 0], 270, {role = "patroller", enc = 1}, [[20, 60, {hold = 4.0, f = 315}]]],  # motor pool: the north strip, a 24 m loop; his west turn faces the Ladder foot
 	["PostA2", [52, 68, 0], 270, {scan = 60.0, role = "observer", enc = 1, holdup = "keys"}, []],           # garage, facing the west door: the Hold-up is from the east door, behind him
 	["PostB1", [79, 44, 3], 90, {chat = true, role = "investigator", enc = 3}, []],  # the pair in the road gate, seated N-S facing each other across it, 29 m from the Chief
-	["PostB3", [32, 36, 3], 0, {scan = 60.0, role = "gatekeeper", enc = 3}, []],    # barracks north mouth, looking up at the summit: his back to the west carry line
+	["PostB3", [34, 45, 3], 90, {scan = 60.0, role = "gatekeeper", enc = 3}, []],    # barracks east side, looking east at the mess: his back to the barracks and the west carry line
 	["PostC1", [44, 26, 6], 220, {scan = 60.0, role = "observer", enc = 2}, []],                                  # summit, over the console
 	["PostC3", [16, 20, 6], 90, {role = "patroller", enc = 2}, [[34, 20, {hold = 4.0, f = 90}]]],     # summit: a 36 m loop; his hold faces the console from 6 m
 ]

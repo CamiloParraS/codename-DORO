@@ -39,7 +39,12 @@ var _stamped := false
 var _was_skipped := false
 
 
+func _exit_tree() -> void:
+	Mixer.screen_off(&"interlude")
+
+
 func _ready() -> void:
+	Mixer.screen(&"interlude")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -52,7 +57,7 @@ func _process(delta: float) -> void:
 	if page == 0:
 		_sounds()
 	elif pages()[page] == "saw":
-		SAW.sounds(self)
+		SAW.sounds(self, delta)
 	queue_redraw()
 
 
@@ -84,10 +89,10 @@ func pages() -> Array[String]:
 	return out
 
 
-## The next page, or commit after the last. A press while the route still draws finishes it first.
+## The next page, or commit after the last. A press while the route still draws, or Aigis's comment still types,
+## finishes that first.
 func advance() -> void:
-	if pages()[page] == "saw" and _age < SAW.done_at(self):
-		_age = SAW.done_at(self)
+	if pages()[page] == "saw" and SAW.skip(self):
 		return
 	if page < pages().size() - 1:
 		page += 1
@@ -158,7 +163,7 @@ func _draw() -> void:
 		_:
 			_draw_aigis(d)
 	var said := lesson_key if view == "rank" and lesson_key != "" else voice_key
-	if said != "":  # the Metis ticker
+	if said != "" and view == "rank":  # the Metis ticker: on the Rank page only, where the line is about the run; the later pages are Aigis's
 		draw_rect(Rect2(0, d.y - 64, d.x, 64), Color.BLACK)
 		draw_rect(Rect2(0, d.y - 64, 130, 64), HudPalette.DMG)
 		HudPalette.hud_text(self, Vector2(65, d.y - 24), "METIS", 18, HudPalette.LIGHT, HudPalette.tracked(HudPalette.DISPLAY, 18, 0.3), 1, false)

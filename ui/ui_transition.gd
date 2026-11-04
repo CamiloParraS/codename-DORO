@@ -18,6 +18,7 @@ static func go(tree: SceneTree, path: String) -> void:
 		tree.change_scene_to_file(path)
 		return
 	_busy = true
+	Mixer.play(&"transition", Mixer.UI, 1.0, -20.0)
 	var layer := CanvasLayer.new()
 	layer.layer = 127
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS

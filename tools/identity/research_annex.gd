@@ -39,7 +39,7 @@ const D := {
 		# the yard (URBAN, Utility Infrastructure, Vegetation, Retro World). The dock lane: dumpsters and bins by the hall's east door;
 		# the front of the lab: a staff car and a bus shelter, bins either side of the door; the generator corner: a transformer
 		# and two poles; the north strip: bollards at the gate mouth, barriers and a dumpster along the fence, a transformer and poles
-		["dumpster_blue", [57.3, 42.2, 0], 0], ["dumpster_open", [57.3, 44.8, 0], 0], ["metal_bin", [56.7, 52.4, 0], 0],
+		["dumpster_blue", [60.4, 42.2, 0], 90], ["dumpster_open", [60.4, 44.8, 0], 90], ["metal_bin", [60.4, 55.5, 0], 0],  # on the lane's east edge: the door stays reachable from the dock and the north gap
 		["civilian_car", [21.0, 59.0, 0], 0], ["bus_shelter", [7.0, 57.0, 0], 0], ["metal_bin", [11.8, 54.8, 0], 0], ["trash_can", [16.2, 54.7, 0], 0],
 		["transformer", [29.5, 74.4, 0], 180], ["concrete_pole", [20.5, 74.9, 0], 0], ["concrete_pole", [34.5, 74.9, 0], 0],
 		["security_bollard", [36.5, 3.0, 0], 0], ["security_bollard", [43.5, 3.0, 0], 0],

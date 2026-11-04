@@ -96,10 +96,10 @@ func test_countermeasure_gear_shows_only_once_worn() -> void:
 	m.free()
 
 
-func test_carry_mount_hangs_on_a_bone() -> void:
+func test_carry_mount_hangs_under_the_carrier() -> void:
 	var m := CharacterModel.new()
 	_root().add_child(m)
-	assert_true(m.carry_mount().get_parent() is BoneAttachment3D)
+	assert_eq(m.carry_mount().get_parent(), m)
 	m.free()
 
 
@@ -316,3 +316,37 @@ func test_every_strafe_way_has_a_clip_or_falls_back_to_a_walk() -> void:
 			var fallback: String = "crouch_walk" if pre == "crouch_walk_" else "walk"
 			assert_true(anim.current_animation in [pre + d, fallback], "%s%s plays %s" % [pre, d, anim.current_animation])
 	m.free()
+
+
+func test_female_target_has_her_own_body_and_height() -> void:
+	var man := CharacterModel.new()
+	man.kind = CharacterModel.Kind.TARGET
+	var woman := CharacterModel.new()
+	woman.kind = CharacterModel.Kind.TARGET
+	woman.female = true
+	_root().add_child(man)
+	_root().add_child(woman)
+	assert_true(woman.skeleton.get_bone_count() != man.skeleton.get_bone_count(), "a different rig: no fingers")
+	assert_true(woman.skeleton.find_bone("mixamorig_Hips") >= 0, "on the same Mixamo bones the clips key")
+	assert_true(man.crown_height(0.0) > 1.6 and man.crown_height(0.0) < 1.8, "the crown is read off the body, not the 1.8 m fallback")
+	assert_true(woman.skull_height(0.0) < woman.crown_height(0.0) - 0.1, "the skull starts below the crown")
+	man.free()
+	woman.free()
+
+
+func test_a_ridden_model_lies_limp_across_the_carriers_arms() -> void:
+	var home := Node3D.new()
+	var carrier := CharacterModel.new()
+	var m := CharacterModel.new()
+	_root().add_child(home)
+	_root().add_child(carrier)
+	home.add_child(m)
+	m.ride(carrier.carry_mount())
+	assert_eq(m._clip, "limp")
+	assert_eq(m.transform, CharacterModel.CRADLE, "laid on its back in front of the carrier")
+	m.play("down")  # the guard asks for its Down pose every frame
+	assert_eq(m._clip, "limp", "but a carried body stays limp")
+	m.ride(null)
+	assert_eq(m._limp, "", "put down, it is free of the pose")
+	home.free()
+	carrier.free()

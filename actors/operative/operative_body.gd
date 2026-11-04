@@ -182,12 +182,14 @@ func take_hit(from := Vector3.INF) -> void:
 	if health.dead():
 		return
 	health.hit()
+	Mix.sfx_at(self, &"bullet_hit")
 	kick(0.12)
 	Mixer.hit_stop(0.04)
 	Mixer.rumble(0.6, 1.0, 0.2)
 	if not health.dead():
 		model.react("hit")
 		return
+	Mix.sfx_at(self, &"body_fall")
 	var away := global_position - from if from != Vector3.INF else -global_basis.z
 	away.y = 0.0
 	model.drop(away.normalized() * DEATH_PUSH + Vector3.UP * 1.0, "spine_02")

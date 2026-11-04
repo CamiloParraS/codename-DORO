@@ -22,7 +22,7 @@ func test_points_feed_aigis() -> void:
 	t.add("headshot", 2)
 	var p := t.points()
 	assert_eq(p.stealth, 15 + Aigis.NO_ALERT_POINTS)
-	assert_eq(p.headshots, 40)
+	assert_eq(p.headshots, 30)
 
 
 func test_strip_levels_and_arrows() -> void:
@@ -51,8 +51,8 @@ func test_preset_points_cut_by_the_clamp_do_not_show_as_a_fall() -> void:
 
 func test_strip_uses_the_clamps_cap_so_mission_1_shows_at_most_level_1() -> void:
 	var before := Aigis.new_record()
-	var after := Aigis.complete_mission(before, {"alert": 3, "headshot": 5, "spoof": 20})
+	var after := Aigis.complete_mission(before, {"alert": 3, "headshot": 7, "spoof": 20})
 	var s := MissionTally.strip(before, after)
-	assert_eq(s[2].level, 1)  # 100 Headshot points: L1, which Mission 2 answers
+	assert_eq(s[2].level, 1)  # 105 Headshot points: L1, which Mission 2 answers
 	assert_eq(s[5].level, 1)  # 400 Spoofing points, held to 199
 	assert_true(s.all(func(e): return e.level <= 1))

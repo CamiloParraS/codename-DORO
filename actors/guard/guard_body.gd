@@ -16,19 +16,24 @@ const FIDGET_STOP := 1.0  # a stop this long left may become a look around
 const SCAN_PERIOD := 6.0  # seconds for one sweep there and back at a scanning stop
 const REACHED := 1.0      # flat distance that counts as being at a point
 const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
+const CHOKED_TIME := 150.0      # the same after a choke: the close-in takedown buys more time than a dart
 const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
+const FALL_MAX := 20.0         # m/s a guard in the air falls at most
 const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal hit
-const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
+const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots (a Target fits its own: head_height)
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
 const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
 const SHOT_PUSH := 4.5          # m/s where a rifle bullet lands: the head takes it faster, as it weighs less
 const HEAD_SHOT_PUSH := 6.0
 const FLINCH_PUSH := 2.5        # m/s a hit that does not drop it shoves the bone it landed on
+const HELMET_PUSH := 3.5        # m/s a knocked-off helmet flies away from the shot
 const HIT_STAGGER := 0.3        # m a non-lethal rifle hit knocks a guard back
 const GLANCE_RANGE := 5.0       # m, how close the Operative is for a patrolling guard to turn its head to them
 const LOOK_CLIP := 6.0          # seconds of the look-around clip at an Evasion search spot
+const PEEK_AFTER := 2.0         # s a suspicious guard looks round the spot before it checks the nearest hidden corner
+const PEEK_REACH := 3.0         # m from the spot: where it looks for a corner it can't see behind
 const ROOF_REACH := 15.0        # flat metres from a Ladder's top that count as the roof it serves
 const FIRE_INTERVAL := 1.0     # seconds between an alerted guard's shots
 const MISS_BY := 0.7           # metres a missed shot passes from the Operative's chest
@@ -66,6 +71,7 @@ var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var _shot_from := Vector3.INF   # where the bullet that kills it came from, while it goes Down
 var _shot_head := false
+var head_height := HEAD_HEIGHT   # hits above this (local y) are headshots; a Target fits it to its own skull (fit_hitbox)
 var held := false                # being choked: stands still
 var held_up := false             # Hold-up: frozen at gunpoint (Operative), until released
 var answered := false            # gave its one Hold-up answer
@@ -77,7 +83,8 @@ var carrier: Node3D:             # the Operative carrying this guard
 		model.ride(v.model.carry_mount() if v else null)
 var order := {}                  # a believed radio order: {kind "go" / "hold", pos, time}
 var known_down := false          # some guard has seen this one Down (Glaukopis's +60)
-var helmet := false              # Headshots Countermeasure: a headshot counts as a body hit
+var helmet := false              # Headshots Countermeasure: the first headshot knocks it off instead of landing
+var helmet_issued := false       # deployed with one: a Checkpoint restore puts a knocked-off helmet back on
 var vest := false                # Combat L1: tranq body shots do nothing, rifle body hits take longer
 var body_hits_to_kill := BODY_HITS_TO_KILL
 var turn_every := 0.0            # Takedowns L1: seconds between glances behind (0 = never)
@@ -122,6 +129,10 @@ var _vsearched := false        # said "search" on reaching this suspicion's spot
 var _detour: Variant = null  # the Caution detour it walks now
 var _next_detour := 0
 var _spot_for: Variant = null  # the last known point its reserved search spot is for
+var _flank: Variant = null    # on Alert: the point wide of the spotter's line it runs to (Engage.flank_point), null = none
+var _callout_left := Engage.CALLOUT_EVERY  # s until it next takes the squad's callout of where the Operative is
+var _peek := Vector3.ZERO      # Suspicion: the hidden corner by the spot it checks after looking round the spot
+var _peek_for: Variant = null  # the last known point _peek is for (null: not picked yet)
 var _balloon: Node3D           # Fultoned: the balloon on its way up
 var _balloon_left := 0.0
 var _balloon_spot := Vector3.ZERO
@@ -129,6 +140,7 @@ var _balloon_seen: Array[Guard] = []
 var _glint: Node3D             # a red radio glint at the head while on the Radio call
 var _vest: Node3D              # an amber vest light while the Area is in Caution
 @onready var _agent: NavigationAgent3D = $NavAgent
+var _stall := WalkStall.new()  # a walk that stopped getting closer counts as arrived (arrived())
 @onready var _mark: Label3D = $Mark
 var _sleep: Sprite3D  # the asleep mark, see _sleep_mark()
 var _mark_art: Sprite3D  # the pixel art for what _mark says, see _sync_mark()
@@ -249,7 +261,7 @@ func sees_point(p: Vector3) -> bool:
 
 func _lie(on: bool) -> void:
 	$Shape.rotation.x = PI / 2 if on else 0.0
-	$Shape.position.y = 0.35 if on else 0.9
+	$Shape.position.y = ($Shape.shape as CapsuleShape3D).radius if on else ($Shape.shape as CapsuleShape3D).height / 2.0
 
 
 ## Could it see `other` drop: in its front cone within PARTNER_RANGE, with a clear line to the chest.
@@ -268,6 +280,9 @@ func _changed(why: String) -> void:
 	order = {}  # whatever it was told, it now has its own reason to act
 	AlertChain.area.release(self)  # a new state: any search spot it held is free
 	_spot_for = null
+	_peek_for = null
+	_flank = null  # release() above freed the squad's flank
+	_callout_left = Engage.CALLOUT_EVERY
 	_fanning = false
 	_swept = 0.0
 	_refresh_mark()
@@ -278,7 +293,8 @@ func _changed(why: String) -> void:
 func arrived() -> bool:
 	if _fleeing():
 		return _flat_dist(safe_room) < SAFE_REACH or _at(safe_room)
-	return _at(goal())
+	var g := goal()
+	return _at(g) or _stall.stuck(g)  # stuck short of a goal it can't reach: as close as it gets
 
 
 ## A Target on alert or in evasion runs to its safe room and stays there until the evasion ends.
@@ -302,13 +318,38 @@ func goal() -> Vector3:
 ## the last known point.
 func search_spot() -> Vector3:
 	if alert.state != GuardAlert.State.EVASION and not alert.rushing and not _fanning:
-		return alert.last_known
+		return _peek if peeked() else alert.last_known
 	if _spot_for != alert.last_known:  # the search moved (a noise): give up the old spot
 		AlertChain.area.release(self)
 		_spot_for = alert.last_known
 		_swept = 0.0
 	var hunting := alert.state == GuardAlert.State.EVASION or _fanning  # a Suspicion responder keeps to the point and the fixed spots
 	return AlertChain.area.reserve(self, alert.last_known, global_position, hunting)
+
+
+## Has it picked the hidden corner for this spot: one for a look point that hasn't moved more than
+## GuardAlert.MOVED since (footsteps nudge it every frame).
+func peeked() -> bool:
+	return _peek_for != null and (_peek_for as Vector3).distance_to(alert.last_known) <= GuardAlert.MOVED
+
+
+## The point within PEEK_REACH of p, on the navmesh and the same floor, that this guard can't see from
+## where it stands (behind a crate, round a corner), nearest it; p itself when every one is in plain view.
+func hidden_corner(p: Vector3) -> Vector3:
+	var map := _agent.get_navigation_map()
+	var best := p
+	var best_d := INF
+	for i in 8:
+		var want := p + Vector3(cos(TAU * i / 8), 0.0, sin(TAU * i / 8)) * PEEK_REACH
+		var q := NavigationServer3D.map_get_closest_point(map, want) if map.is_valid() else want
+		if Vector2(q.x - want.x, q.z - want.z).length() > 1.0 or absf(q.y - p.y) > 1.0:
+			continue  # inside a wall, or another floor
+		if sees_point(q + Vector3.UP):
+			continue
+		if _flat_dist(q) < best_d:
+			best_d = _flat_dist(q)
+			best = q
+	return best
 
 
 static func ladder_foot(p: Vector3, ladders: Array) -> Vector3:
@@ -330,9 +371,9 @@ func _at(t: Vector3) -> bool:
 # --- Radio -------------------------------------------------------------------------------------
 
 ## A spoken conversation line (chat, escort, field chatter): subtitle plus its clip or mumble, from this guard.
-func say_line(key: String, args := {}) -> void:
+func say_line(key: String, args := {}, long := false) -> void:
 	var text := tr(key).format(args)  # args: a line's {n}, e.g. evidence chatter
-	get_tree().call_group("radio_log", "say", name, text)
+	get_tree().call_group("radio_log", "say", name, text, long)  # long: stays up longer, other guards' lines don't push it out (Subtitles)
 	voice.speak(key, text)
 
 
@@ -372,6 +413,7 @@ func face(pos: Vector3, delta: float) -> void:
 
 
 func _walk_to(pos: Vector3, speed: float, delta: float) -> void:
+	_stall.step(pos, _flat_dist(pos), delta)  # before the early return: a guard stopped dead is the stall it counts
 	if not _agent.target_position.is_equal_approx(pos):
 		_agent.target_position = pos
 	var next := _agent.get_next_path_position()
@@ -384,7 +426,12 @@ func _walk_to(pos: Vector3, speed: float, delta: float) -> void:
 
 
 func _on_velocity_computed(safe: Vector3) -> void:
-	velocity = Vector3(safe.x, 0, safe.z)
+	# Gravity: the path is flat-walked, so a guard that cuts a ledge's corner (or is nudged off it by avoidance) would
+	# otherwise hang in the air above the ramp or stair below. A carried body follows the carrier instead.
+	var fall := 0.0
+	if not is_on_floor() and not carrier:
+		fall = maxf(velocity.y - ProjectSettings.get_setting("physics/3d/default_gravity", 9.8) * get_physics_process_delta_time(), -FALL_MAX)
+	velocity = Vector3(safe.x, fall, safe.z)
 	if velocity.is_zero_approx():
 		return  # standing (posted, Down, held): no slide to query; avoidance still answers when another guard pushes
 	move_and_slide()
@@ -392,3 +439,15 @@ func _on_velocity_computed(safe: Vector3) -> void:
 
 func _flat_dist(pos: Vector3) -> float:
 	return Vector2(pos.x - global_position.x, pos.z - global_position.z).length()
+
+
+## A Target's body is not Nikita's: the capsule takes its height (and a slimmer girth with it) and the headshot line
+## its skull, so a shot over the head misses and one on the face is a headshot.
+func fit_hitbox() -> void:
+	var top := model.crown_height(1.8)
+	var capsule := ($Shape.shape as CapsuleShape3D).duplicate() as CapsuleShape3D  # the scene's shape is shared by every guard
+	capsule.height = top
+	capsule.radius = minf(capsule.radius, top * 0.175)
+	$Shape.shape = capsule
+	_lie(false)
+	head_height = model.skull_height(HEAD_HEIGHT)

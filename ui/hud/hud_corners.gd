@@ -19,17 +19,20 @@ const SWEEP_SECS := 5.0  # s per turn of the Radar's sweep
 const MINT := HudPalette.MINT  # the live call card's tint
 const WEAPON_FADE := 18  # dither pixels in the weapon card's fade, longer than the other plates'
 const WEAPON_INSET := 76.0  # px the weapon card's content starts in from its edge
+const OBJECTIVE_HUE := 0.75  # how far the Radar's objective diamonds are pulled from white toward gold
 const LIFE_CUT := 10  # pixels the life gauge's top-right and bottom-left corners are cut by
 const LOST_HOLD := 0.4  # s the red lost segment waits after a hit
 const LOST_DRAIN := 0.6  # life per second
 const CALL := Vector2(64, 410)  # the live call card's corner
-const CALL_W := 430.0
-const FACE := 76.0
+const CALL_W := 500.0
+const CALL_GAP := 28.0  # px of air between the Voiceprints plate and the live call card
+const FACE := 72.0
 const HABIT_W := 56.0  # px per Habit column on the Aigis cue
 const SUB_W := 1000.0  # subtitles and tips: centred, lower middle
 const SUB_BOTTOM := 1010.0  # near the bottom edge; the action prompt sits above it
 const PORTRAIT := "res://ui/codec/portraits/%s_%d.png"
 
+var vp_bottom := 0.0  # where the Voiceprints plate ends (0 with none): the live call card keeps CALL_GAP below it
 var life := 1.0  # the Operative's Health.life(), refreshed each frame
 var _lost := 1.0  # where the red lost segment ends
 var _lost_hold := 0.0
@@ -201,13 +204,13 @@ func _radar(d: Vector2) -> void:
 		if boff.length() > RadarModel.RANGE:  # off the disc: an arrow on the rim pointing at it (a pinned diamond slid round the rim as he moved)
 			var out := boff.normalized()
 			var tip := o + out * (rad - 4.0)
-			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3))
+			HudPalette.px_poly(c, PackedVector2Array([tip, tip - out * 16.0 + out.orthogonal() * 9.0, tip - out * 11.0, tip - out * 16.0 - out.orthogonal() * 9.0]), HudPalette.LIGHT if b.target else HudPalette.LIGHT.lerp(HudPalette.GOLD, OBJECTIVE_HUE))
 		elif b.target:
 			HudPalette.px_ring(c, p, 12, 3, HudPalette.LIGHT)
 			HudPalette.px_ring(c, p, 4, 0, HudPalette.LIGHT)
 		else:
 			var diamond := PackedVector2Array([p + Vector2(0, -12), p + Vector2(12, 0), p + Vector2(0, 12), p + Vector2(-12, 0)])
-			var gold := HudPalette.LIGHT.lerp(HudPalette.GOLD, 0.3)  # white with a slight gold hue
+			var gold := HudPalette.LIGHT.lerp(HudPalette.GOLD, OBJECTIVE_HUE)  # white pulled well toward gold
 			var lv := RadarModel.level(b.pos.y - _operative.global_position.y)
 			if lv == 0:
 				HudPalette.px_poly(c, diamond, gold)
@@ -270,6 +273,7 @@ func _jammed(o: Vector2, rad: float) -> void:
 ## VP_SHOWN, a "+n".
 func _voiceprints(d: Vector2, cue_shown: bool) -> void:
 	var held: Array = _operative.voiceprints.held
+	vp_bottom = 0.0
 	if held.is_empty():  # a bare "VP" with nothing under it is noise
 		return
 	var x := 70.0
@@ -282,6 +286,7 @@ func _voiceprints(d: Vector2, cue_shown: bool) -> void:
 	if held.size() > VP_SHOWN:
 		rows.append("+%d" % (held.size() - VP_SHOWN))
 	var plate := Rect2(x - 16, y - 22, 164 + HudPalette.FADE_W, 24 + 22 * rows.size() + 14)  # smoke behind the names: they sit over any sky
+	vp_bottom = plate.end.y
 	HudPalette.plate(_canvas, plate, HudPalette.GLASS, 0.35, 0.9, false)
 	HudPalette.hud_label(_canvas, Vector2(x, y), tr("ui.hud.vp"), 15, HudPalette.LIGHT_2, 0.16, HudPalette.LABEL, 0)
 	for i in rows.size():

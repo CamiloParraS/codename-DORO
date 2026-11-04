@@ -96,6 +96,7 @@ func _physics_process(delta: float) -> void:
 	var chain := AlertChain.area
 	if alert.state == GuardAlert.State.ALERT and why != "":
 		if chain.start_call(self, alert.last_known, AlertChain.CAMERA_CALL_TIME):  # once per full meter
+			Mix.sfx_at(self, &"camera_lock")
 			HqRadio.caught(get_tree(), &"camera")  # Stealth: the cameras were put up for him
 	elif chain.calling(self) and not seeing:
 		chain.stop_call(self)
