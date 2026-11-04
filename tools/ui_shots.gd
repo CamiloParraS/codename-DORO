@@ -3,7 +3,7 @@
 ## the autoloads exist:
 ##   godot --path . tools/ui_shots.tscn -- <out dir> [es|radio]
 ## Extra args, in any order after the out dir:
-##   only=a,b   shoot just the shots whose name is `a` or starts with `a` (`only=codec,hud`), and skip the setup the rest need
+##   only=a,b   (new: loading, slots_new, slots_load, hud_checkpoint)  shoot just the shots whose name is `a` or starts with `a` (`only=codec,hud`), and skip the setup the rest need
 ##   es         the Spanish pass          radio   the radio mode in all four Areas
 ##   full       also shoot fullscreen (any extra arg otherwise limits the run to 854x480)
 ## Every run ends by writing <out dir>/index.html: a contact sheet of all PNGs there (this run's marked new).
@@ -19,6 +19,7 @@ var sizes: Array = ["854x480", "full"]
 var only: Array = []
 var taken: Array[String] = []  # PNG file names written by this run
 var _held: AlertChain  # the posed alert chain, re-asserted each frame: the running Area swaps its own in
+var _card: HudObjective  # the objective whose CHECKPOINT card is held on screen
 
 
 func _ready() -> void:
@@ -46,6 +47,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _held:
 		AlertChain.area = _held
+	if _card:
+		_card.card_left = HudObjective.CARD_TIME - 0.3  # fully in, not yet fading
 
 
 func wait(s: float) -> void:
@@ -105,7 +108,7 @@ func _run() -> void:
 		return
 	var all := lang == "en"
 	# --- menus
-	if all and any_of(["title", "main_menu", "mission_select", "settings"]):
+	if all and any_of(["title", "main_menu", "slots_new", "slots_load", "mission_select", "settings"]):
 		await scene(MENU)
 		await wait(0.6)
 		await shoot("title")
@@ -115,6 +118,14 @@ func _run() -> void:
 		menu._main()
 		await wait(0.8)
 		await shoot("main_menu")
+		# the slot pages show whatever user://slot_N.json holds (EMPTY on a clean profile)
+		menu._slots(true)
+		await wait(0.6)
+		await shoot("slots_new")
+		menu._slots(false)
+		await wait(0.6)
+		await shoot("slots_load")
+		menu._main()
 		var slot := {record = _record(2), gear = Requisition.new(), missions = {
 			"0": {pre = _record(0), best = {rank = "A", time = 412.0, kills = 0, alerts = 1}},
 			"1": {pre = _record(1), best = {rank = "S", time = 355.0, kills = 0, alerts = 0}}}}
@@ -125,6 +136,8 @@ func _run() -> void:
 		menu._settings()
 		await wait(0.6)
 		await shoot("settings")
+	if all and want("loading"):
+		await _loading()
 	if all and want("free_mode"):
 		await scene("res://ui/free_mode/free_mode.tscn")
 		await wait(0.6)
@@ -171,7 +184,7 @@ func _run() -> void:
 	if any_of(["briefing", "requisition", "codec"]):
 		await _briefing()
 	# --- in play: the Harbour with Aigis awake
-	if not any_of(["hud_normal", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
+	if not any_of(["hud_normal", "hud_checkpoint", "hud_tip", "hud_tip_long", "hud_busy", "radio", "hud_caution", "pause", "pause_confirm", "game_over", "post_mission_rank", "post_mission_saw", "post_mission_aigis"]):
 		if all:
 			await _moods()
 		_finish()
@@ -223,6 +236,12 @@ func _play_shots(all: bool) -> void:
 	op.voiceprints.held.append_array(["GuardPA", "Kostas", "Dimos", "Eleni"])
 	await wait(1.0)
 	await shoot("hud_normal")
+	if want("hud_checkpoint"):
+		_card = hud._objective
+		await wait(0.3)
+		await shoot("hud_checkpoint")
+		_card = null
+		hud._objective.card_left = 0.0
 	hud._subs.lines.clear()  # Mission 1's own first tip and Metis line may be up: the shot shows the longest tip alone over one line
 	hud.say("METIS", tr("tutorial.holdup.line"))
 	hud.tip(tr("tutorial.holdup.prompt"), tr("tutorial.holdup.title"))
@@ -267,7 +286,10 @@ func _area(mission: int, as_mission: int) -> void:
 	Engine.time_scale = 1.0
 	Campaign.record = _record(mission)
 	Campaign.play(get_tree(), Campaign.record, MENU, true)
-	await wait(3.0)
+	await wait(1.0)
+	while get_tree().get_first_node_in_group("loading_cover"):  # the load's pace varies: wait for the cover to lift, not a fixed time
+		await wait(0.2)
+	await wait(1.0)
 	for take: Cine in get_tree().root.find_children("*", "Cine", true, false):  # the intro take hides the HUD: land it
 		take.skip()
 	await wait(1.5)
@@ -405,6 +427,22 @@ func _moods() -> void:
 			_phase(ph)
 			await wait(0.6)
 			await shoot("phase_%s_%s" % [m[0], ph])
+
+
+## The loading cover posed half-way: Mission 1 and its Area, the bar part-filled, the load held (its Area never swaps in).
+func _loading() -> void:
+	TranslationServer.set_locale(lang)
+	var cover := Loading.new()
+	var intro: Dictionary = Campaign.MISSIONS[0].intro
+	cover.path = Campaign.MISSIONS[0].area
+	cover.title = tr(intro.name)
+	cover.area_name = tr(intro.area)
+	get_tree().root.add_child(cover)
+	cover.set_process(false)  # posed: no load, no swap, no lift
+	cover._shown = 0.6
+	cover._canvas.queue_redraw()
+	await shoot("loading")
+	cover.queue_free()
 
 
 ## The Mission cards over black, held at full light: Mission 1's title card and its extraction card.
