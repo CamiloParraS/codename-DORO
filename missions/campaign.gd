@@ -8,7 +8,7 @@ const RELAY_STATION := "res://areas/relay_station/relay_station.tscn"
 const RESEARCH_ANNEX := "res://areas/research_annex/research_annex.tscn"
 const CORE := "res://areas/core/core.tscn"
 
-## title; area: the Area scene; encounters: how many (par is 2 min each); targets: Target names (each is killed or carried to Extraction); carry_only: the Targets are ill, a Fulton would kill them, so they are carried out on foot (alive pays Requisition.ALIVE_TARGET_BONUS); steps, in order:
+## title; area: the Area scene; encounters: how many (par is 2 min each); targets: Target names (each is killed or carried to Extraction); carry_only: the Targets are ill, a Fulton would kill them, so they are carried out on foot (alive pays Requisition.ALIVE_TARGET_BONUS); target_female: the Targets wear the female body (optional); steps, in order:
 ## {intel: the node in group "intel" whose `reached` completes it (a pickup, a console, an objective watch),
 ## objective: what the pause screen shows, call: the live Codec call it triggers, hint: Metis's two Hints, a
 ## direction then the route}; optional: the next step's intel can be done first and this one is skipped. open: the live call that states step 1 as the Mission starts. codec: the full-screen
@@ -37,7 +37,7 @@ const MISSIONS := [
 		{intel = "RelayConsole", objective = "objective.m2.s2", call = [["handler", "live.m2.s2.01"], ["analyst", "live.m2.s2.02"], ["analyst", "intel.m2.inflation"]], hint = ["hint.m2.s2.1", "hint.m2.s2.2"]},
 		{intel = "IntelMess", objective = "objective.m2.s3", call = [["analyst", "live.m2.s3.01"]], hint = ["hint.m2.s3.1", "hint.m2.s3.2"]},
 	]},
-	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, encounters = 3, targets = ["LEAD RESEARCHER"], carry_only = true,
+	{title = "MISSION 3: RESEARCH ANNEX", area = RESEARCH_ANNEX, encounters = 3, targets = ["LEAD RESEARCHER"], carry_only = true, target_female = true,
 		intro = {name = "intro.m3.name", area = "intro.m3.area", stamp = "intro.m3.stamp"},
 		outro = {title = "outro.m3.title", line = "outro.m3.line"}, cine = {intro = "CineIntro", outro = "CineOutro"},
 		open = [["analyst", "live.m3.open.01"]],

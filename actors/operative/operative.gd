@@ -275,7 +275,7 @@ func _fire() -> void:
 	if arm.lethal and c.is_in_group("cameras"):
 		c.destroy()
 	elif c.is_in_group("guards") and not c.is_down():
-		var head: bool = hit["position"].y - c.global_position.y >= Guard.HEAD_HEIGHT
+		var head: bool = hit["position"].y - c.global_position.y >= c.head_height
 		if arm.lethal:
 			c.shoot(head, global_position)
 		else:

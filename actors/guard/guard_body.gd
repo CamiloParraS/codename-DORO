@@ -71,6 +71,7 @@ var hits := 0                    # rifle body hits taken
 var stumble_left := 0.0          # after a body dart: seconds until Neutralized
 var _shot_from := Vector3.INF   # where the bullet that kills it came from, while it goes Down
 var _shot_head := false
+var head_height := HEAD_HEIGHT   # hits above this (local y) are headshots; a Target fits it to its own skull (fit_hitbox)
 var held := false                # being choked: stands still
 var held_up := false             # Hold-up: frozen at gunpoint (Operative), until released
 var answered := false            # gave its one Hold-up answer
@@ -260,7 +261,7 @@ func sees_point(p: Vector3) -> bool:
 
 func _lie(on: bool) -> void:
 	$Shape.rotation.x = PI / 2 if on else 0.0
-	$Shape.position.y = 0.35 if on else 0.9
+	$Shape.position.y = ($Shape.shape as CapsuleShape3D).radius if on else ($Shape.shape as CapsuleShape3D).height / 2.0
 
 
 ## Could it see `other` drop: in its front cone within PARTNER_RANGE, with a clear line to the chest.
@@ -438,3 +439,15 @@ func _on_velocity_computed(safe: Vector3) -> void:
 
 func _flat_dist(pos: Vector3) -> float:
 	return Vector2(pos.x - global_position.x, pos.z - global_position.z).length()
+
+
+## A Target's body is not Nikita's: the capsule takes its height (and a slimmer girth with it) and the headshot line
+## its skull, so a shot over the head misses and one on the face is a headshot.
+func fit_hitbox() -> void:
+	var top := model.crown_height(1.8)
+	var capsule := ($Shape.shape as CapsuleShape3D).duplicate() as CapsuleShape3D  # the scene's shape is shared by every guard
+	capsule.height = top
+	capsule.radius = minf(capsule.radius, top * 0.175)
+	$Shape.shape = capsule
+	_lie(false)
+	head_height = model.skull_height(HEAD_HEIGHT)

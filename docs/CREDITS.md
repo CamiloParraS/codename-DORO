@@ -10,7 +10,7 @@ Ghost Layer is a student project. Third-party assets and their licenses:
 - Blocky Characters, Survival Kit, City Kit (Industrial) by Kenney, https://kenney.nl
   License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
 - Kenney Survival Kit `box-large` and City Kit (Industrial) `shipping-container-a/b` (`assets/models/props/`, skinned onto the greybox crates by `areas/prop_skin.gd`), https://kenney.nl, CC0 1.0
-- Characters PSX `Character_Male_36` by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (`assets/models/characters/target/`, the Target's body; its clips are Mixamo, baked by `tools/bake_target.gd`)
+- Characters PSX `Character_Male_36` and `Character_23_Female_Doctor` by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0 (`assets/models/characters/target/`, the Targets' bodies: the female doctor is the Lead Researcher; their clips are Mixamo, baked by `tools/bake_target.gd`)
 - Modern Rebel Soldier (PSX) by yugg0, https://yugg0.itch.io/modern-rebel-soldier-character-psx-ps1
   Free for personal and commercial use per the author's page; rig from Mixamo; basemesh from Sketchfab (see the author's page).
 - Characters PSX by Elbolilloduro, https://elbolilloduro.itch.io/characters-psx, CC0 1.0

@@ -14,6 +14,7 @@ func _ready() -> void:
 	_seed.call_deferred()  # repeatable per guard, after the Area names it; tests reseed (a method, so a guard freed first is skipped)
 	if target:
 		add_to_group("targets")
+		fit_hitbox()
 	else:
 		model.hold("rifle")
 	add_child(voice)

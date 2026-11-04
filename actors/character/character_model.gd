@@ -9,6 +9,9 @@ const BODY := preload("res://assets/models/characters/Nikita_Rigged.glb")
 ## The Target is a PSX character on the Mixamo rig, with its own clips from tools/bake_target.gd (gitignored).
 const TARGET_BODY := preload("res://assets/models/characters/target/target.fbx")
 const TARGET_CLIPS := "res://assets/models/animations/target_clips.res"
+## The Lead Researcher (Mission 3): a PSX woman on the same Mixamo rig minus the fingers, with her own bake of the same clips.
+const FEMALE_BODY := preload("res://assets/models/characters/target/Character_23_Female_Doctor.fbx")
+const FEMALE_CLIPS := "res://assets/models/animations/target_female_clips.res"
 ## Guard looks: police, firefighter, doctor and hazmat textures of the PSX pack, baked onto Nikita's UVs
 ## (_raw/work/bake/bake.py). The Operative wears its own, baked the same way.
 const GUARD_SKINS := [
@@ -39,7 +42,7 @@ const MIXAMO_CLIPS := {
 	"aim": "rifle_aiming_idle", "crouch_idle": "pro_idle_crouching", "crouch_aim": "pro_idle_crouching_aiming",
 	"crouch_walk": "pro_walk_crouching_forward", "takedown": "hostage_situation_idle_-_villain",
 	"hit": "bs_hit_reaction", "fire": "bs_firing_rifle", "reload": "reloading",
-	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle",
+	"carry": "walking_1", "carry_idle": "carrying", "down": "sleeping_idle", "carried": "being_carried_1",
 	"startle": "surprised", "look": "look_around", "kneel": "taken_hostage_-_victim",
 	"talk": "talking", "talk_b": "talking_1",  # gestures for react() while a guard speaks
 	"hand_to_ear": "talking_on_phone", "dead": "pro_death_from_the_front",
@@ -110,6 +113,7 @@ const SUPPRESSOR := preload("res://assets/models/weapons/suppressor.glb")
 const SUPPRESSOR_AT := Vector3(0.19, 0.072, 0)  # over the pistol's barrel, overlapping the slide end
 const CARRIED := Transform3D(Basis(Vector3.UP, PI / 2), Vector3(0, 1.2, -0.1))  # fixed pose on the shoulder
 @export var kind := Kind.GUARD
+@export var female := false  # a Target in the female body
 
 var _anim := AnimationPlayer.new()
 var _since_step := 0.0
@@ -139,7 +143,7 @@ static func _psx_material(texture: Texture2D) -> StandardMaterial3D:
 
 
 func _ready() -> void:
-	var body: Node3D = (TARGET_BODY if kind == Kind.TARGET else BODY).instantiate()
+	var body: Node3D = (BODY if kind != Kind.TARGET else FEMALE_BODY if female else TARGET_BODY).instantiate()
 	body.rotation.y = PI  # the rig faces +Z
 	add_child(body)
 	skeleton = body.find_children("*", "Skeleton3D", true, false)[0]
@@ -302,7 +306,8 @@ func _rest_pose() -> Animation:
 
 func _clips() -> AnimationLibrary:
 	if kind == Kind.TARGET:
-		return load(TARGET_CLIPS) if ResourceLoader.exists(TARGET_CLIPS) else AnimationLibrary.new()
+		var path := FEMALE_CLIPS if female else TARGET_CLIPS
+		return load(path) if ResourceLoader.exists(path) else AnimationLibrary.new()
 	if not ResourceLoader.exists(MIXAMO):
 		return CLIPS
 	var mixamo: AnimationLibrary = load(MIXAMO)
@@ -317,6 +322,11 @@ func _clips() -> AnimationLibrary:
 				lib.add_animation(pair[0] + d, mixamo.get_animation(pair[1] + d))
 	for c in PISTOL_CLIPS.values():  # kept under their own names; play() swaps them in
 		lib.add_animation(c, mixamo.get_animation(c))
+	if lib.has_animation("carried"):  # a long take that ends where it didn't start: it rocks back and forth instead
+		var carried := lib.get_animation("carried").duplicate() as Animation
+		carried.loop_mode = Animation.LOOP_PINGPONG
+		lib.remove_animation("carried")
+		lib.add_animation("carried", carried)
 	if mixamo.has_animation(HANG_FROM):  # a ledge climb's first beat, arms up, swung back and forth: hanging from a line
 		var hang := mixamo.get_animation(HANG_FROM).duplicate() as Animation
 		hang.length = HANG_LEN
@@ -468,7 +478,8 @@ func _on_bone(bone: String, node: Node3D) -> void:
 	at.add_child(node)
 
 
-## Where a carried guard's model hangs: the carrier's model root, where the CRADLE pose lays it across his arms.
+## Where a carried guard's model hangs: the carrier's model root. The "carried" clip is Mixamo's victim take, made
+## to pair with the carrier's "carrying" one, so it brings its own place on the shoulder.
 func carry_mount() -> Node3D:
 	if not _holder:
 		_holder = Node3D.new()
@@ -568,6 +579,17 @@ func hang() -> float:
 		add_child(_ragdoll)
 	_ragdoll.hang()
 	return _bone_height("pelvis", 1.0)
+
+
+## Metres from the feet to the crown of the head: a Target's body is not Nikita's, and its hitbox follows. `fallback`
+## answers for a rig without the Mixamo bone.
+func crown_height(fallback: float) -> float:
+	return _bone_height("mixamorig_HeadTop_End", fallback)
+
+
+## Metres up to where the skull begins, just under the chin: a shot above it is a headshot.
+func skull_height(fallback: float) -> float:
+	return _bone_height("mixamorig_Head", fallback + 0.04) - 0.04
 
 
 func _bone_height(bone: String, fallback: float) -> float:

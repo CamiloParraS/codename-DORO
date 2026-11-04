@@ -318,6 +318,22 @@ func test_every_strafe_way_has_a_clip_or_falls_back_to_a_walk() -> void:
 	m.free()
 
 
+func test_female_target_has_her_own_body_and_height() -> void:
+	var man := CharacterModel.new()
+	man.kind = CharacterModel.Kind.TARGET
+	var woman := CharacterModel.new()
+	woman.kind = CharacterModel.Kind.TARGET
+	woman.female = true
+	_root().add_child(man)
+	_root().add_child(woman)
+	assert_true(woman.skeleton.get_bone_count() != man.skeleton.get_bone_count(), "a different rig: no fingers")
+	assert_true(woman.skeleton.find_bone("mixamorig_Hips") >= 0, "on the same Mixamo bones the clips key")
+	assert_true(man.crown_height(0.0) > 1.6 and man.crown_height(0.0) < 1.8, "the crown is read off the body, not the 1.8 m fallback")
+	assert_true(woman.skull_height(0.0) < woman.crown_height(0.0) - 0.1, "the skull starts below the crown")
+	man.free()
+	woman.free()
+
+
 func test_a_ridden_model_lies_limp_across_the_carriers_arms() -> void:
 	var home := Node3D.new()
 	var carrier := CharacterModel.new()

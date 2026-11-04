@@ -70,7 +70,7 @@ func _spawn_targets(guards: Array) -> void:
 	var names: Array = Campaign.MISSIONS[$MissionRun.record.mission].targets
 	for i in names.size():
 		var post: Marker3D = $TargetPosts.get_child(i)
-		var t := spawn_guard(post, false, true)
+		var t := spawn_guard(post, false, true, Campaign.MISSIONS[$MissionRun.record.mission].get("target_female", false))
 		t.name = names[i]
 		t.carry_only = Campaign.MISSIONS[$MissionRun.record.mission].get("carry_only", false)
 		t.safe_room = $Spots/SafeRoom.global_position
@@ -305,12 +305,13 @@ static func stop_of(m: Marker3D) -> Dictionary:
 	return s
 
 
-## sentry: stands on a high point and never leaves it (no route). target: a Mission Target.
-func spawn_guard(post: Marker3D, sentry := false, target := false) -> Node3D:
+## sentry: stands on a high point and never leaves it (no route). target: a Mission Target (female: in the female body).
+func spawn_guard(post: Marker3D, sentry := false, target := false, female := false) -> Node3D:
 	var g := GUARD.instantiate()
 	if target:
 		g.target = true
 		g.get_node("Model").kind = CharacterModel.Kind.TARGET
+		g.get_node("Model").female = female
 	g.name = post.name.replace("Post", "Guard")
 	g.sentry = sentry
 	if sentry:

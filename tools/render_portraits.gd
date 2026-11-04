@@ -7,13 +7,13 @@ extends SceneTree
 
 const SIZE := 60  # px; the Codec draws it at 2x with nearest filtering
 const OUT := "res://ui/codec/portraits"
-## id: [kind, skin for a Nikita body (null keeps the kind's own), tint for the Target body].
+## id: [kind, skin for a Nikita body (null keeps the kind's own), tint for the Target body, female Target body (optional)].
 const CAST := {
 	operative = [CharacterModel.Kind.OPERATIVE, null, Color.WHITE],
 	handler = [CharacterModel.Kind.GUARD, preload("res://assets/models/characters/guard/guard_21.png"), Color.WHITE],
 	analyst = [CharacterModel.Kind.GUARD, preload("res://assets/models/characters/guard/guard_doctor.png"), Color.WHITE],
 	chief = [CharacterModel.Kind.TARGET, null, Color(0.85, 0.8, 0.7)],
-	researcher = [CharacterModel.Kind.TARGET, null, Color(1.15, 1.15, 1.2)],
+	researcher = [CharacterModel.Kind.TARGET, null, Color.WHITE, true],  # the female body: its own coat and skin
 	director = [CharacterModel.Kind.TARGET, null, Color(0.55, 0.55, 0.65)],
 }
 const TILT := 0.22  # rad the head rolls in frame 1
@@ -49,6 +49,7 @@ func _render() -> void:
 		vp.add_child(holder)
 		var model: CharacterModel = load("res://actors/character/character_model.tscn").instantiate()
 		model.kind = CAST[id][0]
+		model.female = CAST[id].size() > 3 and CAST[id][3]
 		holder.add_child(model)
 		await process_frame
 		await process_frame
@@ -59,6 +60,8 @@ func _render() -> void:
 		var at := sk.global_transform * sk.get_bone_global_pose(head).origin
 		if model.kind != CharacterModel.Kind.TARGET:
 			at.y += 0.1  # Nikita's head bone sits at the neck
+		elif model.female:
+			at.y += 0.07  # hers sits lower in the frame than the man's: the face, not the hair, in the shot
 		var cam := Camera3D.new()
 		cam.fov = 30
 		vp.add_child(cam)
