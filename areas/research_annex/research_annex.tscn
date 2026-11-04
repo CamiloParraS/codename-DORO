@@ -170,6 +170,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_h4o7r"]
@@ -238,6 +241,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_c5jw0"]
@@ -258,6 +264,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_sq4t4"]
@@ -285,6 +294,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_awjq8"]
@@ -305,6 +317,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_mmht4"]
@@ -325,6 +340,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_x6dng"]
@@ -345,6 +363,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_eogg1"]
@@ -371,6 +392,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_cr6c0"]
@@ -453,6 +477,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_3bvys"]
@@ -473,6 +500,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_05idp"]
@@ -535,6 +565,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_a72hl"]
@@ -618,6 +651,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_j2poc"]
@@ -642,6 +678,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_2rvju"]
@@ -667,6 +706,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_53nwp"]
@@ -862,6 +904,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.2
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_78tk8"]
@@ -1103,6 +1148,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_5ix3k"]
@@ -1434,6 +1482,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_1rcke"]
@@ -1451,6 +1502,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_uiwfh"]
@@ -1468,6 +1522,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_ttnpw"]
@@ -1497,6 +1554,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_ag3yk"]
@@ -1514,6 +1574,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_qw5gp"]
@@ -1531,6 +1594,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_71d2g"]
@@ -1552,6 +1618,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_xdt7n"]
@@ -1573,6 +1642,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_gweol"]
@@ -1590,6 +1662,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_iv1ei"]
@@ -1952,6 +2027,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_uqdyq"]
@@ -1989,6 +2067,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_e6bq5"]
@@ -2015,6 +2096,9 @@ shader_parameter/side_tile_m = 6.0
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuwdt"]
@@ -2560,6 +2644,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5c0rg"]
@@ -3225,6 +3312,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l20n7"]
@@ -3278,6 +3368,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ma1f"]
@@ -3329,6 +3422,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s8ahu"]
@@ -3382,6 +3478,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5olat"]
@@ -3465,6 +3564,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2kqd0"]
@@ -3478,6 +3580,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n61kq"]
@@ -3491,6 +3596,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_7thl7"]
@@ -3508,6 +3616,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_7u4q3"]
@@ -3525,6 +3636,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.0
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 1.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_x8tqg"]
@@ -3678,6 +3792,9 @@ shader_parameter/side_tile_m = null
 shader_parameter/emission = null
 shader_parameter/emission_energy = null
 shader_parameter/gloss = 0.45
+shader_parameter/wear = null
+shader_parameter/streak = null
+shader_parameter/wet = 0.0
 shader_parameter/rim = null
 
 [sub_resource type="BoxMesh" id="BoxMesh_g8vye"]
@@ -8175,36 +8292,36 @@ transform = Transform3D(0.03331496, -0.105647616, -0.99384534, 0, 0.9943973, -0.
 cast_shadow = 0
 mesh = SubResource("BoxMesh_v0y4t")
 
-[node name="@Node3D@16" type="Node3D" parent="Backdrop/Surroundings" unique_id=943722678]
+[node name="@Node3D@21" type="Node3D" parent="Backdrop/Surroundings" unique_id=943722706]
 
-[node name="UtilityPole_45p5_m108p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=1831621307]
+[node name="UtilityPole_45p5_m108p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21" unique_id=1070950103]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.701126, -148)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m108p0" unique_id=174445951 instance=ExtResource("112_4epga")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21/UtilityPole_45p5_m108p0" unique_id=1093790363 instance=ExtResource("112_4epga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m84p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576363470]
+[node name="UtilityPole_45p5_m84p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21" unique_id=1138990186]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.479477, -124)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m84p0" unique_id=883753938 instance=ExtResource("112_4epga")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21/UtilityPole_45p5_m84p0" unique_id=1367139694 instance=ExtResource("112_4epga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576287240]
+[node name="UtilityPole_45p5_m60p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21" unique_id=1138913956]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.499898, -100)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m60p0" unique_id=219756428 instance=ExtResource("112_4epga")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21/UtilityPole_45p5_m60p0" unique_id=703142184 instance=ExtResource("112_4epga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m36p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576185963]
+[node name="UtilityPole_45p5_m36p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21" unique_id=1138812679]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.422246, -76)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m36p0" unique_id=871505199 instance=ExtResource("112_4epga")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21/UtilityPole_45p5_m36p0" unique_id=1354890955 instance=ExtResource("112_4epga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
-[node name="UtilityPole_45p5_m12p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16" unique_id=576109733]
+[node name="UtilityPole_45p5_m12p0" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21" unique_id=1138736449]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 5.5, 4.3967714, -52)
 
-[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@16/UtilityPole_45p5_m12p0" unique_id=207507689 instance=ExtResource("112_4epga")]
+[node name="utility_pole2" type="Node3D" parent="Backdrop/Surroundings/@Node3D@21/UtilityPole_45p5_m12p0" unique_id=690893445 instance=ExtResource("112_4epga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, -0.1625)
 
 [node name="UtilityPoleWires" type="Node3D" parent="Backdrop/Surroundings" unique_id=1063547200]
@@ -9473,7 +9590,7 @@ visible = false
 [node name="Balloon" type="MeshInstance3D" parent="Cine/OutroProps" unique_id=51216172]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=765861943]
+[node name="@MeshInstance3D@26" type="MeshInstance3D" parent="Cine/OutroProps/Balloon" unique_id=765861948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 cast_shadow = 0
 mesh = SubResource("CylinderMesh_xux3x")

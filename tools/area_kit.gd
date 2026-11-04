@@ -26,6 +26,8 @@ const TILE := {asphalt = 6.0, concrete = 4.0, corrugated = 5.0, panels = 4.0, ro
 	hatch = 2.5, windows = 3.0, hazard = 1.0}
 ## Gloss (psx_surface): the surfaces that catch a light. Wet quay and planks, bare metal.
 const GLOSS := {asphalt = 0.25, planks = 0.3, metal = 0.45, deck_plate = 0.35, quay = 0.25, pier = 0.3, deck = 0.35, panels = 0.2}
+## Surfaces that go damp in patches (psx_surface `wet`): the ground-like ones, outdoors and in.
+const DAMP := ["asphalt", "quay", "pier", "planks", "ground", "concrete"]
 ## Materials whose top and sides differ: key = [top, sides].
 const SPLIT := {
 	quay = ["asphalt", "concrete"], deck = ["deck_plate", "rust"], pier = ["planks", "rust"], kerb = ["concrete", "hazard"],
@@ -124,6 +126,7 @@ func _mat(key: String, tint: Color) -> ShaderMaterial:
 		m.set_shader_parameter("tint", tint)
 		m.set_shader_parameter("tile_m", TILE.get(top, 2.0))
 		m.set_shader_parameter("gloss", GLOSS.get(key, GLOSS.get(top, 0.0)))
+		m.set_shader_parameter("wet", 1.0 if DAMP.has(key) or DAMP.has(top) else 0.0)
 		if SPLIT.has(key):
 			m.set_shader_parameter("split", true)
 			m.set_shader_parameter("side_tex", load(TEX[SPLIT[key][1]]))
