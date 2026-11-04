@@ -147,7 +147,8 @@ const CABLE_ALPHA := 0.7               # lit cells; the dark ones are fainter st
 ## The pulse: [at s, [x, y, h]] along the cable, radio to antenna tip. The cable bars join these points.
 const PULSE := [
 	[1.6, RADIO], [2.5, [52.0, 42.0, 4.3]], [3.5, [44.0, 34.0, 7.4]], [4.4, [41.5, 20.0, 7.6]],
-	[5.0, [39.6, 13.9, 9.5]], [6.0, [39.6, 13.9, 18.0]], [6.8, [37.0, 11.0, 34.4]],
+	[5.0, [39.6, 14.6, 9.5]], [6.0, [39.6, 14.6, 18.0]],
+	[6.3, [38.8, 13.0, 26.0]], [6.6, [38.4, 12.4, 34.6]], [6.8, [37.0, 11.0, 34.4]],  # up the outside of the antenna, over its top to the tip
 ]
 ## The camera (one rail): [at s, camera, aim]. It tails the pulse, then crests the mast and swoops; the last shots are
 ## the rig's pose, filled in from the start spot.
@@ -157,8 +158,8 @@ const INTRO_SHOTS := [
 	[2.5, [55.5, 44.5, 5.4], [52.0, 42.0, 4.3]],   # out at the door with the cable
 	[3.5, [48.5, 38.5, 8.0], [44.0, 34.0, 7.4]],
 	[4.4, [45.5, 25.5, 9.8], [41.5, 20.0, 7.6]],
-	[5.0, [43.8, 18.5, 11.0], [39.6, 13.9, 9.5]],  # at the mast's foot, rising
-	[6.0, [43.5, 16.5, 20.0], [39.6, 13.9, 18.0]],
+	[5.0, [43.8, 18.5, 11.0], [39.6, 14.6, 9.5]],  # at the mast's foot, rising
+	[6.0, [43.5, 16.5, 20.0], [39.6, 14.6, 18.0]],
 	[6.8, [42.5, 8.5, 31.5], [37.0, 11.0, 34.4]],  # a quarter turn round the antenna to its tip
 	[7.4, [37.0, 1.0, 40.0], [37.0, 45.0, 24.0]],  # the crest: wide over the valley
 	[8.4, [22.0, 40.0, 24.0], [8.0, 72.0, 1.6]],   # down the hillside to the start
