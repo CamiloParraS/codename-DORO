@@ -321,8 +321,8 @@ func _live_call(dim: float) -> float:
 	var tex := _portrait(who, frame)
 	var origin := Vector2(CALL.x, maxf(CALL.y, vp_bottom + CALL_GAP if vp_bottom > 0.0 else 0.0))  # clear of the Voiceprints
 	var tx := origin.x + 16 + FACE + 20
-	var call_fs := HudPalette.legible(c, 23)  # wrapped at the size it is drawn at, so a small window loses no words
-	var call_row := maxf(35.0, call_fs * 1.35)
+	var call_fs := HudPalette.legible(c, 22)  # wrapped at the size it is drawn at, so a small window loses no words
+	var call_row := maxf(32.0, call_fs * 1.32)
 	var full := HudPalette.wrap(_live.text(), CALL_W - (tx - origin.x) - 22, HudPalette.FIGURE_MED, call_fs)
 	var rows := full.size()
 	var box := Rect2(origin, Vector2(CALL_W, maxf(FACE + 28, 58 + rows * call_row)))
@@ -345,7 +345,7 @@ func _live_call(dim: float) -> float:
 	var y := origin.y + 70
 	for i in rows:
 		var l: String = full[i]
-		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 23, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
+		HudPalette.hud_text(c, Vector2(tx, y), l.left(maxi(left, 0)), 22, Color(HudPalette.LIGHT, dim), HudPalette.FIGURE_MED)
 		left -= l.length() + 1
 		y += call_row
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k))
@@ -415,7 +415,7 @@ func _tutorial_tip() -> void:
 	var title := _tip_title.to_upper()
 	var y := at.y
 	if title != "":  # the verb's slab
-		var tfs := HudPalette.legible(c, 23)
+		var tfs := HudPalette.legible(c, 22)
 		var tfont := HudPalette.tracked(HudPalette.DISPLAY, tfs, 0.3)
 		var th := 44.0
 		var ws := 22.0 + tfont.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, tfs).x + 18.0 + 16.0
