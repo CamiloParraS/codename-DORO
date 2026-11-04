@@ -19,8 +19,9 @@ const NEUTRALIZED_TIME := 90.0  # seconds a Neutralized guard stays Down
 const CHOKED_TIME := 150.0      # the same after a choke: the close-in takedown buys more time than a dart
 const SAFE_REACH := 2.0         # flat distance at which a fleeing Target is in its safe room
 const CHECK_REACH := 1.5        # flat distance at which a guard checks a Down guard
+const FALL_MAX := 20.0         # m/s a guard in the air falls at most
 const HIT_TIME := 0.7          # seconds the hit reaction plays on a non-lethal hit
-const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots
+const HEAD_HEIGHT := 1.45       # hits above this (local y) are headshots (a Target fits its own: head_height)
 const ORDER_LOOK := 8.0         # seconds a guard sent to a place looks around it
 const HOLD_TIME := 30.0         # seconds a guard told to hold its position stays put
 const DROP_PUSH := 1.2          # m/s on the pelvis of a guard that goes Down
@@ -424,7 +425,12 @@ func _walk_to(pos: Vector3, speed: float, delta: float) -> void:
 
 
 func _on_velocity_computed(safe: Vector3) -> void:
-	velocity = Vector3(safe.x, 0, safe.z)
+	# Gravity: the path is flat-walked, so a guard that cuts a ledge's corner (or is nudged off it by avoidance) would
+	# otherwise hang in the air above the ramp or stair below. A carried body follows the carrier instead.
+	var fall := 0.0
+	if not is_on_floor() and not carrier:
+		fall = maxf(velocity.y - ProjectSettings.get_setting("physics/3d/default_gravity", 9.8) * get_physics_process_delta_time(), -FALL_MAX)
+	velocity = Vector3(safe.x, fall, safe.z)
 	if velocity.is_zero_approx():
 		return  # standing (posted, Down, held): no slide to query; avoidance still answers when another guard pushes
 	move_and_slide()
