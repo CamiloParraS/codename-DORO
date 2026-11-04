@@ -80,8 +80,10 @@ static func _panel(b: Object, car: Node3D) -> void:
 	var panel: Node3D = b._group(car, "Panel")
 	var y := CAB.y
 	b._box(panel, "PanelBody", _r(1.32, -1.3, 0.18, 2.0), y + 1.05, y + 1.95, "metal", Color(0.4, 0.42, 0.45))
-	for i in Aigis.VOICES.size():
-		var voice: String = Aigis.VOICES[i]
+	# loaded at run time: naming Aigis here would compile the Operative into a --script build, before the Mixer autoload exists
+	var voices: Array = load("res://ai/aigis.gd").VOICES
+	for i in voices.size():
+		var voice: String = voices[i]
 		var m := MeshInstance3D.new()
 		m.name = "Lamp" + voice.capitalize()
 		m.mesh = b._box_mesh(Vector3(0.05, 0.2, 0.2), b._glow_mat(LAMPS[voice], 0.0))
